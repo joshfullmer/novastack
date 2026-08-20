@@ -25,18 +25,71 @@ us; always the first entry in a Card's Printings.
 _Avoid_: selected printing, primary printing, main printing
 
 **Set**:
-A named release that Printings belong to — a retail product, its beta counterpart, a starter
-deck, a promo run. Twelve today. Note that a single release exists as separate retail and beta
-Sets, so a Card commonly has mirrored Printings across both.
+A named release that Printings belong to, identified by its printed Set Identifier — a main set, a
+starter deck, a demo deck, a box-topper run, a promo run, a prerelease run. **Eight today.** The
+source API reports twelve, because it splits each Set into separate retail and beta entries; that
+split is the API's own and does not exist on the cards — see Print Treatment.
 _Avoid_: expansion, release, product
+
+**Base Set**:
+The primary release a Card belongs to, as opposed to a Derivative Set. There is exactly one
+today — Welcome to Night City — and it holds the overwhelming majority of Cards. The concept is
+provisional: a second genuine release changes what "base" means, and the ordering rules derived
+from it must be re-derived rather than carried forward.
+
+**Derivative Set**:
+A Set that repackages or supplements the Base Set rather than being a release of its own — a
+starter deck, a demo deck, a box-topper run, or a promo run. Most Cards in a Derivative Set also
+appear in the Base Set, but not all: a Card that appears _only_ in a Derivative Set is
+**Set-Exclusive**. Note a beta twin is _not_ a Derivative Set — see Print Treatment.
+_Avoid_: sub-set, secondary set, supplemental set
+
+**Print Treatment**:
+Whether a Printing is a retail or a beta copy. Orthogonal to Set: a retail and a beta card carry
+the **identical** printed Set Identifier (`MS01 - WNC [A]` for both) and are distinguished only by
+a `β` prefix on the Collector Number. The source API models these as two separate sets, which is
+its own invention — treat them as one Set with two treatments.
+_Avoid_: edition, variant, version
+
+**Set Identifier**:
+The code printed on a Printing: `<Set Category> - <Set Code> [<Cycle>]`, as in `MS01 - WNC [A]` or
+`PRM - DD2 [A]`. Not exposed by the source API at all — it supplies only a slugified set _name_ — so
+the mapping from API set to printed identifier is curated. Components can be absent: `PRR01 - WNC`
+has no Cycle, and `PRM01` has only a Category. Twelve API sets reduce to **eight** printed
+identifiers, because retail and beta share one.
+
+**Set Code**:
+The second component of a Set Identifier, naming the product line or deck — `WNC`, `HEI`, `EBP`,
+`DD1`, `DD2`. **Not unique on its own**: `WNC` is shared by the main set, the box toppers, and the
+prerelease run, which differ only by Set Category. Identity requires the Category and Set Code
+_together_.
+
+**Set Category**:
+The leading component of a Set Identifier, naming the product type and its number — `MS01` (main
+set), `SD01`/`SD02` (starter decks), `PRM` (promotional), `PRR01` (prerelease). **Part of a
+Printing's identity, not just a grouping** — `PRM` alone spans three different Sets, and `WNC` alone
+spans three different Categories. The pair `<Category>-<Set Code>` is what identifies a Set and what
+appears in a Printing's URL.
+
+**Cycle**:
+The bracketed component of a Set Identifier, e.g. `[A]`. Believed to govern format rotation — which
+Sets are legal in the current format. **The source API exposes no cycle data**, so rotation-aware
+legality cannot be derived from it.
+
+**Set-Exclusive**:
+Said of a Card whose only Printings are in Derivative Sets — it was never printed in the Base
+Set. Eleven today, all from the two retail starter decks plus one promo.
 
 **Rarity**:
 A property of a Printing, never of a Card. The same Card can be Rare in one Printing and Iconic
 Legend in another.
 
 **Collector Number**:
-The identifier printed on a Printing, unique within its Set (`005a`, `β144`). Beta Printings
-carry a `β` prefix; letter suffixes distinguish art treatments of the same card.
+The identifier printed on a Printing, unique **within its Set only** — every Derivative Set
+restarts at `001`, so `001` identifies three different Cards today. Any ordering or lookup keyed
+on a Collector Number must be qualified by its Set. Beta Printings carry a `β` prefix; letter
+suffixes distinguish art treatments of the same card (`005a`, `β144`) — which occurs on exactly
+one Card today.
 _Avoid_: print number, card number
 
 ### Card properties
