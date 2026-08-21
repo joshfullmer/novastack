@@ -33,6 +33,7 @@
 	import { resolve } from '$app/paths';
 	import { landing } from '#lib/cards/landing.js';
 	import CardImage from '#lib/components/CardImage.svelte';
+	import Mark from '#lib/components/Mark.svelte';
 	import { PARAM } from '#lib/filters/state.js';
 
 	const CENTRE = (landing.heroes.length - 1) / 2;
@@ -85,10 +86,11 @@
 		The wordmark comes before the art in the DOM — reading order should reach the heading first.
 		`flex-1` absorbs whatever height the fan leaves and `items-end` settles the block against the
 		fan rather than floating it mid-page, which keeps the search field low and the two halves
-		reading as one composition. `z-20` clears the fan's fade overlay at `z-10`.
+		reading as one composition. `z-20` out-stacks the fan's cards, which carry z-indices 1–7.
 	-->
 	<div class="relative z-20 flex flex-1 items-end justify-center px-4 pt-8 pb-4 sm:px-6">
 		<div class="mx-auto max-w-2xl text-center">
+			<Mark class="mx-auto mb-5 size-14 text-neon drop-shadow-lg sm:size-16" />
 			<h1 class="text-5xl font-semibold tracking-tight text-bright drop-shadow-lg sm:text-6xl">
 				nova<span class="text-neon">stack</span>
 			</h1>
@@ -172,16 +174,5 @@
 				</a>
 			{/each}
 		</div>
-
-		<!--
-			Fades the card *tops* into the page, since the fan now rises from the bottom — the gradient
-			direction is the mirror of the old top-anchored layout. It starts transparent at the bottom
-			so the art is never fogged where it matters.
-
-			`z-10` is load-bearing: the fan's cards carry explicit z-indices (1–7) to stack the centre
-			card on top, which would otherwise paint them *above* this overlay and defeat it entirely.
-			It stays `pointer-events-none`, so the cards underneath are still clickable.
-		-->
-		<div class="absolute inset-0 z-10 bg-gradient-to-b from-void via-void/60 to-transparent"></div>
 	</div>
 </section>

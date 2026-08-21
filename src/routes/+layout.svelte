@@ -1,13 +1,14 @@
 <script lang="ts">
 	import './layout.css';
-	import favicon from '#lib/assets/favicon.svg';
 	import Attribution from '#lib/components/Attribution.svelte';
 	import Nav from '#lib/components/Nav.svelte';
 
 	let { children } = $props();
 </script>
 
-<svelte:head><link rel="icon" href={favicon} /></svelte:head>
+<!-- A static file rather than an import: Vite inlines small SVGs as base64, which would ship
+     the whole mark in every page's HTML instead of fetching it once. -->
+<svelte:head><link rel="icon" href="/favicon.svg" /></svelte:head>
 
 <!--
 	The dataset is deliberately **not** imported here. Vite code-splits per route, so an import in

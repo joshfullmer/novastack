@@ -10,6 +10,7 @@
 	 * Set facet.
 	 */
 	import { page } from '$app/state';
+	import Mark from './Mark.svelte';
 
 	const LIVE = [{ href: '/cards', label: 'Cards' }];
 	const SOON = ['Decks', 'Sets', 'Rules'];
@@ -19,8 +20,9 @@
 
 <header class="sticky top-0 z-30 border-b border-edge/60 bg-void/80 backdrop-blur-md">
 	<nav class="mx-auto flex max-w-[1800px] items-baseline gap-6 px-4 py-3 sm:px-6">
-		<a href="/" class="text-lg font-semibold tracking-tight text-bright">
-			nova<span class="text-neon">stack</span>
+		<a href="/" class="flex items-center gap-2 text-lg font-semibold tracking-tight text-bright">
+			<Mark class="size-5 shrink-0 text-neon" />
+			<span>nova<span class="text-neon">stack</span></span>
 		</a>
 
 		<ul class="flex items-baseline gap-4 text-sm">
