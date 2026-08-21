@@ -189,7 +189,8 @@ async function main(): Promise<void> {
 		stats: {
 			cards: cards.length,
 			printings: cards.reduce((total, card) => total + card.printings.length, 0),
-			sets: sets.length
+			// Genuine releases only. The other seven printed identifiers are derivative products.
+			sets: sets.filter((set) => set.kind === 'base').length
 		},
 		cards
 	} satisfies Snapshot);
@@ -203,8 +204,10 @@ async function main(): Promise<void> {
 	log(unchanged ? '\n✓ snapshot unchanged' : '\n✓ snapshot written');
 	log(`  ${CARDS_PATH}`);
 	log(`  ${LANDING_PATH}`);
+	const setNoun = snapshot.stats.sets === 1 ? 'set' : 'sets';
 	log(
-		`  ${snapshot.stats.cards} cards · ${snapshot.stats.printings} printings · ${snapshot.stats.sets} sets`
+		`  ${snapshot.stats.cards} cards · ${snapshot.stats.printings} printings · ` +
+			`${snapshot.stats.sets} ${setNoun} (of ${snapshot.sets.length} printed identifiers)`
 	);
 	log(`  color order    ${snapshot.colorOrder.join(' → ')}`);
 	log(`  card-type order ${snapshot.cardTypeOrder.join(' → ')}`);

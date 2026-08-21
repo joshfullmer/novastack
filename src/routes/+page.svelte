@@ -36,6 +36,18 @@
 	import Mark from '#lib/components/Mark.svelte';
 	import { PARAM } from '#lib/filters/state.js';
 
+	/**
+	 * "Set" here means a genuine release, of which there is one: Welcome to Night City. The other
+	 * seven printed Set Identifiers are starter decks, demo decks, box toppers, promos and a
+	 * prerelease — sources of cards, not releases. Claiming eight sets would overstate the game.
+	 *
+	 * The noun agrees with the number so a second real release needs no edit here.
+	 */
+	const statsLine = $derived({
+		setNoun: landing.stats.sets === 1 ? 'set' : 'sets',
+		sets: `${landing.stats.sets} ${landing.stats.sets === 1 ? 'set' : 'sets'}`
+	});
+
 	const CENTRE = (landing.heroes.length - 1) / 2;
 
 	/** Spacing as a share of a card's own width: just under 1 gives a slight overlap. */
@@ -73,7 +85,7 @@
 	<meta
 		name="description"
 		content="Browse and filter every card in the Cyberpunk TCG. {landing.stats
-			.cards} cards, {landing.stats.printings} printings, {landing.stats.sets} sets."
+			.cards} cards, {landing.stats.printings} printings, {statsLine.sets}."
 	/>
 </svelte:head>
 
@@ -122,7 +134,8 @@
 				<span class="font-medium text-body tabular-nums">{landing.stats.cards}</span> cards ·
 				<span class="font-medium text-body tabular-nums">{landing.stats.printings}</span> printings
 				·
-				<span class="font-medium text-body tabular-nums">{landing.stats.sets}</span> sets
+				<span class="font-medium text-body tabular-nums">{landing.stats.sets}</span>
+				{statsLine.setNoun}
 			</p>
 
 			<a

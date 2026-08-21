@@ -144,6 +144,13 @@ export type SetSummary = v.InferOutput<typeof SetSummarySchema>;
 export const StatsSchema = v.object({
 	cards: v.number(),
 	printings: v.number(),
+	/**
+	 * Genuine releases — **not** every printed Set Identifier. One today: Welcome to Night City.
+	 *
+	 * There are eight sources of cards, but seven of them are starter decks, demo decks, a
+	 * box-topper run, promos and a prerelease. Counting those as "sets" claims eight releases for a
+	 * game that has had one, which is the sort of number that reads as marketing rather than fact.
+	 */
 	sets: v.number()
 });
 export type Stats = v.InferOutput<typeof StatsSchema>;

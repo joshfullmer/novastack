@@ -24,5 +24,29 @@
 		//
 		// For the same reason, never route assets through the Workers Caching API: those are
 		// billed at the Worker rate.
+	},
+
+	// Workers Logs. Note the shape: the top-level `enabled` is false while `logs.enabled` is true —
+	// that is what the dashboard emits for "logs on, traces off", and the nested flag wins for logs.
+	//
+	// Worth knowing what this will and will not show. Every route here prerenders and there is no
+	// server code, so the Worker is only ever the 404 fallback: these logs should be almost silent.
+	// That silence is the signal. If invocation volume ever climbs, something is routing asset
+	// requests through the Worker — `run_worker_first`, or assets failing to match — and those
+	// requests are billable, unlike the static-asset hits they should have been.
+	"observability": {
+		"enabled": false,
+		"head_sampling_rate": 1,
+		"logs": {
+			"enabled": true,
+			"head_sampling_rate": 1,
+			"persist": true,
+			"invocation_logs": true
+		},
+		"traces": {
+			"enabled": false,
+			"persist": true,
+			"head_sampling_rate": 1
+		}
 	}
 }

@@ -9339,7 +9339,7 @@
 		"Green",
 		"Blue"
 	],
-	"generatedAt": "2026-08-21T08:58:10.213Z",
+	"generatedAt": "2026-08-21T09:58:41.195Z",
 	"ramPerLegend": 2,
 	"sets": [
 		{
@@ -9434,6 +9434,6 @@
 	"stats": {
 		"cards": 133,
 		"printings": 389,
-		"sets": 8
+		"sets": 1
 	}
 }

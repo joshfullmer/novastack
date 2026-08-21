@@ -64,7 +64,7 @@ test.describe('the landing page', () => {
 		await page.goto('/');
 		await expect(
 			page.getByText(
-				`${landing.stats.cards} cards · ${landing.stats.printings} printings · ${landing.stats.sets} sets`
+				`${landing.stats.cards} cards · ${landing.stats.printings} printings · ${landing.stats.sets} ${landing.stats.sets === 1 ? 'set' : 'sets'}`
 			)
 		).toBeVisible();
 	});
