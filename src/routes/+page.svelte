@@ -76,18 +76,78 @@
 	/>
 </svelte:head>
 
-<!-- Clips horizontally only: the fan is wider than the text column but must overflow upward. -->
-<section class="relative overflow-x-clip">
-	<!-- `-mt-nav` pulls the fan up so the cards emerge from behind the translucent nav. -->
-	<div class="pointer-events-none relative -mt-nav h-[46vw] lg:h-[26vw]">
-		<div class="absolute inset-x-0 top-0 flex justify-center">
+<!--
+	Clips horizontally only: the fan is wider than the text column, but its cards must be free to
+	run off the *bottom* of the section without being trimmed sideways.
+-->
+<section class="relative flex flex-1 flex-col overflow-x-clip">
+	<!--
+		The wordmark comes before the art in the DOM — reading order should reach the heading first.
+		`flex-1` absorbs whatever height the fan leaves and `items-end` settles the block against the
+		fan rather than floating it mid-page, which keeps the search field low and the two halves
+		reading as one composition. `z-20` clears the fan's fade overlay at `z-10`.
+	-->
+	<div class="relative z-20 flex flex-1 items-end justify-center px-4 pt-8 pb-4 sm:px-6">
+		<div class="mx-auto max-w-2xl text-center">
+			<h1 class="text-5xl font-semibold tracking-tight text-bright drop-shadow-lg sm:text-6xl">
+				nova<span class="text-neon">stack</span>
+			</h1>
+			<p class="mx-auto mt-3 max-w-md text-balance text-muted">
+				Every card in the Cyberpunk TCG — searchable, filterable, and shown at full art.
+			</p>
+
+			<form action="/cards" method="GET" onsubmit={search} class="mt-8 flex gap-2">
+				<label for="landing-search" class="sr-only">Search cards</label>
+				<input
+					id="landing-search"
+					name={PARAM.search}
+					bind:value={query}
+					type="search"
+					placeholder="Search cards…"
+					autocomplete="off"
+					class="min-w-0 flex-1 rounded-lg border border-edge
+						bg-surface/80 px-4 py-3 text-bright shadow-xl shadow-black/40 transition-colors outline-none placeholder:text-muted
+						focus:border-neon"
+				/>
+				<button
+					type="submit"
+					class="shrink-0 rounded-lg bg-neon px-5 py-3 font-medium text-void transition-colors
+						hover:bg-bright">Go</button
+				>
+			</form>
+
+			<p class="mt-6 text-sm text-muted">
+				<span class="font-medium text-body tabular-nums">{landing.stats.cards}</span> cards ·
+				<span class="font-medium text-body tabular-nums">{landing.stats.printings}</span> printings
+				·
+				<span class="font-medium text-body tabular-nums">{landing.stats.sets}</span> sets
+			</p>
+
+			<a
+				href="/cards"
+				class="mt-8 inline-block text-sm text-neon underline decoration-dotted underline-offset-4
+					transition-colors hover:text-bright"
+			>
+				Browse the whole database →
+			</a>
+		</div>
+	</div>
+
+	<!--
+		The fan sits in the lower half, rising from the bottom edge. It used to sit at the top, pulled
+		up behind the translucent nav — which read as clipped rather than as "emerging", because the
+		nav is opaque enough at the blur to look like a hard crop. Down here nothing overlaps it, and
+		the cards converge toward the bottom of the viewport the way a held hand actually fans.
+	-->
+	<div class="pointer-events-none relative h-[52vw] overflow-clip lg:h-[25vw]">
+		<div class="absolute inset-x-0 bottom-0 flex justify-center">
 			{#each landing.heroes as hero, index (hero.slug)}
 				<a
 					href={resolve('/cards/[slug]', { slug: hero.slug })}
 					title={hero.name}
 					style={fanStyle(index)}
 					class={[
-						`group pointer-events-auto absolute top-0 w-[30vw] origin-bottom
+						`group pointer-events-auto absolute bottom-0 w-[38vw] origin-bottom
 						translate-x-[var(--fan-x)] translate-y-[var(--fan-y)] rotate-[var(--fan-rotate)]
 						focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-neon
 						lg:w-[13.5vw]`,
@@ -105,7 +165,7 @@
 							thumbhash={hero.thumbhash}
 							color={hero.color}
 							alt={hero.name}
-							sizes="(min-width: 1024px) 13.5vw, 30vw"
+							sizes="(min-width: 1024px) 13.5vw, 38vw"
 							eager
 						/>
 					</div>
@@ -114,57 +174,14 @@
 		</div>
 
 		<!--
-			Starts transparent, so the art is never fogged where it matters, and dissolves the card
-			bottoms into the page rather than letting them end on a hard edge.
+			Fades the card *tops* into the page, since the fan now rises from the bottom — the gradient
+			direction is the mirror of the old top-anchored layout. It starts transparent at the bottom
+			so the art is never fogged where it matters.
 
 			`z-10` is load-bearing: the fan's cards carry explicit z-indices (1–7) to stack the centre
 			card on top, which would otherwise paint them *above* this overlay and defeat it entirely.
 			It stays `pointer-events-none`, so the cards underneath are still clickable.
 		-->
-		<div class="absolute inset-0 z-10 bg-gradient-to-t from-void via-void/70 to-transparent"></div>
-	</div>
-
-	<!-- `z-20` clears the fan's fade overlay, which sits at `z-10` above the cards. -->
-	<div class="relative z-20 mx-auto -mt-20 max-w-2xl px-4 pb-24 text-center sm:-mt-28 sm:px-6">
-		<h1 class="text-5xl font-semibold tracking-tight text-bright drop-shadow-lg sm:text-6xl">
-			nova<span class="text-neon">stack</span>
-		</h1>
-		<p class="mx-auto mt-3 max-w-md text-balance text-muted">
-			Every card in the Cyberpunk TCG — searchable, filterable, and shown at full art.
-		</p>
-
-		<form action="/cards" method="GET" onsubmit={search} class="mt-8 flex gap-2">
-			<label for="landing-search" class="sr-only">Search cards</label>
-			<input
-				id="landing-search"
-				name={PARAM.search}
-				bind:value={query}
-				type="search"
-				placeholder="Search cards…"
-				autocomplete="off"
-				class="min-w-0 flex-1 rounded-lg border border-edge
-					bg-surface/80 px-4 py-3 text-bright shadow-xl shadow-black/40 transition-colors outline-none placeholder:text-muted
-					focus:border-neon"
-			/>
-			<button
-				type="submit"
-				class="shrink-0 rounded-lg bg-neon px-5 py-3 font-medium text-void transition-colors
-					hover:bg-bright">Go</button
-			>
-		</form>
-
-		<p class="mt-6 text-sm text-muted">
-			<span class="font-medium text-body tabular-nums">{landing.stats.cards}</span> cards ·
-			<span class="font-medium text-body tabular-nums">{landing.stats.printings}</span> printings ·
-			<span class="font-medium text-body tabular-nums">{landing.stats.sets}</span> sets
-		</p>
-
-		<a
-			href="/cards"
-			class="mt-8 inline-block text-sm text-neon underline decoration-dotted underline-offset-4
-				transition-colors hover:text-bright"
-		>
-			Browse the whole database →
-		</a>
+		<div class="absolute inset-0 z-10 bg-gradient-to-b from-void via-void/60 to-transparent"></div>
 	</div>
 </section>

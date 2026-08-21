@@ -12,6 +12,8 @@
  */
 import { describe, expect, it } from 'vitest';
 import { existsSync } from 'node:fs';
+import { HEROES } from './hero.js';
+import { landing } from './landing.js';
 import { dataset, snapshot } from './index.js';
 import { plainText } from './rules-text.js';
 import { IMAGE_WIDTHS } from './vocabulary.js';
@@ -201,5 +203,52 @@ describe('mirrored images', () => {
 		for (const entry of snapshot.cards) {
 			for (const printing of entry.printings) expect(printing.thumbhash.length).toBeGreaterThan(10);
 		}
+	});
+});
+
+describe('the landing artifact', () => {
+	/**
+	 * The footgun this catches: `HERO_SLUGS` is hand-edited, but `landing.json` is *generated* from
+	 * it by ingest. Edit the list and forget to re-run `pnpm ingest`, and the page keeps rendering
+	 * the old seven cards with no error anywhere — the stale file is still valid.
+	 */
+	it('matches HEROES in order, or the snapshot needs regenerating', () => {
+		expect(landing.heroes.map((hero) => hero.slug)).toEqual(HEROES.map((hero) => hero.slug));
+	});
+
+	it('resolves every hero to a real card and one of its own printings', () => {
+		for (const hero of landing.heroes) {
+			const card = dataset.bySlug.get(hero.slug);
+			expect(card, hero.slug).toBeDefined();
+			expect(hero.color).toBe(card?.color);
+			expect(hero.name).toBe(card?.name);
+
+			// Not necessarily the Default Printing: heroes are chosen for their art, and the Iconics
+			// exist only as non-default printings.
+			const printing = card?.printings.find((entry) => entry.id === hero.printingId);
+			expect(printing, `${hero.slug} printing ${hero.printingId}`).toBeDefined();
+			expect(hero.thumbhash).toBe(printing?.thumbhash);
+		}
+	});
+
+	it("honours each hero's printing selector", () => {
+		for (const [index, choice] of HEROES.entries()) {
+			if (choice.printing === undefined) continue;
+			const hero = landing.heroes[index];
+			const printing = dataset.bySlug
+				.get(hero.slug)
+				?.printings.find((entry) => entry.id === hero.printingId);
+
+			if (choice.printing.rarity !== undefined) {
+				expect(printing?.rarity, hero.slug).toBe(choice.printing.rarity);
+			}
+			if (choice.printing.setId !== undefined) {
+				expect(printing?.setId, hero.slug).toBe(choice.printing.setId);
+			}
+		}
+	});
+
+	it('carries the same stats the dataset reports', () => {
+		expect(landing.stats).toEqual(snapshot.stats);
 	});
 });

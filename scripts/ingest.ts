@@ -34,12 +34,13 @@ import {
 	runOrder,
 	setExclusiveSlugs
 } from '../src/lib/cards/derive.ts';
-import { HERO_SLUGS } from '../src/lib/cards/hero.ts';
+import { HEROES, type HeroChoice } from '../src/lib/cards/hero.ts';
 import { normalizeCards } from '../src/lib/cards/normalize.ts';
 import {
 	LandingSchema,
 	SnapshotSchema,
 	type Card,
+	type Printing,
 	type Snapshot
 } from '../src/lib/cards/schema.ts';
 import { mirrorImages, readMirroredThumbhashes } from './lib/images.ts';
@@ -211,23 +212,58 @@ async function main(): Promise<void> {
 	log(`  set-exclusive   ${setExclusiveSlugs(cards).length} card(s)`);
 }
 
+/**
+ * Resolves a hero's printing selector against a card.
+ *
+ * Failing loudly matters here: a hero is chosen for its *art*, so silently falling back to the
+ * Default Printing would swap the landing page's composition without telling anyone. The error
+ * lists what the card actually has, which is the information needed to fix it.
+ */
+function resolveHeroPrinting(card: Card, choice: HeroChoice): Printing {
+	if (choice.printing === undefined) return card.printings[0];
+
+	const { rarity, setId } = choice.printing;
+	const matches = card.printings.filter(
+		(printing) =>
+			(rarity === undefined || printing.rarity === rarity) &&
+			(setId === undefined || printing.setId === setId)
+	);
+
+	const [first] = matches;
+	if (first === undefined) {
+		const asked = [rarity, setId].filter((part) => part !== undefined).join(' + ');
+		const available = card.printings
+			.map((printing) => `${printing.key} (${printing.rarity})`)
+			.join(', ');
+		throw new Error(
+			`No printing of "${card.name}" matches ${asked}. Available: ${available}. ` +
+				`Update HEROES in src/lib/cards/hero.ts.`
+		);
+	}
+
+	// Prefer retail over its beta twin: same art, same rarity, differing only by the β prefix.
+	return matches.find((printing) => !printing.collectorNumber.startsWith('β')) ?? first;
+}
+
 /** `/` cannot import the dataset, so its seven hero cards and stats line ship separately. */
 function buildLanding(snapshot: Snapshot) {
 	const bySlug = new Map<string, Card>(snapshot.cards.map((card) => [card.slug, card]));
 
-	const heroes = HERO_SLUGS.map((slug) => {
-		const card = bySlug.get(slug);
+	const heroes = HEROES.map((choice) => {
+		const card = bySlug.get(choice.slug);
 		if (card === undefined) {
 			throw new Error(
-				`Hero slug "${slug}" is not in the dataset. Update HERO_SLUGS in src/lib/cards/hero.ts.`
+				`Hero slug "${choice.slug}" is not in the dataset. Update HEROES in src/lib/cards/hero.ts.`
 			);
 		}
+
+		const printing = resolveHeroPrinting(card, choice);
 		return {
 			slug: card.slug,
 			name: card.name,
 			color: card.color,
-			printingId: card.printings[0].id,
-			thumbhash: card.printings[0].thumbhash
+			printingId: printing.id,
+			thumbhash: printing.thumbhash
 		};
 	});
 

@@ -16,6 +16,6 @@
 -->
 <div class="flex min-h-screen flex-col">
 	<Nav />
-	<main class="flex-1">{@render children()}</main>
+	<main class="flex flex-1 flex-col">{@render children()}</main>
 	<Attribution />
 </div>

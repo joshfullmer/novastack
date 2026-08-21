@@ -1,53 +1,53 @@
 {
 	"heroes": [
 		{
-			"color": "Red",
-			"name": "V — StreetKid",
-			"printingId": "3fc63c58-5954-4744-a5af-047bfc5cb159",
-			"slug": "v-streetkid",
-			"thumbhash": "DziGFAYPKPZahbpwkQ2213KPgYGICBiIAA=="
-		},
-		{
 			"color": "Blue",
-			"name": "Alt Cunningham — Soulkiller Architect",
-			"printingId": "cb23a651-dd1d-48f8-aca3-8d33fef79fdd",
-			"slug": "alt-cunningham-soulkiller-architect",
-			"thumbhash": "iueFFAYPWGZX+LeIiHMHOIiAgYGICBiIAA=="
-		},
-		{
-			"color": "Green",
-			"name": "Goro Takemura — Vengeful Bodyguard",
-			"printingId": "0f6e52f0-511f-4ae9-a380-5e718b26e58a",
-			"slug": "goro-takemura-vengeful-bodyguard",
-			"thumbhash": "DPiFBAQPJ/ZGt4iUUvLUCHqCgYGICBiIAA=="
+			"name": "V — Corporate Exile",
+			"printingId": "f509ebd8-c8b7-4a22-8922-2d71c6df0b6f",
+			"slug": "v-corporate-exile",
+			"thumbhash": "jPeFFAQPzKhXmcaAeARDFkKAgYGICBiIAA=="
 		},
 		{
 			"color": "Yellow",
-			"name": "Rogue Amendiares — Preem Solo",
-			"printingId": "2dd7547d-5098-4082-a98b-f39a583a222f",
-			"slug": "rogue-amendiares-preem-solo",
-			"thumbhash": "TviFHAIPNfom+tiwUQ/G4XCFgYGICBiIAA=="
-		},
-		{
-			"color": "Red",
-			"name": "Adam Smasher — Ender of Legends",
-			"printingId": "a9c1137e-2e33-4293-9dcc-9351c9a0bbee",
-			"slug": "adam-smasher-ender-of-legends",
-			"thumbhash": "zjiCFAQPlReDmof7sAqGy4CMgYGHBxh4AA=="
+			"name": "Jackie Welles — Ride or Die Choom",
+			"printingId": "12d44604-ad7b-4e82-b517-9edb0be44427",
+			"slug": "jackie-welles-ride-or-die-choom",
+			"thumbhash": "0SiGHAQPe8R3GNOAp6+m3l+FgYGICBiIAA=="
 		},
 		{
 			"color": "Blue",
 			"name": "Judy Álvarez — Braindance Maestro",
-			"printingId": "8d0ad645-ac9a-4ecb-93d0-4c2061a4c477",
+			"printingId": "0324e335-2f17-496c-9789-59f93ed6d31e",
 			"slug": "judy-a-lvarez-braindance-maestro",
-			"thumbhash": "0vaFFAQPM/hVeKmlpzn4F4+FgYGICBiIAA=="
+			"thumbhash": "1QeGFAQPJfhFaaiEAZNUJniAgYGICBiIAA=="
+		},
+		{
+			"color": "Red",
+			"name": "Johnny Silverhand — Rocking Renegade",
+			"printingId": "4f8fbab4-7aad-4271-8dd6-8cdf68654c5e",
+			"slug": "johnny-silverhand-rocking-renegade",
+			"thumbhash": "HRiKDAQPq8Z3CFWEUo721niPgYGICBiIAA=="
+		},
+		{
+			"color": "Green",
+			"name": "Sandayu Oda — Hanako's Guardian",
+			"printingId": "b1db8654-6197-4e80-9555-8917dcba6dc7",
+			"slug": "sandayu-oda-hanako-s-guardian",
+			"thumbhash": "jziGHA4PjoWZCcWVVDYGVnWAgYGICBiIAA=="
 		},
 		{
 			"color": "Green",
 			"name": "Panam Palmer — Nomad Cavalry",
-			"printingId": "6e4ee31b-82d1-421c-b658-ba3f79520365",
+			"printingId": "20c0d91e-76d5-4904-82e8-53907537aee3",
 			"slug": "panam-palmer-nomad-cavalry",
-			"thumbhash": "TuiFDAQPqKZZB2hjCEZXBIeCgYGICBiIAA=="
+			"thumbhash": "0QiCFAQPb9IvF2hr88R8DsqDgYGICBiIAA=="
+		},
+		{
+			"color": "Yellow",
+			"name": "Adam Smasher — Metal Over Meat",
+			"printingId": "59d1ce5c-d616-45d5-9816-576f5f1509f3",
+			"slug": "adam-smasher-metal-over-meat",
+			"thumbhash": "U1mKHAYPl4aHCJeZZ5oHeH2AgYGICBiIAA=="
 		}
 	],
 	"stats": {
