@@ -1,3 +1,19 @@
+# This is a single-package repo, but pnpm requires a `packages` field whenever this file exists at
+# all. Without it, pnpm 10 fails the install outright with "packages field missing or empty" — which
+# is what broke the Cloudflare build, while pnpm 11 locally tolerated the omission.
+packages:
+  - .
+
+# Dependencies allowed to run install scripts, declared twice on purpose: pnpm 11 reads
+# `allowBuilds`, pnpm 10 reads `onlyBuiltDependencies`, and neither understands the other's key.
+# Local and CI are on different majors, so listing only one means the other silently blocks the
+# script — and pnpm 11 rewrites this file with a `set this to true or false` placeholder when it
+# finds a build script it has no answer for.
+#
+# `sharp` is deliberately absent: it ships prebuilt platform binaries and has no install script,
+# so approving it would imply a dependency that does not exist.
 allowBuilds:
   esbuild: true
-  workerd: set this to true or false
+
+onlyBuiltDependencies:
+  - esbuild

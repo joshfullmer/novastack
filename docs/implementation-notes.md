@@ -97,6 +97,22 @@ a redeploy never reaches anyone who has already visited — and `/cards/*` is th
 that is unambiguously supported in a Cloudflare `_headers` file. Keying by printing id is
 unchanged.
 
+### 2.4b Cloudflare Pages needs an explicit `_routes.json`
+
+The spec chose **Workers static assets** (§7), and `wrangler.jsonc` targets it. But the adapter
+switches to its Pages branch whenever `CF_PAGES` is set, and on that branch it enumerates every
+static file into `_routes.json` — which is capped at 100 rules. Measured: the adapter emits 99
+rules and **drops 1,206**, warning that this "will cause unnecessary function invocations". On
+Pages, that means asset requests invoke the Function and become billable, defeating §1.3 entirely.
+
+`routes.exclude` in `vite.config.ts` replaces the enumeration with seven globs — 8 rules total.
+This is only expressible because the card art sits under its own `/card-art/` prefix (§2.4)
+rather than inside the `/cards/` route namespace: one glob covers all 1,167 images without also
+swallowing the 133 prerendered card pages.
+
+The option is Pages-only and ignored on Workers, so the primary target is unaffected — verified:
+a Workers build still emits `.assetsignore` and no `_routes.json`.
+
 ### 2.5 Density is local state, not URL state
 
 §6 says the URL is the only source of truth. Density is not a filter — it is how zoomed-in the
@@ -175,6 +191,10 @@ SvelteKit throws on `url.searchParams` during prerendering. That is not an obsta
 - **`cards.json` is imported as a string (`?raw`) and `JSON.parse`d.** An object import would make
   `tsc` infer a 277 KB literal type, and parsing one string is cheaper at runtime than evaluating
   an equivalent object literal.
+- **`pnpm-workspace.yaml` declares build approvals under two keys.** pnpm 11 reads `allowBuilds`,
+  pnpm 10 reads `onlyBuiltDependencies`, and neither understands the other's. It also needs a
+  `packages` field the moment the file exists — pnpm 10 fails the install with "packages field
+  missing or empty" without it, which broke a Cloudflare build while pnpm 11 locally did not care.
 - **`paths.relative: false`.** SvelteKit's default relative paths make prerendered HTML disagree
   with the hydrated app (`./cards/v-streetkid` vs `/cards/v-streetkid`). This site is served from
   the root of its own domain and does not need the portability.
