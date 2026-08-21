@@ -1,0 +1,11 @@
+# Cloudflare asset headers. This file belongs in the project root, not in `static/` — the
+# adapter picks it up from here and merges its own rules for `_app/immutable`.
+
+# Mirrored card art. The `{printingId}/{width}` path is content-addressed enough to justify
+# immutable caching: a printing id never changes meaning, and new art arrives as a new id.
+#
+# This is why the art lives at `/card-art/` rather than under `/cards/`: `/cards/*` would also
+# match the prerendered `/cards/[slug]` pages, and a year of immutable caching on an HTML page
+# means a redeploy never reaches anyone who has already visited.
+/card-art/*
+  Cache-Control: public, max-age=31536000, immutable

@@ -19,7 +19,16 @@ export default defineConfig({
 			// invocations count against the 100k/day free limit. Never set
 			// run_worker_first, or asset requests become billable.
 			// See docs/netdeck-api-notes.md §5.
-			adapter: adapter()
+			adapter: adapter(),
+
+			// Absolute paths, not SvelteKit's default relative ones.
+			//
+			// Relative paths make prerendered HTML disagree with the running app: a prerendered
+			// hero card emits `href="./cards/v-streetkid"` while the same component renders
+			// `/cards/v-streetkid` after hydration. That is portable across deploy prefixes, which
+			// this site does not need — it is served from the root of its own domain — and it costs
+			// the property that a link's markup means the same thing everywhere.
+			paths: { relative: false }
 		})
 	],
 	test: {

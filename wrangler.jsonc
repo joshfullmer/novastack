@@ -1,0 +1,28 @@
+{
+	"$schema": "./node_modules/wrangler/config-schema.json",
+	"name": "novastack",
+	"compatibility_date": "2026-08-20",
+
+	// `main` + `assets` is what tells adapter-cloudflare this is Workers static assets rather
+	// than Pages. Without it the adapter assumes Pages and emits a `_routes.json` whose 100-rule
+	// limit our 1,167 mirrored images blow straight through — which would have caused exactly the
+	// unnecessary Worker invocations this project is shaped to avoid.
+	"main": ".svelte-kit/cloudflare/_worker.js",
+
+	"assets": {
+		"directory": ".svelte-kit/cloudflare",
+		"binding": "ASSETS",
+
+		// Serve the rendered fallback page, with a 404 status, for a URL that matches no asset.
+		// Paired with the adapter's `fallback: 'spa'` this is a styled 404 rather than plaintext.
+		"not_found_handling": "404-page"
+
+		// NEVER set `run_worker_first`. It routes asset requests through the Worker, which makes
+		// them billable — and asset requests are the only traffic this site has at volume
+		// (1,167 images). Static-asset requests are free and unlimited; the 100k/day free limit
+		// applies solely to requests that invoke the Worker script.
+		//
+		// For the same reason, never route assets through the Workers Caching API: those are
+		// billed at the Worker rate.
+	}
+}

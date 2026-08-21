@@ -9,7 +9,7 @@ node_modules
 /build
 
 # Mirrored card art from api.netdeck.gg — ~46 MB of 733x1024 originals.
-# Regenerable via scripts/mirror-images.ts; derivatives go in static/cards/.
+# Regenerable via `pnpm ingest`; derivatives go in static/card-art/.
 # See docs/netdeck-api-notes.md §4.
 /mirror
 
@@ -32,3 +32,8 @@ vite.config.ts.timestamp-*
 
 # Playwright
 /.playwright-mcp
+
+# Playwright artifacts
+/test-results
+/playwright-report
+/blob-report

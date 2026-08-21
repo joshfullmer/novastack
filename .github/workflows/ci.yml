@@ -1,0 +1,40 @@
+name: CI
+
+# The schema gate. Because the snapshot is a static committed artifact, a `cards.json` that
+# parses here parses everywhere, forever — so this is the check that has to block the merge.
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: Lint and format
+        run: pnpm lint
+
+      - name: Typecheck
+        run: pnpm check
+
+      # The gate: parses the committed snapshot against the schema, asserts the two mandatory
+      # fixtures survive normalization, and checks that every printing the data promises has all
+      # three mirrored image tiers on disk.
+      - name: Schema gate and unit tests
+        run: pnpm test:unit --run
+
+      - name: Install Playwright browsers
+        run: pnpm exec playwright install --with-deps chromium
+
+      - name: End-to-end tests
+        run: pnpm test:e2e

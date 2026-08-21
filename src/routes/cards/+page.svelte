@@ -1,0 +1,212 @@
+<script lang="ts">
+	/**
+	 * The card database.
+	 *
+	 * **The URL is the only source of truth**, search box included, and results are `$derived`
+	 * from it — nothing is stored:
+	 *
+	 * ```
+	 * currentUrl().searchParams → parseFilterState → toPredicate → evaluate → sortMatches
+	 * ```
+	 *
+	 * No memoization. At 133 cards the whole pipeline is a few hundred comparisons; this is stated
+	 * explicitly so nobody optimises it later without measuring first.
+	 *
+	 * **Updates use shallow routing.** In SvelteKit 3 that means `goto(url, { shallow: true })`,
+	 * not the deprecated `pushState`/`replaceState`. No `load` depends on the URL, so this fetches
+	 * nothing; and because `reset` defaults to `false` under `shallow`, scroll and focus are left
+	 * alone — which is what makes a chip click feel like a filter rather than a page change.
+	 *
+	 * The URL is read through `currentUrl()`, **not** `page.url`: a shallow navigation deliberately
+	 * leaves `page.url` on the loaded page and exposes the new URL at `page.shallow.url`. See
+	 * `#lib/filters/shallow.js`.
+	 *
+	 * **First paint of a filtered link shows everything.** This page prerenders with all tiles and
+	 * narrows on hydration, so a shared filtered link is briefly wide. That is hydration latency,
+	 * not load latency — the data is local, and static HTML cannot know the query string. A
+	 * pre-paint inline script could fix it, but it would be a second filter implementation that is
+	 * right for colour and silently wrong for RAM, search and printing-level matching. This is the
+	 * reversible choice; that script can still be added later as a pure enhancement.
+	 */
+	import { browser } from '$app/env';
+	import { goto } from '$app/navigation';
+	import { MediaQuery } from 'svelte/reactivity';
+	import { innerWidth } from 'svelte/reactivity/window';
+	import { currentUrl } from '#lib/filters/shallow.js';
+	import { dataset } from '#lib/cards/index.js';
+	import { setExclusiveSlugs } from '#lib/cards/derive.js';
+	import CardPane from '#lib/components/CardPane.svelte';
+	import CardTile from '#lib/components/CardTile.svelte';
+	import FilterBar from '#lib/components/filters/FilterBar.svelte';
+	import { budgetFromLegendColors } from '#lib/filters/budget.js';
+	import { evaluate } from '#lib/filters/predicate.js';
+	import { sortMatches } from '#lib/filters/sort.js';
+	import {
+		EMPTY_STATE,
+		isFiltered,
+		parseFilterState,
+		toFilteredUrl,
+		toPredicate,
+		type FilterState
+	} from '#lib/filters/state.js';
+
+	const SEARCH_DEBOUNCE_MS = 250;
+	const DEFAULT_COLUMNS = 8;
+	const COLUMN_STEP = 2;
+	const COLUMN_FLOOR = 2;
+	const COLUMN_CEILING = 12;
+	/** Below this, the three-pane layout fails: at 390px the pane crushed the grid to ~55px. */
+	const NARROW_COLUMN_CEILING = 3;
+	/** Roughly the narrowest a tile can get and still be recognisable. */
+	const MIN_TILE_PX = 104;
+
+	const setExclusiveCount = setExclusiveSlugs(dataset.cards).length;
+
+	/**
+	 * The query string is read **only in the browser**, and this is not a workaround — it is the
+	 * prerendering decision made literal. Prerendered HTML cannot depend on a query string (Kit
+	 * throws if you try), so the static page is the *unfiltered* grid and narrowing happens on
+	 * hydration. That is why a shared filtered link is briefly wide.
+	 */
+	const filters = $derived(
+		browser ? parseFilterState(currentUrl().searchParams, dataset) : EMPTY_STATE
+	);
+	const budget = $derived(budgetFromLegendColors(filters.legendColors, dataset.ramPerLegend));
+	const results = $derived(
+		sortMatches(dataset, evaluate(dataset, toPredicate(dataset, filters)), filters.sort)
+	);
+	const filtered = $derived(isFiltered(filters));
+
+	const isDesktop = new MediaQuery('min-width: 64rem', false);
+
+	// Density is a column count, not a tile size. It is local state rather than URL state: it is a
+	// view preference, and a shared link should carry the *query*, not the reader's zoom level.
+	let desiredColumns = $state(DEFAULT_COLUMNS);
+
+	/**
+	 * A fixed 8 columns is nonsense at 390px, so the count is clamped by viewport. The floor at
+	 * `COLUMN_FLOOR` is what keeps the derived tile width from ever going to zero.
+	 */
+	const columnCeiling = $derived.by(() => {
+		const width = innerWidth.current;
+		if (width === undefined) return COLUMN_CEILING;
+		if (width < 640) return NARROW_COLUMN_CEILING;
+		return Math.max(COLUMN_FLOOR, Math.min(COLUMN_CEILING, Math.floor(width / MIN_TILE_PX)));
+	});
+
+	const columns = $derived(Math.max(COLUMN_FLOOR, Math.min(desiredColumns, columnCeiling)));
+	const columnRange = $derived({ min: COLUMN_FLOOR, max: columnCeiling });
+
+	/** Tiles stretch to fill, so the browser picks a tier from roughly this width. */
+	const tileSizes = $derived(`calc(100vw / ${columns})`);
+
+	let selectedSlug = $state<string | null>(null);
+
+	/** A selection that has been filtered away is stale, and showing it would be a lie. */
+	const selected = $derived(results.find((match) => match.card.slug === selectedSlug) ?? null);
+
+	function apply(patch: Partial<FilterState>, options: { replace?: boolean } = {}) {
+		const next = { ...filters, ...patch };
+		// A chip click gets its own history entry, so Back is filter-undo.
+		void goto(toFilteredUrl(currentUrl(), next), { shallow: true, replace: options.replace });
+	}
+
+	let searchTimer: ReturnType<typeof setTimeout> | undefined;
+
+	function onSearch(value: string) {
+		// Debounced and history-replacing: one entry per search, not one per keystroke.
+		clearTimeout(searchTimer);
+		searchTimer = setTimeout(() => apply({ search: value }, { replace: true }), SEARCH_DEBOUNCE_MS);
+	}
+
+	function clearAll() {
+		// A `goto` rather than an `<a href="/cards">`: in v3 a link to the current location
+		// triggers `refreshAll()`, which would rerun loads for a filter reset.
+		void goto('/cards', { shallow: true });
+	}
+</script>
+
+<svelte:head>
+	<title>Cards — novastack</title>
+	<meta name="description" content="Browse and filter every card in the Cyberpunk TCG." />
+</svelte:head>
+
+<!--
+	The page scrolls normally and the pane is sticky, rather than the grid living in its own scroll
+	container. That keeps the footer reachable, keeps browser find-in-page working across the whole
+	grid, and needs no viewport arithmetic to stay correct on a phone.
+
+	`data-hydrated` marks the prerender/hydration boundary. It is not decoration: the prerendered
+	grid *looks* interactive — every chip is in the static HTML — while none of the handlers are
+	attached and the filters have not been read from the URL yet. Making that boundary observable
+	is what lets the end-to-end suite wait for it rather than race it, and it is the hook a
+	pre-paint narrowing script would key off if one is ever added.
+-->
+<div data-hydrated={browser ? 'true' : undefined}>
+	<FilterBar
+		{dataset}
+		{filters}
+		{budget}
+		{columns}
+		{columnRange}
+		columnStep={COLUMN_STEP}
+		{filtered}
+		{setExclusiveCount}
+		resultCount={results.length}
+		onUpdate={apply}
+		{onSearch}
+		onColumns={(next) => (desiredColumns = Math.max(COLUMN_FLOOR, Math.min(next, COLUMN_CEILING)))}
+		onClear={clearAll}
+	/>
+
+	<div class="mx-auto flex max-w-[1800px] items-start">
+		<div class="min-w-0 flex-1 p-4 sm:p-6">
+			{#if results.length === 0}
+				<div class="mx-auto mt-16 max-w-md text-center">
+					<p class="text-lg text-bright">No cards match these filters.</p>
+					<p class="mt-2 text-sm text-balance text-muted">
+						Filters combine with AND across facets, so a narrow combination can empty the grid.
+						Widening one facet usually brings results back.
+					</p>
+					{#if filtered}
+						<button
+							type="button"
+							onclick={clearAll}
+							class="mt-4 rounded-lg border border-edge px-3 py-2 text-sm
+								text-body transition-colors hover:border-neon hover:text-neon">Clear all filters</button
+						>
+					{/if}
+				</div>
+			{:else}
+				<ul
+					class="grid gap-2 sm:gap-3"
+					style="grid-template-columns: repeat({columns}, minmax(0, 1fr))"
+				>
+					{#each results as match, index (match.card.slug)}
+						<li>
+							<CardTile
+								card={match.card}
+								printing={match.printing}
+								selected={match.card.slug === selectedSlug}
+								sizes={tileSizes}
+								eager={index < columns}
+								onSelect={() => {
+									// On a phone the pane does not exist, so the link navigates instead.
+									if (!isDesktop.current) return false;
+									// Clicking an already-selected tile follows the link. The first click reads
+									// the card in the pane; the second says "I want the whole thing" — and it
+									// means the tile never becomes an inert target once selected.
+									if (selectedSlug === match.card.slug) return false;
+									selectedSlug = match.card.slug;
+									return true;
+								}}
+							/>
+						</li>
+					{/each}
+				</ul>
+			{/if}
+		</div>
+
+		<CardPane card={selected?.card ?? null} printing={selected?.printing ?? null} />
+	</div>
+</div>

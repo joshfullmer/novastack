@@ -7,3 +7,6 @@ bun.lockb
 
 # Miscellaneous
 /static/
+
+# Generated snapshots. The writer owns their formatting — see scripts/lib/stable-json.ts.
+src/lib/cards/*.json

@@ -1,2 +1,56 @@
 @import 'tailwindcss';
 @plugin '@tailwindcss/typography';
+
+/*
+ * Art-forward means the chrome gets out of the way. Everything here is dark and low-chroma so
+ * that the only saturated colour on screen is the card art — except the four colour identities,
+ * which are the one place chroma carries meaning.
+ */
+@theme {
+	--font-sans: 'Inter var', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+	--font-mono: ui-monospace, 'SF Mono', 'JetBrains Mono', monospace;
+
+	/* Surfaces, darkest first. */
+	--color-void: oklch(14% 0.012 275);
+	--color-shell: oklch(18% 0.014 275);
+	--color-surface: oklch(22% 0.016 275);
+	--color-raised: oklch(27% 0.018 275);
+	--color-edge: oklch(33% 0.02 275);
+
+	--color-muted: oklch(64% 0.02 275);
+	--color-body: oklch(84% 0.015 275);
+	--color-bright: oklch(97% 0.005 275);
+
+	/* Accent — the interactive colour, deliberately not one of the four identities. */
+	--color-neon: oklch(78% 0.17 195);
+	--color-neon-dim: oklch(52% 0.11 195);
+
+	/* The four Colour identities. Used for chips, tier-0 placeholders, and tile edges. */
+	--color-card-red: oklch(58% 0.19 22);
+	--color-card-yellow: oklch(78% 0.16 88);
+	--color-card-green: oklch(68% 0.16 152);
+	--color-card-blue: oklch(62% 0.16 246);
+
+	--aspect-card: 733 / 1024;
+
+	/* The shared nav's height, so sticky offsets below it have one source of truth. */
+	--spacing-nav: 3.3rem;
+}
+
+html {
+	background-color: var(--color-void);
+	color-scheme: dark;
+}
+
+body {
+	@apply bg-void font-sans text-body antialiased;
+}
+
+/* Focus is never invisible: half the controls here are chips and slots, not text inputs. */
+:focus-visible {
+	@apply outline-2 outline-offset-2 outline-neon;
+}
+
+@utility card-frame {
+	aspect-ratio: var(--aspect-card);
+}
