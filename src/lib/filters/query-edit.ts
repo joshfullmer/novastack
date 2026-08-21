@@ -16,9 +16,9 @@ import type { CardType, Color, Keyword, Rarity } from '#lib/cards/vocabulary.js'
 import { budgetFromLegendColors } from './budget.js';
 import type { NumericRange } from './chips.js';
 import type { Predicate } from './predicate.js';
-import { compileField, type CompileContext } from '#lib/query/compile.js';
+import { compileNode, type CompileContext } from '#lib/query/compile.js';
 import { formatLegendsValue } from '#lib/query/legends-value.js';
-import { parse, type FieldNode, type Node } from '#lib/query/parser.js';
+import { parse, type Node } from '#lib/query/parser.js';
 
 export type FacetEdit =
 	| { facet: 'color'; values: readonly Color[] }
@@ -138,7 +138,7 @@ export function withFacetEdit(source: string, dataset: Dataset, edit: FacetEdit)
 
 	const kept: string[] = [];
 	for (const child of astTopLevelChildren(node)) {
-		if (child.type === 'field' && matchesFieldTarget(child, ctx, target)) continue;
+		if (isSoleSourceOf(child, ctx, target)) continue;
 		kept.push(source.slice(child.span[0], child.span[1]));
 	}
 
@@ -150,9 +150,13 @@ export function withFacetEdit(source: string, dataset: Dataset, edit: FacetEdit)
 		.join(' ');
 }
 
-/** A representable facet's sole source is always a plain field clause — never a group, `or` or
- * `not` (those are exactly what makes a facet read-only) — so only `field` nodes are candidates. */
-function matchesFieldTarget(node: FieldNode, ctx: CompileContext, target: FacetTarget): boolean {
-	const compiled = compileField(node, ctx, []);
+/** A top-level child is this facet's sole source if compiling it alone yields exactly this
+ * facet's kind — the same test `chips.ts` applies to decide interactivity. That includes a
+ * uniform same-field `or` group (`color:Red or color:Blue`, spec §9's chip multi-select), which
+ * `compileNode` collapses to one leaf of that facet's kind; a `not`, a mixed `or`, or an `or`
+ * over a non-mergeable shape (numeric ranges, `tag:none`) compiles to a different kind and is
+ * left untouched — read-only clauses a chip never wrote are never the ones it silently deletes. */
+function isSoleSourceOf(node: Node, ctx: CompileContext, target: FacetTarget): boolean {
+	const compiled = compileNode(node, ctx, []);
 	return compiled !== null && matchesTarget(compiled, target);
 }

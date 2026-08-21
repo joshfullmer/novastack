@@ -15,7 +15,11 @@
 	import CardStats from './CardStats.svelte';
 	import RulesText from './RulesText.svelte';
 
-	let { card, printing }: { card: Card | null; printing: Printing | null } = $props();
+	let {
+		card,
+		printing,
+		filterBarHeight
+	}: { card: Card | null; printing: Printing | null; filterBarHeight: number } = $props();
 
 	const set = $derived(printing === null ? undefined : findSetIdentifier(printing.setId));
 </script>
@@ -26,8 +30,10 @@
 	different composition, not a squeezed one, and `/cards/[slug]` is that composition.
 -->
 <aside
-	class="sticky top-nav hidden max-h-[calc(100dvh-var(--spacing-nav))] w-80 shrink-0
-		overflow-y-auto border-l border-edge/60 bg-shell/40 p-4 lg:block"
+	class="sticky hidden w-80 shrink-0 overflow-y-auto border-l border-edge/60 bg-shell/40 p-4
+		lg:block"
+	style="top: calc(var(--spacing-nav) + {filterBarHeight}px);
+		max-height: calc(100dvh - var(--spacing-nav) - {filterBarHeight}px)"
 	aria-label="Selected card"
 >
 	{#if card === null || printing === null}

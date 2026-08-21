@@ -82,7 +82,11 @@ function warn(
 	warnings.push({ text: sourceText, span: node.span, reason });
 }
 
-function compileNode(node: Node, ctx: CompileContext, warnings: ParseWarning[]): Predicate | null {
+export function compileNode(
+	node: Node,
+	ctx: CompileContext,
+	warnings: ParseWarning[]
+): Predicate | null {
 	switch (node.type) {
 		case 'and': {
 			// Flattens a nested `and` — from a redundant parenthesised group, e.g.
@@ -173,6 +177,27 @@ function mergeRarity(children: readonly Predicate[]): Predicate | null {
 	return { kind: 'rarity', values };
 }
 
+/** The bound half of `(cost>=3) or cost:none` — the only shape `rangeClause` (query-edit.ts)
+ * ever writes for "a bound, plus the null bucket" — is a genuine two-child `or` at the AST
+ * level, since no single leaf can carry both a real bound and `includeNull`. `compileNumeric`'s
+ * bare `none` compiles to the deliberately unreachable `min > max` marker (chips.ts's own
+ * "the two-thumb slider can't isolate this" test), so recognising exactly that marker paired
+ * with one real bound is what folds the pair back into the one `numeric` leaf `readNumeric`
+ * needs to show the slider as interactive — without it, editing a range with nulls included
+ * makes that facet permanently read-only after the first edit. */
+function mergeNumeric(children: readonly Predicate[]): Predicate | null {
+	if (children.length !== 2) return null;
+	const [a, b] = children;
+	if (a.kind !== 'numeric' || b.kind !== 'numeric' || a.field !== b.field) return null;
+
+	const isNoneMarker = (p: Extract<Predicate, { kind: 'numeric' }>): boolean =>
+		p.min !== null && p.max !== null && p.min > p.max && p.includeNull;
+	const [marker, bound] = isNoneMarker(a) ? [a, b] : isNoneMarker(b) ? [b, a] : [null, null];
+	if (marker === null || bound === null || bound.includeNull) return null;
+
+	return { kind: 'numeric', field: bound.field, min: bound.min, max: bound.max, includeNull: true };
+}
+
 function combineOr(children: readonly Predicate[]): Predicate {
 	if (children.length === 1) return children[0];
 
@@ -182,7 +207,8 @@ function combineOr(children: readonly Predicate[]): Predicate {
 		mergeKeyword(children) ??
 		mergeClassification(children) ??
 		mergeSet(children) ??
-		mergeRarity(children);
+		mergeRarity(children) ??
+		mergeNumeric(children);
 	return merged ?? { kind: 'or', children };
 }
 

@@ -25,6 +25,7 @@
 	import type { FacetEdit } from '#lib/filters/query-edit.js';
 	import type { ParseWarning } from '#lib/query/index.js';
 	import { SORT_KEYS, SORT_LABELS, type Sort, type SortKey } from '#lib/filters/sort.js';
+	import { slide } from 'svelte/transition';
 	import { COLOR_CHIP_OFF, COLOR_CHIP_ON } from '../color.js';
 	import ChipGroup from './ChipGroup.svelte';
 	import LegendSlots from './LegendSlots.svelte';
@@ -39,17 +40,13 @@
 		warnings,
 		budget,
 		sort,
-		resultCount,
 		setExclusiveCount,
-		columns,
-		columnRange,
-		columnStep,
 		filtered,
 		onSource,
 		onFacetEdit,
 		onSort,
-		onColumns,
-		onClear
+		onClear,
+		height = $bindable(0)
 	}: {
 		dataset: Dataset;
 		source: string;
@@ -57,17 +54,13 @@
 		warnings: readonly ParseWarning[];
 		budget: ColorBudget;
 		sort: Sort;
-		resultCount: number;
 		setExclusiveCount: number;
-		columns: number;
-		columnRange: { min: number; max: number };
-		columnStep: number;
 		filtered: boolean;
 		onSource: (next: string) => void;
 		onFacetEdit: (edit: FacetEdit) => void;
 		onSort: (sort: Sort) => void;
-		onColumns: (next: number) => void;
 		onClear: () => void;
+		height?: number;
 	} = $props();
 
 	let showMore = $state(false);
@@ -136,10 +129,24 @@
 	</p>
 {/snippet}
 
-<div class="sticky top-nav z-20 border-b border-edge/60 bg-shell/85 backdrop-blur-md">
+<div bind:clientHeight={height} class="sticky top-nav z-20 border-b border-edge/60 bg-shell/85 backdrop-blur-md">
 	<div class="mx-auto max-w-[1800px] space-y-3 px-4 py-3 sm:px-6">
 		<!-- The query box: the primary input, always visible. -->
 		<div class="flex items-center gap-3">
+			<button
+				type="button"
+				onclick={() => (showFilters = !showFilters)}
+				aria-expanded={showFilters}
+				class="flex shrink-0 items-center gap-1.5 rounded-lg border border-edge
+					px-3 py-2 text-sm text-body transition-colors hover:border-neon"
+			>
+				<span aria-hidden="true">{showFilters ? '−' : '+'}</span>
+				<span
+					>Filters{#if activeFacetCount > 0}<span class="text-neon"> · {activeFacetCount}</span
+						>{/if}</span
+				>
+			</button>
+
 			<div class="relative flex-1">
 				<label for="grid-query" class="sr-only">Search or filter with a query</label>
 				<input
@@ -166,10 +173,6 @@
 				Syntax
 			</a>
 
-			<p aria-live="polite" class="shrink-0 text-sm text-muted tabular-nums">
-				{resultCount} of {dataset.stats.cards}
-			</p>
-
 			{#if filtered}
 				<button
 					type="button"
@@ -194,49 +197,8 @@
 			</div>
 		{/if}
 
-		<div class="flex items-center gap-3">
-			<!-- Density stays visible outside the collapse — the one exception spec §9 names. -->
-			<fieldset>
-				<legend class="mb-1.5 text-xs font-medium tracking-wide text-muted uppercase"
-					>Density</legend
-				>
-				<div class="inline-flex items-center overflow-hidden rounded-md border border-edge text-sm">
-					<button
-						type="button"
-						onclick={() => onColumns(columns - columnStep)}
-						disabled={columns <= columnRange.min}
-						aria-label="Fewer, larger cards"
-						class="px-2.5 py-1 text-body hover:bg-raised disabled:opacity-30">−</button
-					>
-					<span class="w-10 text-center text-xs text-muted tabular-nums">{columns}</span>
-					<button
-						type="button"
-						onclick={() => onColumns(columns + columnStep)}
-						disabled={columns >= columnRange.max}
-						aria-label="More, smaller cards"
-						class="px-2.5 py-1 text-body hover:bg-raised disabled:opacity-30">+</button
-					>
-				</div>
-			</fieldset>
-
-			<button
-				type="button"
-				onclick={() => (showFilters = !showFilters)}
-				aria-expanded={showFilters}
-				class="flex flex-1 items-center justify-between rounded-lg border border-edge
-					px-3 py-2 text-sm text-body transition-colors hover:border-neon"
-			>
-				<span
-					>Chips &amp; filters{#if activeFacetCount > 0}<span class="text-neon">
-							· {activeFacetCount} active</span
-						>{/if}</span
-				>
-				<span aria-hidden="true">{showFilters ? '−' : '+'}</span>
-			</button>
-		</div>
-
 		{#if showFilters}
-			<div class="space-y-3">
+			<div class="space-y-3" transition:slide={{ duration: 200 }}>
 				<!-- Row 1 — categorical -->
 				<div class="flex flex-wrap gap-x-6 gap-y-3">
 					{#if view.colors.interactive}
@@ -398,68 +360,70 @@
 					</button>
 
 					{#if showMore}
-						<div class="mt-3 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-							{#if view.tags.interactive}
-								<TagList
-									options={dataset.classifications}
-									selected={view.tags.value}
-									onToggle={(value) =>
-										onFacetEdit({
-											facet: 'tag',
-											values: toggle(view.tags.interactive ? view.tags.value : [], value)
-										})}
-								/>
-							{:else}
-								{@render readOnlyNotice('Tags')}
-							{/if}
-
-							<div>
-								{#if view.rarities.interactive}
-									<ChipGroup
-										legend="Rarity"
-										options={rarityOptions}
-										selected={view.rarities.value}
-										onToggle={(rarity: Rarity) =>
+						<div transition:slide={{ duration: 200 }}>
+							<div class="mt-3 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+								{#if view.tags.interactive}
+									<TagList
+										options={dataset.classifications}
+										selected={view.tags.value}
+										onToggle={(value) =>
 											onFacetEdit({
-												facet: 'rarity',
-												values: toggle(view.rarities.interactive ? view.rarities.value : [], rarity)
+												facet: 'tag',
+												values: toggle(view.tags.interactive ? view.tags.value : [], value)
 											})}
 									/>
 								{:else}
-									{@render readOnlyNotice('Rarity')}
+									{@render readOnlyNotice('Tags')}
 								{/if}
-								<p class="mt-2 text-[0.7rem] leading-snug text-muted/80">
-									Nine rarities, read off every printing — three of them appear only on non-default
-									printings, so filtering to them swaps the art a card shows.
-								</p>
+
+								<div>
+									{#if view.rarities.interactive}
+										<ChipGroup
+											legend="Rarity"
+											options={rarityOptions}
+											selected={view.rarities.value}
+											onToggle={(rarity: Rarity) =>
+												onFacetEdit({
+													facet: 'rarity',
+													values: toggle(view.rarities.interactive ? view.rarities.value : [], rarity)
+												})}
+										/>
+									{:else}
+										{@render readOnlyNotice('Rarity')}
+									{/if}
+									<p class="mt-2 text-[0.7rem] leading-snug text-muted/80">
+										Nine rarities, read off every printing — three of them appear only on
+										non-default printings, so filtering to them swaps the art a card shows.
+									</p>
+								</div>
+
+								{#if view.setIds.interactive}
+									<SetList
+										sets={dataset.sets}
+										selected={view.setIds.value}
+										{setExclusiveCount}
+										onToggle={(setId) =>
+											onFacetEdit({
+												facet: 'set',
+												values: toggle(view.setIds.interactive ? view.setIds.value : [], setId)
+											})}
+									/>
+								{:else}
+									{@render readOnlyNotice('Sets')}
+								{/if}
 							</div>
 
-							{#if view.setIds.interactive}
-								<SetList
-									sets={dataset.sets}
-									selected={view.setIds.value}
-									{setExclusiveCount}
-									onToggle={(setId) =>
-										onFacetEdit({
-											facet: 'set',
-											values: toggle(view.setIds.interactive ? view.setIds.value : [], setId)
-										})}
-								/>
-							{:else}
-								{@render readOnlyNotice('Sets')}
-							{/if}
+							<button
+								type="button"
+								onclick={() => (showMore = false)}
+								aria-label="Collapse the additional filters"
+								class="mx-auto mt-3 flex h-5 w-16 items-center justify-center
+								rounded-b-lg border border-t-0 border-edge bg-shell text-muted transition-colors hover:border-neon
+								hover:text-neon"
+							>
+								<span aria-hidden="true" class="text-xs leading-none">▲</span>
+							</button>
 						</div>
-
-						<button
-							type="button"
-							onclick={() => (showMore = false)}
-							aria-label="Collapse the additional filters"
-							class="mx-auto mt-3 flex h-5 w-16 items-center justify-center
-							rounded-b-lg border border-t-0 border-edge bg-shell text-muted transition-colors hover:border-neon
-							hover:text-neon"
-						>
-							<span aria-hidden="true" class="text-xs leading-none">▲</span>
-						</button>
 					{/if}
 				</div>
 			</div>

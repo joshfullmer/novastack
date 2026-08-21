@@ -51,7 +51,7 @@
 	} from '#lib/filters/state.js';
 
 	const SEARCH_DEBOUNCE_MS = 250;
-	const DEFAULT_COLUMNS = 8;
+	const DEFAULT_COLUMNS = 6;
 	const COLUMN_STEP = 2;
 	const COLUMN_FLOOR = 2;
 	const COLUMN_CEILING = 12;
@@ -101,6 +101,14 @@
 
 	const columns = $derived(Math.max(COLUMN_FLOOR, Math.min(desiredColumns, columnCeiling)));
 	const columnRange = $derived({ min: COLUMN_FLOOR, max: columnCeiling });
+
+	function setColumns(next: number) {
+		desiredColumns = Math.max(COLUMN_FLOOR, Math.min(next, COLUMN_CEILING));
+	}
+
+	/** Measured so the "Cards per row" sub-header can sit flush under FilterBar, whatever
+	 * FilterBar's own height happens to be (it grows when the chip panel is open). */
+	let filterBarHeight = $state(0);
 
 	/** Tiles stretch to fill, so the browser picks a tier from roughly this width. */
 	const tileSizes = $derived(`calc(100vw / ${columns})`);
@@ -165,21 +173,52 @@
 		warnings={queryState.warnings}
 		{budget}
 		sort={queryState.sort}
-		{columns}
-		{columnRange}
-		columnStep={COLUMN_STEP}
 		{filtered}
 		{setExclusiveCount}
-		resultCount={results.length}
 		{onSource}
 		{onFacetEdit}
 		{onSort}
-		onColumns={(next) => (desiredColumns = Math.max(COLUMN_FLOOR, Math.min(next, COLUMN_CEILING)))}
 		onClear={clearAll}
+		bind:height={filterBarHeight}
 	/>
 
 	<div class="mx-auto flex max-w-[1800px] items-start">
 		<div class="min-w-0 flex-1 p-4 sm:p-6">
+			<div
+				class="sticky z-10 -mx-4 -mt-4 mb-4 flex items-center gap-3 border-b border-edge/60
+					bg-shell/85 px-4 py-2 backdrop-blur-md sm:-mx-6 sm:-mt-6 sm:px-6"
+				style="top: calc(var(--spacing-nav) + {filterBarHeight}px)"
+			>
+				<fieldset>
+					<legend class="mb-1.5 text-xs font-medium tracking-wide text-muted uppercase"
+						>Cards per Row</legend
+					>
+					<div
+						class="inline-flex items-center overflow-hidden rounded-md border border-edge text-sm"
+					>
+						<button
+							type="button"
+							onclick={() => setColumns(columns - COLUMN_STEP)}
+							disabled={columns <= columnRange.min}
+							aria-label="Fewer, larger cards"
+							class="px-2.5 py-1 text-body hover:bg-raised disabled:opacity-30">−</button
+						>
+						<span class="w-10 text-center text-xs text-muted tabular-nums">{columns}</span>
+						<button
+							type="button"
+							onclick={() => setColumns(columns + COLUMN_STEP)}
+							disabled={columns >= columnRange.max}
+							aria-label="More, smaller cards"
+							class="px-2.5 py-1 text-body hover:bg-raised disabled:opacity-30">+</button
+						>
+					</div>
+				</fieldset>
+
+				<p aria-live="polite" class="shrink-0 text-sm text-muted tabular-nums">
+					{results.length} of {dataset.stats.cards}
+				</p>
+			</div>
+
 			{#if results.length === 0}
 				<div class="mx-auto mt-16 max-w-md text-center">
 					<p class="text-lg text-bright">No cards match these filters.</p>
@@ -226,6 +265,10 @@
 			{/if}
 		</div>
 
-		<CardPane card={selected?.card ?? null} printing={selected?.printing ?? null} />
+		<CardPane
+			card={selected?.card ?? null}
+			printing={selected?.printing ?? null}
+			{filterBarHeight}
+		/>
 	</div>
 </div>
