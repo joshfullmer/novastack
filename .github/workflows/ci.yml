@@ -38,3 +38,43 @@ jobs:
 
       - name: End-to-end tests
         run: pnpm test:e2e
+
+  deploy:
+    # Gated on `verify`, deliberately. The whole point of the schema gate is that a snapshot which
+    # fails its own schema never reaches production — so the deploy is a *dependent* job rather than
+    # a parallel workflow, and a red build cannot ship.
+    #
+    # Pushes to main only: a pull request must never deploy, and there is one environment.
+    needs: verify
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+
+    # Never let two deploys race. `cancel-in-progress` is off: cancelling mid-upload would leave
+    # the asset manifest half-written.
+    concurrency:
+      group: deploy-production
+      cancel-in-progress: false
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      # No ingest here — the build reads the committed snapshot and the committed art, and must
+      # never touch the network. Refreshing data is the weekly ingest workflow's job.
+      - run: pnpm build
+
+      # The repo's own pinned wrangler rather than a marketplace action, so the version that
+      # deploys is the version that was tested locally.
+      - name: Deploy to Cloudflare Workers
+        run: pnpm exec wrangler deploy
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          # Optional: wrangler infers the account when the token can only see one.
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
