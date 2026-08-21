@@ -26,6 +26,31 @@ export function normalizeForSearch(text: string): string {
 		.trim();
 }
 
+/** `Iconic Legend` → `iconic-legend`. Chip labels and quoted query values are display text; the
+ * hyphenated form is what a URL, or an unquoted query value, carries. */
+export function slugifyValue(value: string): string {
+	return value
+		.toLowerCase()
+		.replace(/[^a-z0-9]+/g, '-')
+		.replace(/^-+|-+$/g, '');
+}
+
+/** Case-insensitive, slug-or-display-form lookup back to a vocabulary's canonical casing. */
+export function slugLookup(values: readonly string[]): ReadonlyMap<string, string> {
+	const map = new Map<string, string>();
+	for (const value of values) {
+		map.set(value.toLowerCase(), value);
+		map.set(slugifyValue(value), value);
+	}
+	return map;
+}
+
+/** The literal form a value takes inside a `?q=` clause — quoted if it has whitespace, bare
+ * otherwise (query-language spec §3, ticket 02's "canonical output is the quoted display form"). */
+export function quoteQueryValue(value: string): string {
+	return /\s/.test(value) ? `"${value}"` : value;
+}
+
 /** A numeric facet's real extent, plus the count its `+ none` toggle admits. */
 export type NumericDomain = { min: number; max: number; nullCount: number };
 

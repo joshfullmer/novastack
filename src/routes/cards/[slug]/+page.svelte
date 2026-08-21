@@ -30,7 +30,8 @@
 	import CardStats from '#lib/components/CardStats.svelte';
 	import RulesText from '#lib/components/RulesText.svelte';
 	import { findSetIdentifier } from '#lib/cards/sets.js';
-	import { PARAM, slugifyValue } from '#lib/filters/state.js';
+	import { quoteQueryValue } from '#lib/cards/dataset.js';
+	import { PARAM } from '#lib/filters/state.js';
 
 	let { data } = $props();
 
@@ -105,7 +106,9 @@
 					·
 					{#each card.classifications as classification, index (classification)}
 						<a
-							href="/cards?{PARAM.tags}={slugifyValue(classification)}"
+							href="/cards?{PARAM.query}={encodeURIComponent(
+								`tag:${quoteQueryValue(classification)}`
+							)}"
 							class="underline decoration-dotted underline-offset-4 hover:text-neon"
 							>{classification}</a
 						>{#if index < card.classifications.length - 1}<span> · </span>{/if}
@@ -120,7 +123,9 @@
 					{#each card.keywords as keyword (keyword)}
 						<li>
 							<a
-								href="/cards?{PARAM.keywords}={slugifyValue(keyword)}"
+								href="/cards?{PARAM.query}={encodeURIComponent(
+									`keyword:${quoteQueryValue(keyword)}`
+								)}"
 								class="rounded-full border border-edge px-2.5 py-0.5 text-sm
 									text-body transition-colors hover:border-neon hover:text-neon">{keyword}</a
 							>

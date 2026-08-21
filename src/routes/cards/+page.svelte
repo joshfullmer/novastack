@@ -2,15 +2,17 @@
 	/**
 	 * The card database.
 	 *
-	 * **The URL is the only source of truth**, search box included, and results are `$derived`
+	 * **The URL is the only source of truth**, query box included, and results are `$derived`
 	 * from it — nothing is stored:
 	 *
 	 * ```
-	 * currentUrl().searchParams → parseFilterState → toPredicate → evaluate → sortMatches
+	 * currentUrl().searchParams → parseQueryState → evaluate → sortMatches
 	 * ```
 	 *
-	 * No memoization. At 133 cards the whole pipeline is a few hundred comparisons; this is stated
-	 * explicitly so nobody optimises it later without measuring first.
+	 * `?q=` is parsed by the query language (`#lib/query/index.js`) into `{ predicate, warnings }`
+	 * (spec §6, §7); the chip panel reads that same predicate back through `readChipView`
+	 * (`#lib/filters/chips.js`) to decide, per facet, whether it's interactive or read-only
+	 * (spec §9). No memoization — at 133 cards the whole pipeline is a few hundred comparisons.
 	 *
 	 * **Updates use shallow routing.** In SvelteKit 3 that means `goto(url, { shallow: true })`,
 	 * not the deprecated `pushState`/`replaceState`. No `load` depends on the URL, so this fetches
@@ -23,10 +25,7 @@
 	 *
 	 * **First paint of a filtered link shows everything.** This page prerenders with all tiles and
 	 * narrows on hydration, so a shared filtered link is briefly wide. That is hydration latency,
-	 * not load latency — the data is local, and static HTML cannot know the query string. A
-	 * pre-paint inline script could fix it, but it would be a second filter implementation that is
-	 * right for color and silently wrong for RAM, search and printing-level matching. This is the
-	 * reversible choice; that script can still be added later as a pure enhancement.
+	 * not load latency — the data is local, and static HTML cannot know the query string.
 	 */
 	import { browser } from '$app/env';
 	import { goto } from '$app/navigation';
@@ -38,16 +37,17 @@
 	import CardPane from '#lib/components/CardPane.svelte';
 	import CardTile from '#lib/components/CardTile.svelte';
 	import FilterBar from '#lib/components/filters/FilterBar.svelte';
-	import { budgetFromLegendColors } from '#lib/filters/budget.js';
+	import { budgetFromLegendColors, EMPTY_BUDGET } from '#lib/filters/budget.js';
+	import { readChipView } from '#lib/filters/chips.js';
 	import { evaluate } from '#lib/filters/predicate.js';
+	import { withFacetEdit, type FacetEdit } from '#lib/filters/query-edit.js';
 	import { sortMatches } from '#lib/filters/sort.js';
+	import type { Sort } from '#lib/filters/sort.js';
 	import {
-		EMPTY_STATE,
+		EMPTY_QUERY_STATE,
 		isFiltered,
-		parseFilterState,
-		toFilteredUrl,
-		toPredicate,
-		type FilterState
+		parseQueryState,
+		toQueryUrl
 	} from '#lib/filters/state.js';
 
 	const SEARCH_DEBOUNCE_MS = 250;
@@ -68,14 +68,19 @@
 	 * throws if you try), so the static page is the *unfiltered* grid and narrowing happens on
 	 * hydration. That is why a shared filtered link is briefly wide.
 	 */
-	const filters = $derived(
-		browser ? parseFilterState(currentUrl().searchParams, dataset) : EMPTY_STATE
+	const queryState = $derived(
+		browser ? parseQueryState(currentUrl().searchParams, dataset) : EMPTY_QUERY_STATE
 	);
-	const budget = $derived(budgetFromLegendColors(filters.legendColors, dataset.ramPerLegend));
+	const chipView = $derived(readChipView(queryState.predicate, dataset));
+	const budget = $derived(
+		chipView.legendColors.interactive
+			? budgetFromLegendColors(chipView.legendColors.value, dataset.ramPerLegend)
+			: EMPTY_BUDGET
+	);
 	const results = $derived(
-		sortMatches(dataset, evaluate(dataset, toPredicate(dataset, filters)), filters.sort)
+		sortMatches(dataset, evaluate(dataset, queryState.predicate), queryState.sort)
 	);
-	const filtered = $derived(isFiltered(filters));
+	const filtered = $derived(isFiltered(queryState.source));
 
 	const isDesktop = new MediaQuery('min-width: 64rem', false);
 
@@ -105,18 +110,28 @@
 	/** A selection that has been filtered away is stale, and showing it would be a lie. */
 	const selected = $derived(results.find((match) => match.card.slug === selectedSlug) ?? null);
 
-	function apply(patch: Partial<FilterState>, options: { replace?: boolean } = {}) {
-		const next = { ...filters, ...patch };
+	function apply(source: string, sort: Sort, options: { replace?: boolean } = {}) {
 		// A chip click gets its own history entry, so Back is filter-undo.
-		void goto(toFilteredUrl(currentUrl(), next), { shallow: true, replace: options.replace });
+		void goto(toQueryUrl(currentUrl(), source, sort), { shallow: true, replace: options.replace });
+	}
+
+	function onFacetEdit(edit: FacetEdit) {
+		apply(withFacetEdit(queryState.source, dataset, edit), queryState.sort);
+	}
+
+	function onSort(sort: Sort) {
+		apply(queryState.source, sort);
 	}
 
 	let searchTimer: ReturnType<typeof setTimeout> | undefined;
 
-	function onSearch(value: string) {
-		// Debounced and history-replacing: one entry per search, not one per keystroke.
+	function onSource(value: string) {
+		// Debounced and history-replacing: one entry per pause in typing, not one per keystroke.
 		clearTimeout(searchTimer);
-		searchTimer = setTimeout(() => apply({ search: value }, { replace: true }), SEARCH_DEBOUNCE_MS);
+		searchTimer = setTimeout(
+			() => apply(value, queryState.sort, { replace: true }),
+			SEARCH_DEBOUNCE_MS
+		);
 	}
 
 	function clearAll() {
@@ -145,16 +160,20 @@
 <div data-hydrated={browser ? 'true' : undefined}>
 	<FilterBar
 		{dataset}
-		{filters}
+		source={queryState.source}
+		view={chipView}
+		warnings={queryState.warnings}
 		{budget}
+		sort={queryState.sort}
 		{columns}
 		{columnRange}
 		columnStep={COLUMN_STEP}
 		{filtered}
 		{setExclusiveCount}
 		resultCount={results.length}
-		onUpdate={apply}
-		{onSearch}
+		{onSource}
+		{onFacetEdit}
+		{onSort}
 		onColumns={(next) => (desiredColumns = Math.max(COLUMN_FLOOR, Math.min(next, COLUMN_CEILING)))}
 		onClear={clearAll}
 	/>

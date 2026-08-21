@@ -21,6 +21,7 @@
 import type { Card, Printing } from '#lib/cards/schema.js';
 import type { Dataset } from '#lib/cards/dataset.js';
 import { normalizeForSearch } from '#lib/cards/dataset.js';
+import { plainText } from '#lib/cards/rules-text.js';
 import type { CardType, Color, Keyword, Rarity } from '#lib/cards/vocabulary.js';
 import { admits, type ColorBudget } from './budget.js';
 
@@ -34,8 +35,19 @@ export type Predicate =
 	| { kind: 'not'; child: Predicate }
 	| { kind: 'color'; values: readonly Color[] }
 	| { kind: 'cardType'; values: readonly CardType[] }
-	| { kind: 'keyword'; values: readonly Keyword[] }
-	| { kind: 'classification'; values: readonly string[] }
+	| {
+			kind: 'keyword';
+			values: readonly Keyword[];
+			/** Array emptiness (`keyword:none`/`keyword:has`) — additive for the query language.
+			 * When set, `values` is ignored; `true` tests for no keywords at all, `false` for any. */
+			empty?: boolean;
+	  }
+	| {
+			kind: 'classification';
+			values: readonly string[];
+			/** Array emptiness (`tag:none`/`tag:has`) — same shape as `keyword`'s `empty`. */
+			empty?: boolean;
+	  }
 	| { kind: 'eddiable'; value: boolean }
 	| {
 			kind: 'numeric';
@@ -46,7 +58,16 @@ export type Predicate =
 			/** The explicit `+ none` bucket. A null is never zero. */
 			includeNull: boolean;
 	  }
-	| { kind: 'text'; query: string }
+	| {
+			kind: 'text';
+			query: string;
+			/** Plain substring (default) or a query-language regex, already safety-checked. */
+			mode?: 'substring' | 'regex';
+			/** Which haystack: name only, rules text only, or both (default — stage 1's behaviour). */
+			scope?: 'name' | 'rules' | 'both';
+			/** The searched haystack is empty (`rules:none`/`rules:has`) — `query` is ignored when set. */
+			empty?: boolean;
+	  }
 	| { kind: 'ramBudget'; budget: ColorBudget }
 	| { kind: 'set'; values: readonly string[] }
 	| { kind: 'rarity'; values: readonly Rarity[] };
@@ -75,6 +96,59 @@ function testNumeric(card: Card, predicate: Extract<Predicate, { kind: 'numeric'
 	return true;
 }
 
+/** The normalized haystack `substring` mode and `empty` both use — case/accent/punctuation
+ * insensitive, matching stage 1's own behaviour for the default `both` scope unchanged. */
+function normalizedHaystack(
+	dataset: Dataset,
+	card: Card,
+	scope: 'name' | 'rules' | 'both'
+): string {
+	switch (scope) {
+		case 'both':
+			return dataset.searchText.get(card.slug) ?? '';
+		case 'name':
+			return normalizeForSearch(card.name);
+		case 'rules':
+			return normalizeForSearch(plainText(card.rulesText));
+	}
+}
+
+/** `regex` mode matches the literal rendered text, not the substring-search normalization — a
+ * pattern is how someone reaches punctuation and casing that substring mode deliberately hides,
+ * so mangling it first would defeat the point of offering regex at all. */
+function rawHaystack(card: Card, scope: 'name' | 'rules' | 'both'): string {
+	switch (scope) {
+		case 'both':
+			return `${card.name} ${plainText(card.rulesText)}`;
+		case 'name':
+			return card.name;
+		case 'rules':
+			return plainText(card.rulesText);
+	}
+}
+
+function testText(
+	dataset: Dataset,
+	card: Card,
+	predicate: Extract<Predicate, { kind: 'text' }>
+): boolean {
+	const scope = predicate.scope ?? 'both';
+	if (predicate.empty !== undefined) {
+		return (normalizedHaystack(dataset, card, scope) === '') === predicate.empty;
+	}
+	if ((predicate.mode ?? 'substring') === 'regex') {
+		// Safety (ReDoS-shape rejection, syntax validity) is checked once, at parse time
+		// (`#lib/query/regex-safety.js`) — by the time a `mode: 'regex'` leaf reaches the
+		// evaluator its pattern is already vetted, so this never needs to reject anything itself.
+		try {
+			return new RegExp(predicate.query, 'iu').test(rawHaystack(card, scope));
+		} catch {
+			return false;
+		}
+	}
+	return normalizedHaystack(dataset, card, scope).includes(normalizeForSearch(predicate.query));
+}
+
 export function test(
 	predicate: Predicate,
 	dataset: Dataset,
@@ -95,17 +169,19 @@ export function test(
 		case 'cardType':
 			return predicate.values.includes(card.cardType);
 		case 'keyword':
+			if (predicate.empty !== undefined) return (card.keywords.length === 0) === predicate.empty;
 			return predicate.values.some((keyword) => card.keywords.includes(keyword));
 		case 'classification':
+			if (predicate.empty !== undefined) {
+				return (card.classifications.length === 0) === predicate.empty;
+			}
 			return predicate.values.some((value) => card.classifications.includes(value));
 		case 'eddiable':
 			return card.eddiable === predicate.value;
 		case 'numeric':
 			return testNumeric(card, predicate);
-		case 'text': {
-			const haystack = dataset.searchText.get(card.slug) ?? '';
-			return haystack.includes(normalizeForSearch(predicate.query));
-		}
+		case 'text':
+			return testText(dataset, card, predicate);
 		case 'ramBudget':
 			return admits(predicate.budget, card);
 		case 'set':

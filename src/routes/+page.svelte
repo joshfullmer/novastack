@@ -76,7 +76,7 @@
 		// leave `?search=` behind, and a cleared filter must be an *absent* param.
 		event.preventDefault();
 		const trimmed = query.trim();
-		await goto(trimmed === '' ? '/cards' : `/cards?${PARAM.search}=${encodeURIComponent(trimmed)}`);
+		await goto(trimmed === '' ? '/cards' : `/cards?${PARAM.query}=${encodeURIComponent(trimmed)}`);
 	}
 </script>
 
@@ -114,7 +114,7 @@
 				<label for="landing-search" class="sr-only">Search cards</label>
 				<input
 					id="landing-search"
-					name={PARAM.search}
+					name={PARAM.query}
 					bind:value={query}
 					type="search"
 					placeholder="Search cards…"

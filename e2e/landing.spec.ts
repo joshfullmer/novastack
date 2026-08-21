@@ -74,7 +74,16 @@ test.describe('the landing page', () => {
 		await page.getByRole('searchbox', { name: 'Search cards' }).fill('blocker');
 		await page.getByRole('searchbox', { name: 'Search cards' }).press('Enter');
 
-		await expect(page).toHaveURL('/cards?search=blocker');
+		await expect(page).toHaveURL('/cards?q=blocker');
+		await expect(page.getByText(/^\d+ of \d+$/)).toBeVisible();
+	});
+
+	test('accepts the full query language, not just plain words', async ({ page }) => {
+		await page.goto('/');
+		await page.getByRole('searchbox', { name: 'Search cards' }).fill('t:legend c:red');
+		await page.getByRole('searchbox', { name: 'Search cards' }).press('Enter');
+
+		await expect(page).toHaveURL('/cards?q=t%3Alegend%20c%3Ared');
 		await expect(page.getByText(/^\d+ of \d+$/)).toBeVisible();
 	});
 

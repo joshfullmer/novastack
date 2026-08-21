@@ -16,7 +16,7 @@
 	 * `input[type=range]` elements sharing one track.
 	 */
 	import type { NumericDomain } from '#lib/cards/dataset.js';
-	import type { NumericRange } from '#lib/filters/state.js';
+	import type { NumericRange } from '#lib/filters/chips.js';
 
 	let {
 		legend,

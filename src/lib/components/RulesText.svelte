@@ -11,8 +11,8 @@
 	 * are card links. `reminder` and `symbol` stay inert.
 	 */
 	import type { Paragraph } from '#lib/cards/rules-text.js';
+	import { quoteQueryValue } from '#lib/cards/dataset.js';
 	import { PARAM } from '#lib/filters/state.js';
-	import { slugifyValue } from '#lib/filters/state.js';
 
 	let {
 		paragraphs,
@@ -33,12 +33,16 @@
 				{#each paragraph as segment, position (position)}
 					{#if segment.kind === 'text'}{segment.text}{:else if segment.kind === 'keyword'}
 						<a
-							href="/cards?{PARAM.keywords}={slugifyValue(segment.keyword)}"
+							href="/cards?{PARAM.query}={encodeURIComponent(
+								`keyword:${quoteQueryValue(segment.keyword)}`
+							)}"
 							class="font-semibold text-bright {linkClass}">{segment.keyword}</a
 						>
 					{:else if segment.kind === 'classification'}
 						<a
-							href="/cards?{PARAM.tags}={slugifyValue(segment.classification)}"
+							href="/cards?{PARAM.query}={encodeURIComponent(
+								`tag:${quoteQueryValue(segment.classification)}`
+							)}"
 							class="font-medium tracking-wide text-bright {linkClass}">{segment.text}</a
 						>
 					{:else if segment.kind === 'cardRef'}

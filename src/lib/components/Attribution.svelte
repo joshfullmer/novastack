@@ -18,6 +18,10 @@
 			href="https://api.netdeck.gg"
 			class="text-body underline decoration-dotted underline-offset-2 hover:text-neon"
 			rel="noreferrer">api.netdeck.gg</a
+		>. Query language:
+		<a
+			href="/syntax"
+			class="text-body underline decoration-dotted underline-offset-2 hover:text-neon">Syntax</a
 		>.
 	</p>
 </footer>

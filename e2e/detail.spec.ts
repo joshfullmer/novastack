@@ -95,7 +95,8 @@ test.describe('a card page', () => {
 		await page.goto('/cards/v-streetkid');
 		await page.getByRole('link', { name: 'Call', exact: true }).first().click();
 
-		await expect(page).toHaveURL(/\/cards\?keywords=call/);
+		await expect(page).toHaveURL(/\/cards\?q=/);
+		expect(new URL(page.url()).searchParams.get('q')).toBe('keyword:Call');
 		await expect(page.getByText(/^\d+ of \d+$/)).toBeVisible();
 	});
 
