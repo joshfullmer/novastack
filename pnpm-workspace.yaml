@@ -1,19 +1,24 @@
 # This is a single-package repo, but pnpm requires a `packages` field whenever this file exists at
-# all. Without it, pnpm 10 fails the install outright with "packages field missing or empty" — which
-# is what broke the Cloudflare build, while pnpm 11 locally tolerated the omission.
+# all. Without it, pnpm 10 fails the install outright with "packages field missing or empty".
 packages:
   - .
 
 # Dependencies allowed to run install scripts, declared twice on purpose: pnpm 11 reads
 # `allowBuilds`, pnpm 10 reads `onlyBuiltDependencies`, and neither understands the other's key.
-# Local and CI are on different majors, so listing only one means the other silently blocks the
-# script — and pnpm 11 rewrites this file with a `set this to true or false` placeholder when it
-# finds a build script it has no answer for.
+#
+# Both entries must be listed exhaustively, and the trap is that a *local* install will not tell
+# you when one is missing: pnpm records its ignored-build decision in `node_modules/.modules.yaml`
+# and does not re-raise it on subsequent installs. Only a clean install — which is what CI and
+# Cloudflare do every time — surfaces `ERR_PNPM_IGNORED_BUILDS`. `workerd` was missing here for
+# exactly that reason: it is installed locally, but the error had already been settled away.
 #
 # `sharp` is deliberately absent: it ships prebuilt platform binaries and has no install script,
-# so approving it would imply a dependency that does not exist.
+# so approving it would imply a dependency that does not exist. `workerd` is listed by its
+# top-level name, which covers every `@cloudflare/workerd-<platform>` variant.
 allowBuilds:
   esbuild: true
+  workerd: true
 
 onlyBuiltDependencies:
   - esbuild
+  - workerd
