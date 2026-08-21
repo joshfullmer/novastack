@@ -304,7 +304,11 @@ describe('text — bare words, name:, rules:', () => {
 	});
 
 	it('reads rules:none as the rules-haystack-empty check', () => {
-		expect(run('rules:none').predicate).toMatchObject({ kind: 'text', scope: 'rules', empty: true });
+		expect(run('rules:none').predicate).toMatchObject({
+			kind: 'text',
+			scope: 'rules',
+			empty: true
+		});
 	});
 
 	it('treats rules:"none" as a literal quoted value, not the presence test', () => {

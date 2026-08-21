@@ -128,12 +128,14 @@ export const FIELDS: readonly FieldSpec[] = [
 		enum: RARITY_ORDER
 	},
 	{
+		// `name:none`/`name:has` parse but always drop as inapplicable (spec §3.4) — no card
+		// ever has an empty name — so `nullable` is false here, not just syntactically accepted.
 		kind: 'name',
 		canonical: 'name',
 		aliases: [],
 		value: 'text',
 		comparisons: false,
-		nullable: true
+		nullable: false
 	},
 	{
 		kind: 'rules',
@@ -144,8 +146,16 @@ export const FIELDS: readonly FieldSpec[] = [
 		nullable: true
 	},
 	// Bare words carry no keyword at all — never looked up by name, only produced directly by
-	// the parser when a clause has no `field:` prefix.
-	{ kind: 'text', canonical: null, aliases: [], value: 'text', comparisons: false, nullable: true },
+	// the parser when a clause has no `field:` prefix. `none`/`has` have no special meaning for
+	// a bare word at all — "none" typed alone is a literal search term, not a presence test.
+	{
+		kind: 'text',
+		canonical: null,
+		aliases: [],
+		value: 'text',
+		comparisons: false,
+		nullable: false
+	},
 	{
 		kind: 'legends',
 		canonical: 'legends',
