@@ -50,7 +50,14 @@ import { stableStringify } from './lib/stable-json.ts';
 const CARDS_PATH = path.join('src', 'lib', 'cards', 'cards.json');
 const LANDING_PATH = path.join('src', 'lib', 'cards', 'landing.json');
 
-const skipImages = process.argv.includes('--skip-images');
+/**
+ * `--check` is a read-only run: fetch, assert, normalize, then report what *would* change and
+ * write nothing. It implies `--skip-images`, because downloading 47 MB of art to answer "is there
+ * anything new?" is the wrong shape of question. Exits 1 when the snapshot would move, so it is
+ * usable as a scripted signal rather than only as something to read.
+ */
+const check = process.argv.includes('--check');
+const skipImages = check || process.argv.includes('--skip-images');
 
 const log = (message: string) => console.log(message);
 const onRetry = ({
@@ -76,6 +83,17 @@ function fail(stage: string, violations: readonly Violation[]): never {
 	process.exit(1);
 }
 
+/** The committed snapshot, or `null` on a first run. Read tolerantly on purpose: an unreadable
+ * old snapshot must not block a fresh one. */
+async function committedSnapshot(): Promise<Snapshot | null> {
+	try {
+		const parsed = v.safeParse(SnapshotSchema, JSON.parse(await readFile(CARDS_PATH, 'utf8')));
+		return parsed.success ? parsed.output : null;
+	} catch {
+		return null;
+	}
+}
+
 /** Previous slugs, read tolerantly: an unreadable old snapshot must not block a fresh one. */
 async function previousSlugs(): Promise<string[]> {
 	const shape = v.object({ cards: v.array(v.object({ slug: v.string() })) });
@@ -85,6 +103,68 @@ async function previousSlugs(): Promise<string[]> {
 	} catch {
 		return [];
 	}
+}
+
+/**
+ * What a check run reports.
+ *
+ * Compared per card on the *serialised* form, so a change anywhere in the model counts — a
+ * reworded rules text, a new classification, a re-rendered art URL. Thumbhashes are taken from
+ * the committed snapshot where a printing already exists, so a stale local mirror cannot fake a
+ * change that is not there.
+ */
+function describeChanges(previous: Snapshot, next: Snapshot): string[] {
+	const lines: string[] = [];
+
+	const bySlug = (snapshot: Snapshot) => new Map(snapshot.cards.map((card) => [card.slug, card]));
+	const before = bySlug(previous);
+	const after = bySlug(next);
+
+	const added = [...after.keys()].filter((slug) => !before.has(slug));
+	const removed = [...before.keys()].filter((slug) => !after.has(slug));
+	const changed = [...after.keys()].filter(
+		(slug) =>
+			before.has(slug) && stableStringify(before.get(slug)) !== stableStringify(after.get(slug))
+	);
+
+	const printingKeys = (snapshot: Snapshot) =>
+		new Set(snapshot.cards.flatMap((card) => card.printings.map((printing) => printing.key)));
+	const beforeKeys = printingKeys(previous);
+	const afterKeys = printingKeys(next);
+	const newPrintings = [...afterKeys].filter((key) => !beforeKeys.has(key));
+	const gonePrintings = [...beforeKeys].filter((key) => !afterKeys.has(key));
+
+	const list = (label: string, values: readonly string[]) => {
+		if (values.length === 0) return;
+		const shown = values.slice(0, 10).join(', ');
+		lines.push(
+			`  ${label}: ${values.length}${values.length > 0 ? ` — ${shown}` : ''}` +
+				(values.length > 10 ? `, and ${values.length - 10} more` : '')
+		);
+	};
+
+	list('new cards', added);
+	list('removed cards', removed);
+	list('changed cards', changed);
+	list('new printings', newPrintings);
+	list('removed printings', gonePrintings);
+
+	if (
+		previous.stats.cards !== next.stats.cards ||
+		previous.stats.printings !== next.stats.printings
+	)
+		lines.push(
+			`  counts: ${previous.stats.cards} → ${next.stats.cards} cards, ` +
+				`${previous.stats.printings} → ${next.stats.printings} printings`
+		);
+
+	const setIds = (snapshot: Snapshot) => snapshot.sets.map((set) => set.id).join(',');
+	if (setIds(previous) !== setIds(next)) lines.push('  sets: the curated set list changed');
+
+	if (previous.ramPerLegend !== next.ramPerLegend)
+		lines.push(`  RAM per Legend: ${previous.ramPerLegend} → ${next.ramPerLegend}`);
+
+	return lines;
 }
 
 /**
@@ -109,6 +189,8 @@ async function timestampFor(snapshot: Snapshot): Promise<string> {
 }
 
 async function main(): Promise<void> {
+	const previous = await committedSnapshot();
+
 	log('→ enumerating slugs');
 	const slugs = await enumerateSlugs({ onRetry });
 	log(`  ${slugs.length} slug(s)`);
@@ -135,8 +217,21 @@ async function main(): Promise<void> {
 
 	let thumbhashes: Map<string, string>;
 	if (skipImages) {
-		log('→ skipping images (--skip-images); reusing mirrored ThumbHashes');
+		log(
+			check
+				? '→ check run: not touching images'
+				: '→ skipping images (--skip-images); reusing mirrored ThumbHashes'
+		);
 		thumbhashes = await readMirroredThumbhashes();
+
+		// Prefer the committed snapshot's hash wherever a printing already exists: a stale or
+		// missing local mirror would otherwise read as a data change that is not there. A printing
+		// with no hash anywhere is genuinely new, and gets a placeholder so normalization can finish
+		// rather than throwing halfway through a read-only run.
+		for (const card of previous?.cards ?? [])
+			for (const printing of card.printings) thumbhashes.set(printing.id, printing.thumbhash);
+		for (const printing of printings)
+			if (!thumbhashes.has(printing.id)) thumbhashes.set(printing.id, 'PENDING');
 	} else {
 		log(`→ mirroring ${printings.length} printing image(s)`);
 		const report = await mirrorImages(printings, {
@@ -194,6 +289,24 @@ async function main(): Promise<void> {
 		},
 		cards
 	} satisfies Snapshot);
+
+	if (check) {
+		if (previous === null) {
+			log('\n✓ no committed snapshot to compare against — a full ingest would create one');
+			process.exit(1);
+		}
+
+		const stamped: Snapshot = { ...snapshot, generatedAt: previous.generatedAt };
+		if (stableStringify(stamped) === stableStringify(previous)) {
+			log('\n✓ no card data updates — the committed snapshot is current');
+			process.exit(0);
+		}
+
+		log('\n! card data has changed:');
+		for (const line of describeChanges(previous, stamped)) log(line);
+		log('\nRun `pnpm ingest` to apply it, art included.');
+		process.exit(1);
+	}
 
 	const dated: Snapshot = { ...snapshot, generatedAt: await timestampFor(snapshot) };
 	const unchanged = dated.generatedAt !== snapshot.generatedAt;

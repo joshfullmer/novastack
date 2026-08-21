@@ -21,18 +21,19 @@ pnpm dev
 The build never touches the network — it reads a committed snapshot. You only need `pnpm ingest`
 when refreshing the data.
 
-| script             | does                                                                   |
-| ------------------ | ---------------------------------------------------------------------- |
-| `pnpm dev`         | dev server                                                             |
-| `pnpm build`       | build + prerender every route (133 card pages, `/cards`, `/`)          |
-| `pnpm preview`     | serve the production build                                             |
-| `pnpm check`       | `svelte-check` over `src`, `scripts` and `e2e`                         |
-| `pnpm lint`        | Prettier + ESLint                                                      |
-| `pnpm test:unit`   | Vitest — the pure core, plus assertions against the committed snapshot |
-| `pnpm test:e2e`    | Playwright against a built app, desktop and mobile                     |
-| `pnpm test`        | both                                                                   |
-| `pnpm ingest`      | refetch the source API, mirror images, rewrite the snapshot            |
-| `pnpm ingest:data` | same, skipping images (reuses mirrored ThumbHashes)                    |
+| script              | does                                                                   |
+| ------------------- | ---------------------------------------------------------------------- |
+| `pnpm dev`          | dev server                                                             |
+| `pnpm build`        | build + prerender every route (133 card pages, `/cards`, `/`)          |
+| `pnpm preview`      | serve the production build                                             |
+| `pnpm check`        | `svelte-check` over `src`, `scripts` and `e2e`                         |
+| `pnpm lint`         | Prettier + ESLint                                                      |
+| `pnpm test:unit`    | Vitest — the pure core, plus assertions against the committed snapshot |
+| `pnpm test:e2e`     | Playwright against a built app, desktop and mobile                     |
+| `pnpm test`         | both                                                                   |
+| `pnpm ingest`       | refetch the source API, mirror images, rewrite the snapshot            |
+| `pnpm ingest:data`  | same, skipping images (reuses mirrored ThumbHashes)                    |
+| `pnpm ingest:check` | report what a refresh _would_ change, and write nothing                |
 
 ---
 
@@ -91,16 +92,64 @@ comparators, the rules-text segmenter and every ingest assertion are testable wi
 
 ## Refreshing the data
 
+Three ways in, depending on whether you want to _look_ or to _act_.
+
+### Check for updates without changing anything
+
+```sh
+pnpm ingest:check
+```
+
+Fetches every card, runs every assertion, normalizes, and reports what **would** change — then
+writes nothing. It implies `--skip-images`, because downloading 47 MB of art to answer "is there
+anything new?" is the wrong shape of question.
+
+```
+! card data has changed:
+  new cards: 1 — mantis-blades
+  changed cards: 1 — v-streetkid
+  new printings: 6 — MS01-WNC-025, MS01-WNC-β025, …
+  counts: 132 → 133 cards, 383 → 389 printings
+```
+
+Exits **0** when the snapshot is current and **1** when it would move, so it works as a scripted
+signal and not just as something to read.
+
+Cards are compared on their whole serialised form, so a reworded rules text or a re-rendered art
+URL counts, not just a new slug. ThumbHashes come from the committed snapshot wherever a printing
+already exists — otherwise a stale local `mirror/` would report changes that are not there.
+
+### Apply an update
+
+```sh
+pnpm ingest        # full: data + art + derivatives + ThumbHashes
+pnpm ingest:data   # data only, reusing the mirrored art
+```
+
 `pnpm ingest` fetches every card from the detail endpoint, asserts every assumption this project
-makes about the source API, mirrors any changed art, and rewrites the snapshot. A violated
-assertion **fails the run** — the source API is undocumented and has been observed changing within
-hours, so a failure means a decision needs revisiting, not that a check needs relaxing.
+makes about the source API, mirrors any changed art, and rewrites the snapshot. Only art whose
+`source_image_url` moved is re-fetched, so a data-only change is quick.
 
-A weekly workflow does this and opens a PR if the snapshot moved, so drift arrives as a diff.
+A violated assertion **fails the run**. The source API is undocumented and has been observed
+changing within hours, so a failure means a decision needs revisiting, not that a check needs
+relaxing.
 
-Image mirroring lives inside ingest because `image_url` is signed with a 24-hour TTL and re-minted
-per request: the only moment it is usable is the moment the record is fetched. Originals stay in a
-gitignored `mirror/`, so any tier can be regenerated offline.
+`generatedAt` records when the data last _changed_, not when ingest last ran, so a no-op run
+leaves the snapshot byte-identical and produces no diff.
+
+### Let it happen on a schedule
+
+The **Weekly ingest** workflow runs `pnpm ingest` every Monday and opens a PR if the snapshot
+moved, so drift arrives as a reviewable diff. It also has `workflow_dispatch` — run it by hand
+from the Actions tab when you want the update applied _and_ raised as a PR rather than committed
+straight to your working tree.
+
+### Why art mirroring lives inside ingest
+
+`image_url` is signed with a 24-hour TTL and re-minted per request: the only moment it is usable
+is the moment the record is fetched. Splitting the two would mean fetching every card twice.
+Originals stay in a gitignored `mirror/`, so any tier can be regenerated offline without touching
+the network.
 
 ---
 
