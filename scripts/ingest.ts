@@ -53,8 +53,13 @@ const LANDING_PATH = path.join('src', 'lib', 'cards', 'landing.json');
 /**
  * `--check` is a read-only run: fetch, assert, normalize, then report what *would* change and
  * write nothing. It implies `--skip-images`, because downloading 47 MB of art to answer "is there
- * anything new?" is the wrong shape of question. Exits 1 when the snapshot would move, so it is
- * usable as a scripted signal rather than only as something to read.
+ * anything new?" is the wrong shape of question.
+ *
+ * Exit codes are the interface, so a caller can branch on them:
+ *
+ * - `0` — the committed snapshot is current
+ * - `1` — the snapshot would move (a normal answer, not a failure)
+ * - `2` — an assertion was violated, or the run could not complete
  */
 const check = process.argv.includes('--check');
 const skipImages = check || process.argv.includes('--skip-images');
@@ -80,7 +85,10 @@ function fail(stage: string, violations: readonly Violation[]): never {
 		'These are assumptions about an undocumented API that has been observed changing within\n' +
 			'hours. A failure here means a decision needs revisiting, not that a check needs relaxing.\n'
 	);
-	process.exit(1);
+	// Exit 2, not 1. A check run uses 1 for "the snapshot would move", which is a normal answer;
+	// a violated assertion is a different kind of event and callers need to tell them apart. Any
+	// non-zero still fails CI, so nothing downstream is weakened by the distinction.
+	process.exit(2);
 }
 
 /** The committed snapshot, or `null` on a first run. Read tolerantly on purpose: an unreadable

@@ -32,16 +32,50 @@ jobs:
 
       - run: pnpm install --frozen-lockfile
 
+      # Look before acting. The check is ~133 detail requests and no image traffic, where a full
+      # ingest on a fresh runner re-downloads 47 MB and re-encodes 1,167 derivatives — because
+      # `mirror/` is gitignored, so CI never has the originals or the manifest that would let it
+      # skip unchanged art. Most weeks nothing has moved, and this turns those weeks into seconds.
+      #
+      # Exit codes are the interface: 0 current, 1 would-change, 2 assertion violated. Anything
+      # other than 0 or 1 has to fail the workflow rather than be read as "there is new data".
+      - name: Check for card data updates
+        id: check
+        run: |
+          set +e
+          pnpm ingest:check
+          code=$?
+          set -e
+          case "$code" in
+            0) echo 'changed=false' >> "$GITHUB_OUTPUT" ;;
+            1) echo 'changed=true'  >> "$GITHUB_OUTPUT" ;;
+            *) echo "::error::ingest check exited $code" ; exit "$code" ;;
+          esac
+
+      # Only reached when there is something to apply. Restoring `mirror/` means the full ingest
+      # re-fetches and re-encodes only the art whose `source_image_url` actually moved, instead of
+      # regenerating all 1,167 files and risking a PR full of byte-different-but-identical images.
+      - name: Restore mirrored originals
+        if: steps.check.outputs.changed == 'true'
+        uses: actions/cache@v4
+        with:
+          path: mirror
+          key: mirror-${{ github.run_id }}
+          restore-keys: mirror-
+
       # Ingest asserts every assumption this project makes about the source API and exits
       # non-zero on any violation. A failure here is the *point* — it means a decision needs
       # revisiting, and it must not be papered over with `continue-on-error`.
       - name: Ingest
+        if: steps.check.outputs.changed == 'true'
         run: pnpm ingest
 
       - name: Verify the new snapshot
+        if: steps.check.outputs.changed == 'true'
         run: pnpm test:unit --run
 
       - name: Open a pull request if the snapshot moved
+        if: steps.check.outputs.changed == 'true'
         uses: peter-evans/create-pull-request@v7
         with:
           branch: chore/ingest-refresh
