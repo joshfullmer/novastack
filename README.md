@@ -104,6 +104,27 @@ gitignored `mirror/`, so any tier can be regenerated offline.
 
 ---
 
+## Deployment
+
+**Cloudflare Workers Builds owns deploys.** The repo is connected on the Cloudflare side, so a
+push to `main` builds and deploys automatically. There is deliberately no deploy job in
+`ci.yml` — two paths racing on the same push means last-write-wins decides what is live.
+
+The consequence is worth stating plainly: **CI does not gate the deploy.** Workers Builds clones,
+installs, builds and ships regardless of whether `verify` went red. A failing schema gate marks
+the commit, but it does not stop the release.
+
+If you want production gated, the lever is **branch protection with required status checks** on
+`main`. That blocks the merge, and Workers Builds only ever builds what lands — so the gate is
+restored without a second deploy path. One dashboard setting rather than a second pipeline.
+
+Manual deploys still work and bypass everything: `pnpm exec wrangler deploy`.
+
+Never set `run_worker_first`, and never route assets through the Workers Caching API. Both make
+asset requests billable, and asset requests are the only traffic this site has at volume.
+
+---
+
 ## Documentation
 
 | document                             | holds                                                     |
