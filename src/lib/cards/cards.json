@@ -643,6 +643,104 @@
 			"slug": "appetite-for-destruction"
 		},
 		{
+			"cardType": "Gear",
+			"classifications": [
+				"Arasaka",
+				"Cyberware"
+			],
+			"color": "Red",
+			"cost": 2,
+			"eddiable": true,
+			"flavorText": null,
+			"keywords": [
+				"Go Solo"
+			],
+			"name": "Arasaka Emergency Radioport",
+			"power": 2,
+			"printings": [
+				{
+					"artist": "ADIA",
+					"collectorNumber": "023",
+					"id": "d2da65d5-fdaf-44f4-a692-a5672d2c1cca",
+					"key": "MS01-WNC-023",
+					"rarity": "Common",
+					"setId": "MS01-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/d2da65d5-fdaf-44f4-a692-a5672d2c1cca/render-mpvmwsoe.webp",
+					"thumbhash": "DjiGFAYPG9NpBqeAYwt3xXCHgYGICBiIAA=="
+				},
+				{
+					"artist": "ADIA",
+					"collectorNumber": "β023",
+					"id": "7ff6a088-1720-45b6-a3cf-30709415df5e",
+					"key": "MS01-WNC-β023",
+					"rarity": "Common",
+					"setId": "MS01-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/7ff6a088-1720-45b6-a3cf-30709415df5e/render-mpvjtyik.webp",
+					"thumbhash": "DjiGFAYPG9NpBqeAYwt3xXCHgYGICBiIAA=="
+				},
+				{
+					"artist": "ADIA",
+					"collectorNumber": "006",
+					"id": "49c919ef-61d7-47d3-b855-1d4d7c0f783f",
+					"key": "SD02-EBP-006",
+					"rarity": "Common",
+					"setId": "SD02-EBP",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/49c919ef-61d7-47d3-b855-1d4d7c0f783f/render-mpwbvexo.webp",
+					"thumbhash": "DjiGFAYPG9NpBqeAYwt3xXCHgYGICBiIAA=="
+				},
+				{
+					"artist": "ADIA",
+					"collectorNumber": "β006",
+					"id": "be0d995d-84fc-41c3-bed6-1875caf85fc7",
+					"key": "SD02-EBP-β006",
+					"rarity": "Common",
+					"setId": "SD02-EBP",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/be0d995d-84fc-41c3-bed6-1875caf85fc7/render-mpwbkzux.webp",
+					"thumbhash": "DjiGFAYPG9NpBqeAYwt3xXCHgYGICBiIAA=="
+				}
+			],
+			"ramProvided": null,
+			"ramRequired": 2,
+			"rawRulesText": "(Equip to a friendly Unit or face-up Legend.)\nWhen this Unit or Legend is spent, you may look at a friendly face-down Legend. If that Legend is ARASAKA or has {Go Solo}, you may Call it for free. (You may only Call a Legend once per turn.)",
+			"rulesText": [
+				[
+					{
+						"kind": "reminder",
+						"text": "(Equip to a friendly Unit or face-up Legend.)"
+					}
+				],
+				[
+					{
+						"kind": "text",
+						"text": "When this Unit or Legend is spent, you may look at a friendly face-down Legend. If that Legend is "
+					},
+					{
+						"classification": "Arasaka",
+						"kind": "classification",
+						"text": "ARASAKA"
+					},
+					{
+						"kind": "text",
+						"text": " or has "
+					},
+					{
+						"keyword": "Go Solo",
+						"kind": "keyword",
+						"text": "{Go Solo}"
+					},
+					{
+						"kind": "text",
+						"text": ", you may Call it for free. "
+					},
+					{
+						"kind": "reminder",
+						"text": "(You may only Call a Legend once per turn.)"
+					}
+				]
+			],
+			"slug": "arasaka-emergency-radioport"
+		},
+		{
 			"cardType": "Unit",
 			"classifications": [
 				"Arasaka",
@@ -954,6 +1052,82 @@
 				]
 			],
 			"slug": "carnage-at-the-colosseum"
+		},
+		{
+			"cardType": "Unit",
+			"classifications": [
+				"Ganger",
+				"Netrunner",
+				"Tyger Claws"
+			],
+			"color": "Red",
+			"cost": 5,
+			"eddiable": false,
+			"flavorText": null,
+			"keywords": [
+				"Play"
+			],
+			"name": "Chrome Fang",
+			"power": 6,
+			"printings": [
+				{
+					"artist": "Bernard Kowalczuk",
+					"collectorNumber": "008",
+					"id": "40db55a6-0220-4cb9-8854-0e23f7cb91f8",
+					"key": "MS01-WNC-008",
+					"rarity": "Common",
+					"setId": "MS01-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/40db55a6-0220-4cb9-8854-0e23f7cb91f8/render-mpvlsztq.webp",
+					"thumbhash": "j9eFHAoPiJd3CIejZwnHpoCPgYGICBiIAA=="
+				},
+				{
+					"artist": "Bernard Kowalczuk",
+					"collectorNumber": "β008",
+					"id": "d6dd0114-fdd5-452a-b752-3e58a2e137f5",
+					"key": "MS01-WNC-β008",
+					"rarity": "Common",
+					"setId": "MS01-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/d6dd0114-fdd5-452a-b752-3e58a2e137f5/render-mpv4k4h5.webp",
+					"thumbhash": "jteFHAoPiJd3CIejZwnHpoCPgYGICBiIAA=="
+				},
+				{
+					"artist": "Bernard Kowalczuk",
+					"collectorNumber": "002",
+					"id": "0aab2858-fa5e-42f6-997e-39797fefb669",
+					"key": "SD02-EBP-002",
+					"rarity": "Common",
+					"setId": "SD02-EBP",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/0aab2858-fa5e-42f6-997e-39797fefb669/render-mpwbur72.webp",
+					"thumbhash": "j9eFHAoPiJd3CIejZwnHpoCPgYGICBiIAA=="
+				},
+				{
+					"artist": "Bernard Kowalczuk",
+					"collectorNumber": "β002",
+					"id": "1e80ecfb-a3f2-421d-ac71-c05547366fb6",
+					"key": "SD02-EBP-β002",
+					"rarity": "Common",
+					"setId": "SD02-EBP",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/1e80ecfb-a3f2-421d-ac71-c05547366fb6/render-mpwbkakj.webp",
+					"thumbhash": "j9eFHAoPiJd3CIejZwnHpoCPgYGICBiIAA=="
+				}
+			],
+			"ramProvided": null,
+			"ramRequired": 1,
+			"rawRulesText": "{Play} Until your next turn, rival Units can't steal friendly Gigs with value higher than their power.",
+			"rulesText": [
+				[
+					{
+						"keyword": "Play",
+						"kind": "keyword",
+						"text": "{Play}"
+					},
+					{
+						"kind": "text",
+						"text": " Until your next turn, rival Units can't steal friendly Gigs with value higher than their power."
+					}
+				]
+			],
+			"slug": "chrome-fang"
 		},
 		{
 			"cardType": "Program",
@@ -3027,6 +3201,80 @@
 			"slug": "hanako-arasaka-in-a-gilded-cage"
 		},
 		{
+			"cardType": "Unit",
+			"classifications": [
+				"Ripperdoc"
+			],
+			"color": "Yellow",
+			"cost": 6,
+			"eddiable": false,
+			"flavorText": null,
+			"keywords": [
+				"Play"
+			],
+			"name": "Heywood Ripperdoc",
+			"power": 8,
+			"printings": [
+				{
+					"artist": "Łukasz Poller",
+					"collectorNumber": "047",
+					"id": "2fc5ac93-dae5-4af5-a813-77abc0cc8dfd",
+					"key": "MS01-WNC-047",
+					"rarity": "Uncommon",
+					"setId": "MS01-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/2fc5ac93-dae5-4af5-a813-77abc0cc8dfd/render-mpvm5kl0.webp",
+					"thumbhash": "TwmGHAAPtpd3CFiTR68W9oOCgYGICBiIAA=="
+				},
+				{
+					"artist": "Łukasz Poller",
+					"collectorNumber": "β047",
+					"id": "2a6b5b50-b007-40f4-bbdc-90f6bdc3761a",
+					"key": "MS01-WNC-β047",
+					"rarity": "Uncommon",
+					"setId": "MS01-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/2a6b5b50-b007-40f4-bbdc-90f6bdc3761a/render-mpv4o4ob.webp",
+					"thumbhash": "TwmGHAAPtpd3CViTR68W9oOCgYGICBiIAA=="
+				},
+				{
+					"artist": "Łukasz Poller",
+					"collectorNumber": "003",
+					"id": "364ef4ac-8b0c-48b1-8cf2-454477abc452",
+					"key": "SD01-HEI-003",
+					"rarity": "Uncommon",
+					"setId": "SD01-HEI",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/364ef4ac-8b0c-48b1-8cf2-454477abc452/render-mpwcn4sa.webp",
+					"thumbhash": "TwmGHAAPtpd3CViTR68W9oSCgYGICBiIAA=="
+				},
+				{
+					"artist": "Łukasz Poller",
+					"collectorNumber": "β003",
+					"id": "aebf807a-2fbb-4b60-ae4b-36783314871f",
+					"key": "SD01-HEI-β003",
+					"rarity": "Uncommon",
+					"setId": "SD01-HEI",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/aebf807a-2fbb-4b60-ae4b-36783314871f/render-mpwcc6k9.webp",
+					"thumbhash": "TwmGHAAPtpd3CViTR68W9oSCgYGICBiIAA=="
+				}
+			],
+			"ramProvided": null,
+			"ramRequired": 1,
+			"rawRulesText": "{Play} You may defeat a Gear. If its cost equals the value of a friendly Gig, draw 1.",
+			"rulesText": [
+				[
+					{
+						"keyword": "Play",
+						"kind": "keyword",
+						"text": "{Play}"
+					},
+					{
+						"kind": "text",
+						"text": " You may defeat a Gear. If its cost equals the value of a friendly Gig, draw 1."
+					}
+				]
+			],
+			"slug": "heywood-ripperdoc"
+		},
+		{
 			"cardType": "Program",
 			"classifications": [
 				"Arasaka",
@@ -4573,6 +4821,81 @@
 		{
 			"cardType": "Unit",
 			"classifications": [
+				"NCPD",
+				"Vehicle"
+			],
+			"color": "Green",
+			"cost": 5,
+			"eddiable": false,
+			"flavorText": null,
+			"keywords": [
+				"Play"
+			],
+			"name": "MaxTac AV",
+			"power": 8,
+			"printings": [
+				{
+					"artist": "Olgierd Ciszak",
+					"collectorNumber": "080",
+					"id": "f1fa787d-e936-42a8-b42f-14999e722793",
+					"key": "MS01-WNC-080",
+					"rarity": "Common",
+					"setId": "MS01-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/f1fa787d-e936-42a8-b42f-14999e722793/render-mpvlwk00.webp",
+					"thumbhash": "kAiKJAYPdqpnCImVaXcHZ4eAgYGICBiIAA=="
+				},
+				{
+					"artist": "Olgierd Ciszak",
+					"collectorNumber": "β080",
+					"id": "27c1bf13-5f6b-4421-aa76-5789a94c9c1b",
+					"key": "MS01-WNC-β080",
+					"rarity": "Common",
+					"setId": "MS01-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/27c1bf13-5f6b-4421-aa76-5789a94c9c1b/render-mpv4h4lh.webp",
+					"thumbhash": "kAiKJAYPdqpnCImVaXYHZ4eAgYGICBiIAA=="
+				},
+				{
+					"artist": "Olgierd Ciszak",
+					"collectorNumber": "018",
+					"id": "3b69e0c7-418c-4000-b6f4-f9584bc541e3",
+					"key": "SD02-EBP-018",
+					"rarity": "Common",
+					"setId": "SD02-EBP",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/3b69e0c7-418c-4000-b6f4-f9584bc541e3/render-mpwc0225.webp",
+					"thumbhash": "kAiKJAYPdqpnCImVaXcHZ4eAgYGICBiIAA=="
+				},
+				{
+					"artist": "Olgierd Ciszak",
+					"collectorNumber": "β018",
+					"id": "5a28466e-e4e1-408d-9d84-2ce48e95d89d",
+					"key": "SD02-EBP-β018",
+					"rarity": "Common",
+					"setId": "SD02-EBP",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/5a28466e-e4e1-408d-9d84-2ce48e95d89d/render-mpwbmyrw.webp",
+					"thumbhash": "kAiKJAYPdqpnCImVaXYHZ4eAgYGICBiIAA=="
+				}
+			],
+			"ramProvided": null,
+			"ramRequired": 2,
+			"rawRulesText": "{Play} You may swap a friendly Gig with a rival Gig.",
+			"rulesText": [
+				[
+					{
+						"keyword": "Play",
+						"kind": "keyword",
+						"text": "{Play}"
+					},
+					{
+						"kind": "text",
+						"text": " You may swap a friendly Gig with a rival Gig."
+					}
+				]
+			],
+			"slug": "maxtac-av"
+		},
+		{
+			"cardType": "Unit",
+			"classifications": [
 				"NCPD"
 			],
 			"color": "Green",
@@ -5179,6 +5502,16 @@
 					"setId": "MS01-WNC",
 					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/3d1e6590-5cdc-4605-8b61-915f21f5514d/render-mpu63hgt.webp",
 					"thumbhash": "FSmKFAQPmfZmOHWBhp91eGyAgYGICBiIAA=="
+				},
+				{
+					"artist": "Pandart Studio",
+					"collectorNumber": "β147",
+					"id": "2e06439f-fab6-4a65-a1fc-e5f4afc84eb0",
+					"key": "MS01-WNC-β147",
+					"rarity": "Iconic Legend",
+					"setId": "MS01-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/2e06439f-fab6-4a65-a1fc-e5f4afc84eb0/render-mswya1fx.webp",
+					"thumbhash": "TwiGDAIP0Mh1aIqWZp+1i3eAgYGICBiIAA=="
 				}
 			],
 			"ramProvided": 2,
@@ -6938,6 +7271,78 @@
 			"slug": "royce-psycho-on-the-edge"
 		},
 		{
+			"cardType": "Unit",
+			"classifications": [
+				"Ganger",
+				"Maelstrom"
+			],
+			"color": "Red",
+			"cost": 2,
+			"eddiable": false,
+			"flavorText": null,
+			"keywords": [],
+			"name": "Ruthless Lowlife",
+			"power": 4,
+			"printings": [
+				{
+					"artist": "Jeffrey Alan Love",
+					"collectorNumber": "017",
+					"id": "e1b674d0-4ac7-4523-be19-809308871d49",
+					"key": "MS01-WNC-017",
+					"rarity": "Common",
+					"setId": "MS01-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/e1b674d0-4ac7-4523-be19-809308871d49/render-mpvls72n.webp",
+					"thumbhash": "FBiKDAQPiPV4N2hyZAjXpnOPgYGICBiIAA=="
+				},
+				{
+					"artist": "Jeffrey Alan Love",
+					"collectorNumber": "β017",
+					"id": "23cfc17c-3fab-475b-9a1a-838b98e09bb8",
+					"key": "MS01-WNC-β017",
+					"rarity": "Common",
+					"setId": "MS01-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/23cfc17c-3fab-475b-9a1a-838b98e09bb8/render-mpvki54p.webp",
+					"thumbhash": "FBiKDAQPiPV4N2hyVAjXpnOPgYGICBiIAA=="
+				},
+				{
+					"artist": "Jeffrey Alan Love",
+					"collectorNumber": "004",
+					"id": "c4806b05-6476-4c67-95a5-fc9c4ce2aaa2",
+					"key": "SD02-EBP-004",
+					"rarity": "Common",
+					"setId": "SD02-EBP",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/c4806b05-6476-4c67-95a5-fc9c4ce2aaa2/render-mpwbwqjq.webp",
+					"thumbhash": "FBiKDAQPiPV4N2hyVAjXpnN/cICHBwiJAA=="
+				},
+				{
+					"artist": "Jeffrey Alan Love",
+					"collectorNumber": "β004",
+					"id": "9c59c8d2-586a-4845-b969-43be1fd3b388",
+					"key": "SD02-EBP-β004",
+					"rarity": "Common",
+					"setId": "SD02-EBP",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/9c59c8d2-586a-4845-b969-43be1fd3b388/render-mpwbkz8n.webp",
+					"thumbhash": "FBiKDAQPiPV4N2hyVAjXpnOPgYGICBiIAA=="
+				}
+			],
+			"ramProvided": null,
+			"ramRequired": 1,
+			"rawRulesText": "This Unit can only attack rival Units. (It can't attack Gig areas.)",
+			"rulesText": [
+				[
+					{
+						"kind": "text",
+						"text": "This Unit can only attack rival Units. "
+					},
+					{
+						"kind": "reminder",
+						"text": "(It can't attack Gig areas.)"
+					}
+				]
+			],
+			"slug": "ruthless-lowlife"
+		},
+		{
 			"cardType": "Legend",
 			"classifications": [
 				"Arasaka",
@@ -7603,6 +8008,79 @@
 			"slug": "secondhand-bombus"
 		},
 		{
+			"cardType": "Program",
+			"classifications": [
+				"Braindance"
+			],
+			"color": "Red",
+			"cost": 4,
+			"eddiable": true,
+			"flavorText": null,
+			"keywords": [],
+			"name": "Shattered Memories",
+			"power": null,
+			"printings": [
+				{
+					"artist": "Max Fiumara",
+					"collectorNumber": "035",
+					"id": "3401c7cf-45c5-4fe4-a883-284a9334262d",
+					"key": "MS01-WNC-035",
+					"rarity": "Rare",
+					"setId": "MS01-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/3401c7cf-45c5-4fe4-a883-284a9334262d/render-mpvmj7ok.webp",
+					"thumbhash": "lhiKBAYPZ+p3CGiFZvS0uHKPgYGICBiIAA=="
+				},
+				{
+					"artist": "Max Fiumara",
+					"collectorNumber": "β035",
+					"id": "80735f9a-6c20-4d24-9138-b3c0d2e6bf46",
+					"key": "MS01-WNC-β035",
+					"rarity": "Rare",
+					"setId": "MS01-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/80735f9a-6c20-4d24-9138-b3c0d2e6bf46/render-mpvk3hsq.webp",
+					"thumbhash": "lhiKBAYPZ+p3CGiFZvS0uHKPgYGICBiIAA=="
+				},
+				{
+					"artist": "Max Fiumara",
+					"collectorNumber": "011",
+					"id": "b03a2e07-73a4-49c4-b4a3-761748a7b09e",
+					"key": "SD02-EBP-011",
+					"rarity": "Rare",
+					"setId": "SD02-EBP",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/b03a2e07-73a4-49c4-b4a3-761748a7b09e/render-mpwbwrhz.webp",
+					"thumbhash": "lhiKBAYPZ+p3CGiFZvS0uHKPgYGICBiIAA=="
+				},
+				{
+					"artist": "Max Fiumara",
+					"collectorNumber": "β011",
+					"id": "4adda471-e0c8-4628-aba1-d1ed11eae0af",
+					"key": "SD02-EBP-β011",
+					"rarity": "Rare",
+					"setId": "SD02-EBP",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/4adda471-e0c8-4628-aba1-d1ed11eae0af/render-mpwbma8c.webp",
+					"thumbhash": "lhiKBAYPZ+p3CGiFZvS0uHKPgYGICBiIAA=="
+				}
+			],
+			"ramProvided": null,
+			"ramRequired": 2,
+			"rawRulesText": "Each player discards their hand and may draw 5.\nIf the total number of discarded cards equals the value of a friendly Gig, draw 2.",
+			"rulesText": [
+				[
+					{
+						"kind": "text",
+						"text": "Each player discards their hand and may draw 5."
+					}
+				],
+				[
+					{
+						"kind": "text",
+						"text": "If the total number of discarded cards equals the value of a friendly Gig, draw 2."
+					}
+				]
+			],
+			"slug": "shattered-memories"
+		},
+		{
 			"cardType": "Unit",
 			"classifications": [
 				"Ganger",
@@ -7961,6 +8439,83 @@
 				]
 			],
 			"slug": "take-control"
+		},
+		{
+			"cardType": "Gear",
+			"classifications": [
+				"Cyberware"
+			],
+			"color": "Blue",
+			"cost": 1,
+			"eddiable": true,
+			"flavorText": null,
+			"keywords": [],
+			"name": "Tetratronic Rippler",
+			"power": 1,
+			"printings": [
+				{
+					"artist": "ADIA",
+					"collectorNumber": "130",
+					"id": "576f82ff-3c4d-4637-aa91-2773de43bbc8",
+					"key": "MS01-WNC-130",
+					"rarity": "Common",
+					"setId": "MS01-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/576f82ff-3c4d-4637-aa91-2773de43bbc8/render-mpvmxg2k.webp",
+					"thumbhash": "TseFBAQPCMdIiMeEqHAV93OOgYGICBiIAA=="
+				},
+				{
+					"artist": "ADIA",
+					"collectorNumber": "β130",
+					"id": "74eb81ab-aa0a-4b09-8cfe-94dddd70f4b1",
+					"key": "MS01-WNC-β130",
+					"rarity": "Common",
+					"setId": "MS01-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/74eb81ab-aa0a-4b09-8cfe-94dddd70f4b1/render-mpvjuj6t.webp",
+					"thumbhash": "TseFBAQPCMdIiMeEqHAW93OOgYGICBiIAA=="
+				},
+				{
+					"artist": "ADIA",
+					"collectorNumber": "018",
+					"id": "39747fc8-20a0-4fbb-80d7-2a869b735ac9",
+					"key": "SD01-HEI-018",
+					"rarity": "Common",
+					"setId": "SD01-HEI",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/39747fc8-20a0-4fbb-80d7-2a869b735ac9/render-mpwcp2r7.webp",
+					"thumbhash": "TseFBAQPCMdIiMeEqHAW93OOgYGICBiIAA=="
+				},
+				{
+					"artist": "ADIA",
+					"collectorNumber": "β018",
+					"id": "7ef4d862-b97f-47be-ba0f-071c8e8354b0",
+					"key": "SD01-HEI-β018",
+					"rarity": "Common",
+					"setId": "SD01-HEI",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/7ef4d862-b97f-47be-ba0f-071c8e8354b0/render-mpwccxvo.webp",
+					"thumbhash": "TseFBAQPCMdIiMeEqHAW93OOgYGICBiIAA=="
+				}
+			],
+			"ramProvided": null,
+			"ramRequired": 2,
+			"rawRulesText": "(Equip to a friendly Unit or face-up Legend.)\nWhen this Unit or Legend is spent, search the top card of your deck. You may trash it. (Otherwise, keep it on the top of your deck.)",
+			"rulesText": [
+				[
+					{
+						"kind": "reminder",
+						"text": "(Equip to a friendly Unit or face-up Legend.)"
+					}
+				],
+				[
+					{
+						"kind": "text",
+						"text": "When this Unit or Legend is spent, search the top card of your deck. You may trash it. "
+					},
+					{
+						"kind": "reminder",
+						"text": "(Otherwise, keep it on the top of your deck.)"
+					}
+				]
+			],
+			"slug": "tetratronic-rippler"
 		},
 		{
 			"cardType": "Program",
@@ -9339,40 +9894,40 @@
 		"Green",
 		"Blue"
 	],
-	"generatedAt": "2026-08-21T09:58:41.195Z",
+	"generatedAt": "2026-08-21T21:06:39.266Z",
 	"ramPerLegend": 2,
 	"sets": [
 		{
-			"cardCount": 122,
+			"cardCount": 129,
 			"category": "MS01",
 			"cycle": "A",
 			"id": "MS01-WNC",
 			"kind": "base",
 			"name": "Welcome to Night City",
 			"printed": "MS01 - WNC [A]",
-			"printingCount": 268,
+			"printingCount": 283,
 			"setCode": "WNC"
 		},
 		{
-			"cardCount": 18,
+			"cardCount": 20,
 			"category": "SD01",
 			"cycle": "A",
 			"id": "SD01-HEI",
 			"kind": "derivative",
 			"name": "The Heist",
 			"printed": "SD01 - HEI [A]",
-			"printingCount": 36,
+			"printingCount": 40,
 			"setCode": "HEI"
 		},
 		{
-			"cardCount": 15,
+			"cardCount": 20,
 			"category": "SD02",
 			"cycle": "A",
 			"id": "SD02-EBP",
 			"kind": "derivative",
 			"name": "Embracing Power",
 			"printed": "SD02 - EBP [A]",
-			"printingCount": 30,
+			"printingCount": 40,
 			"setCode": "EBP"
 		},
 		{
@@ -9432,8 +9987,8 @@
 		}
 	],
 	"stats": {
-		"cards": 133,
-		"printings": 389,
+		"cards": 140,
+		"printings": 418,
 		"sets": 1
 	}
 }
