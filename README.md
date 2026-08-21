@@ -112,8 +112,17 @@ anything new?" is the wrong shape of question.
   counts: 132 → 133 cards, 383 → 389 printings
 ```
 
-Exits **0** when the snapshot is current and **1** when it would move, so it works as a scripted
-signal and not just as something to read.
+Exit codes are the interface, so a caller can branch on them:
+
+| code | meaning                                                  |
+| ---- | -------------------------------------------------------- |
+| `0`  | the committed snapshot is current                        |
+| `1`  | the snapshot would move — a normal answer, not a failure |
+| `2`  | an assertion was violated, or the run could not complete |
+
+The `1` / `2` split matters. "There is new data" and "the source API broke our assumptions" are
+different events, and a caller that conflates them treats a violated assertion as a routine
+update.
 
 Cards are compared on their whole serialised form, so a reworded rules text or a re-rendered art
 URL counts, not just a new slug. ThumbHashes come from the committed snapshot wherever a printing
@@ -139,10 +148,19 @@ leaves the snapshot byte-identical and produces no diff.
 
 ### Let it happen on a schedule
 
-The **Weekly ingest** workflow runs `pnpm ingest` every Monday and opens a PR if the snapshot
-moved, so drift arrives as a reviewable diff. It also has `workflow_dispatch` — run it by hand
-from the Actions tab when you want the update applied _and_ raised as a PR rather than committed
-straight to your working tree.
+The **Weekly ingest** workflow runs every Monday, and it **checks before it acts**: if
+`ingest:check` reports nothing new, the run stops there in seconds. Only when data has actually
+moved does it run the full ingest, verify it, and open a PR.
+
+That gate earns its keep because `mirror/` is gitignored, so a fresh runner has neither the
+originals nor the manifest that let ingest skip unchanged art. Without it, every Monday would
+re-download 47 MB and re-encode all 1,167 derivatives to produce, usually, no change at all —
+and any difference in `sharp`'s output bytes would land as 1,167 changed binary files in a pull
+request that changed nothing. When the gate does open, `mirror/` is restored from the Actions
+cache so only art whose `source_image_url` actually moved is re-fetched.
+
+It also has `workflow_dispatch` — run it by hand from the Actions tab when you want the update
+applied _and_ raised as a PR rather than committed straight to your working tree.
 
 ### Why art mirroring lives inside ingest
 
