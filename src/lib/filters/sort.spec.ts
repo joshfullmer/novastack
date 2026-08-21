@@ -13,7 +13,7 @@ const order = (cards: readonly Card[], sort: Sort) =>
 	);
 
 describe('the default sort', () => {
-	it('groups by the derived colour order, then the derived type order, then cost, then name', () => {
+	it('groups by the derived color order, then the derived type order, then cost, then name', () => {
 		const cards = [
 			makeCard({ slug: 'blue-unit', color: 'Blue', cardType: 'Unit', cost: 1, name: 'Blue Unit' }),
 			makeCard({ slug: 'red-unit-5', color: 'Red', cardType: 'Unit', cost: 5, name: 'Red Unit 5' }),
@@ -27,7 +27,7 @@ describe('the default sort', () => {
 			})
 		];
 
-		// Snapshot colour order is Red → Yellow → Green → Blue; type order Legend → Unit → …
+		// Snapshot color order is Red → Yellow → Green → Blue; type order Legend → Unit → …
 		expect(order(cards, DEFAULT_SORT)).toEqual([
 			'red-legend',
 			'red-unit-2',
@@ -95,7 +95,7 @@ describe('sortMatches', () => {
 		expect(matches.map((match) => match.card.slug)).toEqual(before);
 	});
 
-	it('ranks an unknown colour last rather than throwing', () => {
+	it('ranks an unknown color last rather than throwing', () => {
 		const built = createDataset(
 			makeSnapshot([makeCard({ slug: 'red', color: 'Red' })], { colorOrder: ['Blue'] })
 		);

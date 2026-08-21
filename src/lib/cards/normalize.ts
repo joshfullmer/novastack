@@ -9,7 +9,7 @@
  *    printing that contradicts them — so a rarity filter reading the card copy is silently
  *    wrong. See `docs/adr/0002-discard-the-flattened-printing-fields.md`.
  * 2. **RAM is split by card type.** One API field means opposite things: a Legend *provides*
- *    RAM, everything else *requires* it. A shared `ram` field makes the coloured budget
+ *    RAM, everything else *requires* it. A shared `ram` field makes the colored budget
  *    unwritable without a type check at every use site.
  * 3. **Keywords and flavour are derived from `rules_text`**, because the fields that should
  *    carry them are empty on every card.

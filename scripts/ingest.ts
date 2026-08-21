@@ -205,7 +205,7 @@ async function main(): Promise<void> {
 	log(
 		`  ${snapshot.stats.cards} cards · ${snapshot.stats.printings} printings · ${snapshot.stats.sets} sets`
 	);
-	log(`  colour order    ${snapshot.colorOrder.join(' → ')}`);
+	log(`  color order    ${snapshot.colorOrder.join(' → ')}`);
 	log(`  card-type order ${snapshot.cardTypeOrder.join(' → ')}`);
 	log(`  RAM per Legend  ${snapshot.ramPerLegend}`);
 	log(`  set-exclusive   ${setExclusiveSlugs(cards).length} card(s)`);

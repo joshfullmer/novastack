@@ -1,10 +1,10 @@
 /**
- * The coloured RAM budget.
+ * The colored RAM budget.
  *
- * A deck picks three Legends, and their combined RAM Provided per Colour sets which Cards the
- * deck may include. Because every Legend provides the same RAM of its own colour — asserted at
- * ingest, not assumed — the *colours alone* determine the budget. So the control is three
- * colour slots rather than three Legend pickers: three clicks, and an illegal budget is
+ * A deck picks three Legends, and their combined RAM Provided per Color sets which Cards the
+ * deck may include. Because every Legend provides the same RAM of its own color — asserted at
+ * ingest, not assumed — the *colors alone* determine the budget. So the control is three
+ * color slots rather than three Legend pickers: three clicks, and an illegal budget is
  * unreachable rather than merely rejected.
  *
  * `admits` is a pure function of budget and card so stage 2 inherits it unchanged.
@@ -16,7 +16,7 @@ export type ColorBudget = Readonly<Record<Color, number>>;
 
 export const EMPTY_BUDGET: ColorBudget = { Blue: 0, Green: 0, Red: 0, Yellow: 0 };
 
-/** Three slots' worth of colours → RAM per colour. Fewer than three slots is a partial deck. */
+/** Three slots' worth of colors → RAM per color. Fewer than three slots is a partial deck. */
 export function budgetFromLegendColors(
 	legendColors: readonly Color[],
 	ramPerLegend: number
@@ -27,11 +27,11 @@ export function budgetFromLegendColors(
 }
 
 /**
- * One admission rule for every card type — *is this card usable in a deck of this colour
+ * One admission rule for every card type — *is this card usable in a deck of this color
  * identity?*
  *
- * A colour with no budget is excluded entirely, **Legends included**. On-colour Legends do
- * remain, because the slots declare colours rather than cards: the actual Legend is still to be
+ * A color with no budget is excluded entirely, **Legends included**. On-color Legends do
+ * remain, because the slots declare colors rather than cards: the actual Legend is still to be
  * chosen, so showing the candidates is the useful answer.
  *
  * RAM is a **threshold, not a budget** — clearing the bar admits unlimited copies, and

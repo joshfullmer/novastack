@@ -61,7 +61,7 @@ export function makeCard(overrides: CardOverrides = {}): Card {
 	};
 }
 
-/** A Card of a given colour and type, which is what most filter tests actually vary. */
+/** A Card of a given color and type, which is what most filter tests actually vary. */
 export function makeCards(
 	specs: readonly (CardOverrides & { color: Color; cardType: CardType })[]
 ): Card[] {

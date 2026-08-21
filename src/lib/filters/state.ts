@@ -75,7 +75,7 @@ export const FilterStateSchema = v.object({
 	ram: NumericRangeSchema,
 	/** `null` is "no filter"; the toggle is tri-state in effect, binary in appearance. */
 	eddiable: v.nullable(v.boolean()),
-	/** Up to three. Order is cosmetic — only the per-colour counts affect the budget. */
+	/** Up to three. Order is cosmetic — only the per-color counts affect the budget. */
 	legendColors: v.pipe(v.array(ColorSchema), v.maxLength(3)),
 	sort: v.object({ key: v.picklist(SORT_KEYS), direction: v.picklist(SORT_DIRECTIONS) })
 });

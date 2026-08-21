@@ -131,7 +131,7 @@ export const API_SET_CODE_TO_SET_ID: Readonly<Record<string, string>> = {
 };
 
 /**
- * The one API set code that is the Base Set's retail printing run. Ingest derives Colour and
+ * The one API set code that is the Base Set's retail printing run. Ingest derives Color and
  * Card Type display order from this run's collector-number sequence — the sequence has to
  * come from a single unduplicated run, not from the Set, or beta reprints interleave.
  */

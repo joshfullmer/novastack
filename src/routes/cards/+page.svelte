@@ -25,7 +25,7 @@
 	 * narrows on hydration, so a shared filtered link is briefly wide. That is hydration latency,
 	 * not load latency — the data is local, and static HTML cannot know the query string. A
 	 * pre-paint inline script could fix it, but it would be a second filter implementation that is
-	 * right for colour and silently wrong for RAM, search and printing-level matching. This is the
+	 * right for color and silently wrong for RAM, search and printing-level matching. This is the
 	 * reversible choice; that script can still be added later as a pure enhancement.
 	 */
 	import { browser } from '$app/env';

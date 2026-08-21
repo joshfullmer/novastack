@@ -45,12 +45,12 @@ scripts/ingest.ts            the only thing that touches the network
   └─ lib/stable-json.ts      sorted keys, tab indent: drift must read as a reviewable diff
 
 src/lib/cards/
-  vocabulary.ts              closed value sets (Colour, Card Type, Keyword, Rarity)
+  vocabulary.ts              closed value sets (Color, Card Type, Keyword, Rarity)
   sets.ts                    the curated Set Identifier map — the API does not expose it
   schema.ts                  the two Valibot schemas: the API's shape, and ours
   rules-text.ts              five markup systems → structured segments (pure)
   normalize.ts               API shape → our model (pure)
-  derive.ts                  colour/type order, RAM per Legend, set counts (pure)
+  derive.ts                  color/type order, RAM per Legend, set counts (pure)
   assertions.ts              the checks that fail the build (pure)
   dataset.ts                 the runtime view: search haystack, lookups, facet domains
   cards.json                 generated, committed — 277 KB / 41 KB gzipped
@@ -59,7 +59,7 @@ src/lib/cards/
 
 src/lib/filters/
   predicate.ts               the predicate tree + evaluate() → Match[] (pure)
-  budget.ts                  the coloured RAM budget: admits(budget, card) (pure)
+  budget.ts                  the colored RAM budget: admits(budget, card) (pure)
   sort.ts                    comparators, nulls always last (pure)
   state.ts                   URL ⇄ FilterState ⇄ predicate tree
   shallow.ts                 reading the URL under shallow routing — read its doc comment

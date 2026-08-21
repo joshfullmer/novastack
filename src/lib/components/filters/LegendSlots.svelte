@@ -1,22 +1,22 @@
 <script lang="ts">
 	/**
-	 * Three Legend colour slots, each cycling none → the four Colours → none.
+	 * Three Legend color slots, each cycling none → the four Colors → none.
 	 *
-	 * **Colours alone determine the budget**, because every Legend provides the same RAM of its
-	 * own colour — asserted at ingest, not assumed. So `Red/Red/Blue` means Red 4, Blue 2, and the
+	 * **Colors alone determine the budget**, because every Legend provides the same RAM of its
+	 * own color — asserted at ingest, not assumed. So `Red/Red/Blue` means Red 4, Blue 2, and the
 	 * control is three clicks rather than three Legend pickers. An illegal budget is unreachable
 	 * rather than merely rejected.
 	 *
-	 * The cycle follows the *derived* Colour order rather than a second hardcoded list, so there is
-	 * one source of truth for what order the colours come in.
+	 * The cycle follows the *derived* Color order rather than a second hardcoded list, so there is
+	 * one source of truth for what order the colors come in.
 	 *
 	 * **Slot positions are local; the URL is still canonical.** The budget depends only on how many
-	 * of each colour are chosen, so `red,blue` and `blue,red` are the same filter and must not be
+	 * of each color are chosen, so `red,blue` and `blue,red` are the same filter and must not be
 	 * two URLs — the serialised form is sorted. But sorting is a *presentation* disaster if it
 	 * reaches the control: changing slot 1 would visibly reshuffle slots 2 and 3 under the cursor.
 	 *
 	 * So `positions` records the arrangement the reader last built, and `slots` reconciles it
-	 * against the URL: a position keeps its colour while that colour is still in the budget, and
+	 * against the URL: a position keeps its color while that color is still in the budget, and
 	 * anything left over fills the gaps. That makes the URL authoritative — back/forward and shared
 	 * links still work — without letting canonicalisation move things around mid-click.
 	 */
@@ -60,7 +60,7 @@
 		return kept;
 	});
 
-	/** none → first colour → … → last colour → none. */
+	/** none → first color → … → last color → none. */
 	function next(current: Color | null): Color | null {
 		if (current === null) return colorOrder[0] ?? null;
 		return colorOrder[colorOrder.indexOf(current) + 1] ?? null;
@@ -78,7 +78,7 @@
 
 <fieldset class="min-w-0">
 	<legend class="mb-1.5 text-xs font-medium tracking-wide text-muted uppercase">
-		Legend colours
+		Legend colors
 	</legend>
 
 	<div class="flex items-center gap-2">
@@ -86,7 +86,7 @@
 			<button
 				type="button"
 				onclick={() => cycle(slot)}
-				aria-label="Legend slot {slot + 1}: {color ?? 'empty'}. Activate to change colour."
+				aria-label="Legend slot {slot + 1}: {color ?? 'empty'}. Activate to change color."
 				class="flex size-8 items-center justify-center rounded-md border border-edge
 					transition-colors hover:border-muted"
 			>

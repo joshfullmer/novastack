@@ -2,7 +2,7 @@
  * Derived data. Ingest computes and writes these rather than the app hardcoding them.
  *
  * Every one is *current data, not a rule*, so each derivation returns the evidence its
- * assertion needs alongside the answer — see `assertions.ts`. Colour order that happens to be
+ * assertion needs alongside the answer — see `assertions.ts`. Color order that happens to be
  * `Red, Yellow, Green, Blue` today is an observation about one printing run, and the moment
  * that run stops being contiguous the derivation is meaningless rather than merely stale.
  */
@@ -76,9 +76,9 @@ export function runOrder<T>(values: readonly T[]): RunOrder<T> {
 }
 
 /**
- * Card-type runs are counted *within* each colour block, which is the only way the "4 per
- * colour" claim means anything — counting globally would pass on a sequence that had lost its
- * colour grouping entirely.
+ * Card-type runs are counted *within* each color block, which is the only way the "4 per
+ * color" claim means anything — counting globally would pass on a sequence that had lost its
+ * color grouping entirely.
  */
 export function cardTypeRunsWithinColors(
 	sequence: readonly { color: Color; cardType: CardType }[]
@@ -102,8 +102,8 @@ export function cardTypeRunsWithinColors(
 }
 
 /**
- * Every Legend provides the same RAM of its own colour today, which is what lets the coloured
- * RAM budget be expressed as three colour slots instead of three chosen Legends. `distinct`
+ * Every Legend provides the same RAM of its own color today, which is what lets the colored
+ * RAM budget be expressed as three color slots instead of three chosen Legends. `distinct`
  * is the evidence: more than one value and the budget model is wrong, not just imprecise.
  */
 export function deriveRamPerLegend(cards: readonly Card[]): { value: number; distinct: number[] } {

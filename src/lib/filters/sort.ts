@@ -1,9 +1,9 @@
 /**
  * Sorting.
  *
- * **Default: Colour → Card Type → Cost → Name**, using the orders derived at ingest. Collector
- * number already produces perfect colour and type grouping within the Base Set, so the explicit
- * sort buys one thing: cost orders *within* each colour+type block, giving a readable curve.
+ * **Default: Color → Card Type → Cost → Name**, using the orders derived at ingest. Collector
+ * number already produces perfect color and type grouping within the Base Set, so the explicit
+ * sort buys one thing: cost orders *within* each color+type block, giving a readable curve.
  * `Set → Collector Number` is consequently not reachable in stage 1.
  *
  * **Nulls always sort last** — one rule, everywhere, in both directions. This bites: `power` is
@@ -26,7 +26,7 @@ export type Sort = { key: SortKey; direction: SortDirection };
 export const DEFAULT_SORT: Sort = { key: 'default', direction: 'asc' };
 
 export const SORT_LABELS: Record<SortKey, string> = {
-	default: 'Colour, type, cost',
+	default: 'Color, type, cost',
 	cost: 'Cost',
 	power: 'Power',
 	name: 'Name'

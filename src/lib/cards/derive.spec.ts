@@ -76,7 +76,7 @@ describe('baseSetSequence', () => {
 });
 
 describe('cardTypeRunsWithinColors', () => {
-	it('counts runs within each colour block, not globally', () => {
+	it('counts runs within each color block, not globally', () => {
 		const sequence = [
 			{ color: 'Red', cardType: 'Legend' },
 			{ color: 'Red', cardType: 'Unit' },
@@ -84,7 +84,7 @@ describe('cardTypeRunsWithinColors', () => {
 			{ color: 'Blue', cardType: 'Unit' }
 		] as const;
 
-		// Four runs, not two: a colour change restarts the run even when the type repeats.
+		// Four runs, not two: a color change restarts the run even when the type repeats.
 		expect(cardTypeRunsWithinColors(sequence)).toEqual({ order: ['Legend', 'Unit'], runs: 4 });
 	});
 });

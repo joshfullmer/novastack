@@ -4,15 +4,15 @@
 	 *
 	 * Chips are real `<button aria-pressed>` elements, not styled checkboxes, because they are
 	 * toggles rather than form fields and `aria-pressed` is what a screen reader announces as
-	 * "pressed"/"not pressed". Every chip is labelled with text: colour is never the only carrier
-	 * of meaning, so the Colour chips are tinted *and* named.
+	 * "pressed"/"not pressed". Every chip is labelled with text: color is never the only carrier
+	 * of meaning, so the Color chips are tinted *and* named.
 	 */
 	let {
 		legend,
 		options,
 		selected,
 		onToggle,
-		/** Optional tint classes, keyed by value — used by the Colour facet. */
+		/** Optional tint classes, keyed by value — used by the Color facet. */
 		tintOn,
 		tintOff
 	}: {

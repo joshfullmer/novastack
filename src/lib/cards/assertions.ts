@@ -150,8 +150,8 @@ export function checkModelInvariants(cards: readonly Card[]): Violation[] {
 	const colors = runOrder(sequence.map((entry) => entry.color));
 	if (colors.runs !== COLORS.length || colors.order.length !== COLORS.length)
 		add(
-			'colour-forms-four-runs',
-			`colour forms ${colors.runs} run(s) over ${colors.order.length} value(s) in the Base Set ` +
+			'color-forms-four-runs',
+			`color forms ${colors.runs} run(s) over ${colors.order.length} value(s) in the Base Set ` +
 				`sequence; the derived order is only meaningful at exactly ${COLORS.length}`
 		);
 
@@ -161,15 +161,15 @@ export function checkModelInvariants(cards: readonly Card[]): Violation[] {
 		add(
 			'card-type-forms-sixteen-runs',
 			`card type forms ${cardTypes.runs} run(s) over ${cardTypes.order.length} value(s); ` +
-				`expected ${expectedRuns} runs (${CARD_TYPES.length} per colour)`
+				`expected ${expectedRuns} runs (${CARD_TYPES.length} per color)`
 		);
 
 	const ram = deriveRamPerLegend(cards);
 	if (ram.distinct.length > 1)
 		add(
 			'ram-per-legend-is-uniform',
-			`Legends now provide ${ram.distinct.join(', ')} RAM — the coloured budget assumes one ` +
-				`value, so three colour slots no longer determine a budget`
+			`Legends now provide ${ram.distinct.join(', ')} RAM — the colored budget assumes one ` +
+				`value, so three color slots no longer determine a budget`
 		);
 
 	const printings = cards.flatMap((card) => card.printings);

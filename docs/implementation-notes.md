@@ -34,8 +34,8 @@ layout and undoing the code-split.
 
 Every claim the spec derived by hand held exactly:
 
-- Colour forms **4 contiguous runs** in the Base Set retail sequence → `Red, Yellow, Green, Blue`.
-- Card type forms **16 runs, 4 per colour** → `Legend, Unit, Gear, Program`.
+- Color forms **4 contiguous runs** in the Base Set retail sequence → `Red, Yellow, Green, Blue`.
+- Card type forms **16 runs, 4 per color** → `Legend, Unit, Gear, Program`.
 - `ramProvided` is uniform across Legends (`2`).
 - `Red/Red/Blue` admits **57 of 133** cards.
 - `{X}` markup: **102 occurrences** of exactly 9 tokens.
@@ -70,12 +70,21 @@ _Avoid_. The glossary wins over both the spec's label and the API's `is_eddiable
 It is also a three-state control (Any / Yes / No) rather than a toggle, because "no filter" has to
 be expressible and a two-state toggle cannot express it.
 
-### 2.3 The Legend colour cycle follows the derived colour order
+### 2.2b Terminology: `Color`, and `Tag`
+
+`CONTEXT.md` lists **colour** under `_Avoid_` for the term Color, so the US spelling is the
+project's word — in identifiers, in prose, and in every visible label.
+
+The glossary's Classification entry also listed **tag** under `_Avoid_`, which was wrong: the
+printed rules call these **Tags**. That entry has been corrected and renamed, and the interface
+says Tags. The data model keeps `classifications` where it mirrors the API field name.
+
+### 2.3 The Legend color cycle follows the derived color order
 
 §4.4 specifies the cycle `none → Red → Blue → Green → Yellow`. The control instead cycles through
 `dataset.colorOrder`, which is `Red, Yellow, Green, Blue`.
 
-Hardcoding a second colour order beside the one §2.5 goes to the trouble of deriving and asserting
+Hardcoding a second color order beside the one §2.5 goes to the trouble of deriving and asserting
 would be exactly the competing source of truth the spec objects to elsewhere.
 
 ### 2.4 Card art lives at `/card-art/`, not `/cards/`

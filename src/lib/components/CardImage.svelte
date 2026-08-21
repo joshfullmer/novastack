@@ -3,7 +3,7 @@
 	 * A mirrored card image with a three-stage placeholder.
 	 *
 	 * ```
-	 * card Colour (zero bytes, paints instantly)
+	 * card Color (zero bytes, paints instantly)
 	 *   → ThumbHash (~25 bytes, inline in the snapshot, on hydration)
 	 *     → the real image, cross-faded on load
 	 * ```

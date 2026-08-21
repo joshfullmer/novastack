@@ -5,8 +5,8 @@
 	 * Layout follows the spec's split, which reads better than a strict importance ranking:
 	 *
 	 * - **Search as the hero**, full width, with the result count and a clear-all beside it.
-	 * - **Row 1 — categorical.** Colour, Type, Keywords.
-	 * - **Row 2 — numeric and scoping.** Cost / Power / RAM, Eddiable, the Legend colour slots,
+	 * - **Row 1 — categorical.** Color, Type, Keywords.
+	 * - **Row 2 — numeric and scoping.** Cost / Power / RAM, Eddiable, the Legend color slots,
 	 *   density, sort.
 	 * - **Disclosure.** Tags, Rarity, Sets behind "More filters".
 	 *
@@ -200,7 +200,7 @@
 			<!-- Row 1 — categorical -->
 			<div class="flex flex-wrap gap-x-6 gap-y-3">
 				<ChipGroup
-					legend="Colour"
+					legend="Color"
 					options={colorOptions}
 					selected={filters.colors}
 					tintOn={COLOR_CHIP_ON}

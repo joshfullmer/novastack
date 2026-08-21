@@ -25,17 +25,16 @@ test.describe('filtering', () => {
 		await gotoGrid(page, '/cards');
 		await expect(resultCount(page)).toHaveText(`${total} of ${total}`);
 
-		// Prove no document navigation happens: a value set on `window` must survive the click.
-		await page.evaluate(() => ((window as unknown as { __kept: boolean }).__kept = true));
+		// Prove no document navigation happens: an attribute set on <body> survives a shallow
+		// update and would be gone after a real navigation, since the document would be replaced.
+		await page.evaluate(() => (document.body.dataset.kept = 'yes'));
 
 		await page.getByRole('button', { name: 'Red', exact: true }).click();
 
 		await expect(resultCount(page)).toHaveText(`${count('Red')} of ${total}`);
 		await expect(tiles(page)).toHaveCount(count('Red'));
 		expect(new URL(page.url()).search).toBe('?color=red');
-		expect(await page.evaluate(() => (window as unknown as { __kept?: boolean }).__kept)).toBe(
-			true
-		);
+		await expect(page.locator('body')).toHaveAttribute('data-kept', 'yes');
 	});
 
 	test('ORs within a facet and ANDs across facets', async ({ page }) => {
@@ -142,7 +141,7 @@ test.describe('filtering', () => {
 		await expect(resultCount(page)).toHaveText(`${total} of ${total}`);
 	});
 
-	test('the coloured RAM budget admits the cards the spec verified by hand', async ({ page }) => {
+	test('the colored RAM budget admits the cards the spec verified by hand', async ({ page }) => {
 		await gotoGrid(page, '/cards?legends=red,red,blue');
 		await expect(resultCount(page)).toHaveText(`57 of ${total}`);
 	});

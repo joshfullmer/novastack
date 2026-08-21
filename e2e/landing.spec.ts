@@ -16,14 +16,14 @@ const landing = v.parse(
  * links, and the gradient above them must not swallow the clicks.
  */
 test.describe('the landing page', () => {
-	test('shows seven hero cards with interleaved colours', async ({ page }) => {
+	test('shows seven hero cards with interleaved colors', async ({ page }) => {
 		await page.goto('/');
 
 		const heroes = page.locator('a[href^="/cards/"]');
 		await expect(heroes).toHaveCount(landing.heroes.length);
 		expect(landing.heroes).toHaveLength(7);
 
-		// Interleaved, not dataset order — which begins with a long run of one colour.
+		// Interleaved, not dataset order — which begins with a long run of one color.
 		const colors = landing.heroes.map((hero) => hero.color);
 		expect(new Set(colors).size).toBe(4);
 		expect(colors[3]).toBe('Yellow');

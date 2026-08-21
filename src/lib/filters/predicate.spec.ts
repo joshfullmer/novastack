@@ -203,10 +203,10 @@ describe('evaluate — printing-level facets and witness selection', () => {
 	});
 });
 
-describe('admits — the coloured RAM budget', () => {
+describe('admits — the colored RAM budget', () => {
 	const budget = budgetFromLegendColors(['Red', 'Red', 'Blue'], 2);
 
-	it('sums RAM per colour from the slots', () => {
+	it('sums RAM per color from the slots', () => {
 		expect(budget).toEqual({ Red: 4, Blue: 2, Green: 0, Yellow: 0 });
 	});
 
@@ -218,11 +218,11 @@ describe('admits — the coloured RAM budget', () => {
 		expect(admits(budget, makeCard({ color: 'Blue', ramRequired: 3 }))).toBe(false);
 	});
 
-	it('excludes an off-colour card entirely', () => {
+	it('excludes an off-color card entirely', () => {
 		expect(admits(budget, makeCard({ color: 'Green', ramRequired: 1 }))).toBe(false);
 	});
 
-	it('keeps on-colour Legends, because the slots declare colours rather than cards', () => {
+	it('keeps on-color Legends, because the slots declare colors rather than cards', () => {
 		const legend = makeCard({
 			color: 'Red',
 			cardType: 'Legend',
@@ -232,7 +232,7 @@ describe('admits — the coloured RAM budget', () => {
 		expect(admits(budget, legend)).toBe(true);
 	});
 
-	it('excludes an off-colour Legend, budget or not', () => {
+	it('excludes an off-color Legend, budget or not', () => {
 		const legend = makeCard({
 			color: 'Green',
 			cardType: 'Legend',

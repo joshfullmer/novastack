@@ -158,7 +158,11 @@ describe('derived facets over the real data', () => {
 
 	it('finds a long tail of classifications', () => {
 		expect(dataset.classifications.length).toBeGreaterThanOrEqual(39);
-		expect(dataset.classifications[0].count).toBeGreaterThan(dataset.classifications.at(-1)!.count);
+
+		const [head] = dataset.classifications;
+		const tail = dataset.classifications.at(-1);
+		if (tail === undefined) throw new Error('no classifications in the snapshot');
+		expect(head.count).toBeGreaterThan(tail.count);
 	});
 
 	it('reports the null counts the + none toggles are labelled with', () => {
@@ -170,7 +174,7 @@ describe('derived facets over the real data', () => {
 	});
 });
 
-describe('the coloured RAM budget over the real data', () => {
+describe('the colored RAM budget over the real data', () => {
 	it('admits 57 of 133 for Red/Red/Blue, as the spec verified by hand', () => {
 		const budget = budgetFromLegendColors(['Red', 'Red', 'Blue'], snapshot.ramPerLegend);
 		const admitted = snapshot.cards.filter((entry) => admits(budget, entry));

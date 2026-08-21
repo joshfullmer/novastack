@@ -3,7 +3,7 @@
  *
  * **Seven, not eight** — an odd count gives the fan a focal centre card.
  *
- * **Colours are interleaved, Yellow centred** (`R B G Y R B G`). Naive selection picks from
+ * **Colors are interleaved, Yellow centred** (`R B G Y R B G`). Naive selection picks from
  * dataset order, which begins with all the Red cards and yields a monochrome spread.
  *
  * **All seven are Legends.** Character portraits read at a glance where Gear and Programs

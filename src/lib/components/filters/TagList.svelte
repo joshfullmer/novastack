@@ -1,6 +1,8 @@
 <script lang="ts">
 	/**
-	 * Classifications — **a searchable list, not chips**.
+	 * Tags — **a searchable list, not chips**.
+	 *
+	 * "Tag" is what the printed rules call these; the source API's field is `classifications`.
 	 *
 	 * 39 values with a long tail (Ganger 25, Merc 23, … eight singletons) and a mean of 1.73 per
 	 * card. Thirty-nine chips is a wall; a filter box over a scrolling list finds `Voodoo Boys` in

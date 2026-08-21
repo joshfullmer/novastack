@@ -95,7 +95,7 @@ describe('checkRawInvariants', () => {
 
 describe('checkModelInvariants', () => {
 	/**
-	 * Four colours × four types in Base Set collector order — the real shape, in miniature.
+	 * Four colors × four types in Base Set collector order — the real shape, in miniature.
 	 * Every curated Set gets a printing, because a Set with none is itself a violation.
 	 */
 	function contiguousDataset() {
@@ -128,16 +128,16 @@ describe('checkModelInvariants', () => {
 		expect(checkModelInvariants(contiguousDataset())).toEqual([]);
 	});
 
-	it('fails when colour stops forming exactly four contiguous runs', () => {
+	it('fails when color stops forming exactly four contiguous runs', () => {
 		const cards = contiguousDataset();
-		// Re-colour one card mid-sequence, breaking the run structure the order depends on.
+		// Re-color one card mid-sequence, breaking the run structure the order depends on.
 		const broken = cards.map((card, index) =>
 			index === 5 ? { ...card, color: 'Red' as const } : card
 		);
-		expect(checks(checkModelInvariants(broken))).toContain('colour-forms-four-runs');
+		expect(checks(checkModelInvariants(broken))).toContain('color-forms-four-runs');
 	});
 
-	it('fails when card type stops forming four runs per colour', () => {
+	it('fails when card type stops forming four runs per color', () => {
 		const cards = contiguousDataset();
 		// Red now reads Legend, Legend, Gear, Program — three runs where there should be four.
 		const broken = cards.map((card, index) =>

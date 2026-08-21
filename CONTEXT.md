@@ -118,14 +118,17 @@ bar admits unlimited copies, and including a Card consumes nothing.
 **RAM Provided**:
 The RAM a Legend contributes to a deck, in the Legend's own Color.
 
-**Classification**:
-A descriptive tag placing a Card in a bucket — Netrunner, Corpo, and the like. Carries no
-mechanical meaning on its own; other cards may reference it.
-_Avoid_: subtype, tag, trait, category
+**Tag**:
+A descriptive label placing a Card in a bucket — Netrunner, Corpo, and the like. Carries no
+mechanical meaning on its own; other cards may reference it. **Tag** is the term the printed
+rules use, so it is the term the interface uses. The source API calls the field
+`classifications`, and that name survives in the data model where it mirrors the API — but
+anything a player reads says Tag.
+_Avoid_: subtype, trait, category
 
 **Keyword**:
-Shorthand for a mechanic the Card actually has. Unlike a Classification, a Keyword means
-something on its own.
+Shorthand for a mechanic the Card actually has. Unlike a Tag, a Keyword means something on
+its own.
 _Avoid_: ability, mechanic
 
 **Eddiable**:

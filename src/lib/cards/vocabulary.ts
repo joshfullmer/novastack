@@ -1,7 +1,7 @@
 /**
  * Closed vocabularies — the value sets the source API is allowed to use.
  *
- * These are *sets*, deliberately not orders: display order for Colour and Card Type is
+ * These are *sets*, deliberately not orders: display order for Color and Card Type is
  * derived from the Base Set's collector-number sequence at ingest time and travels in the
  * snapshot (see `derive.ts`). The arrays here are alphabetical so nothing reads order into
  * them by accident.

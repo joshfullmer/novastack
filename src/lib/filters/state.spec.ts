@@ -154,8 +154,8 @@ describe('sort encoding', () => {
 	});
 });
 
-describe('legend colour slots', () => {
-	it('reads up to three colours and canonicalises their order', () => {
+describe('legend color slots', () => {
+	it('reads up to three colors and canonicalises their order', () => {
 		expect(parse('legends=red,blue,red').legendColors).toEqual(['Blue', 'Red', 'Red']);
 	});
 
@@ -222,12 +222,12 @@ describe('toPredicate', () => {
 		expect(matches(parse('color=red&type=unit,legend'))).toEqual(['red-unit', 'red-legend']);
 	});
 
-	it('applies the coloured RAM budget', () => {
-		// Red 4 admits the Red Unit (needs 2) and on-colour Legends; Blue has no budget.
+	it('applies the colored RAM budget', () => {
+		// Red 4 admits the Red Unit (needs 2) and on-color Legends; Blue has no budget.
 		expect(matches(parse('legends=red,red'))).toEqual(['red-unit', 'red-legend']);
 	});
 
-	it('excludes a colour with no budget, Legends included', () => {
+	it('excludes a color with no budget, Legends included', () => {
 		expect(matches(parse('legends=blue'))).toEqual(['blue-program']);
 	});
 
