@@ -1606,6 +1606,88 @@
 			"slug": "delamain-rideshare-ai"
 		},
 		{
+			"cardType": "Legend",
+			"classifications": [
+				"Fixer"
+			],
+			"color": "Red",
+			"cost": null,
+			"eddiable": true,
+			"flavorText": null,
+			"keywords": [
+				"Spend",
+				"Call"
+			],
+			"name": "Dexter DeShawn — Off the Grid",
+			"power": null,
+			"printings": [
+				{
+					"artist": "Envar",
+					"collectorNumber": "002",
+					"id": "9a298f42-3a9f-4510-b2fd-9cf1b34ade27",
+					"key": "MS01-WNC-002",
+					"rarity": "Rare",
+					"setId": "MS01-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/9a298f42-3a9f-4510-b2fd-9cf1b34ade27/render-mpvml9cl.webp",
+					"thumbhash": "iyiGDAYPWcRVmJWQlgo1uZCLgYGICBiIAA=="
+				},
+				{
+					"artist": "Envar",
+					"collectorNumber": "β002",
+					"id": "f4ff466c-22ad-4c50-9f4c-29933e51f739",
+					"key": "MS01-WNC-β002",
+					"rarity": "Rare",
+					"setId": "MS01-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/f4ff466c-22ad-4c50-9f4c-29933e51f739/render-mpu635jn.webp",
+					"thumbhash": "iyiGDAYPWcRVmJWQlgo1uZCLgYGICBiIAA=="
+				},
+				{
+					"artist": "Pandart Studio",
+					"collectorNumber": "β142",
+					"id": "9d04877f-050d-485d-9447-1bef7ee6ed40",
+					"key": "MS01-WNC-β142",
+					"rarity": "Iconic Legend",
+					"setId": "MS01-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/9d04877f-050d-485d-9447-1bef7ee6ed40/render-mpxm6ua0.webp",
+					"thumbhash": "jRiGDAQP2veHmoZyY8922ZiPgYGICBiIAA=="
+				}
+			],
+			"ramProvided": 2,
+			"ramRequired": null,
+			"rawRulesText": "{Call} Choose one effect.\nGive a friendly Unit +2 power this turn. // Draw 1.\n{Spend}: Increase a Gig by up to 2.",
+			"rulesText": [
+				[
+					{
+						"keyword": "Call",
+						"kind": "keyword",
+						"text": "{Call}"
+					},
+					{
+						"kind": "text",
+						"text": " Choose one effect."
+					}
+				],
+				[
+					{
+						"kind": "text",
+						"text": "Give a friendly Unit +2 power this turn. // Draw 1."
+					}
+				],
+				[
+					{
+						"keyword": "Spend",
+						"kind": "keyword",
+						"text": "{Spend}"
+					},
+					{
+						"kind": "text",
+						"text": ": Increase a Gig by up to 2."
+					}
+				]
+			],
+			"slug": "dexter-deshawn-off-the-grid"
+		},
+		{
 			"cardType": "Unit",
 			"classifications": [
 				"Fixer"
@@ -9894,18 +9976,18 @@
 		"Green",
 		"Blue"
 	],
-	"generatedAt": "2026-08-21T21:06:39.266Z",
+	"generatedAt": "2026-08-22T16:06:55.184Z",
 	"ramPerLegend": 2,
 	"sets": [
 		{
-			"cardCount": 129,
+			"cardCount": 130,
 			"category": "MS01",
 			"cycle": "A",
 			"id": "MS01-WNC",
 			"kind": "base",
 			"name": "Welcome to Night City",
 			"printed": "MS01 - WNC [A]",
-			"printingCount": 283,
+			"printingCount": 286,
 			"setCode": "WNC"
 		},
 		{
@@ -9987,8 +10069,8 @@
 		}
 	],
 	"stats": {
-		"cards": 140,
-		"printings": 418,
+		"cards": 141,
+		"printings": 421,
 		"sets": 1
 	}
 }
