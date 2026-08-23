@@ -7198,6 +7198,96 @@
 		{
 			"cardType": "Unit",
 			"classifications": [
+				"Fixer",
+				"Merc"
+			],
+			"color": "Blue",
+			"cost": 5,
+			"eddiable": false,
+			"flavorText": null,
+			"keywords": [
+				"Spend",
+				"Quick"
+			],
+			"name": "Rogue Amendiares — Queen of the Afterlife",
+			"power": 4,
+			"printings": [
+				{
+					"artist": "Mooncolony",
+					"collectorNumber": "126",
+					"id": "3193a6bd-3e99-4501-9c5c-8d5ea32c779c",
+					"key": "MS01-WNC-126",
+					"rarity": "Epic",
+					"setId": "MS01-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/3193a6bd-3e99-4501-9c5c-8d5ea32c779c/render-mpvlna4t.webp",
+					"thumbhash": "EaeFFAYPe/ZYeaVyhBB3KICIgYGICBiIAA=="
+				},
+				{
+					"artist": "Mooncolony",
+					"collectorNumber": "β126",
+					"id": "4abedde2-f9db-4451-a2ab-fc7f594ea132",
+					"key": "MS01-WNC-β126",
+					"rarity": "Epic",
+					"setId": "MS01-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/4abedde2-f9db-4451-a2ab-fc7f594ea132/render-mpv4txw9.webp",
+					"thumbhash": "EaeFFAYPe/ZYeaVyhBB3KICIgYGICBiIAA=="
+				},
+				{
+					"artist": "Dardo Studios",
+					"collectorNumber": "β166",
+					"id": "807c871c-bebe-4343-9b68-1f89af5ed0da",
+					"key": "MS01-WNC-β166",
+					"rarity": "Iconic Other",
+					"setId": "MS01-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/807c871c-bebe-4343-9b68-1f89af5ed0da/render-mpxlxqiz.webp",
+					"thumbhash": "zeeFDAIPNX11WviMeFAmXJCCgYGICBiIAA=="
+				}
+			],
+			"ramProvided": null,
+			"ramRequired": 2,
+			"rawRulesText": "The first time another friendly Unit steals a Gig with value less than its power each turn, ready 2 Eddies.\n{Quick} 2 €$,  {Spend} A rival Unit loses power equal to this Unit's power this turn.",
+			"rulesText": [
+				[
+					{
+						"kind": "text",
+						"text": "The first time another friendly Unit steals a Gig with value less than its power each turn, ready 2 Eddies."
+					}
+				],
+				[
+					{
+						"keyword": "Quick",
+						"kind": "keyword",
+						"text": "{Quick}"
+					},
+					{
+						"kind": "text",
+						"text": " 2 "
+					},
+					{
+						"kind": "symbol",
+						"symbol": "eurodollars",
+						"text": "€$"
+					},
+					{
+						"kind": "text",
+						"text": ",  "
+					},
+					{
+						"keyword": "Spend",
+						"kind": "keyword",
+						"text": "{Spend}"
+					},
+					{
+						"kind": "text",
+						"text": " A rival Unit loses power equal to this Unit's power this turn."
+					}
+				]
+			],
+			"slug": "rogue-amendiares-queen-of-the-afterlife"
+		},
+		{
+			"cardType": "Unit",
+			"classifications": [
 				"Ganger",
 				"Maelstrom"
 			],
@@ -9976,18 +10066,18 @@
 		"Green",
 		"Blue"
 	],
-	"generatedAt": "2026-08-22T16:06:55.184Z",
+	"generatedAt": "2026-08-23T16:04:10.382Z",
 	"ramPerLegend": 2,
 	"sets": [
 		{
-			"cardCount": 130,
+			"cardCount": 131,
 			"category": "MS01",
 			"cycle": "A",
 			"id": "MS01-WNC",
 			"kind": "base",
 			"name": "Welcome to Night City",
 			"printed": "MS01 - WNC [A]",
-			"printingCount": 286,
+			"printingCount": 289,
 			"setCode": "WNC"
 		},
 		{
@@ -10069,8 +10159,8 @@
 		}
 	],
 	"stats": {
-		"cards": 141,
-		"printings": 421,
+		"cards": 142,
+		"printings": 424,
 		"sets": 1
 	}
 }

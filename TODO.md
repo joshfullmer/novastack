@@ -1,0 +1,1 @@
+- Combining Chips and Sliders makes things break
