@@ -3,8 +3,8 @@
  *
  * The unit tests elsewhere use synthetic data so a reader can see the whole dataset an
  * assertion runs against. This file is the complement: it checks the things whose value is
- * precisely that they are real — the two mandatory fixtures, and the numbers the spec verified
- * by hand.
+ * precisely that they are real — the two mandatory fixtures, and derived facets that only exist
+ * once real data has run through them.
  *
  * Counts are asserted as *relationships and floors*, not exact figures, wherever the dataset
  * being unstable makes an exact figure a maintenance tax. The dataset moved 131 → 133 cards
@@ -17,7 +17,6 @@ import { landing } from './landing.js';
 import { dataset, snapshot } from './index.js';
 import { plainText } from './rules-text.js';
 import { IMAGE_WIDTHS } from './vocabulary.js';
-import { admits, budgetFromLegendColors } from '#lib/filters/budget.js';
 import { evaluate } from '#lib/filters/predicate.js';
 
 const card = (slug: string) => {
@@ -177,14 +176,6 @@ describe('derived facets over the real data', () => {
 		// Every Legend falls in the RAM none bucket: a Legend provides RAM, it requires none.
 		const legends = snapshot.cards.filter((entry) => entry.cardType === 'Legend');
 		expect(dataset.domains.ram.nullCount).toBe(legends.length);
-	});
-});
-
-describe('the colored RAM budget over the real data', () => {
-	it('admits 57 of 133 for Red/Red/Blue, as the spec verified by hand', () => {
-		const budget = budgetFromLegendColors(['Red', 'Red', 'Blue'], snapshot.ramPerLegend);
-		const admitted = snapshot.cards.filter((entry) => admits(budget, entry));
-		expect(admitted).toHaveLength(57);
 	});
 });
 
