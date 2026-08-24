@@ -27,9 +27,14 @@
 		"directory": ".svelte-kit/cloudflare",
 		"binding": "ASSETS",
 
-		// Serve the rendered fallback page, with a 404 status, for a URL that matches no asset.
-		// Paired with the adapter's `fallback: 'spa'` this is a styled 404 rather than plaintext.
-		"not_found_handling": "404-page"
+		// MUST be "none". This used to be "404-page" — harmless back when every real route had a
+		// matching prerendered asset, so any miss really was a broken link. Now that /decks, /auth
+		// etc. are legitimate dynamic routes with no static asset at all, "404-page" (or
+		// "single-page-application") answers those navigation-shaped requests directly at the edge
+		// — a styled-but-wrong 404 — without ever invoking the Worker. "none" is what lets an
+		// asset-miss fall through to `main` so SvelteKit's own router (and its real `+error.svelte`)
+		// gets to decide, which is required for any dynamic route to work at all.
+		"not_found_handling": "none"
 
 		// NEVER set `run_worker_first`. It routes asset requests through the Worker, which makes
 		// them billable — and asset requests are the only traffic this site has at volume
