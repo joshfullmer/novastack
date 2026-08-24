@@ -129,7 +129,10 @@
 	</p>
 {/snippet}
 
-<div bind:clientHeight={height} class="sticky top-nav z-20 border-b border-edge/60 bg-shell/85 backdrop-blur-md">
+<div
+	bind:clientHeight={height}
+	class="sticky top-nav z-20 border-b border-edge/60 bg-shell/85 backdrop-blur-md"
+>
 	<div class="mx-auto max-w-[1800px] space-y-3 px-4 py-3 sm:px-6">
 		<!-- The query box: the primary input, always visible. -->
 		<div class="flex items-center gap-3">
@@ -142,7 +145,8 @@
 			>
 				<span aria-hidden="true">{showFilters ? '−' : '+'}</span>
 				<span
-					>Filters{#if activeFacetCount > 0}<span class="text-neon"> · {activeFacetCount}</span
+					>Filters{#if activeFacetCount > 0}<span class="text-neon">
+							· {activeFacetCount}</span
 						>{/if}</span
 				>
 			</button>
@@ -385,7 +389,10 @@
 											onToggle={(rarity: Rarity) =>
 												onFacetEdit({
 													facet: 'rarity',
-													values: toggle(view.rarities.interactive ? view.rarities.value : [], rarity)
+													values: toggle(
+														view.rarities.interactive ? view.rarities.value : [],
+														rarity
+													)
 												})}
 										/>
 									{:else}
