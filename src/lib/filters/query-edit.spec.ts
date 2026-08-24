@@ -62,7 +62,7 @@ describe('withFacetEdit', () => {
 	it('composes a bound with the null bucket for + none', () => {
 		expect(
 			withFacetEdit('', dataset, { facet: 'cost', range: { min: 2, max: 4, includeNull: true } })
-		).toBe('(2<=cost<=4) or cost:none');
+		).toBe('(2<=cost<=4 or cost:none)');
 	});
 
 	it('clears a range back to unfiltered', () => {

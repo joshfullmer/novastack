@@ -63,7 +63,12 @@ function rangeClause(field: string, range: NumericRange): string | null {
 			: min !== null
 				? `${field}>=${min}`
 				: `${field}<=${max}`;
-	return includeNull ? `(${bound}) or ${field}:none` : bound;
+	// The whole disjunction must be parenthesised, not just `bound`: `or` binds looser than the
+	// implicit AND between top-level clauses (spec §6), so an unwrapped `bound or field:none`
+	// would swallow whatever clause follows it into its right-hand side instead of ANDing with
+	// it — silently changing the query's meaning and, since the merged shape is no longer a
+	// clean per-facet leaf, tripping chip representability for every facet involved.
+	return includeNull ? `(${bound} or ${field}:none)` : bound;
 }
 
 function clauseFor(edit: FacetEdit, dataset: Dataset): string | null {
