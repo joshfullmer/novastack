@@ -115,13 +115,18 @@ test.describe('navigation', () => {
 	test('marks unbuilt destinations as coming soon, with no clickable 404', async ({ page }) => {
 		await page.goto('/');
 
-		for (const label of ['Decks', 'Sets', 'Rules']) {
+		// Decks graduated out of this list once the deckbuilder shipped — see
+		// docs/spec/deckbuilder.md. Sets and Rules remain unbuilt.
+		for (const label of ['Sets', 'Rules']) {
 			const item = page.getByText(label, { exact: false }).first();
 			await expect(item).toBeVisible();
 		}
 		// The signal that they are inert: no anchor carries them.
-		await expect(page.locator('nav a', { hasText: 'Decks' })).toHaveCount(0);
+		await expect(page.locator('nav a', { hasText: 'Sets' })).toHaveCount(0);
 		await expect(page.locator('nav a', { hasText: 'Rules' })).toHaveCount(0);
+
+		// Decks is now a real, live link.
+		await expect(page.locator('nav a', { hasText: 'Decks' })).toHaveCount(1);
 	});
 
 	test('carries the attribution the project is required to show', async ({ page }) => {

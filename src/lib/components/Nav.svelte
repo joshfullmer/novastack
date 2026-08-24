@@ -2,9 +2,10 @@
 	/**
 	 * One shared nav in the root layout, so it cannot drift between routes.
 	 *
-	 * **Decks, Sets and Rules render as dimmed text with no `href`** — signalling direction
-	 * without offering clickable 404s. `aria-disabled` alone would still be focusable and still
-	 * navigate; omitting the href is what actually makes them inert.
+	 * **Sets and Rules render as dimmed text with no `href`** — signalling direction without
+	 * offering clickable 404s. `aria-disabled` alone would still be focusable and still navigate;
+	 * omitting the href is what actually makes them inert. **Decks** graduated out of that list
+	 * once the deckbuilder shipped (`docs/spec/deckbuilder.md`).
 	 *
 	 * Set is a filter, not a route — `Sets` here is a stage-past-this-one landing page, not the
 	 * Set facet.
@@ -12,8 +13,11 @@
 	import { page } from '$app/state';
 	import Mark from './Mark.svelte';
 
-	const LIVE = [{ href: '/cards', label: 'Cards' }];
-	const SOON = ['Decks', 'Sets', 'Rules'];
+	const LIVE = [
+		{ href: '/cards', label: 'Cards' },
+		{ href: '/decks', label: 'Decks' }
+	];
+	const SOON = ['Sets', 'Rules'];
 
 	const isCurrent = (href: string) => page.url.pathname.startsWith(href);
 </script>
@@ -25,7 +29,7 @@
 			<span>nova<span class="text-neon">stack</span></span>
 		</a>
 
-		<ul class="flex items-baseline gap-4 text-sm">
+		<ul class="flex flex-1 items-baseline gap-4 text-sm">
 			{#each LIVE as item (item.href)}
 				<li>
 					<a
@@ -44,5 +48,17 @@
 				</li>
 			{/each}
 		</ul>
+
+		{#if page.data.user}
+			<form method="POST" action="/auth/logout" class="text-sm">
+				<button type="submit" class="text-muted transition-colors hover:text-bright"
+					>Sign out</button
+				>
+			</form>
+		{:else}
+			<a href="/auth/login" class="text-sm text-muted transition-colors hover:text-bright"
+				>Sign in</a
+			>
+		{/if}
 	</nav>
 </header>

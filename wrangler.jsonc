@@ -9,6 +9,20 @@
 	// unnecessary Worker invocations this project is shaped to avoid.
 	"main": ".svelte-kit/cloudflare/_worker.js",
 
+	// The deckbuilder's backend (accounts, decks, likes) — see docs/spec/deckbuilder.md §3.2.
+	// Scoped deliberately: this binding is the only new backend surface the deckbuilder adds.
+	// Bound as `DB` rather than wrangler's suggested `novastack_decks` — one generic name, since
+	// there is and should stay only one database.
+	"d1_databases": [
+		{
+			"binding": "DB",
+			"database_name": "novastack-decks",
+			"database_id": "16985ed2-7e55-4552-a104-bd9475626249",
+			// `drizzle-kit generate` writes here — one migrations folder, not two.
+			"migrations_dir": "drizzle"
+		}
+	],
+
 	"assets": {
 		"directory": ".svelte-kit/cloudflare",
 		"binding": "ASSETS",
@@ -29,11 +43,11 @@
 	// Workers Logs. Note the shape: the top-level `enabled` is false while `logs.enabled` is true —
 	// that is what the dashboard emits for "logs on, traces off", and the nested flag wins for logs.
 	//
-	// Worth knowing what this will and will not show. Every route here prerenders and there is no
-	// server code, so the Worker is only ever the 404 fallback: these logs should be almost silent.
-	// That silence is the signal. If invocation volume ever climbs, something is routing asset
-	// requests through the Worker — `run_worker_first`, or assets failing to match — and those
-	// requests are billable, unlike the static-asset hits they should have been.
+	// Worth knowing what this will and will not show. The card database still prerenders in full,
+	// so its traffic never reaches the Worker — only the deckbuilder routes (`/decks/*`, D1-backed)
+	// and the 404 fallback invoke it. A card-database visit showing up here would mean something is
+	// routing asset requests through the Worker — `run_worker_first`, or assets failing to match —
+	// and those requests are billable, unlike the static-asset hits they should have been.
 	"observability": {
 		"enabled": false,
 		"head_sampling_rate": 1,

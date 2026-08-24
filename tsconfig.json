@@ -3,7 +3,11 @@
 	"compilerOptions": {
 		"rewriteRelativeImportExtensions": true,
 		"sourceMap": true,
-		"strict": true
+		"strict": true,
+		// Ambient globals (`D1Database`, etc.) — the generated auth/db glue uses them bare, with
+		// no import, so they need to be global rather than scoped to one file's imports.
+		// `$app/types` must stay too — `types` doesn't merge with the extended `$app/tsconfig`.
+		"types": ["$app/types", "@cloudflare/workers-types"]
 	},
-	"include": ["src", "scripts", "e2e", "playwright.config.ts"]
+	"include": ["src", "scripts", "e2e", "playwright.config.ts", "drizzle.config.ts"]
 }
