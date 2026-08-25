@@ -30,13 +30,13 @@
 </script>
 
 <header class="sticky top-0 z-30 border-b border-edge/60 bg-void/80 backdrop-blur-md">
-	<nav class="mx-auto flex max-w-[1800px] items-baseline gap-6 px-4 py-3 sm:px-6">
+	<nav class="mx-auto flex max-w-[1800px] items-center gap-6 px-4 py-3 sm:px-6">
 		<a href="/" class="flex items-center gap-2 text-lg font-semibold tracking-tight text-bright">
 			<Mark class="size-5 shrink-0 text-neon" />
 			<span>nova<span class="text-neon">stack</span></span>
 		</a>
 
-		<ul class="flex flex-1 items-baseline gap-4 text-sm">
+		<ul class="flex flex-1 items-center gap-4 text-sm">
 			{#each LIVE as item (item.href)}
 				<li>
 					<a

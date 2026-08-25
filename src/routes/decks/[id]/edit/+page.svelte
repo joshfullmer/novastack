@@ -329,7 +329,7 @@
 					<button
 						type="button"
 						onclick={() => (deckView = 'list')}
-						class="px-2 py-1"
+						class="px-2 py-1 transition-colors hover:bg-raised/60 hover:text-bright"
 						class:bg-raised={deckView === 'list'}
 						class:text-bright={deckView === 'list'}
 						class:text-muted={deckView !== 'list'}>List</button
@@ -337,7 +337,7 @@
 					<button
 						type="button"
 						onclick={() => (deckView = 'gallery')}
-						class="px-2 py-1"
+						class="px-2 py-1 transition-colors hover:bg-raised/60 hover:text-bright"
 						class:bg-raised={deckView === 'gallery'}
 						class:text-bright={deckView === 'gallery'}
 						class:text-muted={deckView !== 'gallery'}>Gallery</button
@@ -369,7 +369,8 @@
 								type="button"
 								onclick={() => removeCard(entry.card)}
 								aria-label="Remove one {entry.card.name}"
-								class="shrink-0 text-muted hover:text-card-red">−</button
+								class="shrink-0 rounded-md border border-edge px-1.5 text-muted
+									transition-colors hover:border-card-red hover:text-card-red">−</button
 							>
 						</li>
 					{/each}

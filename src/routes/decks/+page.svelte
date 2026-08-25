@@ -165,7 +165,7 @@
 					<button
 						type="button"
 						onclick={() => (deckView = 'list')}
-						class="px-2 py-1"
+						class="px-2 py-1 transition-colors hover:bg-raised/60 hover:text-bright"
 						class:bg-raised={deckView === 'list'}
 						class:text-bright={deckView === 'list'}
 						class:text-muted={deckView !== 'list'}>List</button
@@ -173,7 +173,7 @@
 					<button
 						type="button"
 						onclick={() => (deckView = 'grid')}
-						class="px-2 py-1"
+						class="px-2 py-1 transition-colors hover:bg-raised/60 hover:text-bright"
 						class:bg-raised={deckView === 'grid'}
 						class:text-bright={deckView === 'grid'}
 						class:text-muted={deckView !== 'grid'}>Grid</button
