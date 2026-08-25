@@ -6,7 +6,7 @@
 import { desc, eq } from 'drizzle-orm';
 import type { DeckVersionPayload } from '#lib/decks/schema.js';
 import type { getDb } from './index.js';
-import { decks, deckVersions } from './schema.js';
+import { decks, deckVersions, user } from './schema.js';
 
 type Db = ReturnType<typeof getDb>;
 
@@ -16,9 +16,14 @@ export async function createDeck(db: Db, ownerId: string, name: string) {
 	return deck;
 }
 
+/** Joined with its owner's display name — the view screen's "by {name}" attribution. */
 export async function getDeck(db: Db, deckId: string) {
-	const [deck] = await db.select().from(decks).where(eq(decks.id, deckId));
-	return deck ?? null;
+	const [row] = await db
+		.select({ deck: decks, ownerName: user.name })
+		.from(decks)
+		.innerJoin(user, eq(user.id, decks.ownerId))
+		.where(eq(decks.id, deckId));
+	return row ? { ...row.deck, ownerName: row.ownerName } : null;
 }
 
 export async function getLatestVersion(db: Db, deckId: string) {

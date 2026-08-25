@@ -1,397 +1,378 @@
 <script lang="ts">
 	/**
-	 * The deckbuilder screen — `docs/spec/deckbuilder.md` §5. Ported from the winning prototype
-	 * (`src/routes/prototype/deckbuilder/VariantA.svelte`) and wired to real persistence: state is
-	 * seeded from the loaded deck, mutated locally via `#lib/decks/deck-state.svelte.js`, and
-	 * saved through the `save` action as one new `deck_versions` row.
+	 * The read-only deck view — `docs/spec/deckbuilder.md` §7. What a non-owner sees for a
+	 * public/unlisted deck, and what an owner sees before dropping into the editor
+	 * (`/decks/[id]/edit`). Shares `#lib/decks/deck-state.svelte.js` with the editor purely for its
+	 * derived getters (budget, size, RAM violations) — nothing here mutates it.
 	 *
-	 * Export (§6) is deliberately absent — sharing/export is Phase 2, not built yet.
+	 * Layout is "art-first, split focus" — chosen after a full research pass and 3 competing
+	 * prototype variants, reviewed live (`.scratch/decks-view-layout/`, issues 01–04). Its
+	 * distinguishing idea: a persistent, always-populated art-preview panel replaces the floating
+	 * hover popup the two other variants kept — real layout width, not an overlay, and it never
+	 * sits empty (falls back to the first Legend, or the first Main Deck entry, before anything's
+	 * been hovered).
 	 */
-	import { enhance } from '$app/forms';
+	import { resolve } from '$app/paths';
 	import CardImage from '#lib/components/CardImage.svelte';
+	import {
+		COLOR_BADGE_SHAPE,
+		COLOR_BADGE_SIZE,
+		COLOR_DOT,
+		COLOR_TEXT,
+		COLOR_TINT
+	} from '#lib/components/color.js';
 	import { dataset } from '#lib/cards/index.js';
 	import type { Card } from '#lib/cards/schema.js';
-	import { admits } from '#lib/filters/budget.js';
-	import { evaluate, type Match, type Predicate } from '#lib/filters/predicate.js';
-	import { parseQuery } from '#lib/query/index.js';
-	import { DEFAULT_SORT, sortMatches } from '#lib/filters/sort.js';
+	import { COLORS } from '#lib/cards/vocabulary.js';
 	import { LEGEND_SLOTS, MAX_DECK_SIZE, MIN_DECK_SIZE } from '#lib/decks/legality.js';
 	import { createDeckState } from '#lib/decks/deck-state.svelte.js';
+	import { groupDeckEntries } from '#lib/decks/grouping.js';
+	import { colorComposition, costCurve, eddiableStat } from '#lib/decks/stats.js';
+	import { SIZE_STATUS_TONE } from '#lib/decks/status-tone.js';
 
 	const legendSlots = Array.from({ length: LEGEND_SLOTS }, (_, index) => index);
 
-	let { data, form } = $props();
+	let { data } = $props();
 
-	// Deliberately seeded once, not reactive to later `data` updates. After a save, `data.payload`
-	// reloads to exactly what was just persisted, so re-seeding would be a no-op there — but
-	// re-seeding in general would clobber in-progress local edits with stale server state any
-	// time `data` changed for an unrelated reason.
 	// svelte-ignore state_referenced_locally
 	const deck = createDeckState(data.payload);
-	const deckPayload = $derived(JSON.stringify(deck.toPayload()));
 
-	const ALL: Predicate = { kind: 'all' };
-
-	let tab = $state<'legends' | 'main'>('legends');
-	let searchLegends = $state('');
-	let searchMain = $state('');
 	let deckView = $state<'list' | 'gallery'>('list');
-	let hovered = $state<{ card: Card; top: number } | null>(null);
 
-	// Same density control as the card database's own grid, just a different default: this
-	// panel is denser to begin with, so 8 (not 6) starts already-comfortable.
-	const COLUMN_STEP = 2;
-	const COLUMN_FLOOR = 2;
-	const COLUMN_CEILING = 12;
-	let columns = $state(8);
-	function setColumns(next: number) {
-		columns = Math.max(COLUMN_FLOOR, Math.min(next, COLUMN_CEILING));
-	}
+	// The preview panel always shows *something* — defaults to the first Legend, or the first
+	// Main Deck entry if there's no Legend yet, rather than sitting empty until a hover happens.
+	const fallback = $derived(deck.legends[0] ?? deck.entries[0]?.card ?? null);
+	let focused = $state<Card | null>(null);
+	const shown = $derived(focused ?? fallback);
 
-	function matchesFor(source: string): Match[] {
-		const trimmed = source.trim();
-		const predicate = trimmed === '' ? ALL : parseQuery(trimmed, dataset).predicate;
-		return sortMatches(dataset, evaluate(dataset, predicate), DEFAULT_SORT);
-	}
+	const mainGroups = $derived(groupDeckEntries(dataset, deck.entries));
+	const sizeTone = $derived(SIZE_STATUS_TONE[deck.sizeStatus]);
 
-	/**
-	 * Colors actually present in the deck so far. Building order is deliberately free — cards go
-	 * in before Legends do — so the Legends tab filters to "relevant to what's already in the
-	 * deck" instead of "affordable," and an empty deck imposes no filter at all.
-	 */
-	const neededColors = $derived(new Set(deck.entries.map((entry) => entry.card.color)));
-
-	/** Each tab's search runs through the same query language and default sort as `/cards`,
-	 * plus its own intrinsic filter. */
-	const visibleMatches = $derived.by(() => {
-		if (tab === 'legends') {
-			return matchesFor(searchLegends)
-				.filter((match) => match.card.cardType === 'Legend')
-				.filter((match) => isChosenLegend(match.card) || deck.legends.length < LEGEND_SLOTS)
-				.filter(
-					(match) =>
-						neededColors.size === 0 ||
-						isChosenLegend(match.card) ||
-						neededColors.has(match.card.color)
-				);
-		}
-		// No Legends yet → build freely, capped only by the copy limit. Once at least one
-		// Legend is chosen, the grid narrows to what its RAM budget actually supports.
-		return matchesFor(searchMain).filter((match) => {
-			if (match.card.cardType === 'Legend') return false;
-			if (!deck.canAddCopy(match.card)) return false;
-			if (deck.legends.length > 0 && !admits(deck.budget, match.card)) return false;
-			return true;
-		});
-	});
-
-	function isChosenLegend(card: Card): boolean {
-		return deck.legends.some((legend) => legend.slug === card.slug);
-	}
-
-	function toggleLegend(card: Card) {
-		const slot = deck.legends.findIndex((legend) => legend.slug === card.slug);
-		if (slot !== -1) deck.setLegend(slot, null);
-		else if (deck.legends.length < LEGEND_SLOTS) deck.setLegend(deck.legends.length, card);
-	}
-
-	const sizeTone = $derived(
-		deck.sizeStatus === 'legal'
-			? 'text-neon'
-			: deck.sizeStatus === 'over'
-				? 'text-card-red'
-				: 'text-muted'
+	const curve = $derived(costCurve(deck.entries));
+	const curveMax = $derived(Math.max(1, ...curve.map((bucket) => bucket.quantity)));
+	const composition = $derived(
+		colorComposition(deck.entries).filter((slice) => slice.quantity > 0)
 	);
-
-	function onRowEnter(card: Card, event: MouseEvent & { currentTarget: HTMLElement }) {
-		const rect = event.currentTarget.getBoundingClientRect();
-		hovered = { card, top: rect.top };
-	}
+	const eddiable = $derived(eddiableStat(deck.entries));
+	const eddiablePercent = $derived(
+		eddiable.totalQuantity === 0 ? 0 : (eddiable.eddiableQuantity / eddiable.totalQuantity) * 100
+	);
 </script>
 
 <svelte:head>
 	<title>{data.deckName} — novastack</title>
 </svelte:head>
 
-<div class="fixed inset-x-0 bottom-0 z-20 flex bg-void" style="top: var(--spacing-nav)">
-	<!-- Browse panel -->
-	<div class="flex min-w-0 flex-1 flex-col overflow-hidden">
-		<div class="flex items-center gap-4 border-b border-edge px-4 pt-3 text-sm">
-			<h1 class="mr-2 truncate text-sm font-medium text-bright">{data.deckName}</h1>
-			<button
-				type="button"
-				onclick={() => (tab = 'legends')}
-				class="-mb-px border-b-2 px-1 pb-2"
-				class:border-neon={tab === 'legends'}
-				class:text-neon={tab === 'legends'}
-				class:border-transparent={tab !== 'legends'}
-				class:text-muted={tab !== 'legends'}
-			>
-				Legends
-			</button>
-			<button
-				type="button"
-				onclick={() => (tab = 'main')}
-				class="-mb-px border-b-2 px-1 pb-2"
-				class:border-neon={tab === 'main'}
-				class:text-neon={tab === 'main'}
-				class:border-transparent={tab !== 'main'}
-				class:text-muted={tab !== 'main'}
-			>
-				Main Deck
-			</button>
-		</div>
-
-		<div class="p-4">
-			<input
-				type="search"
-				value={tab === 'legends' ? searchLegends : searchMain}
-				oninput={(event) => {
-					const value = event.currentTarget.value;
-					if (tab === 'legends') searchLegends = value;
-					else searchMain = value;
-				}}
-				placeholder={tab === 'legends'
-					? 'Search legends… (color:red type:legend …)'
-					: 'Search cards… (cost<=3 tag:corpo …)'}
-				class="w-full rounded-md border border-edge bg-surface px-3 py-2 text-sm text-body
-					placeholder:text-muted focus:border-neon focus:outline-none"
-			/>
-			{#if tab === 'main'}
-				<p class="mt-2 text-xs text-muted">
-					Add cards freely — pick Legends after, in the Legends tab, to cover their RAM.
-				</p>
-			{:else if deck.entries.length > 0}
-				<p class="mt-2 text-xs text-muted">
-					Filtered to colors already in your deck ({[...neededColors].join(', ')}).
-				</p>
-			{/if}
-		</div>
-
-		<div class="flex items-center gap-3 px-4 pb-2">
-			<fieldset>
-				<legend class="mb-1 text-xs font-medium tracking-wide text-muted uppercase"
-					>Cards per row</legend
-				>
-				<div class="inline-flex items-center overflow-hidden rounded-md border border-edge text-sm">
-					<button
-						type="button"
-						onclick={() => setColumns(columns - COLUMN_STEP)}
-						disabled={columns <= COLUMN_FLOOR}
-						aria-label="Fewer, larger cards"
-						class="px-2.5 py-1 text-body hover:bg-raised disabled:opacity-30">−</button
+<!--
+	The extra plain wrapper matters: `<main>` (root layout) is a column flex container, and a
+	`mx-auto max-w-[…]` box that is a *direct* flex child has its stretch behavior disabled by its
+	own auto margins — the box shrink-wraps to content width instead of filling up to `max-w`,
+	and that content-dependent width is exactly what made the List/Gallery toggle visibly resize
+	the page. `/cards` sidesteps this the same way, with its own plain wrapper div.
+-->
+<div>
+	<div class="mx-auto max-w-[1800px] px-4 py-6 sm:px-6">
+		<div class="grid gap-6 lg:grid-cols-[240px_1fr_280px]">
+			<!-- Preview panel -->
+			<div class="lg:sticky lg:top-6 lg:self-start">
+				{#if shown}
+					<div class="card-frame overflow-hidden rounded-lg border border-edge">
+						<CardImage
+							printingId={shown.printings[0].id}
+							thumbhash={shown.printings[0].thumbhash}
+							color={shown.color}
+							alt={shown.name}
+							sizes="240px"
+						/>
+					</div>
+					<p class="mt-2 text-sm font-medium {COLOR_TEXT[shown.color]}">{shown.name}</p>
+					<p class="text-xs text-muted">
+						{shown.cardType}
+						{#if shown.cost !== null}· Cost {shown.cost}{/if}
+						{#if shown.power !== null}· Power {shown.power}{/if}
+						{#if shown.ramRequired !== null}· RAM {shown.ramRequired}{/if}
+					</p>
+				{:else}
+					<div
+						class="flex card-frame items-center justify-center rounded-lg border border-edge
+						bg-surface text-sm text-muted"
 					>
-					<span class="w-8 text-center text-xs text-muted tabular-nums">{columns}</span>
-					<button
-						type="button"
-						onclick={() => setColumns(columns + COLUMN_STEP)}
-						disabled={columns >= COLUMN_CEILING}
-						aria-label="More, smaller cards"
-						class="px-2.5 py-1 text-body hover:bg-raised disabled:opacity-30">+</button
-					>
-				</div>
-			</fieldset>
-			<p class="text-sm text-muted tabular-nums">{visibleMatches.length} cards</p>
-		</div>
+						No cards yet
+					</div>
+				{/if}
+			</div>
 
-		<div class="min-h-0 flex-1 overflow-y-auto px-4 pt-1 pb-4">
-			<ul class="grid gap-2" style="grid-template-columns: repeat({columns}, minmax(0, 1fr))">
-				{#each visibleMatches as match (match.card.slug)}
-					{@const inDeck = deck.quantityOf(match.card)}
-					{@const chosen = tab === 'legends' && isChosenLegend(match.card)}
-					<li class="relative">
-						<button
-							type="button"
-							onclick={() =>
-								tab === 'legends' ? toggleLegend(match.card) : deck.addCard(match.card)}
-							class="group relative block w-full overflow-hidden rounded-md transition-transform
-								hover:-translate-y-0.5"
-							class:ring-2={chosen}
-							class:ring-neon={chosen}
+			<!-- Main column -->
+			<div class="min-w-0">
+				<div class="mb-4 flex items-center justify-between gap-4">
+					<div class="min-w-0">
+						<h1 class="truncate text-xl font-semibold text-bright">{data.deckName}</h1>
+						<p class="text-xs text-muted">
+							by {data.ownerName} · <span class="capitalize">{data.visibility}</span>
+						</p>
+					</div>
+					{#if data.isOwner}
+						<a
+							href="/decks/{data.deckId}/edit"
+							class="shrink-0 rounded-md bg-neon px-3 py-1.5 text-sm
+							font-medium text-void hover:bg-neon-dim">Edit deck</a
 						>
-							<CardImage
-								printingId={match.printing.id}
-								thumbhash={match.printing.thumbhash}
-								color={match.card.color}
-								alt={match.card.name}
-								sizes="{Math.round(100 / columns)}vw"
-							/>
-							{#if inDeck > 0}
-								<span
-									class="absolute top-1 right-1 flex size-5 items-center justify-center rounded-full
-										bg-neon text-xs font-bold text-void tabular-nums"
+					{/if}
+				</div>
+
+				<div class="mb-4 flex items-center gap-4">
+					<div class="flex items-center gap-3">
+						{#each legendSlots as slot (slot)}
+							{@const legend = deck.legends[slot]}
+							{#if legend}
+								<a
+									href={resolve('/cards/[slug]', { slug: legend.slug })}
+									class="card-frame w-24 shrink-0 overflow-hidden rounded-md border border-edge"
+									onmouseenter={() => (focused = legend)}
 								>
-									{inDeck}
-								</span>
+									<CardImage
+										printingId={legend.printings[0].id}
+										thumbhash={legend.printings[0].thumbhash}
+										color={legend.color}
+										alt={legend.name}
+										sizes="96px"
+									/>
+								</a>
+							{:else}
+								<div
+									class="flex card-frame w-24 shrink-0 items-center justify-center rounded-md
+									border border-edge bg-surface text-muted"
+								>
+									—
+								</div>
 							{/if}
-						</button>
-					</li>
-				{:else}
-					<li class="col-span-full py-8 text-center text-sm text-muted">
-						{tab === 'legends'
-							? 'No legends match your search, your colors, or there’s no room left.'
-							: 'No cards match, or you already have 3 copies of everything that does.'}
-					</li>
-				{/each}
-			</ul>
-		</div>
-	</div>
+						{/each}
+					</div>
+					<!-- RAM budget in each Color's own cost-badge shape from the physical card — dark
+					     fill, colored outline, the number inside — instead of a generic pill. A real
+					     SVG `<polygon>`, not a `clip-path` div: `stroke` gives a correctly-mitered
+					     continuous outline at every vertex for free, which a clipped border can't. -->
+					<div class="flex flex-wrap gap-3">
+						{#each COLORS as color (color)}
+							{@const ram = deck.budget[color]}
+							{#if ram > 0}
+								<div class="flex flex-col items-center gap-1">
+									<div class="relative {COLOR_BADGE_SIZE[color]}">
+										<svg
+											viewBox={COLOR_BADGE_SHAPE[color].viewBox}
+											class="absolute inset-0 size-full {COLOR_TEXT[color]}"
+										>
+											<polygon
+												points={COLOR_BADGE_SHAPE[color].points}
+												class="fill-void stroke-current"
+												stroke-width="5"
+											/>
+										</svg>
+										<span
+											class="absolute inset-0 flex items-center justify-center text-sm
+											font-bold {COLOR_TEXT[color]}">{ram}</span
+										>
+									</div>
+									<span class="text-[0.6rem] tracking-wide text-muted uppercase">{color}</span>
+								</div>
+							{/if}
+						{/each}
+					</div>
+				</div>
 
-	<!-- Deck panel -->
-	<aside class="flex w-[360px] shrink-0 flex-col border-l border-edge bg-shell">
-		<div class="border-b border-edge p-4">
-			<p class="mb-2 text-xs font-medium tracking-wide text-muted uppercase">
-				Legends {deck.legends.length}/{LEGEND_SLOTS}
-			</p>
-			<div class="flex gap-2">
-				{#each legendSlots as slot (slot)}
-					{@const legend = deck.legends[slot]}
-					<button
-						type="button"
-						disabled={!legend}
-						onclick={() => legend && toggleLegend(legend)}
-						aria-label={legend ? `Remove ${legend.name}` : `Legend slot ${slot + 1}: empty`}
-						class="flex size-14 items-center justify-center overflow-hidden rounded-md border
-							border-edge disabled:cursor-default"
-						class:hover:border-card-red={!!legend}
-					>
-						{#if legend}
-							<CardImage
-								printingId={legend.printings[0].id}
-								thumbhash={legend.printings[0].thumbhash}
-								color={legend.color}
-								alt={legend.name}
-								sizes="56px"
-							/>
+				{#if !deck.isRamLegal}
+					<div class="mb-4 rounded-md border border-edge bg-card-red/10 p-3 text-sm text-card-red">
+						{deck.ramViolations.length}
+						{deck.ramViolations.length === 1 ? 'card exceeds' : 'cards exceed'}
+						this deck's Legends' RAM: {deck.ramViolations
+							.map((entry) => entry.card.name)
+							.join(', ')}
+					</div>
+				{/if}
+
+				<div class="mb-3 flex items-center justify-between">
+					<span class="text-sm font-medium text-bright">Main Deck</span>
+					<div class="flex items-center gap-3">
+						<span
+							class="text-sm font-medium tabular-nums {sizeTone}"
+							title="{MIN_DECK_SIZE}–{MAX_DECK_SIZE} cards"
+						>
+							{deck.totalCards}
+						</span>
+						<div class="flex overflow-hidden rounded-md border border-edge text-xs">
+							<button
+								type="button"
+								onclick={() => (deckView = 'list')}
+								class="px-2 py-1"
+								class:bg-raised={deckView === 'list'}
+								class:text-bright={deckView === 'list'}
+								class:text-muted={deckView !== 'list'}>List</button
+							>
+							<button
+								type="button"
+								onclick={() => (deckView = 'gallery')}
+								class="px-2 py-1"
+								class:bg-raised={deckView === 'gallery'}
+								class:text-bright={deckView === 'gallery'}
+								class:text-muted={deckView !== 'gallery'}>Gallery</button
+							>
+						</div>
+					</div>
+				</div>
+
+				{#if deckView === 'list'}
+					{@const columns = 'grid-cols-[2rem_6fr_1fr_1fr_1fr]'}
+					<ul class="rounded-md border border-edge">
+						<li
+							class="grid {columns} items-center gap-2 border-b border-edge px-4 py-1
+							text-[0.65rem] font-medium tracking-wide text-muted uppercase"
+						>
+							<span></span>
+							<span>Name</span>
+							<span class="text-right">Cost</span>
+							<span class="text-right">Pwr</span>
+							<span class="text-right">RAM</span>
+						</li>
+						{#each mainGroups as group (group.cardType)}
+							<li
+								class="border-b border-edge/50 bg-shell px-4 py-1 text-xs font-medium
+								tracking-wide text-muted uppercase"
+							>
+								{group.label} ({group.quantity})
+							</li>
+							{#each group.entries as entry (entry.card.slug)}
+								<li class="border-b border-edge/50 last:border-b-0">
+									<a
+										href={resolve('/cards/[slug]', { slug: entry.card.slug })}
+										class="grid {columns} items-center gap-2 px-4 py-1.5 hover:bg-raised"
+										onmouseenter={() => (focused = entry.card)}
+									>
+										<span class="text-muted tabular-nums">{entry.quantity}×</span>
+										<span class="min-w-0 truncate text-sm {COLOR_TEXT[entry.card.color]}"
+											>{entry.card.name}</span
+										>
+										<span class="text-right text-xs text-muted tabular-nums"
+											>{entry.card.cost ?? '—'}</span
+										>
+										<span class="text-right text-xs text-muted tabular-nums"
+											>{entry.card.power ?? '—'}</span
+										>
+										<span class="text-right text-xs tabular-nums {COLOR_TEXT[entry.card.color]}"
+											>{entry.card.ramRequired ?? '—'}</span
+										>
+									</a>
+								</li>
+							{/each}
 						{:else}
-							<span class="text-muted">+</span>
-						{/if}
-					</button>
-				{/each}
+							<li class="p-4 text-sm text-muted">No cards yet.</li>
+						{/each}
+					</ul>
+				{:else}
+					<div>
+						{#each mainGroups as group (group.cardType)}
+							<p
+								class="mt-3 mb-1 text-xs font-medium tracking-wide text-muted uppercase
+								first:mt-0"
+							>
+								{group.label} <span class="text-muted/70 tabular-nums">{group.quantity}</span>
+							</p>
+							<ul class="grid grid-cols-5 gap-2">
+								{#each group.entries as entry (entry.card.slug)}
+									<li class="relative overflow-hidden rounded-md">
+										<a
+											href={resolve('/cards/[slug]', { slug: entry.card.slug })}
+											class="block"
+											onmouseenter={() => (focused = entry.card)}
+										>
+											<CardImage
+												printingId={entry.card.printings[0].id}
+												thumbhash={entry.card.printings[0].thumbhash}
+												color={entry.card.color}
+												alt={entry.card.name}
+												sizes="150px"
+											/>
+										</a>
+										<span
+											class="pointer-events-none absolute top-1 right-1 flex size-5
+											items-center justify-center rounded-full bg-neon text-xs font-bold
+											text-void tabular-nums"
+										>
+											{entry.quantity}
+										</span>
+									</li>
+								{/each}
+							</ul>
+						{:else}
+							<p class="p-4 text-sm text-muted">No cards yet.</p>
+						{/each}
+					</div>
+				{/if}
 			</div>
-			<p class="mt-2 text-xs text-muted">
-				{#each Object.entries(deck.budget) as [color, ram] (color)}
-					{#if ram > 0}<span class="mr-2">{color} {ram}</span>{/if}
-				{/each}
-			</p>
-		</div>
 
-		{#if !deck.isRamLegal}
-			<div class="border-b border-edge bg-card-red/10 px-4 py-2.5 text-sm text-card-red">
-				<p class="font-medium">
-					{deck.ramViolations.length}
-					{deck.ramViolations.length === 1 ? 'card exceeds' : 'cards exceed'} your Legends’ RAM
-				</p>
-				<p class="mt-0.5 max-h-16 overflow-y-auto text-xs text-card-red/80">
-					{deck.ramViolations.map((entry) => entry.card.name).join(', ')}
-				</p>
-			</div>
-		{/if}
+			<!-- Stats sidebar -->
+			<div class="flex flex-col gap-4">
+				<div class="rounded-md border border-edge bg-shell p-4">
+					<p class="mb-3 text-xs font-medium tracking-wide text-muted uppercase">Cost curve</p>
+					{#if curve.length === 0}
+						<p class="text-xs text-muted">No cards yet.</p>
+					{:else}
+						<div class="flex items-end gap-1.5">
+							{#each curve as bucket (bucket.cost ?? 'null')}
+								<div class="flex flex-1 flex-col items-center gap-1">
+									<span class="text-[0.65rem] text-muted tabular-nums">{bucket.quantity}</span>
+									<div class="flex h-16 w-full items-end">
+										<div
+											class="w-full rounded-sm bg-neon-dim"
+											style="height: {(bucket.quantity / curveMax) * 100}%"
+										></div>
+									</div>
+									<span class="text-[0.65rem] text-muted tabular-nums">{bucket.cost ?? '—'}</span>
+								</div>
+							{/each}
+						</div>
+					{/if}
+				</div>
 
-		<div class="flex items-center justify-between border-b border-edge px-4 py-3">
-			<span class="text-sm font-medium text-bright">Main Deck</span>
-			<div class="flex items-center gap-3">
-				<span class="text-sm tabular-nums {sizeTone}">
-					{deck.totalCards} / {MIN_DECK_SIZE}–{MAX_DECK_SIZE}
-				</span>
-				<div class="flex overflow-hidden rounded-md border border-edge text-xs">
-					<button
-						type="button"
-						onclick={() => (deckView = 'list')}
-						class="px-2 py-1"
-						class:bg-raised={deckView === 'list'}
-						class:text-bright={deckView === 'list'}
-						class:text-muted={deckView !== 'list'}>List</button
-					>
-					<button
-						type="button"
-						onclick={() => (deckView = 'gallery')}
-						class="px-2 py-1"
-						class:bg-raised={deckView === 'gallery'}
-						class:text-bright={deckView === 'gallery'}
-						class:text-muted={deckView !== 'gallery'}>Gallery</button
-					>
+				<div class="rounded-md border border-edge bg-shell p-4">
+					<p class="mb-3 text-xs font-medium tracking-wide text-muted uppercase">Colors</p>
+					{#if composition.length === 0}
+						<p class="text-xs text-muted">No cards yet.</p>
+					{:else}
+						<div class="flex h-2 overflow-hidden rounded-full bg-raised">
+							{#each composition as slice (slice.color)}
+								<div
+									class={COLOR_TINT[slice.color]}
+									style="width: {(slice.quantity / deck.totalCards) * 100}%"
+								></div>
+							{/each}
+						</div>
+						<div class="mt-3 flex flex-wrap gap-x-3 gap-y-1 text-xs text-muted">
+							{#each composition as slice (slice.color)}
+								<span class="inline-flex items-center gap-1.5">
+									<span class="size-2 rounded-full {COLOR_DOT[slice.color]}"></span>{slice.color}
+									{slice.quantity}
+								</span>
+							{/each}
+						</div>
+					{/if}
+				</div>
+
+				<div class="rounded-md border border-edge bg-shell p-4">
+					<p class="mb-3 text-xs font-medium tracking-wide text-muted uppercase">Eddiable</p>
+					{#if eddiable.totalQuantity === 0}
+						<p class="text-xs text-muted">No cards yet.</p>
+					{:else}
+						<div class="h-2 overflow-hidden rounded-full bg-raised">
+							<div class="h-full bg-neon" style="width: {eddiablePercent}%"></div>
+						</div>
+						<p class="mt-3 text-xs text-muted">
+							{eddiable.eddiableQuantity} of {eddiable.totalQuantity} cards ({Math.round(
+								eddiablePercent
+							)}%)
+						</p>
+					{/if}
 				</div>
 			</div>
 		</div>
-
-		{#if deckView === 'list'}
-			<ul class="flex-1 overflow-y-auto" role="list" onmouseleave={() => (hovered = null)}>
-				{#each deck.entries as entry (entry.card.slug)}
-					<li
-						class="flex items-center justify-between gap-2 border-b border-edge/50 px-4 py-1.5"
-						onmouseenter={(event) => onRowEnter(entry.card, event)}
-					>
-						<span class="min-w-0 flex-1 truncate text-sm text-body">
-							<span class="mr-1.5 text-muted tabular-nums">{entry.quantity}×</span>{entry.card.name}
-						</span>
-						<button
-							type="button"
-							onclick={() => deck.removeCard(entry.card)}
-							aria-label="Remove one {entry.card.name}"
-							class="shrink-0 text-muted hover:text-card-red">−</button
-						>
-					</li>
-				{:else}
-					<li class="p-4 text-sm text-muted">No cards yet. Add some from the left.</li>
-				{/each}
-			</ul>
-		{:else}
-			<ul class="grid flex-1 grid-cols-4 content-start gap-2 overflow-y-auto p-3">
-				{#each deck.entries as entry (entry.card.slug)}
-					<li class="relative">
-						<button
-							type="button"
-							onclick={() => deck.removeCard(entry.card)}
-							aria-label="Remove one {entry.card.name}"
-							class="block w-full overflow-hidden rounded-md"
-						>
-							<CardImage
-								printingId={entry.card.printings[0].id}
-								thumbhash={entry.card.printings[0].thumbhash}
-								color={entry.card.color}
-								alt={entry.card.name}
-								sizes="80px"
-							/>
-							<span
-								class="absolute top-1 right-1 flex size-5 items-center justify-center rounded-full
-									bg-neon text-xs font-bold text-void tabular-nums"
-							>
-								{entry.quantity}
-							</span>
-						</button>
-					</li>
-				{:else}
-					<li class="col-span-4 p-4 text-sm text-muted">No cards yet.</li>
-				{/each}
-			</ul>
-		{/if}
-
-		<form method="POST" action="?/save" use:enhance class="border-t border-edge p-3">
-			<input type="hidden" name="payload" value={deckPayload} />
-			{#if form?.success}
-				<p class="mb-2 text-xs text-neon">Saved.</p>
-			{:else if form?.message}
-				<p class="mb-2 text-xs text-card-red">{form.message}</p>
-			{/if}
-			<button
-				type="submit"
-				class="w-full rounded-md bg-neon px-3 py-1.5 text-sm font-medium text-void
-					hover:bg-neon-dim">Save deck</button
-			>
-		</form>
-	</aside>
-</div>
-
-{#if hovered}
-	<div class="pointer-events-none fixed z-30 w-56" style="right: 372px; top: {hovered.top}px;">
-		<CardImage
-			printingId={hovered.card.printings[0].id}
-			thumbhash={hovered.card.printings[0].thumbhash}
-			color={hovered.card.color}
-			alt={hovered.card.name}
-			sizes="224px"
-			class="rounded-lg shadow-2xl shadow-void"
-		/>
 	</div>
-{/if}
+</div>

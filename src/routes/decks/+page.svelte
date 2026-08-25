@@ -5,7 +5,8 @@
 	 */
 	import CardImage from '#lib/components/CardImage.svelte';
 	import { cardBySlug } from '#lib/decks/deck-state.svelte.js';
-	import { MAX_DECK_SIZE, MIN_DECK_SIZE } from '#lib/decks/legality.js';
+	import { deckSizeStatus, MAX_DECK_SIZE, MIN_DECK_SIZE } from '#lib/decks/legality.js';
+	import { SIZE_STATUS_TONE } from '#lib/decks/status-tone.js';
 
 	let { data } = $props();
 </script>
@@ -56,7 +57,11 @@
 						<div class="min-w-0 flex-1">
 							<p class="truncate text-sm font-medium text-bright">{deck.name}</p>
 							<p class="text-xs text-muted tabular-nums">
-								{deck.cardCount} / {MIN_DECK_SIZE}–{MAX_DECK_SIZE} cards
+								<span
+									class={SIZE_STATUS_TONE[deckSizeStatus(deck.cardCount)]}
+									title="{MIN_DECK_SIZE}–{MAX_DECK_SIZE} cards">{deck.cardCount}</span
+								>
+								cards
 								{#if deck.savedAt}
 									· saved {deck.savedAt.toLocaleDateString()}
 								{/if}

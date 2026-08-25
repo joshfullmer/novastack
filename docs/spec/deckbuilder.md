@@ -174,8 +174,14 @@ modal, not the card database's own filter panel repurposed: a permanent two-pane
     can be deselected.
   - **Main Deck tab**: `card.cardType !== 'Legend'`, and once at least one Legend is chosen, also
     narrowed to `admits(budget, card)`.
-  - **Non-addable cards are filtered out of the grid entirely — never shown, greyed out, or
-    disabled.** The ≤3-copy limit applies identically in both tabs.
+  - **RAM-inadmissible cards are filtered out of the grid entirely — never shown, greyed out, or
+    disabled.** A card whose color has no budget, or whose `ramRequired` exceeds it, has no
+    business being in this deck at all, so it doesn't clutter the grid.
+  - **The ≤3-copy limit is a different case — the tile stays, disabled.** A card already at 3
+    copies remains visible, dimmed, and unclickable, rather than disappearing from the grid.
+    Filtering it out entirely reflows the grid on every 3rd copy added, which reads as the grid
+    reacting to _you_, not as useful information — the disabled tile (plus its `3` badge) says
+    the same thing without the layout shifting underfoot.
   - **Density control**: same affordance as `/cards` (a `−`/count/`+` stepper), **default 8**
     columns, range 2–12.
   - **Sort**: the same `DEFAULT_SORT` as `/cards` (Color → Card Type → Cost → Name) — this screen
