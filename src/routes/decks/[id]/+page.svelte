@@ -248,6 +248,47 @@
 							{:else}
 								<span class="capitalize">{data.visibility}</span>
 							{/if}
+							·
+							{#if data.isOwner}
+								<span class="inline-flex items-center gap-1">
+									<svg
+										viewBox="0 0 20 20"
+										class="size-3.5"
+										fill="none"
+										stroke="currentColor"
+										stroke-width="1.5"
+									>
+										<path
+											d="M10 17s-6.5-4.03-6.5-8.5A3.5 3.5 0 0 1 10 6.5a3.5 3.5 0 0 1 6.5 2c0 4.47-6.5 8.5-6.5 8.5Z"
+										/>
+									</svg>
+									{data.likeCount}
+								</span>
+							{:else}
+								<form method="POST" action="?/toggleLike" use:enhance class="inline align-middle">
+									<input type="hidden" name="liked" value={data.viewerHasLiked} />
+									<button
+										type="submit"
+										class="inline-flex items-center gap-1 rounded-full border border-edge px-2
+											py-0.5 align-middle hover:border-neon hover:text-neon"
+										class:text-neon={data.viewerHasLiked}
+										class:text-muted={!data.viewerHasLiked}
+									>
+										<svg
+											viewBox="0 0 20 20"
+											class="size-3.5"
+											fill={data.viewerHasLiked ? 'currentColor' : 'none'}
+											stroke="currentColor"
+											stroke-width="1.5"
+										>
+											<path
+												d="M10 17s-6.5-4.03-6.5-8.5A3.5 3.5 0 0 1 10 6.5a3.5 3.5 0 0 1 6.5 2c0 4.47-6.5 8.5-6.5 8.5Z"
+											/>
+										</svg>
+										{data.likeCount}
+									</button>
+								</form>
+							{/if}
 						</div>
 					</div>
 					<div class="flex shrink-0 items-center gap-2">

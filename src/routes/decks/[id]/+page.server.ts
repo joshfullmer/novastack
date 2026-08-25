@@ -5,9 +5,12 @@ import {
 	deleteDeck,
 	duplicateDeck,
 	getDeck,
+	getDeckLikeInfo,
 	getLatestVersion,
+	likeDeck,
 	renameDeck,
-	setDeckVisibility
+	setDeckVisibility,
+	unlikeDeck
 } from '#lib/server/db/decks.js';
 import type { Actions, PageServerLoad } from './$types';
 
@@ -52,13 +55,23 @@ export const load: PageServerLoad = async (event) => {
 		legends: version?.legends ?? []
 	});
 
+	// Liking is a non-owner action (§9) — the toggle only ever renders for someone else's deck,
+	// but the count itself is shown regardless of who's looking.
+	const { likeCount, viewerHasLiked } = await getDeckLikeInfo(
+		event.locals.db,
+		deck.id,
+		event.locals.user?.id ?? null
+	);
+
 	return {
 		deckId: deck.id,
 		deckName: deck.name,
 		ownerName: deck.ownerName,
 		visibility: deck.visibility,
 		isOwner,
-		payload
+		payload,
+		likeCount,
+		viewerHasLiked
 	};
 };
 
@@ -96,5 +109,20 @@ export const actions: Actions = {
 		const { deckId } = await requireOwner(event);
 		await deleteDeck(event.locals.db, deckId);
 		return redirect(303, '/decks');
+	},
+
+	toggleLike: async (event) => {
+		if (!event.locals.user) return redirect(302, '/auth/login');
+
+		const deck = await getDeck(event.locals.db, event.params.id);
+		if (!deck) return error(404, 'Deck not found');
+		if (deck.ownerId === event.locals.user.id) return error(403, "Can't like your own deck");
+
+		const formData = await event.request.formData();
+		if (formData.get('liked') === 'true') {
+			await unlikeDeck(event.locals.db, deck.id, event.locals.user.id);
+		} else {
+			await likeDeck(event.locals.db, deck.id, event.locals.user.id);
+		}
 	}
 };

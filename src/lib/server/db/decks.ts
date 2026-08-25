@@ -145,3 +145,25 @@ export async function likeDeck(db: Db, deckId: string, userId: string) {
 export async function unlikeDeck(db: Db, deckId: string, userId: string) {
 	await db.delete(deckLikes).where(and(eq(deckLikes.deckId, deckId), eq(deckLikes.userId, userId)));
 }
+
+/** A single deck's like count and whether `viewerId` has already liked it — the deck view
+ * screen's own like toggle (§9), not the Explore list's (which is read-only: liking only
+ * happens from a deck's own page, and only for non-owners). */
+export async function getDeckLikeInfo(db: Db, deckId: string, viewerId: string | null) {
+	const [{ likeCount }] = await db
+		.select({ likeCount: count() })
+		.from(deckLikes)
+		.where(eq(deckLikes.deckId, deckId));
+
+	const viewerHasLiked = viewerId
+		? (
+				await db
+					.select()
+					.from(deckLikes)
+					.where(and(eq(deckLikes.deckId, deckId), eq(deckLikes.userId, viewerId)))
+					.limit(1)
+			).length > 0
+		: false;
+
+	return { likeCount, viewerHasLiked };
+}

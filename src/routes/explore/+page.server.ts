@@ -1,7 +1,6 @@
-import { fail, redirect } from '@sveltejs/kit';
 import * as v from 'valibot';
-import { likeDeck, listPublicDecks, unlikeDeck } from '#lib/server/db/decks.js';
-import type { Actions, PageServerLoad } from './$types';
+import { listPublicDecks } from '#lib/server/db/decks.js';
+import type { PageServerLoad } from './$types';
 
 // Overrides the root layout's `prerender = true` — this reads request-scoped session/DB state.
 export const prerender = false;
@@ -27,7 +26,7 @@ export const load: PageServerLoad = async (event) => {
 	});
 
 	const decks = rows
-		.map(({ deck, ownerName, version, likeCount, hotCount, viewerHasLiked }) => ({
+		.map(({ deck, ownerName, version, likeCount, hotCount }) => ({
 			id: deck.id,
 			name: deck.name,
 			ownerId: deck.ownerId,
@@ -36,8 +35,7 @@ export const load: PageServerLoad = async (event) => {
 			cardCount: version?.entries.reduce((sum, entry) => sum + entry.quantity, 0) ?? 0,
 			legendSlugs: version?.legends ?? [],
 			likeCount,
-			hotCount,
-			viewerHasLiked
+			hotCount
 		}))
 		.sort((a, b) => {
 			if (sort === 'newest') return b.createdAt.getTime() - a.createdAt.getTime();
@@ -50,22 +48,8 @@ export const load: PageServerLoad = async (event) => {
 		sort,
 		ownerId: ownerId ?? null,
 		ownerName: ownerId ? (decks[0]?.ownerName ?? null) : null,
+		// Not read by this page's own template — Nav still needs it for the Sign in/out swap,
+		// since this route has no dedicated `+layout.server.ts` supplying it (`/decks` does).
 		user: event.locals.user
 	};
-};
-
-export const actions: Actions = {
-	toggleLike: async (event) => {
-		if (!event.locals.user) return redirect(302, '/auth/login');
-
-		const formData = await event.request.formData();
-		const deckId = formData.get('deckId');
-		if (typeof deckId !== 'string') return fail(400, { message: 'Missing deckId' });
-
-		if (formData.get('liked') === 'true') {
-			await unlikeDeck(event.locals.db, deckId, event.locals.user.id);
-		} else {
-			await likeDeck(event.locals.db, deckId, event.locals.user.id);
-		}
-	}
 };
