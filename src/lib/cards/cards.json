@@ -9654,6 +9654,60 @@
 			"slug": "wakako-okada-peace-and-harmony"
 		},
 		{
+			"cardType": "Unit",
+			"classifications": [
+				"Netrunner"
+			],
+			"color": "Blue",
+			"cost": 4,
+			"eddiable": false,
+			"flavorText": null,
+			"keywords": [
+				"Play"
+			],
+			"name": "Westbrook Netrunner",
+			"power": 5,
+			"printings": [
+				{
+					"artist": "ADIA",
+					"collectorNumber": "127",
+					"id": "5801d086-7e87-4645-95e2-68239230098d",
+					"key": "MS01-WNC-127",
+					"rarity": "Common",
+					"setId": "MS01-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/5801d086-7e87-4645-95e2-68239230098d/render-mpvm1lhk.webp",
+					"thumbhash": "jdeFDAQPE/w0nKaggQpWyICIgYGICBiIAA=="
+				},
+				{
+					"artist": "ADIA",
+					"collectorNumber": "β127",
+					"id": "1e2413a0-aa80-4883-806a-d8e9ed32bbca",
+					"key": "MS01-WNC-β127",
+					"rarity": "Common",
+					"setId": "MS01-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/1e2413a0-aa80-4883-806a-d8e9ed32bbca/render-mpv4lkwj.webp",
+					"thumbhash": "jdeFDAQPE/w0nKaggQpWyICIgYGICBiIAA=="
+				}
+			],
+			"ramProvided": null,
+			"ramRequired": 2,
+			"rawRulesText": "{Play} Until your next turn, rival Legends can't steal friendly Gigs with value less than their power.",
+			"rulesText": [
+				[
+					{
+						"keyword": "Play",
+						"kind": "keyword",
+						"text": "{Play}"
+					},
+					{
+						"kind": "text",
+						"text": " Until your next turn, rival Legends can't steal friendly Gigs with value less than their power."
+					}
+				]
+			],
+			"slug": "westbrook-netrunner"
+		},
+		{
 			"cardType": "Program",
 			"classifications": [
 				"Ganger"
@@ -10076,18 +10130,18 @@
 		"Green",
 		"Blue"
 	],
-	"generatedAt": "2026-08-25T11:02:21.958Z",
+	"generatedAt": "2026-08-25T21:06:22.172Z",
 	"ramPerLegend": 2,
 	"sets": [
 		{
-			"cardCount": 131,
+			"cardCount": 132,
 			"category": "MS01",
 			"cycle": "A",
 			"id": "MS01-WNC",
 			"kind": "base",
 			"name": "Welcome to Night City",
 			"printed": "MS01 - WNC [A]",
-			"printingCount": 290,
+			"printingCount": 292,
 			"setCode": "WNC"
 		},
 		{
@@ -10169,8 +10223,8 @@
 		}
 	],
 	"stats": {
-		"cards": 142,
-		"printings": 425,
+		"cards": 143,
+		"printings": 427,
 		"sets": 1
 	}
 }
