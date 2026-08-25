@@ -40,6 +40,10 @@
 html {
 	background-color: var(--color-void);
 	color-scheme: dark;
+	/* Reserves the scrollbar's width whether or not the page actually needs to scroll — otherwise
+	   any `mx-auto` container's available width shifts by the scrollbar's width the moment page
+	   content crosses the scroll threshold (e.g. switching a list to a taller grid). */
+	scrollbar-gutter: stable;
 }
 
 body {

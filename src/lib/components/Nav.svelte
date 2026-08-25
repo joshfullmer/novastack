@@ -2,13 +2,17 @@
 	/**
 	 * One shared nav in the root layout, so it cannot drift between routes.
 	 *
-	 * **Sets and Rules render as dimmed text with no `href`** — signalling direction without
-	 * offering clickable 404s. `aria-disabled` alone would still be focusable and still navigate;
-	 * omitting the href is what actually makes them inert. **Decks** graduated out of that list
-	 * once the deckbuilder shipped (`docs/spec/deckbuilder.md`).
+	 * **Sets renders as dimmed text with no `href`** — signalling direction without offering a
+	 * clickable 404. `aria-disabled` alone would still be focusable and still navigate; omitting
+	 * the href is what actually makes it inert. **Decks** graduated out of that list once the
+	 * deckbuilder shipped (`docs/spec/deckbuilder.md`).
 	 *
 	 * Set is a filter, not a route — `Sets` here is a stage-past-this-one landing page, not the
 	 * Set facet.
+	 *
+	 * **Rules links out** to the community gameplay guide rather than sitting dimmed — there's no
+	 * in-app rules page yet, but an external stopgap beats offering nothing. Swap for a real route
+	 * once there's a comprehensive ruleset worth rendering ourselves.
 	 *
 	 * **Decks is a hover dropdown**, not a direct link — `/decks` (My Decks, owner-only) and
 	 * `/explore` (public, §9) are separate top-level routes, matching how every reference site
@@ -22,7 +26,7 @@
 		{ href: '/decks', label: 'My Decks' },
 		{ href: '/explore', label: 'Explore' }
 	];
-	const SOON = ['Sets', 'Rules'];
+	const SOON = ['Sets'];
 
 	const isCurrent = (href: string) => page.url.pathname.startsWith(href);
 </script>
@@ -79,6 +83,15 @@
 					{label}<sup class="ml-0.5 text-[0.6em] tracking-wide text-neon-dim uppercase">soon</sup>
 				</li>
 			{/each}
+
+			<li>
+				<a
+					href="https://cyberpunktcg.com/gameplay-guide"
+					target="_blank"
+					rel="noopener noreferrer"
+					class="text-muted transition-colors hover:text-bright">Rules</a
+				>
+			</li>
 		</ul>
 
 		{#if page.data.user}

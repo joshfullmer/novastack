@@ -481,10 +481,10 @@
 					<span class="text-sm font-medium text-bright">Main Deck</span>
 					<div class="flex items-center gap-3">
 						<span
-							class="text-sm font-medium tabular-nums {sizeTone}"
+							class="text-sm text-muted tabular-nums"
 							title="{MIN_DECK_SIZE}–{MAX_DECK_SIZE} cards"
 						>
-							{deck.totalCards} cards
+							<span class="font-medium {sizeTone}">{deck.totalCards}</span> cards
 						</span>
 						<div class="flex overflow-hidden rounded-md border border-edge text-xs">
 							<button
