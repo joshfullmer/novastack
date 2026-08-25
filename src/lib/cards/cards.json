@@ -509,6 +509,16 @@
 					"thumbhash": "iueFFAYPWGZX+LeIiHMHOIiAgYGICBiIAA=="
 				},
 				{
+					"artist": "Pandart Studio",
+					"collectorNumber": "β155",
+					"id": "7a6a5336-2b6c-4d8a-b1f0-595a787255ce",
+					"key": "MS01-WNC-β155",
+					"rarity": "Iconic Legend",
+					"setId": "MS01-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/7a6a5336-2b6c-4d8a-b1f0-595a787255ce/render-mpu6qelk.webp",
+					"thumbhash": "EeiFFAQPCnaIF+Z7ZbUHgm+EgYGICBiIAA=="
+				},
+				{
 					"artist": "Daniel Valaisis",
 					"collectorNumber": "009",
 					"id": "32d12432-acad-4a11-b8eb-1dd8fb2297f3",
@@ -4851,7 +4861,7 @@
 					"collectorNumber": "007",
 					"id": "087c30c2-1a7d-423e-b2f3-a7e1e8cfca12",
 					"key": "SD02-EBP-007",
-					"rarity": "Uncommon",
+					"rarity": "Common",
 					"setId": "SD02-EBP",
 					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/087c30c2-1a7d-423e-b2f3-a7e1e8cfca12/render-mpwbvif3.webp",
 					"thumbhash": "TyiGDAQPJPZYVoyVhEn5qJOPgYGICBiIAA=="
@@ -4861,7 +4871,7 @@
 					"collectorNumber": "β007",
 					"id": "7e3cd1e0-4438-46e7-a327-0d9846778bb3",
 					"key": "SD02-EBP-β007",
-					"rarity": "Uncommon",
+					"rarity": "Common",
 					"setId": "SD02-EBP",
 					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/7e3cd1e0-4438-46e7-a327-0d9846778bb3/render-mpwbmx5b.webp",
 					"thumbhash": "TyiGDAQPJPZYVoyVhEn5qJOPgYGICBiIAA=="
@@ -5914,7 +5924,7 @@
 					"collectorNumber": "10",
 					"id": "9e5a152e-6105-44a4-8db0-9cbf6cda2252",
 					"key": "SD02-EBP-10",
-					"rarity": "Uncommon",
+					"rarity": "Common",
 					"setId": "SD02-EBP",
 					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/9e5a152e-6105-44a4-8db0-9cbf6cda2252/render-mpwbyqow.webp",
 					"thumbhash": "TBiGBAQPKpWZBsp1ul4ft4WPgYGICBiIAA=="
@@ -10066,7 +10076,7 @@
 		"Green",
 		"Blue"
 	],
-	"generatedAt": "2026-08-23T16:04:10.382Z",
+	"generatedAt": "2026-08-25T11:02:21.958Z",
 	"ramPerLegend": 2,
 	"sets": [
 		{
@@ -10077,7 +10087,7 @@
 			"kind": "base",
 			"name": "Welcome to Night City",
 			"printed": "MS01 - WNC [A]",
-			"printingCount": 289,
+			"printingCount": 290,
 			"setCode": "WNC"
 		},
 		{
@@ -10160,7 +10170,7 @@
 	],
 	"stats": {
 		"cards": 142,
-		"printings": 424,
+		"printings": 425,
 		"sets": 1
 	}
 }
