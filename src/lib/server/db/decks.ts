@@ -3,10 +3,13 @@
  * directly. See `docs/spec/deckbuilder.md` §3.2: a deck's current state is its latest
  * `deck_versions` row; every save is a new row, never an update.
  */
-import { desc, eq } from 'drizzle-orm';
+import { and, count, desc, eq, gte } from 'drizzle-orm';
 import type { DeckVersionPayload } from '#lib/decks/schema.js';
 import type { getDb } from './index.js';
-import { decks, deckVersions, user } from './schema.js';
+import { deckLikes, decks, deckVersions, user } from './schema.js';
+
+/** Genre convention (`docs/spec/deckbuilder.md` §9): "Hot" is a rolling window, not all-time. */
+const HOT_WINDOW_MS = 14 * 24 * 60 * 60 * 1000;
 
 type Visibility = NonNullable<(typeof decks.$inferInsert)['visibility']>;
 
@@ -84,4 +87,61 @@ export async function listDecksForOwner(db: Db, ownerId: string) {
 	return Promise.all(
 		ownedDecks.map(async (deck) => ({ deck, version: await getLatestVersion(db, deck.id) }))
 	);
+}
+
+/** The Explore tab's own data (§9) — every public deck (optionally filtered to one owner),
+ * each with its latest version, its all-time and rolling-14-day like counts, and whether
+ * `viewerId` has already liked it. Sorting by those counts happens in the caller — this just
+ * gathers what a row needs. */
+export async function listPublicDecks(
+	db: Db,
+	options: { ownerId?: string; viewerId: string | null }
+) {
+	const conditions = [eq(decks.visibility, 'public')];
+	if (options.ownerId) conditions.push(eq(decks.ownerId, options.ownerId));
+
+	const publicDecks = await db
+		.select({ deck: decks, ownerName: user.name })
+		.from(decks)
+		.innerJoin(user, eq(user.id, decks.ownerId))
+		.where(and(...conditions));
+
+	const hotSince = new Date(Date.now() - HOT_WINDOW_MS);
+
+	return Promise.all(
+		publicDecks.map(async ({ deck, ownerName }) => {
+			const [version, [{ likeCount }], [{ hotCount }], viewerLike] = await Promise.all([
+				getLatestVersion(db, deck.id),
+				db.select({ likeCount: count() }).from(deckLikes).where(eq(deckLikes.deckId, deck.id)),
+				db
+					.select({ hotCount: count() })
+					.from(deckLikes)
+					.where(and(eq(deckLikes.deckId, deck.id), gte(deckLikes.likedAt, hotSince))),
+				options.viewerId
+					? db
+							.select()
+							.from(deckLikes)
+							.where(and(eq(deckLikes.deckId, deck.id), eq(deckLikes.userId, options.viewerId)))
+							.limit(1)
+					: []
+			]);
+
+			return {
+				deck,
+				ownerName,
+				version,
+				likeCount,
+				hotCount,
+				viewerHasLiked: viewerLike.length > 0
+			};
+		})
+	);
+}
+
+export async function likeDeck(db: Db, deckId: string, userId: string) {
+	await db.insert(deckLikes).values({ deckId, userId }).onConflictDoNothing();
+}
+
+export async function unlikeDeck(db: Db, deckId: string, userId: string) {
+	await db.delete(deckLikes).where(and(eq(deckLikes.deckId, deckId), eq(deckLikes.userId, userId)));
 }

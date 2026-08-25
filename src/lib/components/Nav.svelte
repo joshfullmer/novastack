@@ -9,13 +9,18 @@
 	 *
 	 * Set is a filter, not a route — `Sets` here is a stage-past-this-one landing page, not the
 	 * Set facet.
+	 *
+	 * **Decks is a hover dropdown**, not a direct link — `/decks` (My Decks, owner-only) and
+	 * `/explore` (public, §9) are separate top-level routes, matching how every reference site
+	 * (swudb, Piltover Archive, Moxfield) splits these rather than tabbing them on one page.
 	 */
 	import { page } from '$app/state';
 	import Mark from './Mark.svelte';
 
-	const LIVE = [
-		{ href: '/cards', label: 'Cards' },
-		{ href: '/decks', label: 'Decks' }
+	const LIVE = [{ href: '/cards', label: 'Cards' }];
+	const DECKS = [
+		{ href: '/decks', label: 'My Decks' },
+		{ href: '/explore', label: 'Explore' }
 	];
 	const SOON = ['Sets', 'Rules'];
 
@@ -41,6 +46,33 @@
 					>
 				</li>
 			{/each}
+
+			<li class="group relative">
+				<span
+					class="cursor-default transition-colors hover:text-bright"
+					class:text-bright={isCurrent('/decks') || isCurrent('/explore')}
+					class:text-muted={!isCurrent('/decks') && !isCurrent('/explore')}
+				>
+					Decks
+				</span>
+				<ul
+					class="invisible absolute top-full left-0 z-30 w-32 rounded-md border border-edge
+						bg-shell p-1 text-sm opacity-0 shadow-lg transition-opacity group-focus-within:visible
+						group-focus-within:opacity-100 group-hover:visible group-hover:opacity-100"
+				>
+					{#each DECKS as item (item.href)}
+						<li>
+							<a
+								href={item.href}
+								class="block rounded px-2 py-1.5 hover:bg-raised"
+								class:text-bright={isCurrent(item.href)}
+								class:text-muted={!isCurrent(item.href)}
+								aria-current={isCurrent(item.href) ? 'page' : undefined}>{item.label}</a
+							>
+						</li>
+					{/each}
+				</ul>
+			</li>
 
 			{#each SOON as label (label)}
 				<li class="cursor-default text-muted/50 select-none">
