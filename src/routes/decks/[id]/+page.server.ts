@@ -1,6 +1,7 @@
 import { error, fail, redirect } from '@sveltejs/kit';
 import * as v from 'valibot';
 import { DeckVersionPayloadSchema } from '#lib/decks/schema.js';
+import { diffVersions } from '#lib/decks/version-diff.js';
 import {
 	deleteDeck,
 	duplicateDeck,
@@ -8,6 +9,7 @@ import {
 	getDeckLikeInfo,
 	getLatestVersion,
 	likeDeck,
+	listVersions,
 	renameDeck,
 	setDeckVisibility,
 	unlikeDeck
@@ -63,6 +65,18 @@ export const load: PageServerLoad = async (event) => {
 		event.locals.user?.id ?? null
 	);
 
+	// Change History (deck view page) — every version, each diffed against the one before it.
+	const versionRows = await listVersions(event.locals.db, deck.id);
+	const parsedVersions = versionRows.map((row) =>
+		v.parse(DeckVersionPayloadSchema, { entries: row.entries, legends: row.legends })
+	);
+	const history = parsedVersions.map((version, index) => ({
+		savedAt: versionRows[index].savedAt.toISOString(),
+		entries: version.entries,
+		legends: version.legends,
+		diff: diffVersions(index === 0 ? null : parsedVersions[index - 1], version)
+	}));
+
 	return {
 		deckId: deck.id,
 		deckName: deck.name,
@@ -71,7 +85,8 @@ export const load: PageServerLoad = async (event) => {
 		isOwner,
 		payload,
 		likeCount,
-		viewerHasLiked
+		viewerHasLiked,
+		history
 	};
 };
 

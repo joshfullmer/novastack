@@ -3,7 +3,7 @@
  * directly. See `docs/spec/deckbuilder.md` §3.2: a deck's current state is its latest
  * `deck_versions` row; every save is a new row, never an update.
  */
-import { and, count, desc, eq, gte } from 'drizzle-orm';
+import { and, asc, count, desc, eq, gte } from 'drizzle-orm';
 import type { DeckVersionPayload } from '#lib/decks/schema.js';
 import type { getDb } from './index.js';
 import { deckLikes, decks, deckVersions, user } from './schema.js';
@@ -39,6 +39,17 @@ export async function getLatestVersion(db: Db, deckId: string) {
 		.orderBy(desc(deckVersions.savedAt))
 		.limit(1);
 	return version ?? null;
+}
+
+/** Every version, oldest first — the deck view page's Change History diffs each one against the
+ * version before it. No pagination: real decks don't accumulate enough saves for it to matter
+ * yet, and it's a one-line change here if that stops being true. */
+export async function listVersions(db: Db, deckId: string) {
+	return db
+		.select()
+		.from(deckVersions)
+		.where(eq(deckVersions.deckId, deckId))
+		.orderBy(asc(deckVersions.savedAt));
 }
 
 /** Every save is a new row — changeset-granularity version history, never an in-place update. */

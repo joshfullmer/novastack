@@ -14,6 +14,7 @@
 	 */
 	import { resolve } from '$app/paths';
 	import { enhance } from '$app/forms';
+	import { SvelteSet } from 'svelte/reactivity';
 	import CardImage from '#lib/components/CardImage.svelte';
 	import { COLOR_BADGE_IMAGE, COLOR_DOT, COLOR_TEXT, COLOR_TINT } from '#lib/components/color.js';
 	import { dataset } from '#lib/cards/index.js';
@@ -35,6 +36,92 @@
 	const deck = createDeckState(data.payload);
 
 	let deckView = $state<'list' | 'gallery'>('list');
+
+	// Main Deck / History — a tab, not a stacked section, so Change History (below) never
+	// competes with the deck's own card list for vertical space.
+	let mainTab = $state<'deck' | 'history'>('deck');
+
+	function cardLabel(slug: string) {
+		return dataset.bySlug.get(slug)?.name ?? slug;
+	}
+	function formatSavedAt(iso: string) {
+		return new Date(iso).toLocaleString(undefined, {
+			dateStyle: 'medium',
+			timeStyle: 'short'
+		});
+	}
+
+	function cardPrinting(slug: string) {
+		return dataset.bySlug.get(slug)?.printings[0];
+	}
+	function versionHasChanges(version: (typeof data.history)[number]) {
+		return (
+			version.diff.entries.length > 0 ||
+			version.diff.legendsAdded.length > 0 ||
+			version.diff.legendsRemoved.length > 0
+		);
+	}
+	// Newest first; the deck-creation version (index 0) and any no-op save are noise, not history
+	// worth showing.
+	const visibleHistory = $derived(
+		data.history.filter((version, index) => index > 0 && versionHasChanges(version)).reverse()
+	);
+
+	// The newest visible entry starts open — most users land here wanting to see the latest
+	// change, not to go hunting for it. `svelte-ignore`: read once for the initial value only,
+	// same pattern as `deck` above.
+	// svelte-ignore state_referenced_locally
+	const expandedVersions = new SvelteSet<string>(
+		visibleHistory.length > 0 ? [visibleHistory[0].savedAt] : []
+	);
+	function toggleExpanded(savedAt: string) {
+		if (expandedVersions.has(savedAt)) expandedVersions.delete(savedAt);
+		else expandedVersions.add(savedAt);
+	}
+
+	type DiffCell = { slug: string; quantity: number };
+	type EntryDiffColumns = {
+		changed: { left: DiffCell; right: DiffCell }[];
+		removed: DiffCell[];
+		added: DiffCell[];
+	};
+	/**
+	 * Left/right are packed independently, not zipped into shared grid rows — an unrelated removed
+	 * card and an unrelated added card have no meaningful correspondence, so pairing them by row
+	 * (e.g. by alphabetical position) left visible gaps wherever the two sides' counts diverged.
+	 * Only `changed` (the same card, before/after) has a real pairing worth aligning.
+	 */
+	function entryDiffColumns(
+		entries: import('#lib/decks/version-diff.js').EntryDiff[]
+	): EntryDiffColumns {
+		const byName = (a: { slug: string }, b: { slug: string }) =>
+			cardLabel(a.slug).localeCompare(cardLabel(b.slug));
+		const changed = entries
+			.filter((e) => e.kind === 'changed')
+			.map((e) => ({
+				left: { slug: e.cardSlug, quantity: e.from },
+				right: { slug: e.cardSlug, quantity: e.to }
+			}))
+			.sort((a, b) => byName(a.left, b.left));
+		const removed = entries
+			.filter((e) => e.kind === 'removed')
+			.map((e) => ({ slug: e.cardSlug, quantity: e.quantity }))
+			.sort(byName);
+		const added = entries
+			.filter((e) => e.kind === 'added')
+			.map((e) => ({ slug: e.cardSlug, quantity: e.quantity }))
+			.sort(byName);
+		return { changed, removed, added };
+	}
+	/** Legends have no "changed" case (a slug either is or isn't a Legend) — just two short,
+	 * usually equal-length lists, so a naive zip doesn't produce the same gaps `entryDiffColumns`
+	 * had to avoid. */
+	function legendDiffRows(removed: string[], added: string[]) {
+		const rows: { left: string | null; right: string | null }[] = [];
+		const max = Math.max(removed.length, added.length);
+		for (let i = 0; i < max; i++) rows.push({ left: removed[i] ?? null, right: added[i] ?? null });
+		return rows;
+	}
 
 	// The preview panel always shows *something* — defaults to the first Legend, or the first
 	// Main Deck entry if there's no Legend yet, rather than sitting empty until a hover happens.
@@ -461,7 +548,22 @@
 				{/if}
 
 				<div class="mb-3 flex items-center justify-between">
-					<span class="text-sm font-medium text-bright">Main Deck</span>
+					<div class="flex items-center gap-4">
+						<button
+							type="button"
+							onclick={() => (mainTab = 'deck')}
+							class="text-sm font-medium transition-colors"
+							class:text-bright={mainTab === 'deck'}
+							class:text-muted={mainTab !== 'deck'}>Main Deck</button
+						>
+						<button
+							type="button"
+							onclick={() => (mainTab = 'history')}
+							class="text-sm font-medium transition-colors hover:text-bright"
+							class:text-bright={mainTab === 'history'}
+							class:text-muted={mainTab !== 'history'}>History</button
+						>
+					</div>
 					<div class="flex items-center gap-3">
 						<span
 							class="text-sm text-muted tabular-nums"
@@ -490,7 +592,129 @@
 					</div>
 				</div>
 
-				{#if deckView === 'list'}
+				{#if mainTab === 'history'}
+					<!-- Change History — replaces the Main Deck list on its own tab, not stacked below
+					     it. Newest-first; no-op saves and the deck-creation version are filtered out
+					     entirely (visibleHistory). Newest visible entry starts open; the rest are
+					     collapsed to their timestamp until clicked, then show a GitHub-style
+					     side-by-side diff (Legends, then Main Deck) rather than a full decklist. -->
+					{#snippet historyThumb(
+						slug: string,
+						quantity: number | null,
+						tone: 'red' | 'green' | 'neutral'
+					)}
+						{@const printing = cardPrinting(slug)}
+						{@const card = dataset.bySlug.get(slug)}
+						<div
+							class="relative w-24 shrink-0"
+							onmouseenter={() => card && (focused = card)}
+							role="presentation"
+						>
+							<div
+								class="card-frame overflow-hidden rounded-md {tone === 'red'
+									? 'ring-2 ring-card-red'
+									: tone === 'green'
+										? 'ring-2 ring-card-green'
+										: 'ring-1 ring-edge'}"
+							>
+								{#if printing && card}
+									<CardImage
+										printingId={printing.id}
+										thumbhash={printing.thumbhash}
+										color={card.color}
+										alt={card.name}
+										sizes="96px"
+									/>
+								{/if}
+							</div>
+							{#if quantity !== null}
+								<span
+									class="absolute -top-2 -right-2 flex size-6 items-center justify-center
+										rounded-full text-xs font-bold tabular-nums {tone === 'red'
+										? 'bg-card-red text-void'
+										: tone === 'green'
+											? 'bg-card-green text-void'
+											: 'bg-raised text-body'}">{quantity}</span
+								>
+							{/if}
+						</div>
+					{/snippet}
+					<ul class="flex flex-col gap-2">
+						{#each visibleHistory as version (version.savedAt)}
+							{@const legendRows = legendDiffRows(
+								version.diff.legendsRemoved,
+								version.diff.legendsAdded
+							)}
+							{@const cols = entryDiffColumns(version.diff.entries)}
+							<li class="rounded-md border border-edge">
+								<button
+									type="button"
+									onclick={() => toggleExpanded(version.savedAt)}
+									class="flex w-full items-center justify-between px-3 py-2 text-left
+										hover:bg-raised/40"
+								>
+									<span class="text-xs text-muted">{formatSavedAt(version.savedAt)}</span>
+									<span class="text-xs text-muted"
+										>{expandedVersions.has(version.savedAt) ? '▾' : '▸'}</span
+									>
+								</button>
+								{#if expandedVersions.has(version.savedAt)}
+									<div class="border-t border-edge p-3 text-sm">
+										{#if legendRows.length > 0}
+											<p class="mb-1 text-xs font-medium tracking-wide text-muted uppercase">
+												Legends
+											</p>
+											<div
+												class="mb-3 grid grid-cols-2 overflow-hidden rounded-md border
+													border-edge/50"
+											>
+												<div class="flex flex-wrap gap-2 border-r border-edge/50 p-2">
+													{#each legendRows as row, i (i)}
+														{#if row.left}
+															{@render historyThumb(row.left, null, 'red')}
+														{/if}
+													{/each}
+												</div>
+												<div class="flex flex-wrap gap-2 p-2">
+													{#each legendRows as row, i (i)}
+														{#if row.right}
+															{@render historyThumb(row.right, null, 'green')}
+														{/if}
+													{/each}
+												</div>
+											</div>
+										{/if}
+										{#if cols.changed.length > 0 || cols.removed.length > 0 || cols.added.length > 0}
+											<p class="mb-1 text-xs font-medium tracking-wide text-muted uppercase">
+												Main Deck
+											</p>
+											<div
+												class="grid grid-cols-2 overflow-hidden rounded-md border border-edge/50"
+											>
+												<div class="flex flex-wrap gap-2 border-r border-edge/50 p-2">
+													{#each cols.changed as row (row.left.slug)}
+														{@render historyThumb(row.left.slug, row.left.quantity, 'neutral')}
+													{/each}
+													{#each cols.removed as item (item.slug)}
+														{@render historyThumb(item.slug, item.quantity, 'red')}
+													{/each}
+												</div>
+												<div class="flex flex-wrap gap-2 p-2">
+													{#each cols.changed as row (row.right.slug)}
+														{@render historyThumb(row.right.slug, row.right.quantity, 'neutral')}
+													{/each}
+													{#each cols.added as item (item.slug)}
+														{@render historyThumb(item.slug, item.quantity, 'green')}
+													{/each}
+												</div>
+											</div>
+										{/if}
+									</div>
+								{/if}
+							</li>
+						{/each}
+					</ul>
+				{:else if deckView === 'list'}
 					{@const columns = 'grid-cols-[2rem_6fr_1fr_1fr_1fr]'}
 					<ul class="rounded-md border border-edge">
 						<li
