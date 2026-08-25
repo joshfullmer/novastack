@@ -484,7 +484,7 @@
 							class="text-sm font-medium tabular-nums {sizeTone}"
 							title="{MIN_DECK_SIZE}–{MAX_DECK_SIZE} cards"
 						>
-							{deck.totalCards}
+							{deck.totalCards} cards
 						</span>
 						<div class="flex overflow-hidden rounded-md border border-edge text-xs">
 							<button

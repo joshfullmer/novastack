@@ -4,6 +4,11 @@
 	 * out; "My Decks" lives at `/decks` instead, one level up in the "Decks" nav dropdown, not a
 	 * peer tab here — see `+page.server.ts` for why.
 	 *
+	 * The left nav is the sort categories (Hot/Newest/Most-liked) rather than a top pill row —
+	 * expected to grow (more sorts, eventually filters), and this is the same slot "My Decks"
+	 * will eventually use for folders, kept as a plain, easily-extended link list for both
+	 * reasons rather than anything fancier.
+	 *
 	 * Like counts here are read-only. Liking only happens from a deck's own view page
 	 * (`/decks/[id]`), and only for non-owners — this list is browsing, not the like surface.
 	 */
@@ -13,6 +18,8 @@
 	import { SIZE_STATUS_TONE } from '#lib/decks/status-tone.js';
 
 	let { data } = $props();
+
+	let deckView = $state<'list' | 'grid'>('list');
 
 	const SORTS = [
 		{ value: 'hot', label: 'Hot' },
@@ -25,91 +32,157 @@
 	}
 </script>
 
+{#snippet likeBadge(likeCount: number)}
+	<span class="flex items-center gap-1">
+		<svg viewBox="0 0 20 20" class="size-4" fill="none" stroke="currentColor" stroke-width="1.5">
+			<path
+				d="M10 17s-6.5-4.03-6.5-8.5A3.5 3.5 0 0 1 10 6.5a3.5 3.5 0 0 1 6.5 2c0 4.47-6.5 8.5-6.5 8.5Z"
+			/>
+		</svg>
+		{likeCount}
+	</span>
+{/snippet}
+
 <svelte:head>
 	<title>Explore decks — novastack</title>
 </svelte:head>
 
-<div class="mx-auto max-w-3xl p-6">
-	<div class="mb-6 flex items-center justify-between">
-		<h1 class="text-xl font-semibold text-bright">Explore decks</h1>
-		<div class="flex overflow-hidden rounded-md border border-edge text-xs">
-			{#each SORTS as { value, label } (value)}
-				<a
-					href={sortHref(value)}
-					class="px-2 py-1"
-					class:bg-raised={data.sort === value}
-					class:text-bright={data.sort === value}
-					class:text-muted={data.sort !== value}>{label}</a
-				>
-			{/each}
+<div class="mx-auto max-w-5xl p-6">
+	<h1 class="mb-6 text-xl font-semibold text-bright">Explore decks</h1>
+	<div class="flex gap-6">
+		<nav class="w-36 shrink-0">
+			<ul class="flex flex-col gap-1 text-sm">
+				{#each SORTS as { value, label } (value)}
+					<li>
+						<a
+							href={sortHref(value)}
+							class="block rounded-md px-3 py-1.5"
+							class:bg-raised={data.sort === value}
+							class:text-bright={data.sort === value}
+							class:text-muted={data.sort !== value}>{label}</a
+						>
+					</li>
+				{/each}
+			</ul>
+		</nav>
+
+		<div class="min-w-0 flex-1">
+			<div class="mb-4 flex items-center gap-4">
+				<div class="min-w-0 flex-1">
+					{#if data.ownerId}
+						<span class="text-sm text-muted">
+							Showing public decks by <span class="text-bright">{data.ownerName}</span>
+							<a href="/explore?sort={data.sort}" class="text-neon hover:text-neon-dim">Clear</a>
+						</span>
+					{/if}
+				</div>
+				<div class="flex overflow-hidden rounded-md border border-edge text-xs">
+					<button
+						type="button"
+						onclick={() => (deckView = 'list')}
+						class="px-2 py-1"
+						class:bg-raised={deckView === 'list'}
+						class:text-bright={deckView === 'list'}
+						class:text-muted={deckView !== 'list'}>List</button
+					>
+					<button
+						type="button"
+						onclick={() => (deckView = 'grid')}
+						class="px-2 py-1"
+						class:bg-raised={deckView === 'grid'}
+						class:text-bright={deckView === 'grid'}
+						class:text-muted={deckView !== 'grid'}>Grid</button
+					>
+				</div>
+			</div>
+
+			{#if data.decks.length === 0}
+				<p class="text-sm text-muted">No public decks yet.</p>
+			{:else if deckView === 'grid'}
+				<ul class="grid grid-cols-2 gap-4">
+					{#each data.decks as deck (deck.id)}
+						<li class="overflow-hidden rounded-lg border border-edge bg-shell">
+							<a href="/decks/{deck.id}" class="flex gap-1 bg-void p-2">
+								{#each deck.legendSlugs as slug (slug)}
+									{@const legend = cardBySlug(slug)}
+									{#if legend}
+										<div class="card-frame flex-1 overflow-hidden rounded">
+											<CardImage
+												printingId={legend.printings[0].id}
+												thumbhash={legend.printings[0].thumbhash}
+												color={legend.color}
+												alt={legend.name}
+												sizes="200px"
+											/>
+										</div>
+									{/if}
+								{/each}
+							</a>
+							<div class="p-3">
+								<a
+									href="/decks/{deck.id}"
+									class="block truncate text-base font-semibold text-bright hover:text-neon"
+									>{deck.name}</a
+								>
+								<p class="mt-1 text-xs text-muted tabular-nums">
+									<span
+										class={SIZE_STATUS_TONE[deckSizeStatus(deck.cardCount)]}
+										title="{MIN_DECK_SIZE}–{MAX_DECK_SIZE} cards">{deck.cardCount}</span
+									>
+									cards · {deck.createdAt.toLocaleDateString()}
+								</p>
+								<div class="mt-2 flex items-center justify-between text-xs text-muted">
+									<a href="/explore?owner={deck.ownerId}" class="hover:text-neon"
+										>by {deck.ownerName}</a
+									>
+									{@render likeBadge(deck.likeCount)}
+								</div>
+							</div>
+						</li>
+					{/each}
+				</ul>
+			{:else}
+				<ul class="flex flex-col gap-3">
+					{#each data.decks as deck (deck.id)}
+						<li class="flex items-center gap-4 rounded-lg border border-edge bg-shell p-4">
+							<div class="flex shrink-0 gap-2">
+								{#each deck.legendSlugs as slug (slug)}
+									{@const legend = cardBySlug(slug)}
+									{#if legend}
+										<div class="size-20 overflow-hidden rounded-md border border-edge">
+											<CardImage
+												printingId={legend.printings[0].id}
+												thumbhash={legend.printings[0].thumbhash}
+												color={legend.color}
+												alt={legend.name}
+												sizes="80px"
+											/>
+										</div>
+									{/if}
+								{/each}
+							</div>
+							<a href="/decks/{deck.id}" class="min-w-0 flex-1">
+								<p class="truncate text-lg font-semibold text-bright hover:text-neon">
+									{deck.name}
+								</p>
+								<p class="mt-1 text-sm text-muted tabular-nums">
+									<span
+										class={SIZE_STATUS_TONE[deckSizeStatus(deck.cardCount)]}
+										title="{MIN_DECK_SIZE}–{MAX_DECK_SIZE} cards">{deck.cardCount}</span
+									>
+									cards · {deck.createdAt.toLocaleDateString()}
+								</p>
+							</a>
+							<div class="flex shrink-0 items-center gap-3 text-sm text-muted">
+								<a href="/explore?owner={deck.ownerId}" class="hover:text-neon"
+									>by {deck.ownerName}</a
+								>
+								{@render likeBadge(deck.likeCount)}
+							</div>
+						</li>
+					{/each}
+				</ul>
+			{/if}
 		</div>
 	</div>
-
-	{#if data.ownerId}
-		<div class="mb-4 flex items-center gap-2 text-sm text-muted">
-			<span>Showing public decks by <span class="text-bright">{data.ownerName}</span></span>
-			<a href="/explore?sort={data.sort}" class="text-neon hover:text-neon-dim">Clear</a>
-		</div>
-	{/if}
-
-	{#if data.decks.length === 0}
-		<p class="text-sm text-muted">No public decks yet.</p>
-	{:else}
-		<ul class="divide-y divide-edge">
-			{#each data.decks as deck (deck.id)}
-				<li class="flex items-center gap-4 rounded-md px-2 py-3 hover:bg-raised">
-					<a href="/decks/{deck.id}" class="flex min-w-0 flex-1 items-center gap-4">
-						<div class="flex shrink-0 gap-1">
-							{#each deck.legendSlugs as slug (slug)}
-								{@const legend = cardBySlug(slug)}
-								{#if legend}
-									<div class="size-10 overflow-hidden rounded border border-edge">
-										<CardImage
-											printingId={legend.printings[0].id}
-											thumbhash={legend.printings[0].thumbhash}
-											color={legend.color}
-											alt={legend.name}
-											sizes="40px"
-										/>
-									</div>
-								{/if}
-							{/each}
-						</div>
-						<div class="min-w-0 flex-1">
-							<p class="truncate text-sm font-medium text-bright">{deck.name}</p>
-							<p class="text-xs text-muted tabular-nums">
-								<span
-									class={SIZE_STATUS_TONE[deckSizeStatus(deck.cardCount)]}
-									title="{MIN_DECK_SIZE}–{MAX_DECK_SIZE} cards">{deck.cardCount}</span
-								>
-								cards · {deck.createdAt.toLocaleDateString()}
-							</p>
-						</div>
-					</a>
-
-					<a
-						href="/explore?owner={deck.ownerId}"
-						class="shrink-0 text-xs text-muted hover:text-neon"
-					>
-						by {deck.ownerName}
-					</a>
-
-					<span class="flex shrink-0 items-center gap-1 px-2 py-1.5 text-sm text-muted">
-						<svg
-							viewBox="0 0 20 20"
-							class="size-4"
-							fill="none"
-							stroke="currentColor"
-							stroke-width="1.5"
-						>
-							<path
-								d="M10 17s-6.5-4.03-6.5-8.5A3.5 3.5 0 0 1 10 6.5a3.5 3.5 0 0 1 6.5 2c0 4.47-6.5 8.5-6.5 8.5Z"
-							/>
-						</svg>
-						{deck.likeCount}
-					</span>
-				</li>
-			{/each}
-		</ul>
-	{/if}
 </div>
