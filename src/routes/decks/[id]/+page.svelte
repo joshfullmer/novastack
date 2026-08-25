@@ -15,13 +15,7 @@
 	import { resolve } from '$app/paths';
 	import { enhance } from '$app/forms';
 	import CardImage from '#lib/components/CardImage.svelte';
-	import {
-		COLOR_BADGE_SHAPE,
-		COLOR_BADGE_SIZE,
-		COLOR_DOT,
-		COLOR_TEXT,
-		COLOR_TINT
-	} from '#lib/components/color.js';
+	import { COLOR_BADGE_IMAGE, COLOR_DOT, COLOR_TEXT, COLOR_TINT } from '#lib/components/color.js';
 	import { dataset } from '#lib/cards/index.js';
 	import type { Card } from '#lib/cards/schema.js';
 	import { COLORS } from '#lib/cards/vocabulary.js';
@@ -435,26 +429,15 @@
 							{/if}
 						{/each}
 					</div>
-					<!-- RAM budget in each Color's own cost-badge shape from the physical card — dark
-					     fill, colored outline, the number inside — instead of a generic pill. A real
-					     SVG `<polygon>`, not a `clip-path` div: `stroke` gives a correctly-mitered
-					     continuous outline at every vertex for free, which a clipped border can't. -->
+					<!-- RAM budget in each Color's own official cost-badge art, number overlaid — instead
+					     of a generic pill. -->
 					<div class="flex flex-wrap gap-3">
 						{#each COLORS as color (color)}
 							{@const ram = deck.budget[color]}
 							{#if ram > 0}
 								<div class="flex flex-col items-center gap-1">
-									<div class="relative {COLOR_BADGE_SIZE[color]}">
-										<svg
-											viewBox={COLOR_BADGE_SHAPE[color].viewBox}
-											class="absolute inset-0 size-full {COLOR_TEXT[color]}"
-										>
-											<polygon
-												points={COLOR_BADGE_SHAPE[color].points}
-												class="fill-void stroke-current"
-												stroke-width="5"
-											/>
-										</svg>
+									<div class="relative h-10">
+										<img src={COLOR_BADGE_IMAGE[color]} alt="" class="h-full w-auto" />
 										<span
 											class="absolute inset-0 flex items-center justify-center text-sm
 											font-bold {COLOR_TEXT[color]}">{ram}</span
