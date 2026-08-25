@@ -26,6 +26,8 @@
 	import { COLORS } from '#lib/cards/vocabulary.js';
 	import { LEGEND_SLOTS, MAX_DECK_SIZE, MIN_DECK_SIZE } from '#lib/decks/legality.js';
 	import { createDeckState } from '#lib/decks/deck-state.svelte.js';
+	import { composeDeckImage } from '#lib/decks/deck-image.js';
+	import { deckToPlainText } from '#lib/decks/export.js';
 	import { groupDeckEntries } from '#lib/decks/grouping.js';
 	import { colorComposition, costCurve, eddiableStat } from '#lib/decks/stats.js';
 	import { SIZE_STATUS_TONE } from '#lib/decks/status-tone.js';
@@ -57,6 +59,45 @@
 	const eddiablePercent = $derived(
 		eddiable.totalQuantity === 0 ? 0 : (eddiable.eddiableQuantity / eddiable.totalQuantity) * 100
 	);
+
+	// Plain-text and image export (`docs/spec/deckbuilder.md` §6) — a human-paste format and a
+	// client-side canvas composite, both built from what's already on the page; no server route.
+	let exportStatus = $state<'idle' | 'copied' | 'copy-failed'>('idle');
+
+	function downloadBlob(blob: Blob, filename: string) {
+		const url = URL.createObjectURL(blob);
+		const a = document.createElement('a');
+		a.href = url;
+		a.download = filename;
+		a.click();
+		URL.revokeObjectURL(url);
+	}
+
+	async function copyText() {
+		try {
+			await navigator.clipboard.writeText(deckToPlainText(deck.legends, mainGroups));
+			exportStatus = 'copied';
+		} catch {
+			exportStatus = 'copy-failed';
+		}
+		setTimeout(() => (exportStatus = 'idle'), 1500);
+	}
+
+	function downloadText() {
+		const blob = new Blob([deckToPlainText(deck.legends, mainGroups)], { type: 'text/plain' });
+		downloadBlob(blob, `${data.deckName}.txt`);
+	}
+
+	async function downloadImage() {
+		const blob = await composeDeckImage({
+			deckName: data.deckName,
+			ownerName: data.ownerName,
+			legends: deck.legends,
+			mainGroups,
+			shareUrl: window.location.href
+		});
+		if (blob) downloadBlob(blob, `${data.deckName}.png`);
+	}
 </script>
 
 <svelte:head>
@@ -111,13 +152,39 @@
 							by {data.ownerName} · <span class="capitalize">{data.visibility}</span>
 						</p>
 					</div>
-					{#if data.isOwner}
-						<a
-							href="/decks/{data.deckId}/edit"
-							class="shrink-0 rounded-md bg-neon px-3 py-1.5 text-sm
-							font-medium text-void hover:bg-neon-dim">Edit deck</a
+					<div class="flex shrink-0 items-center gap-2">
+						<button
+							type="button"
+							onclick={copyText}
+							class="rounded-md border border-edge px-3 py-1.5 text-sm text-body
+								hover:border-neon hover:text-neon"
 						>
-					{/if}
+							{exportStatus === 'copied'
+								? 'Copied!'
+								: exportStatus === 'copy-failed'
+									? 'Copy failed'
+									: 'Copy text'}
+						</button>
+						<button
+							type="button"
+							onclick={downloadText}
+							class="rounded-md border border-edge px-3 py-1.5 text-sm text-body
+								hover:border-neon hover:text-neon">Download .txt</button
+						>
+						<button
+							type="button"
+							onclick={downloadImage}
+							class="rounded-md border border-edge px-3 py-1.5 text-sm text-body
+								hover:border-neon hover:text-neon">Download image</button
+						>
+						{#if data.isOwner}
+							<a
+								href="/decks/{data.deckId}/edit"
+								class="rounded-md bg-neon px-3 py-1.5 text-sm font-medium text-void
+								hover:bg-neon-dim">Edit deck</a
+							>
+						{/if}
+					</div>
 				</div>
 
 				<div class="mb-4 flex items-center gap-4">
