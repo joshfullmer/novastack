@@ -4,14 +4,16 @@
  * surface: server-rendered images at a stable URL were considered and rejected in the spec (a
  * `satori` + `resvg-wasm` rendering pipeline for a capability client-side canvas already covers).
  *
- * Composition matches swudb.com's own "Deck image" feature: a header, a Legends strip, the Main
- * Deck as a thumbnail grid with quantity badges, and a URL + QR-code watermark. The QR code is
- * rendered dark-on-light regardless of the site's own dark theme — scannability, not palette
- * match, is what matters for a code meant to be pointed a phone camera at.
+ * Composition: a header (deck name + owner, novastack wordmark), a Legends strip, the Main Deck
+ * as a thumbnail grid with quantity badges, and a stacked QR code + URL watermark, over a
+ * gradient background tinted from the deck's own Legend colors. The QR code is rendered
+ * dark-on-light regardless of the site's own dark theme — scannability, not palette match, is
+ * what matters for a code meant to be pointed a phone camera at.
  */
 import QRCode from 'qrcode';
 import { cardImageUrl } from '#lib/cards/schema.js';
 import type { Card } from '#lib/cards/schema.js';
+import type { Color } from '#lib/cards/vocabulary.js';
 import type { DeckEntryGroup } from './grouping.js';
 
 const CANVAS_WIDTH = 1200;
@@ -21,6 +23,14 @@ const GRID_COLUMNS = 8;
 /** Every mirrored card image is this exact ratio — see `#lib/cards/vocabulary.js`. */
 const CARD_ASPECT = 1024 / 733;
 const LEGEND_WIDTH = 140;
+const QR_SIZE = 84;
+
+const COLOR_VAR: Record<Color, string> = {
+	Red: 'card-red',
+	Yellow: 'card-yellow',
+	Green: 'card-green',
+	Blue: 'card-blue'
+};
 
 /** Reads the live theme's own CSS custom properties, so the export matches the site's palette
  * without duplicating its color values here. */
@@ -37,8 +47,7 @@ function loadImage(src: string): Promise<HTMLImageElement> {
 	});
 }
 
-/** Canvas has no `border-radius` primitive — this is the usual arc-based substitute. */
-function roundedRectClip(
+function roundedRectPath(
 	ctx: CanvasRenderingContext2D,
 	x: number,
 	y: number,
@@ -53,7 +62,112 @@ function roundedRectClip(
 	ctx.arcTo(x, y + h, x, y, r);
 	ctx.arcTo(x, y, x + w, y, r);
 	ctx.closePath();
+}
+
+/** Canvas has no `border-radius` primitive — this is the usual arc-based substitute. */
+function roundedRectClip(
+	ctx: CanvasRenderingContext2D,
+	x: number,
+	y: number,
+	w: number,
+	h: number,
+	r: number
+) {
+	roundedRectPath(ctx, x, y, w, h, r);
 	ctx.clip();
+}
+
+/** The novastack mark (`#lib/components/Mark.svelte`) redrawn with canvas paths — a 3×3 grid of
+ * rounded outlined squares rotated 45°, at `size`'s bounding box, centered on `(cx, cy)`. */
+function drawMark(
+	ctx: CanvasRenderingContext2D,
+	cx: number,
+	cy: number,
+	size: number,
+	color: string
+) {
+	const scale = size / 32;
+	ctx.save();
+	ctx.translate(cx, cy);
+	ctx.rotate(Math.PI / 4);
+	ctx.strokeStyle = color;
+	ctx.lineWidth = 1.3 * scale;
+	ctx.lineJoin = 'round';
+	const cell = 5.77 * scale;
+	const positions = [-10.85, -2.88, 5.08].map((v) => v * scale);
+	for (const px of positions) {
+		for (const py of positions) {
+			roundedRectPath(ctx, px, py, cell, cell, 0.4 * scale);
+			ctx.stroke();
+		}
+	}
+	ctx.restore();
+}
+
+/** Sandwiches the odd-colored-out Legend between the repeated color when 2 of 3 Legends share a
+ * Color, so the gradient reads as "two of a color bracketing the third" rather than a random
+ * left-to-right order. Falls through unchanged for any other split (including <3 Legends). */
+function gradientColorOrder(legends: readonly Card[]): Color[] {
+	const colors = legends.map((legend) => legend.color);
+	if (colors.length === 3) {
+		const counts = new Map<Color, number>();
+		for (const color of colors) counts.set(color, (counts.get(color) ?? 0) + 1);
+		const duplicate = [...counts.entries()].find(([, count]) => count === 2)?.[0];
+		if (duplicate !== undefined) {
+			const odd = colors.find((color) => color !== duplicate);
+			if (odd !== undefined) return [duplicate, odd, duplicate];
+		}
+	}
+	return colors;
+}
+
+function paintBackground(
+	ctx: CanvasRenderingContext2D,
+	width: number,
+	height: number,
+	legends: readonly Card[]
+) {
+	const colorOrder = gradientColorOrder(legends);
+	if (colorOrder.length === 0) {
+		ctx.fillStyle = themeColor('void');
+		ctx.fillRect(0, 0, width, height);
+		return;
+	}
+
+	const stops = colorOrder.length === 1 ? [colorOrder[0], colorOrder[0]] : colorOrder;
+	// Askew rather than a straight left-to-right or top-to-bottom sweep.
+	const gradient = ctx.createLinearGradient(0, height * 0.1, width, height * 0.9);
+	stops.forEach((color, index) => {
+		gradient.addColorStop(index / (stops.length - 1), themeColor(COLOR_VAR[color]));
+	});
+	ctx.fillStyle = gradient;
+	ctx.fillRect(0, 0, width, height);
+
+	// A dark scrim over the gradient keeps card art and light text legible against colors that
+	// otherwise run too bright/saturated to sit behind them.
+	ctx.fillStyle = 'rgba(0, 0, 0, 0.55)';
+	ctx.fillRect(0, 0, width, height);
+}
+
+function drawWordmark(ctx: CanvasRenderingContext2D, rightEdge: number, centerY: number) {
+	const markSize = 22;
+	const gap = 8;
+	ctx.font = 'bold 20px sans-serif';
+	ctx.textBaseline = 'middle';
+	ctx.textAlign = 'left';
+	const novaWidth = ctx.measureText('nova').width;
+	const stackWidth = ctx.measureText('stack').width;
+	const totalWidth = markSize + gap + novaWidth + stackWidth;
+	const startX = rightEdge - totalWidth;
+
+	drawMark(ctx, startX + markSize / 2, centerY, markSize, themeColor('neon'));
+	ctx.fillStyle = themeColor('bright');
+	ctx.fillText('nova', startX + markSize + gap, centerY);
+	ctx.fillStyle = themeColor('neon');
+	ctx.fillText('stack', startX + markSize + gap + novaWidth, centerY);
+
+	ctx.textBaseline = 'alphabetic';
+	ctx.textAlign = 'left';
 }
 
 export async function composeDeckImage(options: {
@@ -76,7 +190,7 @@ export async function composeDeckImage(options: {
 	const gridHeight = rows > 0 ? rows * cellHeight + (rows - 1) * GAP : 0;
 
 	const headerHeight = 64;
-	const watermarkHeight = 64;
+	const watermarkHeight = QR_SIZE + 8 + 20;
 	const canvasHeight =
 		PADDING * 2 + headerHeight + GAP + legendStripHeight + gridHeight + GAP + watermarkHeight;
 
@@ -86,8 +200,7 @@ export async function composeDeckImage(options: {
 	const ctx = canvas.getContext('2d');
 	if (!ctx) return null;
 
-	ctx.fillStyle = themeColor('void');
-	ctx.fillRect(0, 0, canvas.width, canvas.height);
+	paintBackground(ctx, canvas.width, canvas.height, legends);
 
 	let y = PADDING;
 
@@ -97,6 +210,7 @@ export async function composeDeckImage(options: {
 	ctx.fillStyle = themeColor('muted');
 	ctx.font = '16px sans-serif';
 	ctx.fillText(`by ${ownerName} · ${totalCards} cards`, PADDING, y + 50);
+	drawWordmark(ctx, CANVAS_WIDTH - PADDING, y + headerHeight / 2);
 	y += headerHeight + GAP;
 
 	if (legends.length > 0) {
@@ -148,17 +262,18 @@ export async function composeDeckImage(options: {
 
 	const qrCanvas = document.createElement('canvas');
 	await QRCode.toCanvas(qrCanvas, shareUrl, {
-		width: watermarkHeight,
+		width: QR_SIZE,
 		margin: 1,
 		color: { dark: '#000000', light: '#ffffff' }
 	});
-	ctx.drawImage(qrCanvas, PADDING, y, watermarkHeight, watermarkHeight);
+	const qrX = CANVAS_WIDTH - PADDING - QR_SIZE;
+	ctx.drawImage(qrCanvas, qrX, y, QR_SIZE, QR_SIZE);
 
 	ctx.fillStyle = themeColor('muted');
 	ctx.font = '13px sans-serif';
-	ctx.textBaseline = 'middle';
-	ctx.fillText(shareUrl, PADDING + watermarkHeight + 12, y + watermarkHeight / 2);
-	ctx.textBaseline = 'alphabetic';
+	ctx.textAlign = 'right';
+	ctx.fillText(shareUrl, CANVAS_WIDTH - PADDING, y + QR_SIZE + 18);
+	ctx.textAlign = 'left';
 
 	return new Promise((resolve) => canvas.toBlob((blob) => resolve(blob), 'image/png'));
 }

@@ -27,7 +27,7 @@
 	import { LEGEND_SLOTS, MAX_DECK_SIZE, MIN_DECK_SIZE } from '#lib/decks/legality.js';
 	import { createDeckState } from '#lib/decks/deck-state.svelte.js';
 	import { composeDeckImage } from '#lib/decks/deck-image.js';
-	import { deckToPlainText } from '#lib/decks/export.js';
+	import { deckToJson, deckToSimFormat } from '#lib/decks/export.js';
 	import { groupDeckEntries } from '#lib/decks/grouping.js';
 	import { colorComposition, costCurve, eddiableStat } from '#lib/decks/stats.js';
 	import { SIZE_STATUS_TONE } from '#lib/decks/status-tone.js';
@@ -60,9 +60,17 @@
 		eddiable.totalQuantity === 0 ? 0 : (eddiable.eddiableQuantity / eddiable.totalQuantity) * 100
 	);
 
-	// Plain-text and image export (`docs/spec/deckbuilder.md` §6) — a human-paste format and a
-	// client-side canvas composite, both built from what's already on the page; no server route.
+	// Text and image export (`docs/spec/deckbuilder.md` §6) — both built from what's already on
+	// the page; no server route. Text has two formats behind one dropdown: a line list matching
+	// cyberpunk-tcg-sim.online's own import format, and a standardized JSON alternative. Image
+	// export opens a preview dialog rather than downloading straight away, so the user can also
+	// just right-click-copy the composited image.
+	let exportMenuOpen = $state(false);
 	let exportStatus = $state<'idle' | 'copied' | 'copy-failed'>('idle');
+
+	let imageDialogEl: HTMLDialogElement;
+	let imagePreviewUrl = $state<string | null>(null);
+	let imageBlob: Blob | null = null;
 
 	function downloadBlob(blob: Blob, filename: string) {
 		const url = URL.createObjectURL(blob);
@@ -73,9 +81,10 @@
 		URL.revokeObjectURL(url);
 	}
 
-	async function copyText() {
+	async function copyExport(text: string) {
+		exportMenuOpen = false;
 		try {
-			await navigator.clipboard.writeText(deckToPlainText(deck.legends, mainGroups));
+			await navigator.clipboard.writeText(text);
 			exportStatus = 'copied';
 		} catch {
 			exportStatus = 'copy-failed';
@@ -83,12 +92,25 @@
 		setTimeout(() => (exportStatus = 'idle'), 1500);
 	}
 
-	function downloadText() {
-		const blob = new Blob([deckToPlainText(deck.legends, mainGroups)], { type: 'text/plain' });
-		downloadBlob(blob, `${data.deckName}.txt`);
+	function downloadExport(text: string, mimeType: string, extension: string) {
+		exportMenuOpen = false;
+		downloadBlob(new Blob([text], { type: mimeType }), `${data.deckName}.${extension}`);
 	}
 
-	async function downloadImage() {
+	function copySimFormat() {
+		copyExport(deckToSimFormat(deck.legends, mainGroups));
+	}
+	function downloadSimFormat() {
+		downloadExport(deckToSimFormat(deck.legends, mainGroups), 'text/plain', 'txt');
+	}
+	function copyJson() {
+		copyExport(deckToJson(data.deckName, deck.legends, mainGroups));
+	}
+	function downloadJson() {
+		downloadExport(deckToJson(data.deckName, deck.legends, mainGroups), 'application/json', 'json');
+	}
+
+	async function openImageDialog() {
 		const blob = await composeDeckImage({
 			deckName: data.deckName,
 			ownerName: data.ownerName,
@@ -96,7 +118,20 @@
 			mainGroups,
 			shareUrl: window.location.href
 		});
-		if (blob) downloadBlob(blob, `${data.deckName}.png`);
+		if (!blob) return;
+		imageBlob = blob;
+		imagePreviewUrl = URL.createObjectURL(blob);
+		imageDialogEl.showModal();
+	}
+
+	function handleImageDialogClose() {
+		if (imagePreviewUrl) URL.revokeObjectURL(imagePreviewUrl);
+		imagePreviewUrl = null;
+		imageBlob = null;
+	}
+
+	function downloadPreviewImage() {
+		if (imageBlob) downloadBlob(imageBlob, `${data.deckName}.png`);
 	}
 </script>
 
@@ -153,29 +188,63 @@
 						</p>
 					</div>
 					<div class="flex shrink-0 items-center gap-2">
+						<div class="relative">
+							<button
+								type="button"
+								onclick={() => (exportMenuOpen = !exportMenuOpen)}
+								class="rounded-md border border-edge px-3 py-1.5 text-sm text-body
+									hover:border-neon hover:text-neon"
+							>
+								{exportStatus === 'copied'
+									? 'Copied!'
+									: exportStatus === 'copy-failed'
+										? 'Copy failed'
+										: 'Export text ▾'}
+							</button>
+							{#if exportMenuOpen}
+								<button
+									type="button"
+									aria-label="Close export menu"
+									onclick={() => (exportMenuOpen = false)}
+									class="fixed inset-0 z-10 cursor-default"
+								></button>
+								<div
+									class="absolute right-0 z-20 mt-1 w-56 rounded-md border border-edge bg-shell p-1
+										text-sm shadow-lg"
+								>
+									<button
+										type="button"
+										onclick={copySimFormat}
+										class="block w-full rounded px-2 py-1.5 text-left text-body hover:bg-raised"
+										>Copy sim-format list</button
+									>
+									<button
+										type="button"
+										onclick={downloadSimFormat}
+										class="block w-full rounded px-2 py-1.5 text-left text-body hover:bg-raised"
+										>Download sim-format (.txt)</button
+									>
+									<div class="my-1 border-t border-edge"></div>
+									<button
+										type="button"
+										onclick={copyJson}
+										class="block w-full rounded px-2 py-1.5 text-left text-body hover:bg-raised"
+										>Copy JSON</button
+									>
+									<button
+										type="button"
+										onclick={downloadJson}
+										class="block w-full rounded px-2 py-1.5 text-left text-body hover:bg-raised"
+										>Download JSON (.json)</button
+									>
+								</div>
+							{/if}
+						</div>
 						<button
 							type="button"
-							onclick={copyText}
+							onclick={openImageDialog}
 							class="rounded-md border border-edge px-3 py-1.5 text-sm text-body
-								hover:border-neon hover:text-neon"
-						>
-							{exportStatus === 'copied'
-								? 'Copied!'
-								: exportStatus === 'copy-failed'
-									? 'Copy failed'
-									: 'Copy text'}
-						</button>
-						<button
-							type="button"
-							onclick={downloadText}
-							class="rounded-md border border-edge px-3 py-1.5 text-sm text-body
-								hover:border-neon hover:text-neon">Download .txt</button
-						>
-						<button
-							type="button"
-							onclick={downloadImage}
-							class="rounded-md border border-edge px-3 py-1.5 text-sm text-body
-								hover:border-neon hover:text-neon">Download image</button
+								hover:border-neon hover:text-neon">Deck image</button
 						>
 						{#if data.isOwner}
 							<a
@@ -443,3 +512,41 @@
 		</div>
 	</div>
 </div>
+
+<dialog
+	bind:this={imageDialogEl}
+	onclose={handleImageDialogClose}
+	class="w-full max-w-2xl rounded-lg border border-edge bg-shell p-4"
+>
+	{#if imagePreviewUrl}
+		<img src={imagePreviewUrl} alt="{data.deckName} deck image" class="w-full rounded-md" />
+		<p class="mt-2 text-xs text-muted">Right-click the image to copy it, or download it below.</p>
+	{/if}
+	<div class="mt-4 flex justify-end gap-2">
+		<button
+			type="button"
+			onclick={() => imageDialogEl.close()}
+			class="rounded-md border border-edge px-3 py-1.5 text-sm text-body hover:border-neon
+				hover:text-neon">Close</button
+		>
+		<button
+			type="button"
+			onclick={downloadPreviewImage}
+			class="rounded-md bg-neon px-3 py-1.5 text-sm font-medium text-void hover:bg-neon-dim"
+			>Download image</button
+		>
+	</div>
+</dialog>
+
+<style>
+	/* Tailwind's preflight resets `margin: 0` on every element, which overrides the UA
+	   stylesheet's `dialog:modal { margin: auto }` that centers a `showModal()` dialog. */
+	dialog {
+		margin: auto;
+	}
+
+	dialog::backdrop {
+		background-color: var(--color-void);
+		opacity: 0.75;
+	}
+</style>

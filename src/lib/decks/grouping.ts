@@ -24,7 +24,7 @@ export type DeckEntryGroup = {
 	cardType: NonLegendCardType;
 	label: string;
 	entries: readonly DeckEntry[];
-	/** Total copies in the group — matches the export format's `Main Deck (43)` convention. */
+	/** Total copies in the group. */
 	quantity: number;
 };
 
