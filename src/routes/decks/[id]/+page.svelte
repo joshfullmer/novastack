@@ -230,10 +230,11 @@
 						{:else}
 							<h1 class="truncate text-xl font-semibold text-bright">{data.deckName}</h1>
 						{/if}
-						<div class="text-xs text-muted">
-							by {data.ownerName} ·
+						<div class="mt-1.5 flex flex-wrap items-center gap-1.5 text-xs text-muted">
+							<span>by {data.ownerName}</span>
+							<span>·</span>
 							{#if data.isOwner}
-								<form method="POST" action="?/visibility" use:enhance class="inline">
+								<form method="POST" action="?/visibility" use:enhance>
 									<select
 										name="visibility"
 										value={data.visibility}
@@ -248,9 +249,9 @@
 							{:else}
 								<span class="capitalize">{data.visibility}</span>
 							{/if}
-							·
+							<span>·</span>
 							{#if data.isOwner}
-								<span class="inline-flex items-center gap-1">
+								<span class="flex items-center gap-1">
 									<svg
 										viewBox="0 0 20 20"
 										class="size-3.5"
@@ -265,12 +266,12 @@
 									{data.likeCount}
 								</span>
 							{:else}
-								<form method="POST" action="?/toggleLike" use:enhance class="inline align-middle">
+								<form method="POST" action="?/toggleLike" use:enhance>
 									<input type="hidden" name="liked" value={data.viewerHasLiked} />
 									<button
 										type="submit"
-										class="inline-flex items-center gap-1 rounded-full border border-edge px-2
-											py-0.5 align-middle hover:border-neon hover:text-neon"
+										class="flex items-center gap-1 rounded-full border border-edge px-2 py-0.5
+											hover:border-neon hover:text-neon"
 										class:text-neon={data.viewerHasLiked}
 										class:text-muted={!data.viewerHasLiked}
 									>
