@@ -9,6 +9,16 @@
 	// unnecessary Worker invocations this project is shaped to avoid.
 	"main": ".svelte-kit/cloudflare/_worker.js",
 
+	// Committed here rather than left as a dashboard-only variable: Workers Builds treats this
+	// file as authoritative and syncs plain vars to match it exactly on every deploy, so a
+	// dashboard-set ORIGIN with no corresponding entry here gets silently wiped on the next
+	// deploy — which is exactly what happened once, and crashed the Worker (src/env.ts requires
+	// ORIGIN at real runtime). BETTER_AUTH_SECRET stays dashboard/CLI-only on purpose — it's a
+	// secret, never belongs in a committed file, and isn't subject to this same sync-wipe.
+	"vars": {
+		"ORIGIN": "https://novastack.joshfullmer9.workers.dev"
+	},
+
 	// The deckbuilder's backend (accounts, decks, likes) — see docs/spec/deckbuilder.md §3.2.
 	// Scoped deliberately: this binding is the only new backend surface the deckbuilder adds.
 	// Bound as `DB` rather than wrangler's suggested `novastack_decks` — one generic name, since
