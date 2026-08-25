@@ -2,10 +2,9 @@
 	/**
 	 * One shared nav in the root layout, so it cannot drift between routes.
 	 *
-	 * **Sets renders as dimmed text with no `href`** — signalling direction without offering a
-	 * clickable 404. `aria-disabled` alone would still be focusable and still navigate; omitting
-	 * the href is what actually makes it inert. **Decks** graduated out of that list once the
-	 * deckbuilder shipped (`docs/spec/deckbuilder.md`).
+	 * **Decks** graduated out of the dimmed placeholder list once the deckbuilder shipped
+	 * (`docs/spec/deckbuilder.md`); **Sets** graduated the same way once `.scratch/sets-page/map.md`
+	 * reached its destination.
 	 *
 	 * Set is a filter, not a route — `Sets` here is a stage-past-this-one landing page, not the
 	 * Set facet.
@@ -26,7 +25,6 @@
 		{ href: '/decks', label: 'My Decks' },
 		{ href: '/explore', label: 'Explore' }
 	];
-	const SOON = ['Sets'];
 
 	const isCurrent = (href: string) => page.url.pathname.startsWith(href);
 </script>
@@ -78,11 +76,15 @@
 				</ul>
 			</li>
 
-			{#each SOON as label (label)}
-				<li class="cursor-default text-muted/50 select-none">
-					{label}<sup class="ml-0.5 text-[0.6em] tracking-wide text-neon-dim uppercase">soon</sup>
-				</li>
-			{/each}
+			<li>
+				<a
+					href="/sets"
+					class="transition-colors hover:text-bright"
+					class:text-bright={isCurrent('/sets')}
+					class:text-muted={!isCurrent('/sets')}
+					aria-current={isCurrent('/sets') ? 'page' : undefined}>Sets</a
+				>
+			</li>
 
 			<li>
 				<a
