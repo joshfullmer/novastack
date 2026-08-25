@@ -46,6 +46,18 @@ body {
 	@apply bg-void font-sans text-body antialiased;
 }
 
+/* Tailwind's preflight resets `margin: 0` on every element, which overrides the UA stylesheet's
+   `dialog:modal { margin: auto }` that centers a `showModal()` dialog — global, not per-route,
+   since it'd otherwise bite every future native `<dialog>`. */
+dialog {
+	margin: auto;
+}
+
+dialog::backdrop {
+	background-color: var(--color-void);
+	opacity: 0.75;
+}
+
 /* Focus is never invisible: half the controls here are chips and slots, not text inputs. */
 :focus-visible {
 	@apply outline-2 outline-offset-2 outline-neon;

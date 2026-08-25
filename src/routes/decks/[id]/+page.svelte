@@ -13,6 +13,7 @@
 	 * been hovered).
 	 */
 	import { resolve } from '$app/paths';
+	import { enhance } from '$app/forms';
 	import CardImage from '#lib/components/CardImage.svelte';
 	import {
 		COLOR_BADGE_SHAPE,
@@ -133,6 +134,21 @@
 	function downloadPreviewImage() {
 		if (imageBlob) downloadBlob(imageBlob, `${data.deckName}.png`);
 	}
+
+	// Row operations (`docs/spec/deckbuilder.md` §8) reachable from the deck's own view, not
+	// just the `/decks` list — owner-only. Rename and visibility are inline, matching the
+	// title/badge they replace; duplicate and delete live behind a small "⋯" menu.
+	let renaming = $state(false);
+	// svelte-ignore state_referenced_locally
+	let renameValue = $state(data.deckName);
+
+	let rowMenuOpen = $state(false);
+	let deleteDialogEl: HTMLDialogElement;
+
+	function startRename() {
+		renameValue = data.deckName;
+		renaming = true;
+	}
 </script>
 
 <svelte:head>
@@ -182,10 +198,57 @@
 			<div class="min-w-0">
 				<div class="mb-4 flex items-center justify-between gap-4">
 					<div class="min-w-0">
-						<h1 class="truncate text-xl font-semibold text-bright">{data.deckName}</h1>
-						<p class="text-xs text-muted">
-							by {data.ownerName} · <span class="capitalize">{data.visibility}</span>
-						</p>
+						{#if renaming}
+							<form
+								method="POST"
+								action="?/rename"
+								use:enhance={() => {
+									renaming = false;
+								}}
+							>
+								<!-- svelte-ignore a11y_autofocus -->
+								<input
+									type="text"
+									name="name"
+									bind:value={renameValue}
+									onkeydown={(event) => {
+										if (event.key === 'Escape') renaming = false;
+									}}
+									onblur={(event) => event.currentTarget.form?.requestSubmit()}
+									class="w-full rounded border border-edge bg-void px-2 py-1 text-xl font-semibold
+										text-bright"
+									autofocus
+								/>
+							</form>
+						{:else if data.isOwner}
+							<button
+								type="button"
+								onclick={startRename}
+								class="truncate text-left text-xl font-semibold text-bright hover:text-neon"
+								>{data.deckName}</button
+							>
+						{:else}
+							<h1 class="truncate text-xl font-semibold text-bright">{data.deckName}</h1>
+						{/if}
+						<div class="text-xs text-muted">
+							by {data.ownerName} ·
+							{#if data.isOwner}
+								<form method="POST" action="?/visibility" use:enhance class="inline">
+									<select
+										name="visibility"
+										value={data.visibility}
+										onchange={(event) => event.currentTarget.form?.requestSubmit()}
+										class="rounded border border-edge bg-void px-1 py-0.5 text-xs capitalize"
+									>
+										<option value="private">Private</option>
+										<option value="unlisted">Unlisted</option>
+										<option value="public">Public</option>
+									</select>
+								</form>
+							{:else}
+								<span class="capitalize">{data.visibility}</span>
+							{/if}
+						</div>
 					</div>
 					<div class="flex shrink-0 items-center gap-2">
 						<div class="relative">
@@ -252,6 +315,52 @@
 								class="rounded-md bg-neon px-3 py-1.5 text-sm font-medium text-void
 								hover:bg-neon-dim">Edit deck</a
 							>
+							<div class="relative">
+								<button
+									type="button"
+									aria-label="Deck actions"
+									onclick={() => (rowMenuOpen = !rowMenuOpen)}
+									class="rounded-md border border-edge px-2 py-1.5 text-sm text-body
+										hover:border-neon hover:text-neon"
+								>
+									⋯
+								</button>
+								{#if rowMenuOpen}
+									<button
+										type="button"
+										aria-label="Close deck actions"
+										onclick={() => (rowMenuOpen = false)}
+										class="fixed inset-0 z-10 cursor-default"
+									></button>
+									<div
+										class="absolute right-0 z-20 mt-1 w-40 rounded-md border border-edge bg-shell
+											p-1 text-sm shadow-lg"
+									>
+										<form
+											method="POST"
+											action="?/duplicate"
+											use:enhance={() => {
+												rowMenuOpen = false;
+											}}
+										>
+											<button
+												type="submit"
+												class="block w-full rounded px-2 py-1.5 text-left text-body hover:bg-raised"
+												>Duplicate</button
+											>
+										</form>
+										<button
+											type="button"
+											onclick={() => {
+												rowMenuOpen = false;
+												deleteDialogEl.showModal();
+											}}
+											class="block w-full rounded px-2 py-1.5 text-left text-card-red
+												hover:bg-raised">Delete</button
+										>
+									</div>
+								{/if}
+							</div>
 						{/if}
 					</div>
 				</div>
@@ -538,15 +647,31 @@
 	</div>
 </dialog>
 
-<style>
-	/* Tailwind's preflight resets `margin: 0` on every element, which overrides the UA
-	   stylesheet's `dialog:modal { margin: auto }` that centers a `showModal()` dialog. */
-	dialog {
-		margin: auto;
-	}
-
-	dialog::backdrop {
-		background-color: var(--color-void);
-		opacity: 0.75;
-	}
-</style>
+<dialog
+	bind:this={deleteDialogEl}
+	class="w-full max-w-sm rounded-lg border border-edge bg-shell p-4"
+>
+	<p class="text-sm text-body">
+		Delete <span class="font-medium text-bright">{data.deckName}</span>? This can't be undone.
+	</p>
+	<form
+		method="POST"
+		action="?/delete"
+		use:enhance={() => {
+			deleteDialogEl.close();
+		}}
+		class="mt-4 flex justify-end gap-2"
+	>
+		<button
+			type="button"
+			onclick={() => deleteDialogEl.close()}
+			class="rounded-md border border-edge px-3 py-1.5 text-sm text-body hover:border-neon
+				hover:text-neon">Cancel</button
+		>
+		<button
+			type="submit"
+			class="rounded-md bg-card-red px-3 py-1.5 text-sm font-medium text-void hover:opacity-90"
+			>Delete</button
+		>
+	</form>
+</dialog>

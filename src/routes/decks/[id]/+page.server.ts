@@ -1,12 +1,37 @@
-import { error } from '@sveltejs/kit';
+import { error, fail, redirect } from '@sveltejs/kit';
 import * as v from 'valibot';
 import { DeckVersionPayloadSchema } from '#lib/decks/schema.js';
-import { getDeck, getLatestVersion } from '#lib/server/db/decks.js';
-import type { PageServerLoad } from './$types';
+import {
+	deleteDeck,
+	duplicateDeck,
+	getDeck,
+	getLatestVersion,
+	renameDeck,
+	setDeckVisibility
+} from '#lib/server/db/decks.js';
+import type { Actions, PageServerLoad } from './$types';
 
 // Overrides the root layout's `prerender = true` — a specific deck's visibility/content is
 // request-scoped and can't be known at build time.
 export const prerender = false;
+
+const VisibilitySchema = v.picklist(['public', 'unlisted', 'private']);
+
+/** Row-operation actions (§8) also reachable from this deck's own view, not just the `/decks`
+ * list — owner-only regardless of the deck's own visibility. */
+async function requireOwner(event: {
+	locals: App.Locals;
+	params: { id: string };
+}): Promise<{ deckId: string; userId: string }> {
+	if (!event.locals.user) return redirect(302, '/auth/login');
+	const userId = event.locals.user.id;
+
+	const deck = await getDeck(event.locals.db, event.params.id);
+	if (!deck) return error(404, 'Deck not found');
+	if (deck.ownerId !== userId) return error(403, 'Not your deck');
+
+	return { deckId: event.params.id, userId };
+}
 
 /**
  * The read-only view — `docs/spec/deckbuilder.md` §7: "owner sees an editor, others a viewer,
@@ -35,4 +60,41 @@ export const load: PageServerLoad = async (event) => {
 		isOwner,
 		payload
 	};
+};
+
+export const actions: Actions = {
+	rename: async (event) => {
+		const { deckId } = await requireOwner(event);
+		const formData = await event.request.formData();
+		const name = formData.get('name');
+		if (typeof name !== 'string' || name.trim().length === 0) {
+			return fail(400, { message: 'Deck name cannot be empty' });
+		}
+		await renameDeck(event.locals.db, deckId, name.trim());
+	},
+
+	visibility: async (event) => {
+		const { deckId } = await requireOwner(event);
+		const formData = await event.request.formData();
+		let visibility;
+		try {
+			visibility = v.parse(VisibilitySchema, formData.get('visibility'));
+		} catch {
+			return fail(400, { message: 'Invalid visibility' });
+		}
+		await setDeckVisibility(event.locals.db, deckId, visibility);
+	},
+
+	duplicate: async (event) => {
+		const { deckId, userId } = await requireOwner(event);
+		const copy = await duplicateDeck(event.locals.db, deckId, userId);
+		if (!copy) return error(404, 'Deck not found');
+		return redirect(303, `/decks/${copy.id}`);
+	},
+
+	delete: async (event) => {
+		const { deckId } = await requireOwner(event);
+		await deleteDeck(event.locals.db, deckId);
+		return redirect(303, '/decks');
+	}
 };

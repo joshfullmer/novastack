@@ -8,6 +8,8 @@ import type { DeckVersionPayload } from '#lib/decks/schema.js';
 import type { getDb } from './index.js';
 import { decks, deckVersions, user } from './schema.js';
 
+type Visibility = NonNullable<(typeof decks.$inferInsert)['visibility']>;
+
 type Db = ReturnType<typeof getDb>;
 
 export async function createDeck(db: Db, ownerId: string, name: string) {
@@ -41,6 +43,35 @@ export async function saveDeckVersion(db: Db, deckId: string, payload: DeckVersi
 	await db
 		.insert(deckVersions)
 		.values({ deckId, entries: payload.entries, legends: payload.legends });
+}
+
+export async function renameDeck(db: Db, deckId: string, name: string) {
+	await db.update(decks).set({ name }).where(eq(decks.id, deckId));
+}
+
+export async function setDeckVisibility(db: Db, deckId: string, visibility: Visibility) {
+	await db.update(decks).set({ visibility }).where(eq(decks.id, deckId));
+}
+
+export async function deleteDeck(db: Db, deckId: string) {
+	await db.delete(decks).where(eq(decks.id, deckId));
+}
+
+/** Copies name and latest version only — never the original's visibility, so a duplicate of a
+ * public deck doesn't itself start out public. */
+export async function duplicateDeck(db: Db, deckId: string, ownerId: string) {
+	const [original] = await db.select().from(decks).where(eq(decks.id, deckId));
+	if (!original) return null;
+
+	const version = await getLatestVersion(db, deckId);
+	const [copy] = await db
+		.insert(decks)
+		.values({ ownerId, name: `${original.name} (copy)` })
+		.returning();
+	await db
+		.insert(deckVersions)
+		.values({ deckId: copy.id, entries: version?.entries ?? [], legends: version?.legends ?? [] });
+	return copy;
 }
 
 export async function listDecksForOwner(db: Db, ownerId: string) {
