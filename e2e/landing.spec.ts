@@ -125,8 +125,8 @@ test.describe('navigation', () => {
 		await expect(page.locator('nav a', { hasText: 'Sets' })).toHaveCount(0);
 		await expect(page.locator('nav a', { hasText: 'Rules' })).toHaveCount(0);
 
-		// Decks is now a real, live link.
-		await expect(page.locator('nav a', { hasText: 'Decks' })).toHaveCount(1);
+		// Decks is now a real, live link — both the top-level item and the dropdown's "My Decks".
+		await expect(page.locator('nav a', { hasText: 'Decks' })).toHaveCount(2);
 	});
 
 	test('carries the attribution the project is required to show', async ({ page }) => {

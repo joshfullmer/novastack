@@ -13,9 +13,10 @@
 	 * in-app rules page yet, but an external stopgap beats offering nothing. Swap for a real route
 	 * once there's a comprehensive ruleset worth rendering ourselves.
 	 *
-	 * **Decks is a hover dropdown**, not a direct link — `/decks` (My Decks, owner-only) and
-	 * `/explore` (public, §9) are separate top-level routes, matching how every reference site
-	 * (swudb, Piltover Archive, Moxfield) splits these rather than tabbing them on one page.
+	 * **Decks is a link with a hover dropdown** — `/decks` (My Decks, owner-only) and `/explore`
+	 * (public, §9) are separate top-level routes, matching how every reference site (swudb,
+	 * Piltover Archive, Moxfield) splits these rather than tabbing them on one page. Clicking
+	 * "Decks" itself goes to My Decks; the dropdown is a shortcut straight to Explore.
 	 */
 	import { page } from '$app/state';
 	import Mark from './Mark.svelte';
@@ -50,13 +51,15 @@
 			{/each}
 
 			<li class="group relative">
-				<span
-					class="cursor-default transition-colors hover:text-bright"
+				<a
+					href="/decks"
+					class="transition-colors hover:text-bright"
 					class:text-bright={isCurrent('/decks') || isCurrent('/explore')}
 					class:text-muted={!isCurrent('/decks') && !isCurrent('/explore')}
+					aria-current={isCurrent('/decks') ? 'page' : undefined}
 				>
 					Decks
-				</span>
+				</a>
 				<ul
 					class="invisible absolute top-full left-0 z-30 w-32 rounded-md border border-edge
 						bg-shell p-1 text-sm opacity-0 shadow-lg transition-opacity group-focus-within:visible
