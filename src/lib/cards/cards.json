@@ -5998,6 +5998,16 @@
 					"setId": "MS01-WNC",
 					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/0f825d0d-be91-4f42-9e97-5d87488ee2fc/render-mpvjy2kt.webp",
 					"thumbhash": "lAiKFAQPQ6hZCHx4JjUIJHKAgYGICBiIAA=="
+				},
+				{
+					"artist": "Michal Ivan",
+					"collectorNumber": "β165",
+					"id": "775e7d6b-b9d9-48cf-a34d-00ba2b1c0a43",
+					"key": "MS01-WNC-β165",
+					"rarity": "Iconic Other",
+					"setId": "MS01-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/775e7d6b-b9d9-48cf-a34d-00ba2b1c0a43/render-mpxm741u.webp",
+					"thumbhash": "i+eFDAQPF2eIF/h3iQvnSYCDgYGICBiIAA=="
 				}
 			],
 			"ramProvided": null,
@@ -8802,6 +8812,54 @@
 			"slug": "the-relic-experimental-biochip"
 		},
 		{
+			"cardType": "Program",
+			"classifications": [
+				"Braindance",
+				"Doll"
+			],
+			"color": "Blue",
+			"cost": 2,
+			"eddiable": true,
+			"flavorText": null,
+			"keywords": [],
+			"name": "Three Mouths, One Desire",
+			"power": null,
+			"printings": [
+				{
+					"artist": "Łukasz Poller",
+					"collectorNumber": "137",
+					"id": "573a88e9-ac01-4402-8e3d-2420dc4ca949",
+					"key": "MS01-WNC-137",
+					"rarity": "Common",
+					"setId": "MS01-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/573a88e9-ac01-4402-8e3d-2420dc4ca949/render-mpvmdwco.webp",
+					"thumbhash": "j1eGFA4PdpeWB7iGuFwIh3uAgYGICBiIAA=="
+				},
+				{
+					"artist": "Łukasz Poller",
+					"collectorNumber": "β137",
+					"id": "0449bc78-983b-4681-b062-0738de3c487b",
+					"key": "MS01-WNC-β137",
+					"rarity": "Common",
+					"setId": "MS01-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/0449bc78-983b-4681-b062-0738de3c487b/render-mpvk8w8j.webp",
+					"thumbhash": "j1eGFA4PdpeWB7iGuFwIh3uAgYGICBiIAA=="
+				}
+			],
+			"ramProvided": null,
+			"ramRequired": 3,
+			"rawRulesText": "Search the top 3 cards of your deck. Add 1 to your hand. You may add 1 more for each friendly min Gig. Bottom-deck the rest.",
+			"rulesText": [
+				[
+					{
+						"kind": "text",
+						"text": "Search the top 3 cards of your deck. Add 1 to your hand. You may add 1 more for each friendly min Gig. Bottom-deck the rest."
+					}
+				]
+			],
+			"slug": "three-mouths-one-desire"
+		},
+		{
 			"cardType": "Unit",
 			"classifications": [
 				"Medtech",
@@ -10130,18 +10188,18 @@
 		"Green",
 		"Blue"
 	],
-	"generatedAt": "2026-08-25T21:06:22.172Z",
+	"generatedAt": "2026-08-26T16:09:35.654Z",
 	"ramPerLegend": 2,
 	"sets": [
 		{
-			"cardCount": 132,
+			"cardCount": 133,
 			"category": "MS01",
 			"cycle": "A",
 			"id": "MS01-WNC",
 			"kind": "base",
 			"name": "Welcome to Night City",
 			"printed": "MS01 - WNC [A]",
-			"printingCount": 292,
+			"printingCount": 295,
 			"setCode": "WNC"
 		},
 		{
@@ -10223,8 +10281,8 @@
 		}
 	],
 	"stats": {
-		"cards": 143,
-		"printings": 427,
+		"cards": 144,
+		"printings": 430,
 		"sets": 1
 	}
 }
