@@ -6,12 +6,13 @@
  * viewer's is understanding what you're looking at. Main-deck cards only; Legends are tracked
  * separately and have no `cost`.
  */
-import { COLORS, type Color } from '#lib/cards/vocabulary.js';
+import { COLORS, RARITY_ORDER, type Color, type Rarity } from '#lib/cards/vocabulary.js';
 import type { DeckEntry } from './legality.js';
 
 export type CostBucket = { cost: number | null; quantity: number };
 export type ColorSlice = { color: Color; quantity: number };
 export type EddiableStat = { eddiableQuantity: number; totalQuantity: number };
+export type RaritySlice = { rarity: Rarity; quantity: number };
 
 /**
  * Buckets by `cost`, null last — same nulls-last convention as `#lib/filters/sort.js`. Every
@@ -50,6 +51,22 @@ export function colorComposition(entries: readonly DeckEntry[]): ColorSlice[] {
 		byColor.set(entry.card.color, (byColor.get(entry.card.color) ?? 0) + entry.quantity);
 	}
 	return COLORS.map((color) => ({ color, quantity: byColor.get(color) ?? 0 }));
+}
+
+/**
+ * Quantity-weighted rarity composition — a rough real-money affordability signal, so it counts
+ * each card's **base printing** rarity (`card.printings[0]`, the same "Default Printing" every
+ * other card-art lookup on this page falls back to) rather than whatever printing is actually in
+ * the deck entry. A deck's printing choice is cosmetic (see `version-diff.ts`); its baseline
+ * cost to acquire isn't. Every Rarity is present, even at zero, matching `colorComposition`.
+ */
+export function rarityComposition(entries: readonly DeckEntry[]): RaritySlice[] {
+	const byRarity = new Map<Rarity, number>(RARITY_ORDER.map((rarity) => [rarity, 0]));
+	for (const entry of entries) {
+		const rarity = entry.card.printings[0].rarity;
+		byRarity.set(rarity, (byRarity.get(rarity) ?? 0) + entry.quantity);
+	}
+	return RARITY_ORDER.map((rarity) => ({ rarity, quantity: byRarity.get(rarity) ?? 0 }));
 }
 
 /**

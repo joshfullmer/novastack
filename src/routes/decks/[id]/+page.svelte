@@ -25,7 +25,13 @@
 	import { composeDeckImage } from '#lib/decks/deck-image.js';
 	import { deckToJson, deckToSimFormat } from '#lib/decks/export.js';
 	import { groupDeckEntries } from '#lib/decks/grouping.js';
-	import { colorComposition, costCurve, eddiableStat } from '#lib/decks/stats.js';
+	import { rarityTint } from '#lib/decks/rarity-tone.js';
+	import {
+		colorComposition,
+		costCurve,
+		eddiableStat,
+		rarityComposition
+	} from '#lib/decks/stats.js';
 	import { SIZE_STATUS_TONE } from '#lib/decks/status-tone.js';
 
 	const legendSlots = Array.from({ length: LEGEND_SLOTS }, (_, index) => index);
@@ -136,6 +142,9 @@
 	const curveMax = $derived(Math.max(1, ...curve.map((bucket) => bucket.quantity)));
 	const composition = $derived(
 		colorComposition(deck.entries).filter((slice) => slice.quantity > 0)
+	);
+	const rarityDist = $derived(
+		rarityComposition(deck.entries).filter((slice) => slice.quantity > 0)
 	);
 	const eddiable = $derived(eddiableStat(deck.entries));
 	const eddiablePercent = $derived(
@@ -844,6 +853,31 @@
 							{#each composition as slice (slice.color)}
 								<span class="inline-flex items-center gap-1.5">
 									<span class="size-2 rounded-full {COLOR_DOT[slice.color]}"></span>{slice.color}
+									{slice.quantity}
+								</span>
+							{/each}
+						</div>
+					{/if}
+				</div>
+
+				<div class="rounded-md border border-edge bg-shell p-4">
+					<p class="mb-3 text-xs font-medium tracking-wide text-muted uppercase">Rarity</p>
+					{#if rarityDist.length === 0}
+						<p class="text-xs text-muted">No cards yet.</p>
+					{:else}
+						<div class="flex h-2 overflow-hidden rounded-full bg-raised">
+							{#each rarityDist as slice, index (slice.rarity)}
+								<div
+									class={rarityTint(index, rarityDist.length)}
+									style="width: {(slice.quantity / deck.totalCards) * 100}%"
+								></div>
+							{/each}
+						</div>
+						<div class="mt-3 flex flex-wrap gap-x-3 gap-y-1 text-xs text-muted">
+							{#each rarityDist as slice, index (slice.rarity)}
+								<span class="inline-flex items-center gap-1.5">
+									<span class="size-2 rounded-full {rarityTint(index, rarityDist.length)}"
+									></span>{slice.rarity}
 									{slice.quantity}
 								</span>
 							{/each}
