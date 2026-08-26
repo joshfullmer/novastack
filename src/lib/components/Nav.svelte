@@ -19,7 +19,10 @@
 	 * "Decks" itself goes to My Decks; the dropdown is a shortcut straight to Explore.
 	 */
 	import { page } from '$app/state';
+	import DiscordIcon from './DiscordIcon.svelte';
 	import Mark from './Mark.svelte';
+
+	const DISCORD_URL = 'https://discord.gg/TtTvVrMhz8';
 
 	const LIVE = [{ href: '/cards', label: 'Cards' }];
 	const DECKS = [
@@ -98,6 +101,16 @@
 				>
 			</li>
 		</ul>
+
+		<a
+			href={DISCORD_URL}
+			target="_blank"
+			rel="noopener noreferrer"
+			aria-label="Join the Discord server"
+			class="text-muted transition-colors hover:text-bright"
+		>
+			<DiscordIcon class="size-5" />
+		</a>
 
 		{#if page.data.user}
 			<form method="POST" action="/auth/logout" class="text-sm">
