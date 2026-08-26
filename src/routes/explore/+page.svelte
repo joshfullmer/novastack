@@ -22,7 +22,6 @@
 	} from '#lib/decks/legality.js';
 	import { cookieState } from '#lib/cookie-state.svelte.js';
 	import Meta from '#lib/components/Meta.svelte';
-	import wncLogo from '#lib/assets/wnc-logo.png';
 	import { SIZE_STATUS_TONE } from '#lib/decks/status-tone.js';
 
 	let { data } = $props();
@@ -66,7 +65,6 @@
 	description="Browse public decks from the novastack community."
 	origin={data.origin}
 	path="/explore"
-	image={wncLogo}
 />
 
 <!-- The extra plain wrapper matters: `<main>` (root layout) is a column flex container, and a

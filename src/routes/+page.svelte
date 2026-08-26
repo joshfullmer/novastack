@@ -31,7 +31,7 @@
 	 */
 	import { goto } from '$app/navigation';
 	import { resolve } from '$app/paths';
-	import wncLogo from '#lib/assets/wnc-logo.png';
+	import ogIcon from '#lib/assets/og-icon.png';
 	import { landing } from '#lib/cards/landing.js';
 	import CardImage from '#lib/components/CardImage.svelte';
 	import Mark from '#lib/components/Mark.svelte';
@@ -90,7 +90,7 @@
 		.cards} cards, {landing.stats.printings} printings, {statsLine.sets}."
 	origin={data.origin}
 	path="/"
-	image={wncLogo}
+	image={ogIcon}
 />
 
 <!--

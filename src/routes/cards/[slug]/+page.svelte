@@ -66,11 +66,21 @@
 	}
 
 	const artists = $derived([...new Set(card.printings.map((entry) => entry.artist))]);
+
+	// `rawRulesText` still carries the `{Keyword}` markup `rulesText`'s segments parse out for
+	// display — braces stripped, that markup reads as plain, punctuation-adjacent text
+	// ("{Spend} A friendly..." → "Spend A friendly...") rather than needing `RulesText`'s own
+	// segment-aware rendering, which a plain `<meta content>` string can't use anyway. Vanilla
+	// cards (no rules text) fall back to the identity line the description used to always be.
+	const ogDescription = $derived(
+		card.rawRulesText?.replace(/[{}]/g, '') ??
+			`${card.name} — ${card.color} ${card.cardType}. ${card.printings.length} printings.`
+	);
 </script>
 
 <Meta
 	title="{card.name} — novastack"
-	description="{card.name} — {card.color} {card.cardType}. {card.printings.length} printings."
+	description={ogDescription}
 	origin={data.origin}
 	path="/cards/{card.slug}"
 	image={cardImageUrl(card.printings[0].id, 733)}

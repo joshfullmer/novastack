@@ -7,6 +7,7 @@
 	 */
 	import { enhance } from '$app/forms';
 	import CardImage from '#lib/components/CardImage.svelte';
+	import Meta from '#lib/components/Meta.svelte';
 	import { cardBySlug } from '#lib/decks/deck-state.svelte.js';
 	import {
 		deckSizeStatus,
@@ -153,9 +154,12 @@
 	</div>
 {/snippet}
 
-<svelte:head>
-	<title>My decks — novastack</title>
-</svelte:head>
+<Meta
+	title="My decks — novastack"
+	description="Build, manage, and share Cyberpunk TCG decks on novastack."
+	origin={data.origin}
+	path="/decks"
+/>
 
 <!-- The extra plain wrapper matters: `<main>` (root layout) is a column flex container, and a
      `mx-auto max-w-…` box that is a *direct* flex child has its stretch behavior disabled by its

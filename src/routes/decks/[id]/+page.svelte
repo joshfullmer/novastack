@@ -250,6 +250,14 @@
 	}
 </script>
 
+<!--
+	`image` is a stand-in (the same card `fallback` already picks for the preview panel above),
+	not a real per-deck composite (deck name + Legends + card grid). That would need server-side
+	rendering — satori + a WASM PNG renderer — and Cloudflare Workers' Free plan caps CPU time at
+	10ms/request, which that rendering would plausibly exceed. Paid ($5/mo minimum) allows 30s by
+	default, up to 5 min — comfortably enough — but novastack is on Free today. Revisit if that
+	changes; until then, this fallback is the deliberate choice, not a placeholder.
+-->
 <Meta
 	title="{data.deckName} — novastack"
 	description="A {deck.totalCards}-card Cyberpunk TCG deck by {data.ownerName}."
