@@ -861,6 +861,22 @@
 				</div>
 
 				<div class="rounded-md border border-edge bg-shell p-4">
+					<p class="mb-3 text-xs font-medium tracking-wide text-muted uppercase">Eddiable</p>
+					{#if eddiable.totalQuantity === 0}
+						<p class="text-xs text-muted">No cards yet.</p>
+					{:else}
+						<div class="h-2 overflow-hidden rounded-full bg-raised">
+							<div class="h-full bg-neon" style="width: {eddiablePercent}%"></div>
+						</div>
+						<p class="mt-3 text-xs text-muted">
+							{eddiable.eddiableQuantity} of {eddiable.totalQuantity} cards ({Math.round(
+								eddiablePercent
+							)}%)
+						</p>
+					{/if}
+				</div>
+
+				<div class="rounded-md border border-edge bg-shell p-4">
 					<p class="mb-3 text-xs font-medium tracking-wide text-muted uppercase">Rarity</p>
 					{#if rarityDist.length === 0}
 						<p class="text-xs text-muted">No cards yet.</p>
@@ -882,22 +898,6 @@
 								</span>
 							{/each}
 						</div>
-					{/if}
-				</div>
-
-				<div class="rounded-md border border-edge bg-shell p-4">
-					<p class="mb-3 text-xs font-medium tracking-wide text-muted uppercase">Eddiable</p>
-					{#if eddiable.totalQuantity === 0}
-						<p class="text-xs text-muted">No cards yet.</p>
-					{:else}
-						<div class="h-2 overflow-hidden rounded-full bg-raised">
-							<div class="h-full bg-neon" style="width: {eddiablePercent}%"></div>
-						</div>
-						<p class="mt-3 text-xs text-muted">
-							{eddiable.eddiableQuantity} of {eddiable.totalQuantity} cards ({Math.round(
-								eddiablePercent
-							)}%)
-						</p>
 					{/if}
 				</div>
 			</div>
