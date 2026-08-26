@@ -37,12 +37,12 @@ export const HEROES: readonly HeroChoice[] = [
 	{ slug: 'v-corporate-exile', printing: { setId: 'PRM-WNC' } },
 	// Yellow
 	{ slug: 'jackie-welles-ride-or-die-choom' },
-	// Blue
-	{ slug: 'judy-a-lvarez-braindance-maestro', printing: { rarity: 'Iconic Legend' } },
+	// Green
+	{ slug: 'hanako-arasaka-daughter-of-the-emperor', printing: { rarity: 'Iconic Legend' } },
 	// Red — the centre card
 	{ slug: 'johnny-silverhand-rocking-renegade', printing: { rarity: 'Iconic Secret' } },
-	// Green
-	{ slug: 'sandayu-oda-hanako-s-guardian', printing: { rarity: 'Iconic Other' } },
+	// Blue
+	{ slug: 'judy-a-lvarez-braindance-maestro', printing: { rarity: 'Iconic Legend' } },
 	// Green
 	{ slug: 'panam-palmer-nomad-cavalry', printing: { rarity: 'Iconic Legend' } },
 	// Yellow
