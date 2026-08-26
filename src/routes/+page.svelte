@@ -31,10 +31,14 @@
 	 */
 	import { goto } from '$app/navigation';
 	import { resolve } from '$app/paths';
+	import wncLogo from '#lib/assets/wnc-logo.png';
 	import { landing } from '#lib/cards/landing.js';
 	import CardImage from '#lib/components/CardImage.svelte';
 	import Mark from '#lib/components/Mark.svelte';
+	import Meta from '#lib/components/Meta.svelte';
 	import { PARAM } from '#lib/filters/state.js';
+
+	let { data } = $props();
 
 	/**
 	 * "Set" here means a genuine release, of which there is one: Welcome to Night City. The other
@@ -80,14 +84,14 @@
 	}
 </script>
 
-<svelte:head>
-	<title>novastack — an unofficial Cyberpunk TCG card database</title>
-	<meta
-		name="description"
-		content="Browse and filter every card in the Cyberpunk TCG. {landing.stats
-			.cards} cards, {landing.stats.printings} printings, {statsLine.sets}."
-	/>
-</svelte:head>
+<Meta
+	title="novastack — an unofficial Cyberpunk TCG card database"
+	description="Browse and filter every card in the Cyberpunk TCG. {landing.stats
+		.cards} cards, {landing.stats.printings} printings, {statsLine.sets}."
+	origin={data.origin}
+	path="/"
+	image={wncLogo}
+/>
 
 <!--
 	Clips horizontally only: the fan is wider than the text column, but its cards must be free to

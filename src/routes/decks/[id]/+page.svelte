@@ -18,6 +18,8 @@
 	import CardImage from '#lib/components/CardImage.svelte';
 	import { COLOR_BADGE_IMAGE, COLOR_DOT, COLOR_TEXT, COLOR_TINT } from '#lib/components/color.js';
 	import { dataset } from '#lib/cards/index.js';
+	import Meta from '#lib/components/Meta.svelte';
+	import { cardImageUrl } from '#lib/cards/schema.js';
 	import type { Card } from '#lib/cards/schema.js';
 	import { COLORS } from '#lib/cards/vocabulary.js';
 	import { LEGEND_SLOTS, MAX_DECK_SIZE, MIN_DECK_SIZE } from '#lib/decks/legality.js';
@@ -248,9 +250,13 @@
 	}
 </script>
 
-<svelte:head>
-	<title>{data.deckName} — novastack</title>
-</svelte:head>
+<Meta
+	title="{data.deckName} — novastack"
+	description="A {deck.totalCards}-card Cyberpunk TCG deck by {data.ownerName}."
+	origin={data.origin}
+	path="/decks/{data.deckId}"
+	image={fallback ? cardImageUrl(fallback.printings[0].id, 733) : undefined}
+/>
 
 <!--
 	The extra plain wrapper matters: `<main>` (root layout) is a column flex container, and a

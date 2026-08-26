@@ -12,6 +12,9 @@
 	 */
 	import { FIELDS, type FieldKind } from '#lib/query/index.js';
 	import { EXAMPLES } from '#lib/query/examples.js';
+	import Meta from '#lib/components/Meta.svelte';
+
+	let { data } = $props();
 
 	const FIELD_LABELS: Record<FieldKind, string> = {
 		color: 'Color',
@@ -36,13 +39,12 @@
 	}
 </script>
 
-<svelte:head>
-	<title>Syntax — novastack</title>
-	<meta
-		name="description"
-		content="The novastack query language: fields, operators, and worked examples."
-	/>
-</svelte:head>
+<Meta
+	title="Syntax — novastack"
+	description="The novastack query language: fields, operators, and worked examples."
+	origin={data.origin}
+	path="/syntax"
+/>
 
 <article class="mx-auto max-w-3xl space-y-10 px-4 py-10 sm:px-6">
 	<header>

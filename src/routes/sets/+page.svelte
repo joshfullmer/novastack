@@ -14,15 +14,21 @@
 	 */
 	import { dataset } from '#lib/cards/index.js';
 	import wncLogo from '#lib/assets/wnc-logo.png';
+	import Meta from '#lib/components/Meta.svelte';
+
+	let { data } = $props();
 
 	const baseSet = dataset.sets.find((set) => set.kind === 'base');
 	const derivativeSets = dataset.sets.filter((set) => set.kind === 'derivative');
 </script>
 
-<svelte:head>
-	<title>Sets — novastack</title>
-	<meta name="description" content="Every set in the Cyberpunk TCG, and how they relate." />
-</svelte:head>
+<Meta
+	title="Sets — novastack"
+	description="Every set in the Cyberpunk TCG, and how they relate."
+	origin={data.origin}
+	path="/sets"
+	image={wncLogo}
+/>
 
 <div class="mx-auto max-w-[1800px] p-6 sm:p-10">
 	<h1 class="mb-10 text-3xl font-semibold text-bright">Sets</h1>

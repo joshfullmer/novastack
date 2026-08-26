@@ -20,6 +20,11 @@
 	import { dataset } from '#lib/cards/index.js';
 	import { evaluate, type Match } from '#lib/filters/predicate.js';
 	import CardTile from '#lib/components/CardTile.svelte';
+	import Meta from '#lib/components/Meta.svelte';
+	import wncLogo from '#lib/assets/wnc-logo.png';
+	import { cardImageUrl } from '#lib/cards/schema.js';
+
+	let { data } = $props();
 
 	const set = $derived(dataset.sets.find((candidate) => candidate.id === page.params.id));
 	const baseSet = dataset.sets.find((candidate) => candidate.kind === 'base');
@@ -41,11 +46,27 @@
 			? []
 			: evaluate(dataset, { kind: 'set', values: [set.id] }).sort(byCollectorNumber)
 	);
+
+	// The Base Set has its own logo; a derivative set has no comparable asset, so its first
+	// card (Collector-Number order, same as the grid below) stands in instead.
+	const ogImage = $derived(
+		set?.kind === 'base'
+			? wncLogo
+			: results[0]
+				? cardImageUrl(results[0].printing.id, 733)
+				: undefined
+	);
 </script>
 
-<svelte:head>
-	<title>{set?.name ?? 'Set not found'} — novastack</title>
-</svelte:head>
+<Meta
+	title="{set?.name ?? 'Set not found'} — novastack"
+	description={set
+		? `${set.name} — ${set.cardCount} cards, ${set.printingCount} printings.`
+		: 'This set could not be found.'}
+	origin={data.origin}
+	path="/sets/{page.params.id}"
+	image={ogImage}
+/>
 
 <div class="mx-auto max-w-[1800px] p-6 sm:p-10">
 	<a href="/sets" class="text-base text-muted hover:text-neon">← All sets</a>

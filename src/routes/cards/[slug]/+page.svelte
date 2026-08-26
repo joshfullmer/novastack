@@ -28,7 +28,9 @@
 	import { currentUrl } from '#lib/filters/shallow.js';
 	import CardImage from '#lib/components/CardImage.svelte';
 	import CardStats from '#lib/components/CardStats.svelte';
+	import Meta from '#lib/components/Meta.svelte';
 	import RulesText from '#lib/components/RulesText.svelte';
+	import { cardImageUrl } from '#lib/cards/schema.js';
 	import { findSetIdentifier } from '#lib/cards/sets.js';
 	import { quoteQueryValue } from '#lib/cards/dataset.js';
 	import { PARAM } from '#lib/filters/state.js';
@@ -66,13 +68,13 @@
 	const artists = $derived([...new Set(card.printings.map((entry) => entry.artist))]);
 </script>
 
-<svelte:head>
-	<title>{card.name} — novastack</title>
-	<meta
-		name="description"
-		content="{card.name} — {card.color} {card.cardType}. {card.printings.length} printings."
-	/>
-</svelte:head>
+<Meta
+	title="{card.name} — novastack"
+	description="{card.name} — {card.color} {card.cardType}. {card.printings.length} printings."
+	origin={data.origin}
+	path="/cards/{card.slug}"
+	image={cardImageUrl(card.printings[0].id, 733)}
+/>
 
 <article class="mx-auto max-w-6xl px-4 py-8 sm:px-6">
 	<nav class="mb-6 text-sm text-muted">

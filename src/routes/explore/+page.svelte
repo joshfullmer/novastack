@@ -21,6 +21,8 @@
 		MIN_DECK_SIZE
 	} from '#lib/decks/legality.js';
 	import { cookieState } from '#lib/cookie-state.svelte.js';
+	import Meta from '#lib/components/Meta.svelte';
+	import wncLogo from '#lib/assets/wnc-logo.png';
 	import { SIZE_STATUS_TONE } from '#lib/decks/status-tone.js';
 
 	let { data } = $props();
@@ -59,9 +61,13 @@
 	</span>
 {/snippet}
 
-<svelte:head>
-	<title>Explore decks — novastack</title>
-</svelte:head>
+<Meta
+	title="Explore decks — novastack"
+	description="Browse public decks from the novastack community."
+	origin={data.origin}
+	path="/explore"
+	image={wncLogo}
+/>
 
 <!-- The extra plain wrapper matters: `<main>` (root layout) is a column flex container, and a
      `mx-auto max-w-…` box that is a *direct* flex child has its stretch behavior disabled by its

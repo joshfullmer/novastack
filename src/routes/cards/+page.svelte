@@ -37,6 +37,7 @@
 	import CardPane from '#lib/components/CardPane.svelte';
 	import CardTile from '#lib/components/CardTile.svelte';
 	import FilterBar from '#lib/components/filters/FilterBar.svelte';
+	import Meta from '#lib/components/Meta.svelte';
 	import { budgetFromLegendColors, EMPTY_BUDGET } from '#lib/filters/budget.js';
 	import { readChipView } from '#lib/filters/chips.js';
 	import { evaluate } from '#lib/filters/predicate.js';
@@ -50,6 +51,8 @@
 		toQueryUrl
 	} from '#lib/filters/state.js';
 	import { persistedIntState } from '#lib/persisted-state.svelte.js';
+
+	let { data } = $props();
 
 	const SEARCH_DEBOUNCE_MS = 250;
 	const DEFAULT_COLUMNS = 6;
@@ -166,10 +169,12 @@
 	}
 </script>
 
-<svelte:head>
-	<title>Cards — novastack</title>
-	<meta name="description" content="Browse and filter every card in the Cyberpunk TCG." />
-</svelte:head>
+<Meta
+	title="Cards — novastack"
+	description="Browse and filter every card in the Cyberpunk TCG."
+	origin={data.origin}
+	path="/cards"
+/>
 
 <!--
 	The page scrolls normally and the pane is sticky, rather than the grid living in its own scroll
