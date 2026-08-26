@@ -2,6 +2,7 @@ import { error, fail, redirect } from '@sveltejs/kit';
 import * as v from 'valibot';
 import { DeckVersionPayloadSchema } from '#lib/decks/schema.js';
 import { getDeck, getLatestVersion, saveDeckVersion } from '#lib/server/db/decks.js';
+import { readViewPref } from '#lib/server/view-pref.js';
 import type { Actions, PageServerLoad } from './$types';
 
 // Overrides the root layout's `prerender = true` — a specific deck's owner/content is
@@ -27,7 +28,14 @@ export const load: PageServerLoad = async (event) => {
 		legends: version?.legends ?? []
 	});
 
-	return { deckId: deck.id, deckName: deck.name, payload };
+	return {
+		deckId: deck.id,
+		deckName: deck.name,
+		payload,
+		// Shared with the read-only view (`/decks/[id]`) — "how I like browsing a deck's cards"
+		// is one preference, not two.
+		deckView: readViewPref(event.cookies, 'deck-cards-view', ['list', 'gallery'], 'list')
+	};
 };
 
 export const actions: Actions = {

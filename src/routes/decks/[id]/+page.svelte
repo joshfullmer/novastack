@@ -33,6 +33,7 @@
 		rarityComposition
 	} from '#lib/decks/stats.js';
 	import { SIZE_STATUS_TONE } from '#lib/decks/status-tone.js';
+	import { cookieState } from '#lib/cookie-state.svelte.js';
 
 	const legendSlots = Array.from({ length: LEGEND_SLOTS }, (_, index) => index);
 
@@ -41,7 +42,13 @@
 	// svelte-ignore state_referenced_locally
 	const deck = createDeckState(data.payload);
 
-	let deckView = $state<'list' | 'gallery'>('list');
+	// Shared with the editor (`/decks/[id]/edit`) — "how I like browsing a deck's cards" is one
+	// preference, not two. Server-rendered from a cookie (`data.deckView`, read in
+	// `+page.server.ts`) rather than `localStorage`: this page isn't prerendered, so the server
+	// can pick the right branch on the very first render — no flash, and no need to render the
+	// other one just in case.
+	// svelte-ignore state_referenced_locally
+	const deckView = cookieState('deck-cards-view', data.deckView);
 
 	// Main Deck / History — a tab, not a stacked section, so Change History (below) never
 	// competes with the deck's own card list for vertical space.
@@ -583,19 +590,19 @@
 						<div class="flex overflow-hidden rounded-md border border-edge text-xs">
 							<button
 								type="button"
-								onclick={() => (deckView = 'list')}
+								onclick={() => (deckView.value = 'list')}
 								class="px-2 py-1 transition-colors hover:bg-raised/60 hover:text-bright"
-								class:bg-raised={deckView === 'list'}
-								class:text-bright={deckView === 'list'}
-								class:text-muted={deckView !== 'list'}>List</button
+								class:bg-raised={deckView.value === 'list'}
+								class:text-bright={deckView.value === 'list'}
+								class:text-muted={deckView.value !== 'list'}>List</button
 							>
 							<button
 								type="button"
-								onclick={() => (deckView = 'gallery')}
+								onclick={() => (deckView.value = 'gallery')}
 								class="px-2 py-1 transition-colors hover:bg-raised/60 hover:text-bright"
-								class:bg-raised={deckView === 'gallery'}
-								class:text-bright={deckView === 'gallery'}
-								class:text-muted={deckView !== 'gallery'}>Gallery</button
+								class:bg-raised={deckView.value === 'gallery'}
+								class:text-bright={deckView.value === 'gallery'}
+								class:text-muted={deckView.value !== 'gallery'}>Gallery</button
 							>
 						</div>
 					</div>
@@ -723,7 +730,7 @@
 							</li>
 						{/each}
 					</ul>
-				{:else if deckView === 'list'}
+				{:else if deckView.value === 'list'}
 					{@const columns = 'grid-cols-[2rem_6fr_1fr_1fr_1fr]'}
 					<ul class="rounded-md border border-edge">
 						<li

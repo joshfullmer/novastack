@@ -4,6 +4,56 @@
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<meta name="text-scale" content="scale" />
+		<!--
+			Pre-paint density sync — avoids the flash a persisted `localStorage` "cards per row"
+			preference would otherwise show: the server/prerenderer can't know a visitor's
+			`localStorage`, so it always ships the default, and correcting that from inside a
+			Svelte component (`onMount`, an effect) runs *after* hydration — after the browser has
+			already painted the default. This script runs synchronously in `<head>`, before `<body>`
+			is even parsed, so there's nothing to correct after the fact.
+
+			Scoped to the two numeric density steppers (`/cards`, the deck editor) only — their
+			List/Grid/Gallery counterparts (My Decks, Explore, the deck view, the deck editor's own
+			Main Deck/Legends lists) use a server-read cookie instead (`#lib/server/view-pref.ts`):
+			those pages aren't prerendered, so the server can just render the right branch on the
+			first try. A pre-paint script can only reach `<html>` itself (it already exists at this
+			point in parsing; `<body>` does not), so the same trick can't apply *there* without
+			rendering both branches and hiding one via CSS — which turns out not to actually save
+			the hidden branch's images from being fetched anyway (verified: Chromium's preload
+			scanner discovers `<img src/srcset>` directly from the raw HTML byte stream, before CSS
+			is ever computed, regardless of a `display:none` ancestor reached only via an external
+			stylesheet rule) — so for those, a cookie is the only fix that doesn't cost double the
+			bandwidth.
+		-->
+		<script>
+			(function () {
+				var html = document.documentElement;
+				function numVar(key, min, max, prop) {
+					var stored;
+					try {
+						stored = parseInt(localStorage.getItem(key), 10);
+					} catch (e) {
+						return;
+					}
+					if (Number.isInteger(stored) && stored >= min && stored <= max) {
+						html.style.setProperty(prop, String(stored));
+					}
+				}
+				numVar('cards-columns', 2, 12, '--cards-columns');
+				numVar('deck-editor-columns', 2, 12, '--deck-editor-columns');
+			})();
+		</script>
+		<style>
+			/* The only thing setting `grid-template-columns` on these elements, pre- or
+			   post-hydration — see each page's own `$effect` (keeps the custom property live)
+			   for why there's no competing inline `style` binding to fight over specificity with. */
+			[data-columns-grid='cards'] {
+				grid-template-columns: repeat(var(--cards-columns, 6), minmax(0, 1fr));
+			}
+			[data-columns-grid='deck-editor'] {
+				grid-template-columns: repeat(var(--deck-editor-columns, 8), minmax(0, 1fr));
+			}
+		</style>
 		%sveltekit.head%
 	</head>
 	<body data-sveltekit-preload-data="hover">

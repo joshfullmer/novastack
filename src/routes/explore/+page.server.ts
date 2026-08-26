@@ -1,5 +1,6 @@
 import * as v from 'valibot';
 import { listPublicDecks } from '#lib/server/db/decks.js';
+import { readViewPref } from '#lib/server/view-pref.js';
 import type { PageServerLoad } from './$types';
 
 // Overrides the root layout's `prerender = true` — this reads request-scoped session/DB state.
@@ -50,6 +51,8 @@ export const load: PageServerLoad = async (event) => {
 		ownerName: ownerId ? (decks[0]?.ownerName ?? null) : null,
 		// Not read by this page's own template — Nav still needs it for the Sign in/out swap,
 		// since this route has no dedicated `+layout.server.ts` supplying it (`/decks` does).
-		user: event.locals.user
+		user: event.locals.user,
+		// Shared with /decks — "how I like browsing a list of decks" is one preference, not two.
+		deckView: readViewPref(event.cookies, 'decks-list-view', ['list', 'grid'], 'list')
 	};
 };

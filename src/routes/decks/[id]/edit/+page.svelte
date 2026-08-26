@@ -23,6 +23,8 @@
 	import { createDeckState } from '#lib/decks/deck-state.svelte.js';
 	import { groupDeckEntries } from '#lib/decks/grouping.js';
 	import { SIZE_STATUS_TONE } from '#lib/decks/status-tone.js';
+	import { cookieState } from '#lib/cookie-state.svelte.js';
+	import { persistedIntState } from '#lib/persisted-state.svelte.js';
 
 	const legendSlots = Array.from({ length: LEGEND_SLOTS }, (_, index) => index);
 
@@ -43,18 +45,37 @@
 	let tab = $state<'legends' | 'main'>(deck.legends.length === LEGEND_SLOTS ? 'main' : 'legends');
 	let searchLegends = $state('');
 	let searchMain = $state('');
-	let deckView = $state<'list' | 'gallery'>('list');
+	// Shared with the read-only view (`/decks/[id]`) — "how I like browsing a deck's cards" is
+	// one preference, not two. Server-rendered from a cookie (`data.deckView`, read in
+	// `+page.server.ts`) rather than `localStorage`: this page isn't prerendered, so the server
+	// can pick the right branch on the very first render — no flash, and no need to render the
+	// other one just in case.
+	// svelte-ignore state_referenced_locally
+	const deckView = cookieState('deck-cards-view', data.deckView);
 	let hovered = $state<{ card: Card; left: number; top: number } | null>(null);
 
 	// Same density control as the card database's own grid, just a different default: this
-	// panel is denser to begin with, so 8 (not 6) starts already-comfortable.
+	// panel is denser to begin with, so 8 (not 6) starts already-comfortable. Persisted
+	// separately from `/cards`' own column count — narrower panel, different natural default,
+	// not really the same preference.
 	const COLUMN_STEP = 2;
 	const COLUMN_FLOOR = 2;
 	const COLUMN_CEILING = 12;
-	let columns = $state(8);
+	const columns = persistedIntState('deck-editor-columns', 8, {
+		min: COLUMN_FLOOR,
+		max: COLUMN_CEILING
+	});
 	function setColumns(next: number) {
-		columns = Math.max(COLUMN_FLOOR, Math.min(next, COLUMN_CEILING));
+		columns.value = next;
 	}
+
+	// Keeps `--deck-editor-columns` live for `app.html`'s CSS rule
+	// (`[data-columns-grid='deck-editor']`), which is the *only* thing setting
+	// `grid-template-columns` on that element — see `/cards`' own identical comment for why
+	// there's no competing inline `style` binding below to fight over specificity with.
+	$effect(() => {
+		document.documentElement.style.setProperty('--deck-editor-columns', String(columns.value));
+	});
 
 	function matchesFor(source: string): Match[] {
 		const trimmed = source.trim();
@@ -200,16 +221,16 @@
 				<div class="inline-flex items-center overflow-hidden rounded-md border border-edge text-sm">
 					<button
 						type="button"
-						onclick={() => setColumns(columns - COLUMN_STEP)}
-						disabled={columns <= COLUMN_FLOOR}
+						onclick={() => setColumns(columns.value - COLUMN_STEP)}
+						disabled={columns.value <= COLUMN_FLOOR}
 						aria-label="Fewer, larger cards"
 						class="px-2.5 py-1 text-body hover:bg-raised disabled:opacity-30">−</button
 					>
-					<span class="w-8 text-center text-xs text-muted tabular-nums">{columns}</span>
+					<span class="w-8 text-center text-xs text-muted tabular-nums">{columns.value}</span>
 					<button
 						type="button"
-						onclick={() => setColumns(columns + COLUMN_STEP)}
-						disabled={columns >= COLUMN_CEILING}
+						onclick={() => setColumns(columns.value + COLUMN_STEP)}
+						disabled={columns.value >= COLUMN_CEILING}
 						aria-label="More, smaller cards"
 						class="px-2.5 py-1 text-body hover:bg-raised disabled:opacity-30">+</button
 					>
@@ -219,7 +240,7 @@
 		</div>
 
 		<div class="min-h-0 flex-1 overflow-y-auto px-4 pt-1 pb-4">
-			<ul class="grid gap-2" style="grid-template-columns: repeat({columns}, minmax(0, 1fr))">
+			<ul data-columns-grid="deck-editor" class="grid gap-2">
 				{#each visibleMatches as match (match.card.slug)}
 					{@const inDeck = deck.quantityOf(match.card)}
 					{@const chosen = tab === 'legends' && isChosenLegend(match.card)}
@@ -241,7 +262,7 @@
 								thumbhash={match.printing.thumbhash}
 								color={match.card.color}
 								alt={match.card.name}
-								sizes="{Math.round(100 / columns)}vw"
+								sizes="{Math.round(100 / columns.value)}vw"
 							/>
 							{#if inDeck > 0}
 								<span
@@ -328,25 +349,25 @@
 				<div class="flex overflow-hidden rounded-md border border-edge text-xs">
 					<button
 						type="button"
-						onclick={() => (deckView = 'list')}
+						onclick={() => (deckView.value = 'list')}
 						class="px-2 py-1 transition-colors hover:bg-raised/60 hover:text-bright"
-						class:bg-raised={deckView === 'list'}
-						class:text-bright={deckView === 'list'}
-						class:text-muted={deckView !== 'list'}>List</button
+						class:bg-raised={deckView.value === 'list'}
+						class:text-bright={deckView.value === 'list'}
+						class:text-muted={deckView.value !== 'list'}>List</button
 					>
 					<button
 						type="button"
-						onclick={() => (deckView = 'gallery')}
+						onclick={() => (deckView.value = 'gallery')}
 						class="px-2 py-1 transition-colors hover:bg-raised/60 hover:text-bright"
-						class:bg-raised={deckView === 'gallery'}
-						class:text-bright={deckView === 'gallery'}
-						class:text-muted={deckView !== 'gallery'}>Gallery</button
+						class:bg-raised={deckView.value === 'gallery'}
+						class:text-bright={deckView.value === 'gallery'}
+						class:text-muted={deckView.value !== 'gallery'}>Gallery</button
 					>
 				</div>
 			</div>
 		</div>
 
-		{#if deckView === 'list'}
+		{#if deckView.value === 'list'}
 			<ul class="flex-1 overflow-y-auto" role="list" onmouseleave={() => (hovered = null)}>
 				{#each mainGroups as group (group.cardType)}
 					<li

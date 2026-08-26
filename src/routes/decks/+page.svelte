@@ -15,6 +15,7 @@
 		MIN_DECK_SIZE
 	} from '#lib/decks/legality.js';
 	import { SIZE_STATUS_TONE } from '#lib/decks/status-tone.js';
+	import { cookieState } from '#lib/cookie-state.svelte.js';
 
 	let { data } = $props();
 
@@ -23,7 +24,12 @@
 	// up a different height.
 	const legendSlots = Array.from({ length: LEGEND_SLOTS }, (_, index) => index);
 
-	let deckView = $state<'list' | 'grid'>('list');
+	// Shared with /explore — "how I like browsing a list of decks" is one preference, not two.
+	// Server-rendered from a cookie (`data.deckView`, read in `+page.server.ts`) rather than
+	// `localStorage`: this page isn't prerendered, so the server can pick the right branch on
+	// the very first render — no flash, and no need to render the other one just in case.
+	// svelte-ignore state_referenced_locally
+	const deckView = cookieState('decks-list-view', data.deckView);
 
 	let openMenuId = $state<string | null>(null);
 	let renamingId = $state<string | null>(null);
@@ -164,19 +170,19 @@
 				<div class="flex overflow-hidden rounded-md border border-edge text-xs">
 					<button
 						type="button"
-						onclick={() => (deckView = 'list')}
+						onclick={() => (deckView.value = 'list')}
 						class="px-2 py-1 transition-colors hover:bg-raised/60 hover:text-bright"
-						class:bg-raised={deckView === 'list'}
-						class:text-bright={deckView === 'list'}
-						class:text-muted={deckView !== 'list'}>List</button
+						class:bg-raised={deckView.value === 'list'}
+						class:text-bright={deckView.value === 'list'}
+						class:text-muted={deckView.value !== 'list'}>List</button
 					>
 					<button
 						type="button"
-						onclick={() => (deckView = 'grid')}
+						onclick={() => (deckView.value = 'grid')}
 						class="px-2 py-1 transition-colors hover:bg-raised/60 hover:text-bright"
-						class:bg-raised={deckView === 'grid'}
-						class:text-bright={deckView === 'grid'}
-						class:text-muted={deckView !== 'grid'}>Grid</button
+						class:bg-raised={deckView.value === 'grid'}
+						class:text-bright={deckView.value === 'grid'}
+						class:text-muted={deckView.value !== 'grid'}>Grid</button
 					>
 				</div>
 				<form method="POST" action="/decks/new">
@@ -192,7 +198,7 @@
 
 		{#if data.decks.length === 0}
 			<p class="text-sm text-muted">No decks yet — create one to get started.</p>
-		{:else if deckView === 'grid'}
+		{:else if deckView.value === 'grid'}
 			<ul class="grid grid-cols-2 gap-4 lg:grid-cols-3">
 				{#each data.decks as deck (deck.id)}
 					<li class="overflow-hidden rounded-lg border border-edge bg-shell">

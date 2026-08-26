@@ -8,6 +8,7 @@ import {
 	renameDeck,
 	setDeckVisibility
 } from '#lib/server/db/decks.js';
+import { readViewPref } from '#lib/server/view-pref.js';
 import type { Actions, PageServerLoad } from './$types';
 
 // Overrides the root layout's `prerender = true` — this reads request-scoped session/DB state.
@@ -48,7 +49,9 @@ export const load: PageServerLoad = async (event) => {
 			cardCount: version?.entries.reduce((sum, entry) => sum + entry.quantity, 0) ?? 0,
 			legendSlugs: version?.legends ?? [],
 			savedAt: version?.savedAt ?? null
-		}))
+		})),
+		// Shared with /explore — "how I like browsing a list of decks" is one preference, not two.
+		deckView: readViewPref(event.cookies, 'decks-list-view', ['list', 'grid'], 'list')
 	};
 };
 

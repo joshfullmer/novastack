@@ -14,6 +14,7 @@ import {
 	setDeckVisibility,
 	unlikeDeck
 } from '#lib/server/db/decks.js';
+import { readViewPref } from '#lib/server/view-pref.js';
 import type { Actions, PageServerLoad } from './$types';
 
 // Overrides the root layout's `prerender = true` — a specific deck's visibility/content is
@@ -86,7 +87,10 @@ export const load: PageServerLoad = async (event) => {
 		payload,
 		likeCount,
 		viewerHasLiked,
-		history
+		history,
+		// Shared with the editor (`/decks/[id]/edit`) — "how I like browsing a deck's cards" is
+		// one preference, not two.
+		deckView: readViewPref(event.cookies, 'deck-cards-view', ['list', 'gallery'], 'list')
 	};
 };
 

@@ -49,6 +49,7 @@
 		parseQueryState,
 		toQueryUrl
 	} from '#lib/filters/state.js';
+	import { persistedIntState } from '#lib/persisted-state.svelte.js';
 
 	const SEARCH_DEBOUNCE_MS = 250;
 	const DEFAULT_COLUMNS = 6;
@@ -86,7 +87,12 @@
 
 	// Density is a column count, not a tile size. It is local state rather than URL state: it is a
 	// view preference, and a shared link should carry the *query*, not the reader's zoom level.
-	let desiredColumns = $state(DEFAULT_COLUMNS);
+	// Persisted as the user's actual preference — the *unclamped* value — so a narrow window
+	// doesn't permanently ratchet it down for every future, wider visit too.
+	const desiredColumns = persistedIntState('cards-columns', DEFAULT_COLUMNS, {
+		min: COLUMN_FLOOR,
+		max: COLUMN_CEILING
+	});
 
 	/**
 	 * A fixed 8 columns is nonsense at 390px, so the count is clamped by viewport. The floor at
@@ -99,12 +105,23 @@
 		return Math.max(COLUMN_FLOOR, Math.min(COLUMN_CEILING, Math.floor(width / MIN_TILE_PX)));
 	});
 
-	const columns = $derived(Math.max(COLUMN_FLOOR, Math.min(desiredColumns, columnCeiling)));
+	const columns = $derived(Math.max(COLUMN_FLOOR, Math.min(desiredColumns.value, columnCeiling)));
 	const columnRange = $derived({ min: COLUMN_FLOOR, max: columnCeiling });
 
 	function setColumns(next: number) {
-		desiredColumns = Math.max(COLUMN_FLOOR, Math.min(next, COLUMN_CEILING));
+		desiredColumns.value = next;
 	}
+
+	// Keeps `--cards-columns` live for `app.html`'s CSS rule (`[data-columns-grid='cards']`),
+	// which is the *only* thing setting `grid-template-columns` on that element — there's no
+	// competing inline `style` binding below to fight over specificity with (an inline style
+	// attribute always beats an external rule regardless of specificity, `!important` aside, so
+	// having both was never going to let the CSS rule win). Synced from `columns`, the
+	// viewport-clamped value, not the raw stored preference — the rendered grid must never
+	// exceed what the current viewport actually fits.
+	$effect(() => {
+		document.documentElement.style.setProperty('--cards-columns', String(columns));
+	});
 
 	/** Measured so the "Cards per row" sub-header can sit flush under FilterBar, whatever
 	 * FilterBar's own height happens to be (it grows when the chip panel is open). */
@@ -236,10 +253,7 @@
 					{/if}
 				</div>
 			{:else}
-				<ul
-					class="grid gap-2 sm:gap-3"
-					style="grid-template-columns: repeat({columns}, minmax(0, 1fr))"
-				>
+				<ul data-columns-grid="cards" class="grid gap-2 sm:gap-3">
 					{#each results as match, index (match.card.slug)}
 						<li>
 							<CardTile
