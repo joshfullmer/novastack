@@ -16,7 +16,7 @@ const card = (slug: string) => {
 };
 
 test.describe('a card page', () => {
-	test('is prerendered with the Default Printing', async ({ page }) => {
+	test('shows the Default Printing when none is specified', async ({ page }) => {
 		const v = card('v-streetkid');
 		await page.goto('/cards/v-streetkid');
 
@@ -56,6 +56,23 @@ test.describe('a card page', () => {
 		const v = card('v-streetkid');
 		await page.goto('/cards/v-streetkid?printing=NOPE-000');
 		await expect(page.getByText(`Art by ${v.printings[0].artist}`)).toBeVisible();
+	});
+
+	test('a printing deep-link is resolved server-side, for non-JS crawlers reading Open Graph tags', async ({
+		request
+	}) => {
+		// This page is server-rendered (not prerendered) specifically so a shared `?printing=` link
+		// carries its own printing's art in og:image — a crawler like Discord's never runs the
+		// client-side chooser JS below, so this has to be true of the raw response itself, not just
+		// of the interactive page a browser ends up showing.
+		const v = card('v-streetkid');
+		const beta = v.printings.find((printing) => printing.collectorNumber === 'β144');
+		expect(beta).toBeDefined();
+
+		const response = await request.get(`/cards/v-streetkid?printing=${beta?.key}`);
+		const html = await response.text();
+		expect(html).toContain(`<meta property="og:image" content="`);
+		expect(html).toContain(`/card-art/${beta?.id}/733.webp`);
 	});
 
 	test('choosing a printing leaves the Default Printing as the absent state', async ({ page }) => {
@@ -110,9 +127,9 @@ test.describe('a card page', () => {
 });
 
 test.describe('every card page exists', () => {
-	test('the prerenderer produced one page per card', async ({ request }) => {
-		// A spot check across the alphabet rather than 133 requests: the prerenderer either has the
-		// entries or it does not.
+	test('every card slug resolves', async ({ request }) => {
+		// A spot check across the alphabet rather than 133 requests: the slug lookup either has the
+		// card or it does not.
 		const sample = [0, 1, Math.floor(snapshot.cards.length / 2), snapshot.cards.length - 1];
 		for (const index of sample) {
 			const response = await request.get(`/cards/${snapshot.cards[index].slug}`);

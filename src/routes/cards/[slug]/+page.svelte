@@ -1,6 +1,6 @@
 <script lang="ts">
 	/**
-	 * The card detail page. Prerendered once per card.
+	 * The card detail page. No longer prerendered — see `+page.server.ts`.
 	 *
 	 * It serves three roles: the shareable card URL, the mobile detail view, and the full-size art
 	 * view. Over and above the 320px pane it adds larger art at the 733w tier, a substantial
@@ -30,27 +30,28 @@
 	import CardStats from '#lib/components/CardStats.svelte';
 	import Meta from '#lib/components/Meta.svelte';
 	import RulesText from '#lib/components/RulesText.svelte';
-	import { cardImageUrl } from '#lib/cards/schema.js';
+	import { cardImageUrl, PRINTING_PARAM } from '#lib/cards/schema.js';
 	import { findSetIdentifier } from '#lib/cards/sets.js';
 	import { quoteQueryValue } from '#lib/cards/dataset.js';
 	import { PARAM } from '#lib/filters/state.js';
 
 	let { data } = $props();
 
-	const PRINTING_PARAM = 'printing';
-
 	const card = $derived(data.card);
 
 	/**
 	 * The deep-linked printing, or the Default Printing.
 	 *
-	 * Read **only in the browser**: this page is prerendered, and prerendered HTML cannot depend on
-	 * a query string. So the static page is always the Default Printing and a `?printing=` link
-	 * resolves on hydration — the same trade the grid makes for its filters. An unknown key
-	 * degrades to the default rather than erroring.
+	 * `+page.server.ts` already resolved this correctly for the *initial* response (that's what
+	 * lets Open Graph tags reflect a shared `?printing=` link) — `data.printing` is that answer,
+	 * and covers the non-browser (server-render) case. The browser branch exists for the
+	 * *interactive* chooser below: `choose()` navigates with `shallow: true`, which updates the
+	 * URL without a real server round trip, so nothing re-runs `load` — this reactive re-read of
+	 * `currentUrl()` is what makes clicking a printing update the art instantly instead of not at
+	 * all. Both branches resolve the same param the same way; they just run at different times.
 	 */
 	const printing = $derived.by(() => {
-		if (!browser) return card.printings[0];
+		if (!browser) return data.printing;
 		const key = currentUrl().searchParams.get(PRINTING_PARAM);
 		return card.printings.find((entry) => entry.key === key) ?? card.printings[0];
 	});
@@ -83,7 +84,7 @@
 	description={ogDescription}
 	origin={data.origin}
 	path="/cards/{card.slug}"
-	image={cardImageUrl(card.printings[0].id, 733)}
+	image={cardImageUrl(data.printing.id, 733)}
 />
 
 <article class="mx-auto max-w-6xl px-4 py-8 sm:px-6">

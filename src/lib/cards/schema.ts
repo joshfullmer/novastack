@@ -203,6 +203,15 @@ export function cardImageUrl(printingId: string, width: ImageWidth): string {
 	return `/card-art/${printingId}/${width}.webp`;
 }
 
+/**
+ * The card detail page's printing-chooser query param — shared between its
+ * `+page.server.ts` (resolves it per request, for Open Graph tags a non-JS crawler needs
+ * correct on the very first response) and its `.svelte` file's own client-side chooser (which
+ * re-resolves it reactively on every shallow navigation, without a server round trip). One
+ * constant so the two can't drift apart on the param name.
+ */
+export const PRINTING_PARAM = 'printing';
+
 /** A `srcset` across every mirrored tier, so the browser picks by rendered size. */
 export function cardImageSrcset(printingId: string): string {
 	return IMAGE_WIDTHS.map((width) => `${cardImageUrl(printingId, width)} ${width}w`).join(', ');
