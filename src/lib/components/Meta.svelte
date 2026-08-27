@@ -1,6 +1,6 @@
 <!--
-	Per-page `<title>` + description + Open Graph/Twitter Card tags, in one place so every route
-	gets the same shape rather than hand-rolling six `<meta>` tags each time.
+	Per-page `<title>` + description + canonical link + Open Graph/Twitter Card tags, in one place
+	so every route gets the same shape rather than hand-rolling these tags each time.
 
 	`og:url`/`og:image` need **absolute** URLs — Discord (and every other link-preview crawler)
 	never resolves a relative one, since it has no notion of "the current page" the way a browser
@@ -38,6 +38,9 @@
 <svelte:head>
 	<title>{title}</title>
 	<meta name="description" content={description} />
+	{#if url}
+		<link rel="canonical" href={url} />
+	{/if}
 
 	<meta property="og:type" content="website" />
 	<meta property="og:title" content={title} />
