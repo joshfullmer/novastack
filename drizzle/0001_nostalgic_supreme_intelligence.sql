@@ -1,0 +1,1 @@
+ALTER TABLE `decks` ADD `is_starter_deck` integer DEFAULT false NOT NULL;

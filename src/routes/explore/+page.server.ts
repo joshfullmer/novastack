@@ -6,8 +6,8 @@ import type { PageServerLoad } from './$types';
 // Overrides the root layout's `prerender = true` — this reads request-scoped session/DB state.
 export const prerender = false;
 
-const SortSchema = v.picklist(['hot', 'newest', 'most-liked']);
-type Sort = v.InferOutput<typeof SortSchema>;
+const TabSchema = v.picklist(['hot', 'newest', 'most-liked', 'starter']);
+type Tab = v.InferOutput<typeof TabSchema>;
 
 /**
  * The public deck explorer — `docs/spec/deckbuilder.md` §9. Its own top-level route (`/explore`),
@@ -17,12 +17,13 @@ type Sort = v.InferOutput<typeof SortSchema>;
  * the same page.
  */
 export const load: PageServerLoad = async (event) => {
-	const sortParam = event.url.searchParams.get('sort');
-	const sort: Sort = v.is(SortSchema, sortParam) ? sortParam : 'newest';
+	const tabParam = event.url.searchParams.get('tab');
+	const tab: Tab = v.is(TabSchema, tabParam) ? tabParam : 'newest';
 	const ownerId = event.url.searchParams.get('owner') ?? undefined;
 
 	const rows = await listPublicDecks(event.locals.db, {
 		ownerId,
+		starterOnly: tab === 'starter',
 		viewerId: event.locals.user?.id ?? null
 	});
 
@@ -36,17 +37,20 @@ export const load: PageServerLoad = async (event) => {
 			cardCount: version?.entries.reduce((sum, entry) => sum + entry.quantity, 0) ?? 0,
 			legendSlugs: version?.legends ?? [],
 			likeCount,
-			hotCount
+			hotCount,
+			isStarterDeck: deck.isStarterDeck
 		}))
 		.sort((a, b) => {
-			if (sort === 'newest') return b.createdAt.getTime() - a.createdAt.getTime();
-			if (sort === 'most-liked') return b.likeCount - a.likeCount;
+			// The Starter Decks tab has its own fixed order — newest first — regardless of which
+			// of Hot/Newest/Most-liked was last selected; they have no effect on this tab.
+			if (tab === 'starter' || tab === 'newest') return b.createdAt.getTime() - a.createdAt.getTime();
+			if (tab === 'most-liked') return b.likeCount - a.likeCount;
 			return b.hotCount - a.hotCount;
 		});
 
 	return {
 		decks,
-		sort,
+		tab,
 		ownerId: ownerId ?? null,
 		ownerName: ownerId ? (decks[0]?.ownerName ?? null) : null,
 		// Not read by this page's own template — Nav still needs it for the Sign in/out swap,

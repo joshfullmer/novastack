@@ -106,10 +106,11 @@ export async function listDecksForOwner(db: Db, ownerId: string) {
  * gathers what a row needs. */
 export async function listPublicDecks(
 	db: Db,
-	options: { ownerId?: string; viewerId: string | null }
+	options: { ownerId?: string; starterOnly?: boolean; viewerId: string | null }
 ) {
 	const conditions = [eq(decks.visibility, 'public')];
 	if (options.ownerId) conditions.push(eq(decks.ownerId, options.ownerId));
+	if (options.starterOnly) conditions.push(eq(decks.isStarterDeck, true));
 
 	const publicDecks = await db
 		.select({ deck: decks, ownerName: user.name })

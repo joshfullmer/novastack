@@ -4,14 +4,19 @@
 	 * out; "My Decks" lives at `/decks` instead, one level up in the "Decks" nav dropdown, not a
 	 * peer tab here — see `+page.server.ts` for why.
 	 *
-	 * The left nav is the sort categories (Hot/Newest/Most-liked) rather than a top pill row —
-	 * expected to grow (more sorts, eventually filters), and this is the same slot "My Decks"
-	 * will eventually use for folders, kept as a plain, easily-extended link list for both
-	 * reasons rather than anything fancier.
+	 * The left nav is one `tab` param — Hot/Newest/Most-liked plus, below a divider, Starter Decks
+	 * — the "eventually filters" this doc comment used to only promise is now here. One param
+	 * rather than a separate sort + starter-filter pair: they're mutually exclusive tabs, not
+	 * independent axes, so two params could disagree with each other (e.g. `sort=hot&starter=1`,
+	 * which sort silently ignores) in a way one param structurally can't. Decided via
+	 * `.scratch/starter-decks/map.md`: Starter Decks stay in the regular list (matching Moxfield's
+	 * Commander-precon model) rather than a walled-off section; its own tab has a fixed
+	 * newest-first order, unrelated to whichever of the other three was last selected.
 	 *
 	 * Like counts here are read-only. Liking only happens from a deck's own view page
 	 * (`/decks/[id]`), and only for non-owners — this list is browsing, not the like surface.
 	 */
+	import { page } from '$app/state';
 	import CardImage from '#lib/components/CardImage.svelte';
 	import { cardBySlug } from '#lib/decks/deck-state.svelte.js';
 	import {
@@ -44,8 +49,15 @@
 		{ value: 'most-liked', label: 'Most-liked' }
 	] as const;
 
-	function sortHref(sort: string) {
-		return data.ownerId ? `/explore?sort=${sort}&owner=${data.ownerId}` : `/explore?sort=${sort}`;
+	function withParam(key: string, value: string | null) {
+		const url = new URL(page.url.href);
+		if (value === null) url.searchParams.delete(key);
+		else url.searchParams.set(key, value);
+		return `${url.pathname}?${url.searchParams.toString()}`;
+	}
+
+	function tabHref(tab: string) {
+		return withParam('tab', tab);
 	}
 </script>
 
@@ -58,6 +70,17 @@
 		</svg>
 		{likeCount}
 	</span>
+{/snippet}
+
+{#snippet starterBadge(deck: { isStarterDeck: boolean })}
+	{#if deck.isStarterDeck}
+		<span
+			class="rounded-full bg-neon/15 px-1.5 py-0.5 text-[10px] font-semibold tracking-wide
+				text-neon uppercase"
+		>
+			Starter
+		</span>
+	{/if}
 {/snippet}
 
 <Meta
@@ -81,14 +104,26 @@
 					{#each SORTS as { value, label } (value)}
 						<li>
 							<a
-								href={sortHref(value)}
+								href={tabHref(value)}
 								class="block rounded-md px-3 py-1.5"
-								class:bg-raised={data.sort === value}
-								class:text-bright={data.sort === value}
-								class:text-muted={data.sort !== value}>{label}</a
+								class:bg-raised={data.tab === value}
+								class:text-bright={data.tab === value}
+								class:text-muted={data.tab !== value}>{label}</a
 							>
 						</li>
 					{/each}
+				</ul>
+				<div class="my-3 border-t border-edge/60"></div>
+				<ul class="flex flex-col gap-1 text-sm">
+					<li>
+						<a
+							href={tabHref('starter')}
+							class="block rounded-md px-3 py-1.5"
+							class:bg-raised={data.tab === 'starter'}
+							class:text-bright={data.tab === 'starter'}
+							class:text-muted={data.tab !== 'starter'}>Starter Decks</a
+						>
+					</li>
 				</ul>
 			</nav>
 
@@ -98,7 +133,7 @@
 						{#if data.ownerId}
 							<span class="text-sm text-muted">
 								Showing public decks by <span class="text-bright">{data.ownerName}</span>
-								<a href="/explore?sort={data.sort}" class="text-neon hover:text-neon-dim">Clear</a>
+								<a href={withParam('owner', null)} class="text-neon hover:text-neon-dim">Clear</a>
 							</span>
 						{/if}
 					</div>
@@ -153,11 +188,14 @@
 									{/each}
 								</a>
 								<div class="p-3">
-									<a
-										href="/decks/{deck.id}"
-										class="block truncate text-base font-semibold text-bright hover:text-neon"
-										>{deck.name}</a
-									>
+									<div class="flex items-center gap-1.5">
+										{@render starterBadge(deck)}
+										<a
+											href="/decks/{deck.id}"
+											class="block truncate text-base font-semibold text-bright hover:text-neon"
+											>{deck.name}</a
+										>
+									</div>
 									<p class="mt-1 text-xs text-muted tabular-nums">
 										<span
 											class={SIZE_STATUS_TONE[deckSizeStatus(deck.cardCount)]}
@@ -204,9 +242,12 @@
 									{/each}
 								</div>
 								<a href="/decks/{deck.id}" class="min-w-0 flex-1">
-									<p class="truncate text-lg font-semibold text-bright hover:text-neon">
-										{deck.name}
-									</p>
+									<div class="flex items-center gap-1.5">
+										{@render starterBadge(deck)}
+										<p class="truncate text-lg font-semibold text-bright hover:text-neon">
+											{deck.name}
+										</p>
+									</div>
 									<p class="mt-1 text-sm text-muted tabular-nums">
 										<span
 											class={SIZE_STATUS_TONE[deckSizeStatus(deck.cardCount)]}

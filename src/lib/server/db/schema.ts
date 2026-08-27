@@ -27,7 +27,13 @@ export const decks = sqliteTable(
 		visibility: text('visibility', { enum: ['public', 'unlisted', 'private'] })
 			.notNull()
 			.default('private'),
-		createdAt: integer('created_at', { mode: 'timestamp_ms' }).notNull().default(now)
+		createdAt: integer('created_at', { mode: 'timestamp_ms' }).notNull().default(now),
+		/**
+		 * One of the game's official Starter Decks. No admin UI sets this — a one-off script
+		 * does, for the handful of decks it'll ever apply to — so it's the script's job to also
+		 * force `visibility = 'public'` in that same update; nothing here enforces the pairing.
+		 */
+		isStarterDeck: integer('is_starter_deck', { mode: 'boolean' }).notNull().default(false)
 	},
 	(table) => [index('decks_owner_idx').on(table.ownerId)]
 );

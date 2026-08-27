@@ -8,6 +8,13 @@
       "when": 1787571992048,
       "tag": "0000_silly_namorita",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "6",
+      "when": 1787824390456,
+      "tag": "0001_nostalgic_supreme_intelligence",
+      "breakpoints": true
     }
   ]
 }
