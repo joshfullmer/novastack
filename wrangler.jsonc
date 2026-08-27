@@ -16,7 +16,7 @@
 	// ORIGIN at real runtime). BETTER_AUTH_SECRET stays dashboard/CLI-only on purpose — it's a
 	// secret, never belongs in a committed file, and isn't subject to this same sync-wipe.
 	"vars": {
-		"ORIGIN": "https://novastack.joshfullmer9.workers.dev"
+		"ORIGIN": "https://novastack.gg"
 	},
 
 	// The deckbuilder's backend (accounts, decks, likes) — see docs/spec/deckbuilder.md §3.2.
