@@ -24,6 +24,23 @@
 
 	const DISCORD_URL = 'https://discord.gg/TtTvVrMhz8';
 
+	/** Measured rather than trusted to the `--spacing-nav` fallback in `layout.css` — the header's
+	 * actual height shifts across breakpoints (e.g. the wordmark hiding below `sm`), and every
+	 * sticky offset below it (`FilterBar`, `CardPane`) reads that same variable, so a stale
+	 * static value would misalign all of them at once. */
+	let height = $state(0);
+
+	/** `/cards` pins its own query row instead (`FilterBar`'s `sticky top-nav`) — a phone browsing
+	 * the grid gets that one persistent affordance, not two stacked bars eating the viewport. With
+	 * the header unpinned there, `--spacing-nav` drops to 0 so `FilterBar` and `CardPane` — both of
+	 * which read it as "how much sticky chrome sits above me" — settle at the true top on their
+	 * own, no route check needed on their end. */
+	const stickyHeader = $derived(page.url.pathname !== '/cards');
+
+	$effect(() => {
+		document.documentElement.style.setProperty('--spacing-nav', stickyHeader ? `${height}px` : '0px');
+	});
+
 	const LIVE = [{ href: '/cards', label: 'Cards' }];
 	const DECKS = [
 		{ href: '/decks', label: 'My Decks' },
@@ -33,11 +50,16 @@
 	const isCurrent = (href: string) => page.url.pathname.startsWith(href);
 </script>
 
-<header class="sticky top-0 z-30 border-b border-edge/60 bg-void/80 backdrop-blur-md">
+<header
+	bind:clientHeight={height}
+	class="z-30 border-b border-edge/60 bg-void/80 backdrop-blur-md {stickyHeader
+		? 'sticky top-0'
+		: ''}"
+>
 	<nav class="mx-auto flex max-w-[1800px] items-center gap-6 px-4 py-3 sm:px-6">
 		<a href="/" class="flex items-center gap-2 text-lg font-semibold tracking-tight text-bright">
 			<Mark class="size-5 shrink-0 text-neon" />
-			<span>nova<span class="text-neon">stack</span></span>
+			<span class="hidden sm:inline">nova<span class="text-neon">stack</span></span>
 		</a>
 
 		<ul class="flex flex-1 items-center gap-4 text-sm">
@@ -94,7 +116,7 @@
 
 			<li>
 				<a
-					href="https://cyberpunktcg.com/gameplay-guide"
+					href="https://cyberpunktcg.com/comprehensive-rules"
 					target="_blank"
 					rel="noopener noreferrer"
 					class="text-muted transition-colors hover:text-bright">Rules</a

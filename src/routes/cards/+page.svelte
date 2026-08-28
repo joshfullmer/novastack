@@ -126,8 +126,8 @@
 		document.documentElement.style.setProperty('--cards-columns', String(columns));
 	});
 
-	/** Measured so the "Cards per row" sub-header can sit flush under FilterBar, whatever
-	 * FilterBar's own height happens to be (it grows when the chip panel is open). */
+	/** Measured so `CardPane`'s sticky offset sits flush under FilterBar's sticky query row —
+	 * the chip panel isn't sticky, so it doesn't factor into this. */
 	let filterBarHeight = $state(0);
 
 	/** Tiles stretch to fill, so the browser picks a tier from roughly this width. */
@@ -206,39 +206,31 @@
 
 	<div class="mx-auto flex max-w-[1800px] items-start">
 		<div class="min-w-0 flex-1 p-4 sm:p-6">
-			<div
-				class="sticky z-10 -mx-4 -mt-4 mb-4 flex items-center gap-3 border-b border-edge/60
-					bg-shell/85 px-4 py-2 backdrop-blur-md sm:-mx-6 sm:-mt-6 sm:px-6"
-				style="top: calc(var(--spacing-nav) + {filterBarHeight}px)"
-			>
-				<fieldset>
-					<legend class="mb-1.5 text-xs font-medium tracking-wide text-muted uppercase"
-						>Cards per Row</legend
-					>
-					<div
-						class="inline-flex items-center overflow-hidden rounded-md border border-edge text-sm"
-					>
+			<!-- Non-sticky and single-line by design: this is glanced at, not referenced while
+				scrolling, so it doesn't earn a persistent chrome layer of its own. -->
+			<div class="mb-3 flex items-center justify-between gap-3 text-xs text-muted">
+				<div class="flex items-center gap-2">
+					<span class="tracking-wide uppercase">Per row</span>
+					<div class="inline-flex items-center overflow-hidden rounded-md border border-edge">
 						<button
 							type="button"
 							onclick={() => setColumns(columns - COLUMN_STEP)}
 							disabled={columns <= columnRange.min}
 							aria-label="Fewer, larger cards"
-							class="px-2.5 py-1 text-body hover:bg-raised disabled:opacity-30">−</button
+							class="px-2 py-0.5 text-body hover:bg-raised disabled:opacity-30">−</button
 						>
-						<span class="w-10 text-center text-xs text-muted tabular-nums">{columns}</span>
+						<span class="w-6 text-center tabular-nums">{columns}</span>
 						<button
 							type="button"
 							onclick={() => setColumns(columns + COLUMN_STEP)}
 							disabled={columns >= columnRange.max}
 							aria-label="More, smaller cards"
-							class="px-2.5 py-1 text-body hover:bg-raised disabled:opacity-30">+</button
+							class="px-2 py-0.5 text-body hover:bg-raised disabled:opacity-30">+</button
 						>
 					</div>
-				</fieldset>
+				</div>
 
-				<p aria-live="polite" class="shrink-0 text-sm text-muted tabular-nums">
-					{results.length} of {dataset.stats.cards}
-				</p>
+				<p aria-live="polite" class="shrink-0 tabular-nums">{results.length} of {dataset.stats.cards}</p>
 			</div>
 
 			{#if results.length === 0}
