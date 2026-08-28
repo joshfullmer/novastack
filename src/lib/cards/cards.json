@@ -1616,6 +1616,60 @@
 			"slug": "delamain-rideshare-ai"
 		},
 		{
+			"cardType": "Program",
+			"classifications": [
+				"Quickhack"
+			],
+			"color": "Red",
+			"cost": 1,
+			"eddiable": true,
+			"flavorText": null,
+			"keywords": [
+				"Quick"
+			],
+			"name": "Detonate",
+			"power": null,
+			"printings": [
+				{
+					"artist": "Michal Ivan",
+					"collectorNumber": "031",
+					"id": "bec995b7-b76b-4605-9c36-3d7697cdd4f5",
+					"key": "MS01-WNC-031",
+					"rarity": "Common",
+					"setId": "MS01-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/bec995b7-b76b-4605-9c36-3d7697cdd4f5/render-mpvmadw4.webp",
+					"thumbhash": "CiiGDAQPWLiGKKiQhwrYuYCNgYGICBiIAA=="
+				},
+				{
+					"artist": "Michal Ivan",
+					"collectorNumber": "β031",
+					"id": "0ecf513b-64fd-4932-a004-b02b43b21e88",
+					"key": "MS01-WNC-β031",
+					"rarity": "Common",
+					"setId": "MS01-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/0ecf513b-64fd-4932-a004-b02b43b21e88/render-mpvk5ni5.webp",
+					"thumbhash": "CiiGDAQPWLiGKKiQhwrYuYCNgYGICBiIAA=="
+				}
+			],
+			"ramProvided": null,
+			"ramRequired": 2,
+			"rawRulesText": "{Quick} Defeat a rival Gear with power 2 or less.",
+			"rulesText": [
+				[
+					{
+						"keyword": "Quick",
+						"kind": "keyword",
+						"text": "{Quick}"
+					},
+					{
+						"kind": "text",
+						"text": " Defeat a rival Gear with power 2 or less."
+					}
+				]
+			],
+			"slug": "detonate"
+		},
+		{
 			"cardType": "Legend",
 			"classifications": [
 				"Fixer"
@@ -4984,6 +5038,71 @@
 				]
 			],
 			"slug": "maxtac-av"
+		},
+		{
+			"cardType": "Unit",
+			"classifications": [
+				"NCPD"
+			],
+			"color": "Green",
+			"cost": 7,
+			"eddiable": false,
+			"flavorText": null,
+			"keywords": [],
+			"name": "MaxTac Heavy",
+			"power": 8,
+			"printings": [
+				{
+					"artist": "Olgierd Ciszak",
+					"collectorNumber": "081",
+					"id": "060f0c56-cbb7-45fd-a0cd-9c7b9d0f8103",
+					"key": "MS01-WNC-081",
+					"rarity": "Uncommon",
+					"setId": "MS01-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/060f0c56-cbb7-45fd-a0cd-9c7b9d0f8103/render-mpvm3liw.webp",
+					"thumbhash": "UAeKFAIPCddXGbeSZQv3Ko2AgYGICBiIAA=="
+				},
+				{
+					"artist": "Olgierd Ciszak",
+					"collectorNumber": "β081",
+					"id": "0f60c84e-e84f-49a3-b913-0039d8262371",
+					"key": "MS01-WNC-β081",
+					"rarity": "Uncommon",
+					"setId": "MS01-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/0f60c84e-e84f-49a3-b913-0039d8262371/render-mpv4n1d3.webp",
+					"thumbhash": "UAeKFAIPCddXGbeSZQv4Ko2AgYGICBiIAA=="
+				}
+			],
+			"ramProvided": null,
+			"ramRequired": 3,
+			"rawRulesText": "Play this Unit for -1 €$ for each of a Rival’s Units, to a minimum of 1 €$.",
+			"rulesText": [
+				[
+					{
+						"kind": "text",
+						"text": "Play this Unit for -1 "
+					},
+					{
+						"kind": "symbol",
+						"symbol": "eurodollars",
+						"text": "€$"
+					},
+					{
+						"kind": "text",
+						"text": " for each of a Rival’s Units, to a minimum of 1 "
+					},
+					{
+						"kind": "symbol",
+						"symbol": "eurodollars",
+						"text": "€$"
+					},
+					{
+						"kind": "text",
+						"text": "."
+					}
+				]
+			],
+			"slug": "maxtac-heavy"
 		},
 		{
 			"cardType": "Unit",
@@ -10280,18 +10399,18 @@
 		"Green",
 		"Blue"
 	],
-	"generatedAt": "2026-08-27T16:02:37.034Z",
+	"generatedAt": "2026-08-28T16:07:37.344Z",
 	"ramPerLegend": 2,
 	"sets": [
 		{
-			"cardCount": 134,
+			"cardCount": 136,
 			"category": "MS01",
 			"cycle": "A",
 			"id": "MS01-WNC",
 			"kind": "base",
 			"name": "Welcome to Night City",
 			"printed": "MS01 - WNC [A]",
-			"printingCount": 297,
+			"printingCount": 301,
 			"setCode": "WNC"
 		},
 		{
@@ -10373,8 +10492,8 @@
 		}
 	],
 	"stats": {
-		"cards": 145,
-		"printings": 432,
+		"cards": 147,
+		"printings": 436,
 		"sets": 1
 	}
 }
