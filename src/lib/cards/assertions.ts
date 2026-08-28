@@ -189,6 +189,17 @@ export function checkModelInvariants(cards: readonly Card[]): Violation[] {
 			`curated Set(s) with no printings: ${emptySets.map((set) => set.id).join(', ')}`
 		);
 
+	const legendsWithoutSubtitle = cards.filter(
+		(card) => card.cardType === 'Legend' && card.name.split(' — ').length !== 2
+	);
+	if (legendsWithoutSubtitle.length > 0)
+		add(
+			'legend-name-has-subtitle',
+			`${legendsWithoutSubtitle.length} Legend(s) don't split into exactly one "Name — Subtitle" ` +
+				`pair on " — ", first: ${legendsWithoutSubtitle[0].slug} — legendBaseName() assumes this ` +
+				`shape to catch same-base-name Legend conflicts (comprehensive rules, "Card Data > Name")`
+		);
+
 	return violations;
 }
 

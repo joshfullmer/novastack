@@ -149,3 +149,15 @@ export function setExclusiveSlugs(cards: readonly Card[]): string[] {
 		.filter((card) => card.printings.every((printing) => printing.setId !== BASE_SET_ID))
 		.map((card) => card.slug);
 }
+
+/**
+ * A Legend's printed name is one string, `"<Name> — <Subtitle>"` (e.g. `"V — Streetkid"`) — there
+ * is no structured field for the base name anywhere in the model (see `schema.ts`'s note on
+ * `subname`). This is the one parse of it, so a Legend rename or a punctuation change only has
+ * one call site to fix. `checkModelInvariants` (`assertions.ts`) fails the build if a Legend's
+ * name ever stops matching that shape, since deck legality (`#lib/decks/legality.ts`) depends on
+ * grouping Legends by this.
+ */
+export function legendBaseName(legend: Card): string {
+	return legend.name.split(' — ')[0];
+}

@@ -12,7 +12,9 @@ import type { Card } from '#lib/cards/schema.js';
 import {
 	MAX_COPIES,
 	budgetFromLegends,
+	deckIssues,
 	deckSizeStatus,
+	legendNameConflicts,
 	ramViolations,
 	type DeckEntry
 } from './legality.js';
@@ -49,6 +51,8 @@ export function createDeckState(initial?: DeckVersionPayload) {
 	const totalCards = $derived(entries.reduce((sum, entry) => sum + entry.quantity, 0));
 	const sizeStatus = $derived(deckSizeStatus(totalCards));
 	const violations = $derived(ramViolations(entries, budget));
+	const nameConflicts = $derived(legendNameConflicts(legends));
+	const issues = $derived(deckIssues({ totalCards, sizeStatus, violations, nameConflicts }));
 
 	function quantityOf(card: Card): number {
 		return entries.find((entry) => entry.card.slug === card.slug)?.quantity ?? 0;
@@ -112,6 +116,12 @@ export function createDeckState(initial?: DeckVersionPayload) {
 		},
 		get isRamLegal() {
 			return violations.length === 0;
+		},
+		get legendNameConflicts() {
+			return nameConflicts;
+		},
+		get issues() {
+			return issues;
 		},
 		quantityOf,
 		canAddCopy,

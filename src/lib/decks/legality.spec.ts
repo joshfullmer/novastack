@@ -9,7 +9,9 @@ import {
 	MAX_DECK_SIZE,
 	MIN_DECK_SIZE,
 	budgetFromLegends,
+	deckIssues,
 	deckSizeStatus,
+	legendNameConflicts,
 	ramViolations,
 	type DeckEntry
 } from './legality.js';
@@ -76,5 +78,100 @@ describe('ramViolations', () => {
 			quantity: 1
 		};
 		expect(ramViolations([entry], EMPTY_BUDGET)).toEqual([entry]);
+	});
+});
+
+describe('legendNameConflicts', () => {
+	it('groups Legends that share a base name', () => {
+		const v1 = makeCard({ cardType: 'Legend', name: 'V — Streetkid' });
+		const v2 = makeCard({ cardType: 'Legend', name: 'V — Corporate Exile' });
+		const goro = makeCard({ cardType: 'Legend', name: 'Goro Takemura — Hands Unclean' });
+
+		expect(legendNameConflicts([v1, v2, goro])).toEqual([{ baseName: 'V', legends: [v1, v2] }]);
+	});
+
+	it('is empty when every chosen Legend has a distinct base name', () => {
+		const legends = [
+			makeCard({ cardType: 'Legend', name: 'V — Streetkid' }),
+			makeCard({ cardType: 'Legend', name: 'Goro Takemura — Hands Unclean' }),
+			makeCard({ cardType: 'Legend', name: 'Rebecca — Having a Moment' })
+		];
+		expect(legendNameConflicts(legends)).toEqual([]);
+	});
+
+	it('is empty for zero or one Legend', () => {
+		expect(legendNameConflicts([])).toEqual([]);
+		expect(legendNameConflicts([makeCard({ cardType: 'Legend', name: 'V — Streetkid' })])).toEqual(
+			[]
+		);
+	});
+});
+
+describe('deckIssues', () => {
+	const legal = {
+		totalCards: MIN_DECK_SIZE,
+		sizeStatus: 'legal' as const,
+		violations: [],
+		nameConflicts: []
+	};
+
+	it('is empty for a fully legal deck', () => {
+		expect(deckIssues(legal)).toEqual([]);
+	});
+
+	it('reports an under-sized deck with the specific count and the legal minimum', () => {
+		const issues = deckIssues({ ...legal, totalCards: 39, sizeStatus: 'under' });
+		expect(issues).toEqual([
+			{ kind: 'size', message: `Deck has 39 cards — the legal minimum is ${MIN_DECK_SIZE}.` }
+		]);
+	});
+
+	it('reports an over-sized deck with the specific count and the legal maximum', () => {
+		const issues = deckIssues({ ...legal, totalCards: 51, sizeStatus: 'over' });
+		expect(issues).toEqual([
+			{ kind: 'size', message: `Deck has 51 cards — the legal maximum is ${MAX_DECK_SIZE}.` }
+		]);
+	});
+
+	it('reports RAM violations by card name', () => {
+		const overBudget: DeckEntry = {
+			card: makeCard({ name: 'Cyberdeck', cardType: 'Unit', ramRequired: 4 }),
+			quantity: 1
+		};
+		const issues = deckIssues({ ...legal, violations: [overBudget] });
+		expect(issues).toEqual([
+			{ kind: 'ram', message: "1 card exceeds this deck's Legends' RAM: Cyberdeck." }
+		]);
+	});
+
+	it('reports a Legend-name conflict by both full names and the shared base name', () => {
+		const v1 = makeCard({ cardType: 'Legend', name: 'V — Streetkid' });
+		const v2 = makeCard({ cardType: 'Legend', name: 'V — Corporate Exile' });
+		const issues = deckIssues({
+			...legal,
+			nameConflicts: legendNameConflicts([v1, v2])
+		});
+		expect(issues).toEqual([
+			{
+				kind: 'legend-names',
+				message: 'Legends can\'t share a name: V — Streetkid and V — Corporate Exile are both "V".'
+			}
+		]);
+	});
+
+	it('combines every kind of issue at once', () => {
+		const overBudget: DeckEntry = {
+			card: makeCard({ name: 'Cyberdeck', cardType: 'Unit', ramRequired: 4 }),
+			quantity: 1
+		};
+		const v1 = makeCard({ cardType: 'Legend', name: 'V — Streetkid' });
+		const v2 = makeCard({ cardType: 'Legend', name: 'V — Corporate Exile' });
+		const issues = deckIssues({
+			totalCards: 39,
+			sizeStatus: 'under',
+			violations: [overBudget],
+			nameConflicts: legendNameConflicts([v1, v2])
+		});
+		expect(issues.map((issue) => issue.kind)).toEqual(['size', 'ram', 'legend-names']);
 	});
 });

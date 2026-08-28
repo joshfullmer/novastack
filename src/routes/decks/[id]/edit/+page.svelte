@@ -139,6 +139,12 @@
 
 	const sizeTone = $derived(SIZE_STATUS_TONE[deck.sizeStatus]);
 
+	/** Deck size deliberately excluded — a deck under construction is supposed to sit outside
+	 * 40–50 most of the time (§4), and this screen already shows a live, persistent size readout
+	 * below; repeating it here as an "issue" would flag the common case as an error. RAM and
+	 * Legend-name conflicts are real mistakes regardless of how far along the deck is. */
+	const editorIssues = $derived(deck.issues.filter((issue) => issue.kind !== 'size'));
+
 	function onRowEnter(card: Card, event: MouseEvent & { currentTarget: HTMLElement }) {
 		const rect = event.currentTarget.getBoundingClientRect();
 		hovered = { card, left: rect.left, top: rect.top };
@@ -325,15 +331,16 @@
 			</p>
 		</div>
 
-		{#if !deck.isRamLegal}
-			<div class="border-b border-edge bg-card-red/10 px-4 py-2.5 text-sm text-card-red">
-				<p class="font-medium">
-					{deck.ramViolations.length}
-					{deck.ramViolations.length === 1 ? 'card exceeds' : 'cards exceed'} your Legends’ RAM
-				</p>
-				<p class="mt-0.5 max-h-16 overflow-y-auto text-xs text-card-red/80">
-					{deck.ramViolations.map((entry) => entry.card.name).join(', ')}
-				</p>
+		{#if editorIssues.length > 0}
+			<div
+				class="max-h-24 overflow-y-auto border-b border-edge bg-card-red/10 px-4 py-2.5 text-sm
+					text-card-red"
+			>
+				<ul class="space-y-1">
+					{#each editorIssues as issue (issue.kind + issue.message)}
+						<li>{issue.message}</li>
+					{/each}
+				</ul>
 			</div>
 		{/if}
 

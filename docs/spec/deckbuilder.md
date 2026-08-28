@@ -50,6 +50,12 @@ Stated directly by the person who knows the game; not derived, not inferred from
 - Deck size: **minimum 40, maximum 50** main-deck cards. Legends do not count toward this.
 - **Up to 3 copies** of a given Card in the main deck.
 - **Exactly 3 Legends**, chosen separately from the main deck.
+- **No two Legends may share a base name.** Comprehensive rules, "Card Data > Name": a Legend's
+  printed name is one string, `"<Name> — <Subtitle>"` (e.g. `"V — Streetkid"`), and two Legends
+  whose `<Name>` matches can't both be in the same deck — "V — Streetkid" and "V — Corporate
+  Exile" are both "V". There is no structured field for this; `legendBaseName()`
+  (`#lib/cards/derive.ts`) parses it from the one `name` string, and `checkModelInvariants`
+  (`assertions.ts`) fails the build if a Legend's name ever stops matching that shape.
 - **Legality**: a Card's `ramRequired` (in its own `Color`) must not exceed the **sum of the 3
   chosen Legends' own `ramProvided`** in that Color.
 
@@ -147,13 +153,23 @@ any card could be added.
 - **Deck size (40–50): never blocks, always a visible, persistent readout.** A deck under
   construction is supposed to sit outside 40–50 most of the time. There is no sensible "block"
   moment for an unfinished count.
-- **Any mismatch between the deck's entries and the current Legends' budget surfaces as a
-  persistent error banner** in the deckbuilder screen — listing the offending entries by name,
-  never silent. This is the authoritative legality signal for RAM; nothing about it depends on
-  _when_ the mismatch arose (cards added before Legends existed produce the identical banner to
+- **A Legend-name conflict does not block picking a Legend either** — same reasoning as RAM: there
+  is no sensible moment to reject a pick, since the third slot might still resolve it.
+- **RAM mismatches, an out-of-range deck size, and Legend-name conflicts all surface as entries in
+  one persistent, non-blocking `DeckIssue` list** (`deckIssues()` in `legality.ts`) — never
+  silent, and never blocking. This is the authoritative legality signal; nothing about it depends
+  on _when_ a mismatch arose (cards added before Legends existed produce the identical issue to
   cards that became illegal after a Legend was swapped out).
-- **Saving an illegal deck (wrong size, or a RAM mismatch) is allowed.** A deck-in-progress is a
-  reasonable thing to persist and resume later; version history makes this lower-risk either way.
+  - The read-only deck view (`/decks/[id]`) renders every issue, with specifics (e.g. "Deck has 39
+    cards — the legal minimum is 40."), in one banner between the title bar and the Legend row.
+  - The deckbuilder screen (§5.1) renders the same list **minus deck size** — a deck under
+    construction is supposed to sit outside 40–50 most of the time (previous bullet), and this
+    screen already has its own live size readout, so repeating it as an "issue" here would flag
+    the common case as an error. RAM and Legend-name conflicts are real mistakes regardless of how
+    far along the deck is, so both still show, directly below the Legend slots.
+- **Saving an illegal deck (wrong size, a RAM mismatch, or a Legend-name conflict) is allowed.** A
+  deck-in-progress is a reasonable thing to persist and resume later; version history makes this
+  lower-risk either way.
 
 ---
 
@@ -190,8 +206,8 @@ modal, not the card database's own filter panel repurposed: a permanent two-pane
   - **3 Legend slots** at the top, each showing the chosen Legend's art or an empty placeholder.
     Clicking a filled slot removes that Legend (equivalent to deselecting it in the Legends tab).
     The combined RAM budget (per Color) is shown beneath the slots.
-  - **RAM-violation banner** (§4), shown only when non-empty, directly below the Legend slots so
-    it's visible regardless of which tab is active.
+  - **Issues banner** (§4) — RAM and Legend-name conflicts, not deck size — shown only when
+    non-empty, directly below the Legend slots so it's visible regardless of which tab is active.
   - **Main Deck header**: live count against 40–50, tinted by status (on-track / over), plus a
     **List/Gallery toggle**. List view shows compact rows (quantity × name, remove button) with a
     **hover-preview** of the full card art; Gallery view shows a thumbnail grid with quantity

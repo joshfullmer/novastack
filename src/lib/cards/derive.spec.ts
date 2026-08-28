@@ -5,6 +5,7 @@ import {
 	collectorNumberSortKey,
 	deriveRamPerLegend,
 	deriveSets,
+	legendBaseName,
 	runOrder,
 	setExclusiveSlugs
 } from './derive.ts';
@@ -155,5 +156,17 @@ describe('setExclusiveSlugs', () => {
 			makeCard({ slug: 'starter-only', printings: [makePrinting({ setId: 'SD01-HEI' })] })
 		];
 		expect(setExclusiveSlugs(cards)).toEqual(['starter-only']);
+	});
+});
+
+describe('legendBaseName', () => {
+	it('reads the part before the " — " separator', () => {
+		expect(legendBaseName(makeCard({ cardType: 'Legend', name: 'V — Streetkid' }))).toBe('V');
+	});
+
+	it('is the whole name when there is no separator', () => {
+		expect(legendBaseName(makeCard({ cardType: 'Legend', name: 'No Subtitle' }))).toBe(
+			'No Subtitle'
+		);
 	});
 });

@@ -518,6 +518,19 @@
 					</div>
 				</div>
 
+				{#if deck.issues.length > 0}
+					<div
+						class="mb-4 rounded-md border border-card-red/40 bg-card-red/10 p-3 text-sm text-card-red"
+					>
+						<p class="font-medium">This deck isn't legal.</p>
+						<ul class="mt-1 list-disc space-y-0.5 pl-4">
+							{#each deck.issues as issue (issue.kind + issue.message)}
+								<li>{issue.message}</li>
+							{/each}
+						</ul>
+					</div>
+				{/if}
+
 				<div class="mb-4 flex items-center gap-4">
 					<div class="flex items-center gap-3">
 						{#each legendSlots as slot (slot)}
@@ -566,16 +579,6 @@
 						{/each}
 					</div>
 				</div>
-
-				{#if !deck.isRamLegal}
-					<div class="mb-4 rounded-md border border-edge bg-card-red/10 p-3 text-sm text-card-red">
-						{deck.ramViolations.length}
-						{deck.ramViolations.length === 1 ? 'card exceeds' : 'cards exceed'}
-						this deck's Legends' RAM: {deck.ramViolations
-							.map((entry) => entry.card.name)
-							.join(', ')}
-					</div>
-				{/if}
 
 				<div class="mb-3 flex items-center justify-between">
 					<div class="flex items-center gap-4">

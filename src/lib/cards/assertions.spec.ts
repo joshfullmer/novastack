@@ -114,6 +114,7 @@ describe('checkModelInvariants', () => {
 
 				return makeCard({
 					slug: `${color}-${cardType}`.toLowerCase(),
+					...(cardType === 'Legend' ? { name: `${color} Legend — Test Subtitle` } : {}),
 					color,
 					cardType,
 					ramProvided: cardType === 'Legend' ? 2 : null,
@@ -192,6 +193,15 @@ describe('checkModelInvariants', () => {
 		expect(violations.find((v) => v.check === 'every-set-has-printings')?.detail).toContain(
 			'SD01-HEI'
 		);
+	});
+
+	it('fails when a Legend’s name does not split into a "Name — Subtitle" pair', () => {
+		// legendBaseName() (derive.ts) and deck legality (legality.ts) both assume this shape;
+		// a Legend that stops matching it would silently group wrong instead of failing loudly.
+		const cards = contiguousDataset().map((card) =>
+			card.cardType === 'Legend' && card.color === 'Blue' ? { ...card, name: 'No Subtitle' } : card
+		);
+		expect(checks(checkModelInvariants(cards))).toContain('legend-name-has-subtitle');
 	});
 });
 
