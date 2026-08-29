@@ -5199,6 +5199,70 @@
 			"slug": "maxtac-suppression-team"
 		},
 		{
+			"cardType": "Program",
+			"classifications": [
+				"Braindance"
+			],
+			"color": "Green",
+			"cost": 3,
+			"eddiable": true,
+			"flavorText": null,
+			"keywords": [],
+			"name": "Memory Relapse",
+			"power": null,
+			"printings": [
+				{
+					"artist": "Max Fiumara",
+					"collectorNumber": "100",
+					"id": "ef9f2959-de87-4a54-be45-5c9dcc507aba",
+					"key": "MS01-WNC-100",
+					"rarity": "Uncommon",
+					"setId": "MS01-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/ef9f2959-de87-4a54-be45-5c9dcc507aba/render-mpvmgucg.webp",
+					"thumbhash": "jueFDAAPKrZ4B8dmdi73Z6KAgYGICBiIAA=="
+				},
+				{
+					"artist": "Max Fiumara",
+					"collectorNumber": "β100",
+					"id": "7a8c2032-e753-43ab-9c3b-adefb4281241",
+					"key": "MS01-WNC-β100",
+					"rarity": "Uncommon",
+					"setId": "MS01-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/7a8c2032-e753-43ab-9c3b-adefb4281241/render-mpvk1aph.webp",
+					"thumbhash": "jueFDAAPKrZ5B8dmdi73Z6KAgYGICBiIAA=="
+				}
+			],
+			"ramProvided": null,
+			"ramRequired": 2,
+			"rawRulesText": "Spend a rival Unit. It can't ready until your next turn. If your ☆ (Street Cred) is an even number, draw 1.",
+			"rulesText": [
+				[
+					{
+						"kind": "text",
+						"text": "Spend a rival Unit. It can't ready until your next turn. If your "
+					},
+					{
+						"kind": "symbol",
+						"symbol": "streetCred",
+						"text": "☆"
+					},
+					{
+						"kind": "text",
+						"text": " "
+					},
+					{
+						"kind": "reminder",
+						"text": "(Street Cred)"
+					},
+					{
+						"kind": "text",
+						"text": " is an even number, draw 1."
+					}
+				]
+			],
+			"slug": "memory-relapse"
+		},
+		{
 			"cardType": "Unit",
 			"classifications": [
 				"Corpo",
@@ -7464,7 +7528,7 @@
 					"thumbhash": "EaeFFAYPe/ZYeaVyhBB3KICIgYGICBiIAA=="
 				},
 				{
-					"artist": "Dardo Studios",
+					"artist": "ADIA",
 					"collectorNumber": "β166",
 					"id": "807c871c-bebe-4343-9b68-1f89af5ed0da",
 					"key": "MS01-WNC-β166",
@@ -10399,18 +10463,18 @@
 		"Green",
 		"Blue"
 	],
-	"generatedAt": "2026-08-28T16:07:37.344Z",
+	"generatedAt": "2026-08-29T16:03:34.321Z",
 	"ramPerLegend": 2,
 	"sets": [
 		{
-			"cardCount": 136,
+			"cardCount": 137,
 			"category": "MS01",
 			"cycle": "A",
 			"id": "MS01-WNC",
 			"kind": "base",
 			"name": "Welcome to Night City",
 			"printed": "MS01 - WNC [A]",
-			"printingCount": 301,
+			"printingCount": 303,
 			"setCode": "WNC"
 		},
 		{
@@ -10492,8 +10556,8 @@
 		}
 	],
 	"stats": {
-		"cards": 147,
-		"printings": 436,
+		"cards": 148,
+		"printings": 438,
 		"sets": 1
 	}
 }
