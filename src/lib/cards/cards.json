@@ -42,7 +42,15 @@
 				[
 					{
 						"kind": "text",
-						"text": "When a friendly Unit steals a d6, increase a Gig by up to 6."
+						"text": "When a friendly Unit steals a "
+					},
+					{
+						"kind": "dieSize",
+						"text": "d6"
+					},
+					{
+						"kind": "text",
+						"text": ", increase a Gig by up to 6."
 					}
 				]
 			],
@@ -1728,7 +1736,11 @@
 					},
 					{
 						"kind": "text",
-						"text": " Choose one effect:"
+						"text": " "
+					},
+					{
+						"kind": "choicePrompt",
+						"text": "Choose one effect."
 					}
 				],
 				[
@@ -4262,7 +4274,15 @@
 				[
 					{
 						"kind": "text",
-						"text": "When you roll a min or max value on a Gig, draw 1. If it's a d20, draw 3 instead."
+						"text": "When you roll a min or max value on a Gig, draw 1. If it's a "
+					},
+					{
+						"kind": "dieSize",
+						"text": "d20"
+					},
+					{
+						"kind": "text",
+						"text": ", draw 3 instead."
 					}
 				]
 			],
@@ -5827,7 +5847,11 @@
 					},
 					{
 						"kind": "text",
-						"text": " Choose one effect:"
+						"text": " "
+					},
+					{
+						"kind": "choicePrompt",
+						"text": "Choose one effect."
 					}
 				],
 				[
@@ -6014,7 +6038,11 @@
 					},
 					{
 						"kind": "text",
-						"text": ". Choose one effect:"
+						"text": ". "
+					},
+					{
+						"kind": "choicePrompt",
+						"text": "Choose one effect."
 					}
 				],
 				[
@@ -6282,7 +6310,15 @@
 				[
 					{
 						"kind": "text",
-						"text": "Defeat a Unit with power equal to or less than the value of a friendly d20."
+						"text": "Defeat a Unit with power equal to or less than the value of a friendly "
+					},
+					{
+						"kind": "dieSize",
+						"text": "d20"
+					},
+					{
+						"kind": "text",
+						"text": "."
 					}
 				]
 			],
@@ -6503,7 +6539,11 @@
 					},
 					{
 						"kind": "text",
-						"text": " Choose one effect:"
+						"text": " "
+					},
+					{
+						"kind": "choicePrompt",
+						"text": "Choose one effect."
 					}
 				],
 				[
@@ -6987,8 +7027,20 @@
 			"rulesText": [
 				[
 					{
+						"kind": "choicePrompt",
+						"text": "Choose one effect."
+					},
+					{
 						"kind": "text",
-						"text": "Choose one effect: If a friendly d4 is a min Gig, choose both instead."
+						"text": " If a friendly "
+					},
+					{
+						"kind": "dieSize",
+						"text": "d4"
+					},
+					{
+						"kind": "text",
+						"text": " is a min Gig, choose both instead."
 					}
 				],
 				[
@@ -10029,7 +10081,11 @@
 					},
 					{
 						"kind": "text",
-						"text": " Choose one effect:"
+						"text": " "
+					},
+					{
+						"kind": "choicePrompt",
+						"text": "Choose one effect."
 					}
 				],
 				[
@@ -10537,7 +10593,7 @@
 		"Green",
 		"Blue"
 	],
-	"generatedAt": "2026-08-30T13:29:11.799Z",
+	"generatedAt": "2026-08-30T14:02:50.653Z",
 	"ramPerLegend": 2,
 	"sets": [
 		{
