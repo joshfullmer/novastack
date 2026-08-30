@@ -3,6 +3,7 @@ import {
 	extractKeywords,
 	plainText,
 	segmentLine,
+	splitChoiceOptions,
 	splitRulesText,
 	type SegmentContext
 } from './rules-text.ts';
@@ -159,6 +160,62 @@ describe('segmentLine', () => {
 			{ kind: 'text', text: ' total' }
 		]);
 	});
+
+	it('splits a "Choose one effect" line into text around a choiceBreak, consuming the spacing', () => {
+		expect(segmentLine('Give a rival Unit -2 power this turn. // Draw 1.', ctx)).toEqual([
+			{ kind: 'text', text: 'Give a rival Unit -2 power this turn.' },
+			{ kind: 'choiceBreak', text: ' // ' },
+			{ kind: 'text', text: 'Draw 1.' }
+		]);
+	});
+
+	it('splits three options on two choiceBreaks', () => {
+		expect(segmentLine('Draw 2. // Skip a turn. // Discard 1.', ctx)).toEqual([
+			{ kind: 'text', text: 'Draw 2.' },
+			{ kind: 'choiceBreak', text: ' // ' },
+			{ kind: 'text', text: 'Skip a turn.' },
+			{ kind: 'choiceBreak', text: ' // ' },
+			{ kind: 'text', text: 'Discard 1.' }
+		]);
+	});
+
+	it('emits "Choose one effect." as its own bolded choicePrompt, period kept', () => {
+		expect(segmentLine('{Call} Choose one effect.', ctx)).toEqual([
+			{ kind: 'keyword', text: '{Call}', keyword: 'Call' },
+			{ kind: 'text', text: ' ' },
+			{ kind: 'choicePrompt', text: 'Choose one effect.' }
+		]);
+	});
+
+	it('emits a called-out die size as a dieSize segment', () => {
+		expect(segmentLine('a friendly d4 is a min Gig', ctx)).toEqual([
+			{ kind: 'text', text: 'a friendly ' },
+			{ kind: 'dieSize', text: 'd4' },
+			{ kind: 'text', text: ' is a min Gig' }
+		]);
+	});
+
+	it('does not treat a word merely starting with "d" as a die size', () => {
+		expect(segmentLine('draw 4 cards', ctx)).toEqual([{ kind: 'text', text: 'draw 4 cards' }]);
+	});
+});
+
+describe('splitChoiceOptions', () => {
+	it('is null for a paragraph with no choiceBreak', () => {
+		expect(splitChoiceOptions(segmentLine('Draw 1.', ctx))).toBeNull();
+	});
+
+	it('splits a paragraph into one segment array per option', () => {
+		const paragraph = segmentLine(
+			'Give a rival Unit -2 power this turn. // Draw 1. // Discard 1.',
+			ctx
+		);
+		expect(splitChoiceOptions(paragraph)).toEqual([
+			[{ kind: 'text', text: 'Give a rival Unit -2 power this turn.' }],
+			[{ kind: 'text', text: 'Draw 1.' }],
+			[{ kind: 'text', text: 'Discard 1.' }]
+		]);
+	});
 });
 
 describe('splitRulesText', () => {
@@ -222,6 +279,48 @@ describe('splitRulesText', () => {
 	it('drops blank lines rather than emitting empty paragraphs', () => {
 		const { rulesText } = splitRulesText('Draw 1.\n\n\nDraw 2.', ctx);
 		expect(rulesText).toHaveLength(2);
+	});
+
+	it('keeps "Choose one effect."\'s period, as a bolded choicePrompt segment', () => {
+		// The real shape from the corpus (e.g. Wakako Okada): a {Call} line ending "Choose one
+		// effect.", a "// "-separated options line, then an unrelated {Spend} ability line.
+		const { rulesText } = splitRulesText(
+			'{Call} Choose one effect.\n' +
+				'Give a rival Unit -2 power this turn. // Draw 1.\n' +
+				'{Spend}: Decrease a Gig by up to 2.',
+			ctx
+		);
+		expect(rulesText).toEqual([
+			[
+				{ kind: 'keyword', text: '{Call}', keyword: 'Call' },
+				{ kind: 'text', text: ' ' },
+				{ kind: 'choicePrompt', text: 'Choose one effect.' }
+			],
+			[
+				{ kind: 'text', text: 'Give a rival Unit -2 power this turn.' },
+				{ kind: 'choiceBreak', text: ' // ' },
+				{ kind: 'text', text: 'Draw 1.' }
+			],
+			[
+				{ kind: 'keyword', text: '{Spend}', keyword: 'Spend' },
+				{ kind: 'text', text: ': Decrease a Gig by up to 2.' }
+			]
+		]);
+	});
+
+	it('bolds a die size named alongside "Choose one effect." on the same line', () => {
+		const { rulesText } = splitRulesText(
+			'Choose one effect. If a friendly d4 is a min Gig, choose both instead.',
+			ctx
+		);
+		expect(rulesText).toEqual([
+			[
+				{ kind: 'choicePrompt', text: 'Choose one effect.' },
+				{ kind: 'text', text: ' If a friendly ' },
+				{ kind: 'dieSize', text: 'd4' },
+				{ kind: 'text', text: ' is a min Gig, choose both instead.' }
+			]
+		]);
 	});
 });
 

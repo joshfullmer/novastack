@@ -1728,13 +1728,21 @@
 					},
 					{
 						"kind": "text",
-						"text": " Choose one effect."
+						"text": " Choose one effect:"
 					}
 				],
 				[
 					{
 						"kind": "text",
-						"text": "Give a friendly Unit +2 power this turn. // Draw 1."
+						"text": "Give a friendly Unit +2 power this turn."
+					},
+					{
+						"kind": "choiceBreak",
+						"text": " // "
+					},
+					{
+						"kind": "text",
+						"text": "Draw 1."
 					}
 				],
 				[
@@ -3147,7 +3155,15 @@
 				[
 					{
 						"kind": "text",
-						"text": "The next time this Unit attacks this turn, it may attack ready Units. // Give this Unit +3 power this turn."
+						"text": "The next time this Unit attacks this turn, it may attack ready Units."
+					},
+					{
+						"kind": "choiceBreak",
+						"text": " // "
+					},
+					{
+						"kind": "text",
+						"text": "Give this Unit +3 power this turn."
 					}
 				]
 			],
@@ -5811,13 +5827,21 @@
 					},
 					{
 						"kind": "text",
-						"text": " Choose one effect."
+						"text": " Choose one effect:"
 					}
 				],
 				[
 					{
 						"kind": "text",
-						"text": "A friendly Unit can't be defeated in a fight this turn. // Draw 1."
+						"text": "A friendly Unit can't be defeated in a fight this turn."
+					},
+					{
+						"kind": "choiceBreak",
+						"text": " // "
+					},
+					{
+						"kind": "text",
+						"text": "Draw 1."
 					}
 				],
 				[
@@ -5990,13 +6014,29 @@
 					},
 					{
 						"kind": "text",
-						"text": ". Choose one effect."
+						"text": ". Choose one effect:"
 					}
 				],
 				[
 					{
 						"kind": "text",
-						"text": "Draw 2. // A Unit can't attack until your next turn. // A friendly Legend may use "
+						"text": "Draw 2."
+					},
+					{
+						"kind": "choiceBreak",
+						"text": " // "
+					},
+					{
+						"kind": "text",
+						"text": "A Unit can't attack until your next turn."
+					},
+					{
+						"kind": "choiceBreak",
+						"text": " // "
+					},
+					{
+						"kind": "text",
+						"text": "A friendly Legend may use "
 					},
 					{
 						"keyword": "Go Solo",
@@ -6463,13 +6503,21 @@
 					},
 					{
 						"kind": "text",
-						"text": " Choose one effect."
+						"text": " Choose one effect:"
 					}
 				],
 				[
 					{
 						"kind": "text",
-						"text": "Spend a rival Unit. // Draw 1."
+						"text": "Spend a rival Unit."
+					},
+					{
+						"kind": "choiceBreak",
+						"text": " // "
+					},
+					{
+						"kind": "text",
+						"text": "Draw 1."
 					}
 				],
 				[
@@ -6940,13 +6988,21 @@
 				[
 					{
 						"kind": "text",
-						"text": "Choose one effect. If a friendly d4 is a min Gig, choose both instead."
+						"text": "Choose one effect: If a friendly d4 is a min Gig, choose both instead."
 					}
 				],
 				[
 					{
 						"kind": "text",
-						"text": "Give a rival Unit -5 power this turn. // Bottom-deck a rival Unit with power 0."
+						"text": "Give a rival Unit -5 power this turn."
+					},
+					{
+						"kind": "choiceBreak",
+						"text": " // "
+					},
+					{
+						"kind": "text",
+						"text": "Bottom-deck a rival Unit with power 0."
 					}
 				]
 			],
@@ -9973,13 +10029,21 @@
 					},
 					{
 						"kind": "text",
-						"text": " Choose one effect."
+						"text": " Choose one effect:"
 					}
 				],
 				[
 					{
 						"kind": "text",
-						"text": "Give a rival Unit -2 power this turn. // Draw 1."
+						"text": "Give a rival Unit -2 power this turn."
+					},
+					{
+						"kind": "choiceBreak",
+						"text": " // "
+					},
+					{
+						"kind": "text",
+						"text": "Draw 1."
 					}
 				],
 				[
@@ -10473,7 +10537,7 @@
 		"Green",
 		"Blue"
 	],
-	"generatedAt": "2026-08-30T10:47:39.411Z",
+	"generatedAt": "2026-08-30T13:29:11.799Z",
 	"ramPerLegend": 2,
 	"sets": [
 		{

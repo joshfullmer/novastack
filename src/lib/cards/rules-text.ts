@@ -36,7 +36,18 @@ export const SegmentSchema = v.variant(
 		}),
 		v.object({ kind: v.literal('nameFragment'), text: v.string() }),
 		v.object({ kind: v.literal('symbol'), text: v.string(), symbol: SymbolNameSchema }),
-		v.object({ kind: v.literal('reminder'), text: v.string() })
+		v.object({ kind: v.literal('reminder'), text: v.string() }),
+		// A "Choose one effect." line's " // "-separated options — a sentinel splitting one
+		// paragraph into the list `splitChoiceOptions` renders, never a segment rendered on its
+		// own. Its own segment kind rather than a special character in `text`, so a real card
+		// that happens to print a literal "//" some day isn't misread as a choice.
+		v.object({ kind: v.literal('choiceBreak'), text: v.string() }),
+		// The printed card bolds this exact phrase.
+		v.object({ kind: v.literal('choicePrompt'), text: v.string() }),
+		// The printed card bolds a called-out die size ("d4", "d6", "d20") wherever one names a
+		// specific Gig, e.g. "if a friendly d4 is a min Gig". No closed vocabulary to validate
+		// against here — unlike `Keyword`, any die size is legitimate game data.
+		v.object({ kind: v.literal('dieSize'), text: v.string() })
 	],
 	'not a known rules-text segment'
 );
@@ -69,9 +80,12 @@ const WHOLLY_QUOTED = /^["“]([^"”]*)["”]$/;
 /**
  * Ordered alternation. `quoted` precedes `caps` positionally rather than by precedence: the
  * opening quote is scanned first, so a quoted ALL-CAPS run can never be claimed by `caps`.
+ * Neither `choicePrompt` nor `dieSize` is mixed- or lower-case enough for `caps` to ever compete
+ * for the same text anyway; they're ordered ahead of it here only for readability, grouped with
+ * the other single-purpose literal matches.
  */
 const TOKEN =
-	/\{(?<keyword>[^}]*)\}|\((?<reminder>[^)]*)\)|(?<symbol>€\$?|☆)|["“](?<quoted>[^"”]*)["”]|(?<caps>[A-Z0-9][A-Z0-9'’]+(?: [A-Z0-9][A-Z0-9'’]*)*)/gu;
+	/\{(?<keyword>[^}]*)\}|\((?<reminder>[^)]*)\)|(?<symbol>€\$?|☆)|(?<choiceBreak>\s*\/\/\s*)|(?<choicePrompt>Choose one effect\.)|\b(?<dieSize>d\d+)\b|["“](?<quoted>[^"”]*)["”]|(?<caps>[A-Z0-9][A-Z0-9'’]+(?: [A-Z0-9][A-Z0-9'’]*)*)/gu;
 
 const isUpperCased = (text: string) => /[A-Z]/.test(text) && !/[a-z]/.test(text);
 
@@ -138,6 +152,12 @@ export function segmentLine(line: string, ctx: SegmentContext): Paragraph {
 			else pushText(segments, match[0]);
 		} else if (groups.reminder !== undefined) {
 			segments.push({ kind: 'reminder', text: match[0] });
+		} else if (groups.choiceBreak !== undefined) {
+			segments.push({ kind: 'choiceBreak', text: match[0] });
+		} else if (groups.choicePrompt !== undefined) {
+			segments.push({ kind: 'choicePrompt', text: match[0] });
+		} else if (groups.dieSize !== undefined) {
+			segments.push({ kind: 'dieSize', text: match[0] });
 		} else if (groups.symbol !== undefined) {
 			segments.push({
 				kind: 'symbol',
@@ -195,6 +215,23 @@ export function splitRulesText(raw: string | null, ctx: SegmentContext): SplitRu
 		rulesText: ruleLines.map((line) => segmentLine(line, ctx)),
 		flavorText: flavourLines.length === 0 ? null : flavourLines.join('\n')
 	};
+}
+
+/**
+ * Splits a paragraph containing `choiceBreak` segments — a "Choose one effect" line's
+ * " // "-separated options — into one segment array per option. `null` when there's nothing to
+ * split, which is the common case and what tells `RulesText` to render an ordinary paragraph
+ * instead of a list.
+ */
+export function splitChoiceOptions(paragraph: Paragraph): Segment[][] | null {
+	if (!paragraph.some((segment) => segment.kind === 'choiceBreak')) return null;
+
+	const options: Segment[][] = [[]];
+	for (const segment of paragraph) {
+		if (segment.kind === 'choiceBreak') options.push([]);
+		else options.at(-1)!.push(segment);
+	}
+	return options;
 }
 
 /** The text a segment renders, with its markup delimiters removed. */
