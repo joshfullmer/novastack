@@ -7,7 +7,8 @@ import {
 	deriveSets,
 	legendBaseName,
 	runOrder,
-	setExclusiveSlugs
+	setExclusiveSlugs,
+	splitCardName
 } from './derive.ts';
 import { makeCard, makePrinting } from './fixtures.ts';
 
@@ -168,5 +169,21 @@ describe('legendBaseName', () => {
 		expect(legendBaseName(makeCard({ cardType: 'Legend', name: 'No Subtitle' }))).toBe(
 			'No Subtitle'
 		);
+	});
+});
+
+describe('splitCardName', () => {
+	it('splits a Legend name into name and subtitle', () => {
+		expect(splitCardName(makeCard({ cardType: 'Legend', name: 'V — Streetkid' }))).toEqual({
+			name: 'V',
+			subtitle: 'Streetkid'
+		});
+	});
+
+	it('is a null subtitle when there is no separator', () => {
+		expect(splitCardName(makeCard({ name: 'Japantown Jonin' }))).toEqual({
+			name: 'Japantown Jonin',
+			subtitle: null
+		});
 	});
 });

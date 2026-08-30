@@ -20,6 +20,7 @@
 	import CardStats from '#lib/components/CardStats.svelte';
 	import { COLOR_BADGE_IMAGE, COLOR_DOT, COLOR_TEXT, COLOR_TINT } from '#lib/components/color.js';
 	import { dataset } from '#lib/cards/index.js';
+	import { splitCardName } from '#lib/cards/derive.js';
 	import Meta from '#lib/components/Meta.svelte';
 	import { cardImageUrl } from '#lib/cards/schema.js';
 	import type { Card } from '#lib/cards/schema.js';
@@ -146,8 +147,7 @@
 	let focused = $state<Card | null>(null);
 	const shown = $derived(focused ?? fallback);
 
-	/** Only Legends print a `"<Name> — <Subtitle>"` pair — see the same split on `/cards/[slug]`. */
-	const shownNameParts = $derived(shown === null ? [] : shown.name.split(' — '));
+	const shownNameParts = $derived(shown === null ? null : splitCardName(shown));
 
 	const mainGroups = $derived(groupDeckEntries(dataset, deck.entries));
 	const sizeTone = $derived(SIZE_STATUS_TONE[deck.sizeStatus]);
@@ -294,11 +294,11 @@
 						/>
 					</div>
 					<p class="mt-2 text-sm font-medium uppercase {COLOR_TEXT[shown.color]}">
-						{shownNameParts[0]}
+						{shownNameParts?.name}
 					</p>
-					{#if shownNameParts[1]}
+					{#if shownNameParts?.subtitle}
 						<p class="text-xs font-medium tracking-wide text-muted uppercase">
-							{shownNameParts[1]}
+							{shownNameParts.subtitle}
 						</p>
 					{/if}
 

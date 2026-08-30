@@ -31,6 +31,7 @@
 	import CardStats from '#lib/components/CardStats.svelte';
 	import Meta from '#lib/components/Meta.svelte';
 	import RulesText from '#lib/components/RulesText.svelte';
+	import { splitCardName } from '#lib/cards/derive.js';
 	import { cardImageUrl, PRINTING_PARAM } from '#lib/cards/schema.js';
 	import { findSetIdentifier } from '#lib/cards/sets.js';
 
@@ -67,10 +68,7 @@
 
 	const artists = $derived([...new Set(card.printings.map((entry) => entry.artist))]);
 
-	/** Only Legends print a `"<Name> — <Subtitle>"` pair (`legendBaseName()`, `derive.ts`) — every
-	 * other Card is one bare name. `nameParts[1]` is `undefined` for those, not an empty string,
-	 * so the subtitle line below only renders when there's an actual subtitle to show. */
-	const nameParts = $derived(card.name.split(' — '));
+	const nameParts = $derived(splitCardName(card));
 
 	// `rawRulesText` still carries the `{Keyword}` markup `rulesText`'s segments parse out for
 	// display — braces stripped, that markup reads as plain, punctuation-adjacent text
@@ -116,9 +114,9 @@
 		</div>
 
 		<div class="min-w-0">
-			<h1 class="text-3xl font-semibold tracking-tight text-bright uppercase">{nameParts[0]}</h1>
-			{#if nameParts[1]}
-				<p class="text-lg font-medium tracking-wide text-muted uppercase">{nameParts[1]}</p>
+			<h1 class="text-3xl font-semibold tracking-tight text-bright uppercase">{nameParts.name}</h1>
+			{#if nameParts.subtitle}
+				<p class="text-lg font-medium tracking-wide text-muted uppercase">{nameParts.subtitle}</p>
 			{/if}
 
 			<!-- Cost, Type, Classifications: shared with every other surface that shows a Card's

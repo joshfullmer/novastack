@@ -150,14 +150,27 @@ export function setExclusiveSlugs(cards: readonly Card[]): string[] {
 		.map((card) => card.slug);
 }
 
+export type CardNameParts = { name: string; subtitle: string | null };
+
 /**
- * A Legend's printed name is one string, `"<Name> — <Subtitle>"` (e.g. `"V — Streetkid"`) — there
- * is no structured field for the base name anywhere in the model (see `schema.ts`'s note on
- * `subname`). This is the one parse of it, so a Legend rename or a punctuation change only has
- * one call site to fix. `checkModelInvariants` (`assertions.ts`) fails the build if a Legend's
- * name ever stops matching that shape, since deck legality (`#lib/decks/legality.ts`) depends on
- * grouping Legends by this.
+ * A printed name is one string, `"<Name> — <Subtitle>"` for a Legend (e.g. `"V — Streetkid"`),
+ * just `"<Name>"` for everything else — there is no structured subtitle field anywhere in the
+ * model (see `schema.ts`'s note on `subname`). This is the one parse of it, so a rename or a
+ * punctuation change only has one call site to fix. No corpus-wide context is needed (unlike
+ * `rulesText`'s `cardRef`/`classification` tokens, which cross-reference every other card), so
+ * this stays a plain runtime function rather than a field baked into `cards.json` at ingest.
+ */
+export function splitCardName(card: Card): CardNameParts {
+	const [name, subtitle] = card.name.split(' — ');
+	return { name, subtitle: subtitle ?? null };
+}
+
+/**
+ * A Legend's base name, for grouping same-named Legends — `checkModelInvariants`
+ * (`assertions.ts`) fails the build if a Legend's name ever stops matching the
+ * `"<Name> — <Subtitle>"` shape `splitCardName` assumes, since deck legality
+ * (`#lib/decks/legality.ts`) depends on grouping Legends by this.
  */
 export function legendBaseName(legend: Card): string {
-	return legend.name.split(' — ')[0];
+	return splitCardName(legend).name;
 }
