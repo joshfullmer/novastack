@@ -16,6 +16,8 @@
 	import { enhance } from '$app/forms';
 	import { SvelteSet } from 'svelte/reactivity';
 	import CardImage from '#lib/components/CardImage.svelte';
+	import CardMetaBadges from '#lib/components/CardMetaBadges.svelte';
+	import CardStats from '#lib/components/CardStats.svelte';
 	import { COLOR_BADGE_IMAGE, COLOR_DOT, COLOR_TEXT, COLOR_TINT } from '#lib/components/color.js';
 	import { dataset } from '#lib/cards/index.js';
 	import Meta from '#lib/components/Meta.svelte';
@@ -143,6 +145,9 @@
 	const fallback = $derived(deck.legends[0] ?? deck.entries[0]?.card ?? null);
 	let focused = $state<Card | null>(null);
 	const shown = $derived(focused ?? fallback);
+
+	/** Only Legends print a `"<Name> — <Subtitle>"` pair — see the same split on `/cards/[slug]`. */
+	const shownNameParts = $derived(shown === null ? [] : shown.name.split(' — '));
 
 	const mainGroups = $derived(groupDeckEntries(dataset, deck.entries));
 	const sizeTone = $derived(SIZE_STATUS_TONE[deck.sizeStatus]);
@@ -288,13 +293,20 @@
 							sizes="240px"
 						/>
 					</div>
-					<p class="mt-2 text-sm font-medium {COLOR_TEXT[shown.color]}">{shown.name}</p>
-					<p class="text-xs text-muted">
-						{shown.cardType}
-						{#if shown.cost !== null}· Cost {shown.cost}{/if}
-						{#if shown.power !== null}· Power {shown.power}{/if}
-						{#if shown.ramRequired !== null}· RAM {shown.ramRequired}{/if}
+					<p class="mt-2 text-sm font-medium uppercase {COLOR_TEXT[shown.color]}">
+						{shownNameParts[0]}
 					</p>
+					{#if shownNameParts[1]}
+						<p class="text-xs font-medium tracking-wide text-muted uppercase">
+							{shownNameParts[1]}
+						</p>
+					{/if}
+
+					<div class="mt-2">
+						<CardMetaBadges card={shown} compact />
+					</div>
+
+					<CardStats card={shown} showCost={false} class="mt-2" />
 				{:else}
 					<div
 						class="flex card-frame items-center justify-center rounded-lg border border-edge

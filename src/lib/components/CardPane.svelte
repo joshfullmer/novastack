@@ -12,6 +12,7 @@
 	import { findSetIdentifier } from '#lib/cards/sets.js';
 	import type { Card, Printing } from '#lib/cards/schema.js';
 	import CardImage from './CardImage.svelte';
+	import CardMetaBadges from './CardMetaBadges.svelte';
 	import CardStats from './CardStats.svelte';
 	import RulesText from './RulesText.svelte';
 
@@ -22,6 +23,9 @@
 	}: { card: Card | null; printing: Printing | null; filterBarHeight: number } = $props();
 
 	const set = $derived(printing === null ? undefined : findSetIdentifier(printing.setId));
+
+	/** Only Legends print a `"<Name> — <Subtitle>"` pair — see the same split on `/cards/[slug]`. */
+	const nameParts = $derived(card === null ? [] : card.name.split(' — '));
 </script>
 
 <!--
@@ -51,14 +55,16 @@
 			class="rounded-lg shadow-xl shadow-black/50"
 		/>
 
-		<h2 class="mt-3 text-lg leading-tight font-semibold text-bright">{card.name}</h2>
-		<p class="mt-0.5 text-sm text-muted">
-			{card.color}
-			{card.cardType}{#if card.classifications.length > 0}
-				· {card.classifications.join(' · ')}{/if}
-		</p>
+		<h2 class="mt-3 text-lg leading-tight font-semibold text-bright uppercase">{nameParts[0]}</h2>
+		{#if nameParts[1]}
+			<p class="text-sm font-medium tracking-wide text-muted uppercase">{nameParts[1]}</p>
+		{/if}
 
-		<CardStats {card} class="mt-3" />
+		<div class="mt-3">
+			<CardMetaBadges {card} compact />
+		</div>
+
+		<CardStats {card} showCost={false} class="mt-3" />
 
 		<div class="mt-3 border-t border-edge/60 pt-3">
 			<RulesText paragraphs={card.rulesText} size="sm" />
