@@ -3881,6 +3881,16 @@
 					"setId": "MS01-WNC",
 					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/975957a0-9c72-4a67-8260-f86c1c70bfb5/render-mpv4t0ey.webp",
 					"thumbhash": "UQiKHAgPnyd1d4l3SAtW0HCroFBVBQpVAA=="
+				},
+				{
+					"artist": "Dardo Studios",
+					"collectorNumber": "β159",
+					"id": "7b113940-7325-4304-b07a-61719b47a49c",
+					"key": "MS01-WNC-β159",
+					"rarity": "Iconic Other",
+					"setId": "MS01-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/7b113940-7325-4304-b07a-61719b47a49c/render-mpxlz1ge.webp",
+					"thumbhash": "UUiGJAYPafh3OKeEAoiEkFyJgYGICBiIAA=="
 				}
 			],
 			"ramProvided": null,
@@ -10463,7 +10473,7 @@
 		"Green",
 		"Blue"
 	],
-	"generatedAt": "2026-08-29T16:03:34.321Z",
+	"generatedAt": "2026-08-30T10:47:39.411Z",
 	"ramPerLegend": 2,
 	"sets": [
 		{
@@ -10474,7 +10484,7 @@
 			"kind": "base",
 			"name": "Welcome to Night City",
 			"printed": "MS01 - WNC [A]",
-			"printingCount": 303,
+			"printingCount": 304,
 			"setCode": "WNC"
 		},
 		{
@@ -10557,7 +10567,7 @@
 	],
 	"stats": {
 		"cards": 148,
-		"printings": 438,
+		"printings": 439,
 		"sets": 1
 	}
 }
