@@ -27,13 +27,12 @@
 	import { goto } from '$app/navigation';
 	import { currentUrl } from '#lib/filters/shallow.js';
 	import CardImage from '#lib/components/CardImage.svelte';
+	import CardMetaBadges from '#lib/components/CardMetaBadges.svelte';
 	import CardStats from '#lib/components/CardStats.svelte';
 	import Meta from '#lib/components/Meta.svelte';
 	import RulesText from '#lib/components/RulesText.svelte';
 	import { cardImageUrl, PRINTING_PARAM } from '#lib/cards/schema.js';
 	import { findSetIdentifier } from '#lib/cards/sets.js';
-	import { quoteQueryValue } from '#lib/cards/dataset.js';
-	import { PARAM } from '#lib/filters/state.js';
 
 	let { data } = $props();
 
@@ -67,6 +66,11 @@
 	}
 
 	const artists = $derived([...new Set(card.printings.map((entry) => entry.artist))]);
+
+	/** Only Legends print a `"<Name> — <Subtitle>"` pair (`legendBaseName()`, `derive.ts`) — every
+	 * other Card is one bare name. `nameParts[1]` is `undefined` for those, not an empty string,
+	 * so the subtitle line below only renders when there's an actual subtitle to show. */
+	const nameParts = $derived(card.name.split(' — '));
 
 	// `rawRulesText` still carries the `{Keyword}` markup `rulesText`'s segments parse out for
 	// display — braces stripped, that markup reads as plain, punctuation-adjacent text
@@ -112,41 +116,22 @@
 		</div>
 
 		<div class="min-w-0">
-			<h1 class="text-3xl font-semibold tracking-tight text-bright">{card.name}</h1>
-			<p class="mt-1 text-muted">
-				{card.color}
-				{card.cardType}{#if card.classifications.length > 0}
-					·
-					{#each card.classifications as classification, index (classification)}
-						<a
-							href="/cards?{PARAM.query}={encodeURIComponent(
-								`tag:${quoteQueryValue(classification)}`
-							)}"
-							class="underline decoration-dotted underline-offset-4 hover:text-neon"
-							>{classification}</a
-						>{#if index < card.classifications.length - 1}<span> · </span>{/if}
-					{/each}
-				{/if}
-			</p>
-
-			<CardStats {card} class="mt-4" />
-
-			{#if card.keywords.length > 0}
-				<ul class="mt-4 flex flex-wrap gap-1.5">
-					{#each card.keywords as keyword (keyword)}
-						<li>
-							<a
-								href="/cards?{PARAM.query}={encodeURIComponent(
-									`keyword:${quoteQueryValue(keyword)}`
-								)}"
-								class="rounded-full border border-edge px-2.5 py-0.5 text-sm
-									text-body transition-colors hover:border-neon hover:text-neon">{keyword}</a
-							>
-						</li>
-					{/each}
-				</ul>
+			<h1 class="text-3xl font-semibold tracking-tight text-bright uppercase">{nameParts[0]}</h1>
+			{#if nameParts[1]}
+				<p class="text-lg font-medium tracking-wide text-muted uppercase">{nameParts[1]}</p>
 			{/if}
 
+			<!-- Cost, Type, Classifications: shared with every other surface that shows a Card's
+				metadata (`CardPane`, the deck view's preview panel) — see `CardMetaBadges`. -->
+			<div class="mt-3">
+				<CardMetaBadges {card} />
+			</div>
+
+			<CardStats {card} showCost={false} class="mt-4" />
+
+			<!-- No separate keyword-pill list: every keyword here already appears inline in the
+				rules text below (`RulesText`), styled and linked identically — a second list
+				would just repeat it. -->
 			<div class="mt-6 border-t border-edge/60 pt-4">
 				<RulesText paragraphs={card.rulesText} />
 				{#if card.flavorText !== null}

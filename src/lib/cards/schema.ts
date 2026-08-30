@@ -216,3 +216,13 @@ export const PRINTING_PARAM = 'printing';
 export function cardImageSrcset(printingId: string): string {
 	return IMAGE_WIDTHS.map((width) => `${cardImageUrl(printingId, width)} ${width}w`).join(', ');
 }
+
+/**
+ * The printed card's own Cost badge always shows two digits, left-padded with `0` — this matches
+ * that, so any rendering of Cost (badge art or plain stat) agrees with what's actually printed.
+ * `null` cost is still `—`, never `'00'` — it means Cost does not apply to this Card at all, a
+ * different fact than "costs zero".
+ */
+export function formatCost(cost: number | null): string {
+	return cost === null ? '—' : String(cost).padStart(2, '0');
+}

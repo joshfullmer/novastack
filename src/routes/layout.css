@@ -70,3 +70,42 @@ dialog::backdrop {
 @utility card-frame {
 	aspect-ratio: var(--aspect-card);
 }
+
+/* A solid pennant, notched on the left, with its top-right corner sliced off at a true 45° —
+   the printed card frame's own Card Type banner shape. The 45° cut has to be a fixed pixel
+   amount, not a percentage, because a percentage cut's angle would depend on the badge's
+   (text-driven, variable) width; it's sized to `.badge-pennant`'s own fixed height (`h-6`, 24px)
+   below. Only shapes solid fills — an outlined shape needs its border drawn a different way,
+   since a `border` can't follow this clip's angled edges (see the tag badges' two-layer clip
+   below instead). */
+@utility badge-pennant {
+	clip-path: polygon(0% 50%, 14% 0%, calc(100% - 24px) 0%, 100% 100%, 14% 100%);
+}
+
+/* The tag badges' rectangle-minus-a-corner shape: start from a rectangle, then cut a 45° line
+   from the right edge's midpoint to the top edge, chopping off the top-right corner. Also fixed
+   pixels rather than percentage, for the same reason as `.badge-pennant`. Drawing an outlined
+   version of this needs two stacked, identically-shaped layers (`tag-cut` sized to the badge's
+   own `h-5`/20px, `tag-cut-inset` sized to that box minus a 2px border on every side) rather than
+   a `border`, which can't follow the angled edge either. */
+@utility tag-cut {
+	clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 0 100%);
+}
+
+@utility tag-cut-inset {
+	clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 0 100%);
+}
+
+/* The Eddiable "€$" badge's chamfered-rectangle shape: opposite corners (top-right, bottom-left)
+   cut, each chop wider than it is tall — the printed card's own Eddiable icon frame. Fixed
+   pixels, sized to `.eddie-badge`'s own fixed `h-6` (24px), for the same reason as
+   `.badge-pennant`. Two-layer clip for the same reason as the tag badges: `eddie-badge` is the
+   border color, `eddie-badge-inset` sits 2px inside it and shows the dark fill through as a
+   ring, since a `border` can't follow either chop. */
+@utility eddie-badge {
+	clip-path: polygon(0 0, calc(100% - 9px) 0, 100% 5px, 100% 100%, 9px 100%, 0 calc(100% - 5px));
+}
+
+@utility eddie-badge-inset {
+	clip-path: polygon(0 0, calc(100% - 7px) 0, 100% 4px, 100% 100%, 7px 100%, 0 calc(100% - 4px));
+}

@@ -36,7 +36,7 @@
 							href="/cards?{PARAM.query}={encodeURIComponent(
 								`keyword:${quoteQueryValue(segment.keyword)}`
 							)}"
-							class="font-semibold text-bright {linkClass}">{segment.keyword}</a
+							class="font-semibold text-bright uppercase {linkClass}">{segment.keyword}</a
 						>
 					{:else if segment.kind === 'classification'}
 						<a
