@@ -9366,6 +9366,71 @@
 			"slug": "trust-no-one"
 		},
 		{
+			"cardType": "Unit",
+			"classifications": [
+				"Fixer",
+				"Tyger Claws"
+			],
+			"color": "Green",
+			"cost": 2,
+			"eddiable": false,
+			"flavorText": null,
+			"keywords": [
+				"Play"
+			],
+			"name": "Tyger's Whisper",
+			"power": 0,
+			"printings": [
+				{
+					"artist": "Bernard Kowalczuk",
+					"collectorNumber": "090",
+					"id": "28267ce7-17dc-42c4-b8c4-4235a7f3c3df",
+					"key": "MS01-WNC-090",
+					"rarity": "Common",
+					"setId": "MS01-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/28267ce7-17dc-42c4-b8c4-4235a7f3c3df/render-mpvlyfk9.webp",
+					"thumbhash": "TceFFAQPx+eJB0uBtwfXfHCNgYGICBiIAA=="
+				},
+				{
+					"artist": "Bernard Kowalczuk",
+					"collectorNumber": "β090",
+					"id": "4b7d734b-5cc2-4c57-9bcf-7e3b5a0f1f9f",
+					"key": "MS01-WNC-β090",
+					"rarity": "Common",
+					"setId": "MS01-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/4b7d734b-5cc2-4c57-9bcf-7e3b5a0f1f9f/render-mpv4fyrl.webp",
+					"thumbhash": "TceFFAQPx+eJB0uBtwfXfHCNgYGICBiIAA=="
+				}
+			],
+			"ramProvided": null,
+			"ramRequired": 1,
+			"rawRulesText": "{Play} You may Call a Legend for free. (You can only Call a Legend once per turn.)\n(Units with power 0 don't steal Gigs.)",
+			"rulesText": [
+				[
+					{
+						"keyword": "Play",
+						"kind": "keyword",
+						"text": "{Play}"
+					},
+					{
+						"kind": "text",
+						"text": " You may Call a Legend for free. "
+					},
+					{
+						"kind": "reminder",
+						"text": "(You can only Call a Legend once per turn.)"
+					}
+				],
+				[
+					{
+						"kind": "reminder",
+						"text": "(Units with power 0 don't steal Gigs.)"
+					}
+				]
+			],
+			"slug": "tyger-s-whisper"
+		},
+		{
 			"cardType": "Program",
 			"classifications": [
 				"Maelstrom",
@@ -10593,18 +10658,18 @@
 		"Green",
 		"Blue"
 	],
-	"generatedAt": "2026-08-30T14:02:50.653Z",
+	"generatedAt": "2026-08-30T21:07:32.889Z",
 	"ramPerLegend": 2,
 	"sets": [
 		{
-			"cardCount": 137,
+			"cardCount": 138,
 			"category": "MS01",
 			"cycle": "A",
 			"id": "MS01-WNC",
 			"kind": "base",
 			"name": "Welcome to Night City",
 			"printed": "MS01 - WNC [A]",
-			"printingCount": 304,
+			"printingCount": 306,
 			"setCode": "WNC"
 		},
 		{
@@ -10686,8 +10751,8 @@
 		}
 	],
 	"stats": {
-		"cards": 148,
-		"printings": 439,
+		"cards": 149,
+		"printings": 441,
 		"sets": 1
 	}
 }
