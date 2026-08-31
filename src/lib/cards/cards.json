@@ -9184,6 +9184,16 @@
 					"setId": "MS01-WNC",
 					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/a55809aa-170d-42b4-8768-f0b873fd0dc4/render-mpvjxgd9.webp",
 					"thumbhash": "jviFDAQPBqh2Sbd6WEj2V2ZfUbGlBRVbAA=="
+				},
+				{
+					"artist": "Mooncolony",
+					"collectorNumber": "β163",
+					"id": "9a4fafb2-b27b-4b3e-9f57-502040898b0f",
+					"key": "MS01-WNC-β163",
+					"rarity": "Iconic Other",
+					"setId": "MS01-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/9a4fafb2-b27b-4b3e-9f57-502040898b0f/render-mpxm6vvr.webp",
+					"thumbhash": "TSiGDAYPWdd4Sddwhon3CnqDgYGICBiIAA=="
 				}
 			],
 			"ramProvided": null,
@@ -10658,7 +10668,7 @@
 		"Green",
 		"Blue"
 	],
-	"generatedAt": "2026-08-30T21:07:32.889Z",
+	"generatedAt": "2026-08-31T21:15:51.819Z",
 	"ramPerLegend": 2,
 	"sets": [
 		{
@@ -10669,7 +10679,7 @@
 			"kind": "base",
 			"name": "Welcome to Night City",
 			"printed": "MS01 - WNC [A]",
-			"printingCount": 306,
+			"printingCount": 307,
 			"setCode": "WNC"
 		},
 		{
@@ -10752,7 +10762,7 @@
 	],
 	"stats": {
 		"cards": 149,
-		"printings": 441,
+		"printings": 442,
 		"sets": 1
 	}
 }
