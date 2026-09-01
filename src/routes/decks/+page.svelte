@@ -4,6 +4,14 @@
 	 * change visibility) all live behind a per-row "⋯" menu, no need to open the deck. List/Grid
 	 * is a display toggle only — same data, same actions, either shape. The Explore tab (§9) is
 	 * its own route (`/explore`), not a tab here.
+	 *
+	 * Decklist Folders (`.scratch/decklist-folders/map.md`) fold in here: folder rows/tiles are
+	 * always listed before deck rows/tiles, each group alphabetical — matching the real Moxfield
+	 * "Your Decks" table the design was checked against. Clicking a folder drills into it
+	 * client-side (`currentFolderId`, not a URL — the dedicated `/decks/folders/[id]` route is
+	 * what a *shared* link points at); a breadcrumb goes back out. Moving a deck is native
+	 * HTML5 drag-and-drop onto a folder (in) or the breadcrumb (out) — confirmed explicitly with
+	 * the user as the *only* move mechanism, no menu.
 	 */
 	import { enhance } from '$app/forms';
 	import CardImage from '#lib/components/CardImage.svelte';
@@ -49,6 +57,47 @@
 		deleteTarget = deck;
 		openMenuId = null;
 		deleteDialogEl.showModal();
+	}
+
+	// Folders — client-only drill-in state; a page reload always starts back at the root, which
+	// is fine, since the dedicated `/decks/folders/[id]` route is what a shared link points at.
+	let currentFolderId = $state<string | null>(null);
+	let draggingDeckId = $state<string | null>(null);
+	let dragOverTarget = $state<string | null | 'breadcrumb'>(null);
+	let creatingFolder = $state(false);
+	let newFolderName = $state('');
+	let renamingFolderId = $state<string | null>(null);
+	let renameFolderValue = $state('');
+	let openFolderMenuId = $state<string | null>(null);
+
+	let moveFormEl: HTMLFormElement;
+	let moveDeckIdInput: HTMLInputElement;
+	let moveFolderIdInput: HTMLInputElement;
+
+	// Folders always sort before decks, each group alphabetical — matches Moxfield's own table.
+	const sortedFolders = $derived([...data.folders].sort((a, b) => a.name.localeCompare(b.name)));
+	const currentFolder = $derived(data.folders.find((f) => f.id === currentFolderId) ?? null);
+	function decksInFolder(folderId: string | null) {
+		return data.decks.filter((deck) => deck.folderId === folderId);
+	}
+	const visibleDecks = $derived(decksInFolder(currentFolderId));
+
+	function submitMove(deckId: string, folderId: string | null) {
+		moveDeckIdInput.value = deckId;
+		moveFolderIdInput.value = folderId ?? '';
+		moveFormEl.requestSubmit();
+	}
+
+	function dropOnFolder(folderId: string) {
+		if (draggingDeckId) submitMove(draggingDeckId, folderId);
+		draggingDeckId = null;
+		dragOverTarget = null;
+	}
+
+	function dropOnBreadcrumb() {
+		if (draggingDeckId) submitMove(draggingDeckId, null);
+		draggingDeckId = null;
+		dragOverTarget = null;
 	}
 </script>
 
@@ -154,6 +203,165 @@
 	</div>
 {/snippet}
 
+{#snippet renameFolderForm(folder: { id: string })}
+	<form
+		method="POST"
+		action="?/renameFolder"
+		use:enhance={() => {
+			renamingFolderId = null;
+		}}
+		class="min-w-0 flex-1"
+	>
+		<input type="hidden" name="folderId" value={folder.id} />
+		<!-- svelte-ignore a11y_autofocus -->
+		<input
+			type="text"
+			name="name"
+			bind:value={renameFolderValue}
+			autofocus
+			onclick={(event) => event.stopPropagation()}
+			onkeydown={(event) => {
+				if (event.key === 'Escape') renamingFolderId = null;
+			}}
+			onblur={(event) => event.currentTarget.form?.requestSubmit()}
+			class="w-full rounded border border-edge bg-void px-2 py-1 text-lg font-semibold text-bright"
+		/>
+	</form>
+{/snippet}
+
+{#snippet folderMenu(folder: { id: string; name: string })}
+	<div class="relative shrink-0">
+		<button
+			type="button"
+			aria-label="Manage {folder.name}"
+			onclick={() => (openFolderMenuId = openFolderMenuId === folder.id ? null : folder.id)}
+			class="rounded-md px-2 py-1.5 text-muted hover:bg-raised hover:text-bright"
+		>
+			⋯
+		</button>
+		{#if openFolderMenuId === folder.id}
+			<button
+				type="button"
+				aria-label="Close folder actions"
+				onclick={() => (openFolderMenuId = null)}
+				class="fixed inset-0 z-10 cursor-default"
+			></button>
+			<div
+				class="absolute right-0 z-20 mt-1 w-36 rounded-md border border-edge bg-shell p-1 text-xs
+					shadow-lg"
+			>
+				<button
+					type="button"
+					onclick={() => {
+						renamingFolderId = folder.id;
+						renameFolderValue = folder.name;
+						openFolderMenuId = null;
+					}}
+					class="block w-full rounded px-2 py-1.5 text-left text-body hover:bg-raised"
+				>
+					Rename
+				</button>
+				<form
+					method="POST"
+					action="?/deleteFolder"
+					use:enhance={() => {
+						openFolderMenuId = null;
+					}}
+				>
+					<input type="hidden" name="folderId" value={folder.id} />
+					<button
+						type="submit"
+						onclick={(event) => {
+							if (!confirm(`Delete "${folder.name}"? Decks inside become ungrouped.`)) {
+								event.preventDefault();
+							}
+						}}
+						class="block w-full rounded px-2 py-1.5 text-left text-card-red hover:bg-raised"
+					>
+						Delete
+					</button>
+				</form>
+			</div>
+		{/if}
+	</div>
+{/snippet}
+
+{#snippet folderRow(folder: { id: string; name: string; visibility: 'private' | 'unlisted' })}
+	<li
+		role="group"
+		aria-label="{folder.name} folder"
+		ondragover={(event) => {
+			event.preventDefault();
+			dragOverTarget = folder.id;
+		}}
+		ondragleave={() => (dragOverTarget = null)}
+		ondrop={() => dropOnFolder(folder.id)}
+		class="flex items-center gap-4 rounded-lg border border-edge bg-shell p-4"
+		class:border-neon={dragOverTarget === folder.id}
+	>
+		{#if renamingFolderId === folder.id}
+			<div class="flex min-w-0 flex-1 items-center gap-3">
+				<span class="text-xl">📁</span>
+				{@render renameFolderForm(folder)}
+			</div>
+		{:else}
+			<button
+				type="button"
+				onclick={() => (currentFolderId = folder.id)}
+				class="flex min-w-0 flex-1 items-center gap-3 text-left"
+			>
+				<span class="text-xl">📁</span>
+				<span class="truncate text-lg font-semibold text-bright">{folder.name}</span>
+				<span class="shrink-0 text-sm text-muted tabular-nums"
+					>({decksInFolder(folder.id).length})</span
+				>
+			</button>
+		{/if}
+		{#if folder.visibility === 'unlisted'}
+			<span class="rounded-full border border-edge px-3 py-1 text-xs text-muted capitalize"
+				>Unlisted</span
+			>
+		{/if}
+		{@render folderMenu(folder)}
+	</li>
+{/snippet}
+
+{#snippet folderTile(folder: { id: string; name: string; visibility: 'private' | 'unlisted' })}
+	<li class="group relative list-none">
+		<div
+			role="button"
+			tabindex="0"
+			onclick={() => (currentFolderId = folder.id)}
+			onkeydown={(event) => event.key === 'Enter' && (currentFolderId = folder.id)}
+			ondragover={(event) => {
+				event.preventDefault();
+				dragOverTarget = folder.id;
+			}}
+			ondragleave={() => (dragOverTarget = null)}
+			ondrop={() => dropOnFolder(folder.id)}
+			class="flex h-full cursor-pointer flex-col items-center justify-center gap-1 rounded-lg
+				border border-edge bg-shell px-3 py-6 text-center"
+			class:border-neon={dragOverTarget === folder.id}
+		>
+			<span class="text-2xl">📁</span>
+			{#if renamingFolderId === folder.id}
+				{@render renameFolderForm(folder)}
+			{:else}
+				<span class="truncate text-sm font-medium text-bright">{folder.name}</span>
+			{/if}
+			<span class="text-xs text-muted tabular-nums">{decksInFolder(folder.id).length} decks</span>
+			{#if folder.visibility === 'unlisted'}
+				<span class="rounded-full border border-edge px-2 py-0.5 text-xs text-muted capitalize"
+					>Unlisted</span
+				>
+			{/if}
+		</div>
+		<div class="absolute top-1 right-1 opacity-0 group-hover:opacity-100">
+			{@render folderMenu(folder)}
+		</div>
+	</li>
+{/snippet}
+
 <Meta
 	title="My decks — novastack"
 	description="Build, manage, and share Cyberpunk TCG decks on novastack."
@@ -200,12 +408,73 @@
 			</div>
 		</div>
 
-		{#if data.decks.length === 0}
+		<div class="mb-4 flex items-center gap-2 text-sm">
+			<button
+				type="button"
+				onclick={() => (currentFolderId = null)}
+				ondragover={(event) => {
+					if (currentFolder) {
+						event.preventDefault();
+						dragOverTarget = 'breadcrumb';
+					}
+				}}
+				ondragleave={() => (dragOverTarget = null)}
+				ondrop={dropOnBreadcrumb}
+				class="rounded px-1 text-muted hover:text-bright"
+				class:text-bright={!currentFolder}
+				class:font-medium={!currentFolder}
+				class:border={dragOverTarget === 'breadcrumb'}
+				class:border-neon={dragOverTarget === 'breadcrumb'}
+			>
+				All decks
+			</button>
+			{#if currentFolder}
+				<span class="text-muted">/</span>
+				<span class="font-medium text-bright">📁 {currentFolder.name}</span>
+				<form method="POST" action="?/folderVisibility" use:enhance>
+					<input type="hidden" name="folderId" value={currentFolder.id} />
+					<select
+						name="visibility"
+						value={currentFolder.visibility}
+						onchange={(event) => event.currentTarget.form?.requestSubmit()}
+						class="ml-2 rounded border border-edge bg-void px-1 py-0.5 text-xs text-muted"
+					>
+						<option value="private">Private</option>
+						<option value="unlisted">Unlisted</option>
+					</select>
+				</form>
+				{#if currentFolder.visibility === 'unlisted'}
+					<button
+						type="button"
+						title="Copy share link"
+						onclick={() =>
+							navigator.clipboard.writeText(`${data.origin}/decks/folders/${currentFolder.id}`)}
+						class="text-xs text-neon hover:underline"
+					>
+						🔗 Copy share link
+					</button>
+				{/if}
+			{/if}
+		</div>
+
+		{#if !currentFolder && sortedFolders.length === 0 && data.decks.length === 0}
 			<p class="text-sm text-muted">No decks yet — create one to get started.</p>
 		{:else if deckView.value === 'grid'}
 			<ul class="grid grid-cols-2 gap-4 lg:grid-cols-3">
-				{#each data.decks as deck (deck.id)}
-					<li class="overflow-hidden rounded-lg border border-edge bg-shell">
+				{#if !currentFolder}
+					{#each sortedFolders as folder (folder.id)}
+						{@render folderTile(folder)}
+					{/each}
+				{/if}
+				{#each visibleDecks as deck (deck.id)}
+					<li
+						draggable="true"
+						ondragstart={() => (draggingDeckId = deck.id)}
+						ondragend={() => (draggingDeckId = null)}
+						class="cursor-grab overflow-hidden rounded-lg border border-edge bg-shell
+							active:cursor-grabbing"
+						class:opacity-40={draggingDeckId === deck.id}
+					>
 						<a href="/decks/{deck.id}" class="flex gap-1 bg-void p-2">
 							{#each legendSlots as slot (slot)}
 								{@const slug = deck.legendSlugs[slot]}
@@ -256,11 +525,65 @@
 						</div>
 					</li>
 				{/each}
+				{#if !currentFolder}
+					<li class="list-none">
+						{#if creatingFolder}
+							<form
+								method="POST"
+								action="?/createFolder"
+								use:enhance={() => {
+									creatingFolder = false;
+									newFolderName = '';
+								}}
+								class="h-full"
+							>
+								<!-- svelte-ignore a11y_autofocus -->
+								<input
+									type="text"
+									name="name"
+									bind:value={newFolderName}
+									placeholder="Folder name"
+									autofocus
+									onblur={(event) => {
+										if (newFolderName.trim()) event.currentTarget.form?.requestSubmit();
+										else creatingFolder = false;
+									}}
+									onkeydown={(event) => event.key === 'Escape' && (creatingFolder = false)}
+									class="h-full w-full rounded-lg border border-edge bg-void px-3 py-6 text-center
+										text-sm text-bright"
+								/>
+							</form>
+						{:else}
+							<button
+								type="button"
+								onclick={() => (creatingFolder = true)}
+								class="flex h-full w-full flex-col items-center justify-center gap-1 rounded-lg
+									border border-dashed border-edge px-3 py-6 text-center text-sm text-muted
+									hover:border-neon hover:text-neon"
+							>
+								<span class="text-2xl">+</span>
+								New folder
+							</button>
+						{/if}
+					</li>
+				{/if}
 			</ul>
 		{:else}
 			<ul class="flex flex-col gap-3">
-				{#each data.decks as deck (deck.id)}
-					<li class="flex items-center gap-4 rounded-lg border border-edge bg-shell p-4">
+				{#if !currentFolder}
+					{#each sortedFolders as folder (folder.id)}
+						{@render folderRow(folder)}
+					{/each}
+				{/if}
+				{#each visibleDecks as deck (deck.id)}
+					<li
+						draggable="true"
+						ondragstart={() => (draggingDeckId = deck.id)}
+						ondragend={() => (draggingDeckId = null)}
+						class="flex items-center gap-4 rounded-lg border border-edge bg-shell p-4
+							active:cursor-grabbing"
+						class:opacity-40={draggingDeckId === deck.id}
+					>
 						<div class="flex shrink-0 gap-2">
 							{#each legendSlots as slot (slot)}
 								{@const slug = deck.legendSlugs[slot]}
@@ -310,9 +633,58 @@
 					</li>
 				{/each}
 			</ul>
+			{#if !currentFolder}
+				{#if creatingFolder}
+					<form
+						method="POST"
+						action="?/createFolder"
+						use:enhance={() => {
+							creatingFolder = false;
+							newFolderName = '';
+						}}
+						class="mt-3"
+					>
+						<!-- svelte-ignore a11y_autofocus -->
+						<input
+							type="text"
+							name="name"
+							bind:value={newFolderName}
+							placeholder="Folder name"
+							autofocus
+							onblur={(event) => {
+								if (newFolderName.trim()) event.currentTarget.form?.requestSubmit();
+								else creatingFolder = false;
+							}}
+							onkeydown={(event) => event.key === 'Escape' && (creatingFolder = false)}
+							class="rounded-md border border-edge bg-void px-3 py-1.5 text-sm text-bright"
+						/>
+					</form>
+				{:else}
+					<button
+						type="button"
+						onclick={() => (creatingFolder = true)}
+						class="mt-3 rounded-md border border-dashed border-edge px-3 py-1.5 text-sm text-muted
+							hover:border-neon hover:text-neon"
+					>
+						+ New folder
+					</button>
+				{/if}
+			{/if}
+		{/if}
+
+		{#if currentFolder && visibleDecks.length === 0}
+			<p class="mt-3 text-sm text-muted italic">Drag decks here from All decks.</p>
 		{/if}
 	</div>
 </div>
+
+<!-- Hidden, permanent form for the drag-and-drop move — see `submitMove`. Not a per-row <form>
+     since the move target is decided by whichever folder/breadcrumb the drop landed on, not by
+     a specific row's own DOM. -->
+<form method="POST" action="?/move" use:enhance bind:this={moveFormEl} class="hidden">
+	<input type="hidden" name="deckId" bind:this={moveDeckIdInput} />
+	<input type="hidden" name="folderId" bind:this={moveFolderIdInput} />
+</form>
 
 <dialog
 	bind:this={deleteDialogEl}

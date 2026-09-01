@@ -8,11 +8,45 @@
  * boundary by `#lib/decks/schema.js`, never trusted as typed straight off a read.
  */
 import { sql } from 'drizzle-orm';
-import { index, integer, primaryKey, sqliteTable, text } from 'drizzle-orm/sqlite-core';
+import {
+	type AnySQLiteColumn,
+	index,
+	integer,
+	primaryKey,
+	sqliteTable,
+	text
+} from 'drizzle-orm/sqlite-core';
 import type { DeckEntryPayload } from '#lib/decks/schema.js';
 import { user } from './auth.schema.js';
 
 const now = sql`(cast(unixepoch('subsecond') * 1000 as integer))`;
+
+/** A user's own grouping of their decks (`.scratch/decklist-folders/map.md`) — independent of
+ * deck visibility. `parentFolderId` is an unused seam for real nesting later: v1 UI never sets
+ * it to non-null, but the column exists so upgrading to nesting is a UI/validation change, not
+ * a migration. No `public` visibility tier — folders are never discoverable/browsable, only
+ * shareable via a direct `unlisted` link. */
+export const deckFolders = sqliteTable(
+	'deck_folders',
+	{
+		id: text('id')
+			.primaryKey()
+			.$defaultFn(() => crypto.randomUUID()),
+		ownerId: text('owner_id')
+			.notNull()
+			.references(() => user.id, { onDelete: 'cascade' }),
+		name: text('name').notNull(),
+		visibility: text('visibility', { enum: ['private', 'unlisted'] })
+			.notNull()
+			.default('private'),
+		parentFolderId: text('parent_folder_id').references(
+			(): AnySQLiteColumn => deckFolders.id,
+			{ onDelete: 'set null' }
+		),
+		createdAt: integer('created_at', { mode: 'timestamp_ms' }).notNull().default(now)
+	},
+	(table) => [index('deck_folders_owner_idx').on(table.ownerId)]
+);
 
 export const decks = sqliteTable(
 	'decks',
@@ -33,9 +67,13 @@ export const decks = sqliteTable(
 		 * does, for the handful of decks it'll ever apply to — so it's the script's job to also
 		 * force `visibility = 'public'` in that same update; nothing here enforces the pairing.
 		 */
-		isStarterDeck: integer('is_starter_deck', { mode: 'boolean' }).notNull().default(false)
+		isStarterDeck: integer('is_starter_deck', { mode: 'boolean' }).notNull().default(false),
+		/** Zero-or-one — a deck belongs to at most one folder, mirroring common folder (not tag)
+		 * conventions. `set null` on folder delete: deleting a folder un-groups its decks rather
+		 * than deleting them. */
+		folderId: text('folder_id').references(() => deckFolders.id, { onDelete: 'set null' })
 	},
-	(table) => [index('decks_owner_idx').on(table.ownerId)]
+	(table) => [index('decks_owner_idx').on(table.ownerId), index('decks_folder_idx').on(table.folderId)]
 );
 
 export const deckVersions = sqliteTable(

@@ -29,6 +29,13 @@
       "when": 1788255406944,
       "tag": "0003_clean_black_queen",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "6",
+      "when": 1788271179914,
+      "tag": "0004_deck_folders",
+      "breakpoints": true
     }
   ]
 }
