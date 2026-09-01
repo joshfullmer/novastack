@@ -5250,7 +5250,7 @@
 				"Braindance"
 			],
 			"color": "Green",
-			"cost": 3,
+			"cost": 4,
 			"eddiable": true,
 			"flavorText": null,
 			"keywords": [],
@@ -10668,7 +10668,7 @@
 		"Green",
 		"Blue"
 	],
-	"generatedAt": "2026-08-31T21:15:51.819Z",
+	"generatedAt": "2026-09-01T12:27:42.767Z",
 	"ramPerLegend": 2,
 	"sets": [
 		{
