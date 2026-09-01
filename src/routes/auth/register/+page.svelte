@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
+	import DiscordSignInButton from '#lib/components/DiscordSignInButton.svelte';
 	import type { ActionData } from './$types';
 
 	let { form }: { form: ActionData } = $props();
@@ -54,6 +55,14 @@
 			>Register</button
 		>
 	</form>
+
+	<div class="my-4 flex items-center gap-2 text-xs text-muted" aria-hidden="true">
+		<div class="h-px flex-1 bg-edge"></div>
+		or
+		<div class="h-px flex-1 bg-edge"></div>
+	</div>
+
+	<DiscordSignInButton />
 
 	<a href="/auth/login" class="mt-4 text-sm text-muted hover:text-bright"
 		>Already have an account? Sign in</a

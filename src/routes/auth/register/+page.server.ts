@@ -1,5 +1,6 @@
 import { redirect } from '@sveltejs/kit';
 import { attemptAuth } from '#lib/server/attempt.js';
+import { signInDiscord } from '#lib/server/social-sign-in.js';
 import type { Actions, PageServerLoad } from './$types';
 
 // Overrides the root layout's `prerender = true` — this route reads request-scoped session
@@ -29,5 +30,7 @@ export const actions: Actions = {
 		if (failure) return failure;
 
 		return redirect(302, '/decks');
-	}
+	},
+
+	signInDiscord: (event) => signInDiscord(event.locals.auth)
 };

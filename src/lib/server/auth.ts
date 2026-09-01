@@ -1,4 +1,9 @@
-import { ORIGIN, BETTER_AUTH_SECRET } from '$app/env/private';
+import {
+	ORIGIN,
+	BETTER_AUTH_SECRET,
+	DISCORD_CLIENT_ID,
+	DISCORD_CLIENT_SECRET
+} from '$app/env/private';
 import { betterAuth } from 'better-auth/minimal';
 import { drizzleAdapter } from 'better-auth/adapters/drizzle';
 import { sveltekitCookies } from 'better-auth/svelte-kit';
@@ -41,6 +46,24 @@ const authConfig = {
 		// No `sendDeleteAccountVerification` callback — deletion is immediate once the password
 		// in the request body checks out, no separate email-confirmation step.
 		deleteUser: { enabled: true }
+	},
+	socialProviders: {
+		discord: {
+			// `defineEnvVars`'s schema (src/env.ts) always resolves these to real strings outside
+			// of `building` — same narrowing as the CLI-only `null!` below, needed here because
+			// `DiscordOptions.clientId`/`clientSecret` don't accept `undefined` the way `baseURL`/
+			// `secret` above do.
+			clientId: DISCORD_CLIENT_ID!,
+			clientSecret: DISCORD_CLIENT_SECRET!
+		}
+	},
+	account: {
+		accountLinking: {
+			// Sign-in-time auto-link-by-email stays off — see docs/wayfinder/discord-login/map.md's
+			// Notes. Explicit `linkSocial` calls (the /account "linked accounts" ticket) aren't
+			// gated by this flag at all, so they're unaffected.
+			disableImplicitLinking: true
+		}
 	},
 	/**
 	 * Both explicit, not left to defaults: `enabled` otherwise defaults to `NODE_ENV ===

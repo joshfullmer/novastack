@@ -25,5 +25,15 @@ export const variables = defineEnvVars({
 		description:
 			'API key for the Resend account sending verification/reset emails. See https://resend.com/api-keys.',
 		schema: requiredAtRuntime
+	},
+	DISCORD_CLIENT_ID: {
+		description:
+			'OAuth2 client ID for the Discord application backing Discord sign-in. See https://discord.com/developers/applications.',
+		schema: requiredAtRuntime
+	},
+	DISCORD_CLIENT_SECRET: {
+		description:
+			'OAuth2 client secret for the Discord application backing Discord sign-in. See https://discord.com/developers/applications.',
+		schema: requiredAtRuntime
 	}
 });

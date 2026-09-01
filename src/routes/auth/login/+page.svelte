@@ -1,11 +1,23 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
 	import { page } from '$app/state';
+	import DiscordSignInButton from '#lib/components/DiscordSignInButton.svelte';
 	import type { ActionData } from './$types';
 
 	let { form }: { form: ActionData } = $props();
 
 	const justReset = $derived(page.url.searchParams.get('reset') === '1');
+
+	// `error` is set by better-auth's OAuth callback (see social-sign-in.ts's `errorCallbackURL`).
+	// `account_not_linked` is the one real case explicit-only linking produces day-to-day —
+	// everything else gets a generic message rather than surfacing better-auth's internal codes.
+	const discordError = $derived.by(() => {
+		const code = page.url.searchParams.get('error');
+		if (!code) return null;
+		if (code === 'account_not_linked')
+			return 'An account with this email already exists. Sign in with your password, then link Discord from your account page.';
+		return 'Something went wrong signing in with Discord. Please try again.';
+	});
 </script>
 
 <svelte:head>
@@ -18,6 +30,10 @@
 
 	{#if justReset}
 		<p class="mb-4 text-sm text-neon">Password updated — sign in with your new password.</p>
+	{/if}
+
+	{#if discordError}
+		<p class="mb-4 text-sm text-card-red">{discordError}</p>
 	{/if}
 
 	<form method="post" action="?/signInUsername" use:enhance class="flex flex-col gap-3">
@@ -51,6 +67,14 @@
 			>Sign in</button
 		>
 	</form>
+
+	<div class="my-4 flex items-center gap-2 text-xs text-muted" aria-hidden="true">
+		<div class="h-px flex-1 bg-edge"></div>
+		or
+		<div class="h-px flex-1 bg-edge"></div>
+	</div>
+
+	<DiscordSignInButton />
 
 	<div class="mt-4 flex flex-col gap-1">
 		<a href="/auth/forgot-password" class="text-sm text-muted hover:text-bright"

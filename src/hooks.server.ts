@@ -12,6 +12,17 @@ import { svelteKitHandler } from 'better-auth/svelte-kit';
  */
 const DYNAMIC_PREFIXES = ['/decks', '/explore', '/auth', '/account', '/api/auth'];
 
+/**
+ * A Discord sign-up lands with no `username` (see
+ * docs/wayfinder/discord-login/tickets/03-first-time-username-picker.md) — every other dynamic
+ * route is gated on having one until the picker fills it in. `/api/auth` is exempt so
+ * better-auth's own endpoints (session checks) keep working; `/auth/choose-username` itself
+ * obviously has to be reachable to fix the problem it's redirecting for; `/auth/logout` is
+ * exempt so a user who'd rather abandon than pick a username right now still can (caught live —
+ * without this, `/auth/logout`'s own `+server.ts` never ran, since it lives under `/auth`).
+ */
+const NEEDS_USERNAME_EXEMPT_PREFIXES = ['/api/auth', '/auth/choose-username', '/auth/logout'];
+
 const handleBetterAuth: Handle = async ({ event, resolve }) => {
 	const isDynamicRoute = DYNAMIC_PREFIXES.some((prefix) => event.url.pathname.startsWith(prefix));
 	if (!isDynamicRoute) return resolve(event);
@@ -29,6 +40,16 @@ const handleBetterAuth: Handle = async ({ event, resolve }) => {
 	if (session) {
 		event.locals.session = session.session;
 		event.locals.user = session.user;
+
+		if (
+			!session.user.username &&
+			!NEEDS_USERNAME_EXEMPT_PREFIXES.some((prefix) => event.url.pathname.startsWith(prefix))
+		) {
+			return new Response(null, {
+				status: 302,
+				headers: { location: '/auth/choose-username' }
+			});
+		}
 	}
 
 	return svelteKitHandler({ event, resolve, auth, building });
