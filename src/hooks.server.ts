@@ -10,7 +10,7 @@ import { svelteKitHandler } from 'better-auth/svelte-kit';
  * route never touches `platform.env` at all, in any mode. Gating on the URL, not just skipping
  * silently on failure, keeps that boundary explicit rather than accidental.
  */
-const DYNAMIC_PREFIXES = ['/decks', '/explore', '/auth'];
+const DYNAMIC_PREFIXES = ['/decks', '/explore', '/auth', '/account', '/api/auth'];
 
 const handleBetterAuth: Handle = async ({ event, resolve }) => {
 	const isDynamicRoute = DYNAMIC_PREFIXES.some((prefix) => event.url.pathname.startsWith(prefix));

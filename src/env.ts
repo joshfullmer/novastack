@@ -20,5 +20,10 @@ export const variables = defineEnvVars({
 		description:
 			'Secret used to sign tokens. For production use 32 characters generated with high entropy. See [Better Auth installation](https://www.better-auth.com/docs/installation).',
 		schema: requiredAtRuntime
+	},
+	RESEND_API_KEY: {
+		description:
+			'API key for the Resend account sending verification/reset emails. See https://resend.com/api-keys.',
+		schema: requiredAtRuntime
 	}
 });

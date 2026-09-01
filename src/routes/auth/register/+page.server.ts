@@ -12,14 +12,19 @@ export const load: PageServerLoad = (event) => {
 };
 
 export const actions: Actions = {
-	signInUsername: async (event) => {
+	signUpEmail: async (event) => {
 		const { auth } = event.locals;
 		const formData = await event.request.formData();
-		const username = formData.get('username')?.toString() ?? '';
+		const email = formData.get('email')?.toString() ?? '';
 		const password = formData.get('password')?.toString() ?? '';
+		const username = formData.get('username')?.toString() ?? '';
 
+		// `name` has no UI of its own — better-auth's core schema requires it regardless of the
+		// username plugin, so it's kept in lockstep with `username` rather than surfaced as a
+		// second "real name" field. See
+		// docs/wayfinder/account-actions/tickets/02-username-migration-account-shell.md.
 		const failure = await attemptAuth(() =>
-			auth.api.signInUsername({ body: { username, password } })
+			auth.api.signUpEmail({ body: { email, password, name: username, username } })
 		);
 		if (failure) return failure;
 

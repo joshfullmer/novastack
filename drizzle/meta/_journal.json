@@ -15,6 +15,20 @@
       "when": 1787824390456,
       "tag": "0001_nostalgic_supreme_intelligence",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1788253781078,
+      "tag": "0002_youthful_molecule_man",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "6",
+      "when": 1788255406944,
+      "tag": "0003_clean_black_queen",
+      "breakpoints": true
     }
   ]
 }

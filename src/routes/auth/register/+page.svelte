@@ -1,26 +1,19 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
-	import { page } from '$app/state';
 	import type { ActionData } from './$types';
 
 	let { form }: { form: ActionData } = $props();
-
-	const justReset = $derived(page.url.searchParams.get('reset') === '1');
 </script>
 
 <svelte:head>
-	<title>Sign in — novastack</title>
+	<title>Register — novastack</title>
 </svelte:head>
 
 <div class="mx-auto flex max-w-sm flex-1 flex-col justify-center p-6">
-	<h1 class="mb-1 text-xl font-semibold text-bright">Sign in</h1>
-	<p class="mb-6 text-sm text-muted">Sign in to build and save decks.</p>
+	<h1 class="mb-1 text-xl font-semibold text-bright">Register</h1>
+	<p class="mb-6 text-sm text-muted">Create an account to build and save decks.</p>
 
-	{#if justReset}
-		<p class="mb-4 text-sm text-neon">Password updated — sign in with your new password.</p>
-	{/if}
-
-	<form method="post" action="?/signInUsername" use:enhance class="flex flex-col gap-3">
+	<form method="post" action="?/signUpEmail" use:enhance class="flex flex-col gap-3">
 		<label class="flex flex-col gap-1 text-sm text-body">
 			Username
 			<input
@@ -40,6 +33,16 @@
 					focus:border-neon focus:outline-none"
 			/>
 		</label>
+		<label class="flex flex-col gap-1 text-sm text-body">
+			Email
+			<input
+				type="email"
+				name="email"
+				required
+				class="rounded-md border border-edge bg-surface px-3 py-2 text-sm text-body
+					focus:border-neon focus:outline-none"
+			/>
+		</label>
 
 		{#if form?.message}
 			<p class="text-sm text-card-red">{form.message}</p>
@@ -48,14 +51,11 @@
 		<button
 			type="submit"
 			class="mt-2 rounded-md bg-neon px-3 py-2 text-sm font-medium text-void hover:bg-neon-dim"
-			>Sign in</button
+			>Register</button
 		>
 	</form>
 
-	<div class="mt-4 flex flex-col gap-1">
-		<a href="/auth/forgot-password" class="text-sm text-muted hover:text-bright"
-			>Forgot your password?</a
-		>
-		<a href="/auth/register" class="text-sm text-muted hover:text-bright">New here? Register</a>
-	</div>
+	<a href="/auth/login" class="mt-4 text-sm text-muted hover:text-bright"
+		>Already have an account? Sign in</a
+	>
 </div>

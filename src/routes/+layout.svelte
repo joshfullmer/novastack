@@ -1,6 +1,7 @@
 <script lang="ts">
 	import './layout.css';
 	import Attribution from '#lib/components/Attribution.svelte';
+	import EmailVerificationBanner from '#lib/components/EmailVerificationBanner.svelte';
 	import Nav from '#lib/components/Nav.svelte';
 
 	let { children } = $props();
@@ -25,6 +26,7 @@
 -->
 <div class="flex min-h-screen flex-col">
 	<Nav />
+	<EmailVerificationBanner />
 	<main class="flex flex-1 flex-col">{@render children()}</main>
 	<Attribution />
 </div>
