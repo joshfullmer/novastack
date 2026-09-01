@@ -35,6 +35,7 @@
 	import { COLOR_CHIP_OFF, COLOR_CHIP_ON } from '../color.js';
 	import ChipGroup from './ChipGroup.svelte';
 	import LegendSlots from './LegendSlots.svelte';
+	import QueryEditor from './QueryEditor.svelte';
 	import RangeControl from './RangeControl.svelte';
 	import SetList from './SetList.svelte';
 	import TagList from './TagList.svelte';
@@ -70,15 +71,6 @@
 	} = $props();
 
 	let showMore = $state(false);
-	let queryEl = $state<HTMLInputElement>();
-
-	/** The box holds its own text while focused, same reasoning as stage 1's search box: a
-	 * debounced URL push landing mid-keystroke must never overwrite what's being typed. */
-	let queryText = $state('');
-
-	$effect(() => {
-		if (queryEl !== document.activeElement) queryText = source;
-	});
 
 	/** Below the breakpoint the whole panel collapses behind one button — now the *entire*
 	 * chip panel, not just "More filters" (spec §9), since the query box already covers
@@ -159,19 +151,12 @@
 
 			<div class="relative flex-1">
 				<label for="grid-query" class="sr-only">Search or filter with a query</label>
-				<input
+				<QueryEditor
 					id="grid-query"
-					bind:this={queryEl}
-					value={queryText}
-					oninput={(event) => {
-						queryText = event.currentTarget.value;
-						onSource(queryText);
-					}}
-					type="search"
+					value={source}
 					placeholder="Search, or write a query — try t:legend c:red"
-					autocomplete="off"
-					class="w-full rounded-lg border border-edge bg-void px-4
-						py-2.5 text-bright transition-colors outline-none placeholder:text-muted focus:border-neon"
+					{warnings}
+					{onSource}
 				/>
 			</div>
 

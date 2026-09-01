@@ -23,8 +23,11 @@ const resultCount = (page: Page) => page.getByText(/^\d+ of \d+$/);
 
 const tiles = (page: Page) => page.locator('ul li a[href^="/cards/"]');
 
+// `combobox`, not `searchbox` — the query box grew autocomplete (ticket 04,
+// `.scratch/editor-affordances/map.md`), and `combobox` is the ARIA-correct role once a text
+// input has a popup of suggestions attached to it.
 const queryBox = (page: Page) =>
-	page.getByRole('searchbox', { name: 'Search or filter with a query' });
+	page.getByRole('combobox', { name: 'Search or filter with a query' });
 
 const queryParam = (page: Page) => new URL(page.url()).searchParams.get('q');
 
