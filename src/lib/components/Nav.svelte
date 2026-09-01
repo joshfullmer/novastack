@@ -135,6 +135,11 @@
 		</a>
 
 		{#if page.data.user}
+			<a
+				href="/account"
+				class="text-sm text-muted transition-colors hover:text-bright"
+				class:text-bright={isCurrent('/account')}>Account</a
+			>
 			<form method="POST" action="/auth/logout" class="text-sm">
 				<button type="submit" class="text-muted transition-colors hover:text-bright"
 					>Sign out</button
