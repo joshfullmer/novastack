@@ -10192,6 +10192,69 @@
 			"slug": "wakako-okada-peace-and-harmony"
 		},
 		{
+			"cardType": "Program",
+			"classifications": [
+				"Aldecado",
+				"Nomad"
+			],
+			"color": "Green",
+			"cost": 5,
+			"eddiable": true,
+			"flavorText": null,
+			"keywords": [],
+			"name": "We Gotta Live Together",
+			"power": null,
+			"printings": [
+				{
+					"artist": "Olgierd Ciszak",
+					"collectorNumber": "104",
+					"id": "63821536-cdf5-4347-812a-0bf72d727596",
+					"key": "MS01-WNC-104",
+					"rarity": "Uncommon",
+					"setId": "MS01-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/63821536-cdf5-4347-812a-0bf72d727596/render-mpvmfm9u.webp",
+					"thumbhash": "TueFHAIPa+iHCIZncQiHJoWAgYGICBiIAA=="
+				},
+				{
+					"artist": "Olgierd Ciszak",
+					"collectorNumber": "β104",
+					"id": "3488c7f7-c797-4c3a-8d49-e5cdcf0e8d74",
+					"key": "MS01-WNC-β104",
+					"rarity": "Uncommon",
+					"setId": "MS01-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/3488c7f7-c797-4c3a-8d49-e5cdcf0e8d74/render-mpvk1myx.webp",
+					"thumbhash": "TueFHAIPa+iHCIZncQiHJoWAgYGICBiIAA=="
+				}
+			],
+			"ramProvided": null,
+			"ramRequired": 2,
+			"rawRulesText": "If a Rival controls at least 2 more Gigs than you, play this Program for 3 €$.\nPlay up to 2 Units with cost 3 or less from your trash for free.",
+			"rulesText": [
+				[
+					{
+						"kind": "text",
+						"text": "If a Rival controls at least 2 more Gigs than you, play this Program for 3 "
+					},
+					{
+						"kind": "symbol",
+						"symbol": "eurodollars",
+						"text": "€$"
+					},
+					{
+						"kind": "text",
+						"text": "."
+					}
+				],
+				[
+					{
+						"kind": "text",
+						"text": "Play up to 2 Units with cost 3 or less from your trash for free."
+					}
+				]
+			],
+			"slug": "we-gotta-live-together"
+		},
+		{
 			"cardType": "Unit",
 			"classifications": [
 				"Netrunner"
@@ -10668,18 +10731,18 @@
 		"Green",
 		"Blue"
 	],
-	"generatedAt": "2026-09-01T12:27:42.767Z",
+	"generatedAt": "2026-09-01T16:03:35.735Z",
 	"ramPerLegend": 2,
 	"sets": [
 		{
-			"cardCount": 138,
+			"cardCount": 139,
 			"category": "MS01",
 			"cycle": "A",
 			"id": "MS01-WNC",
 			"kind": "base",
 			"name": "Welcome to Night City",
 			"printed": "MS01 - WNC [A]",
-			"printingCount": 307,
+			"printingCount": 309,
 			"setCode": "WNC"
 		},
 		{
@@ -10761,8 +10824,8 @@
 		}
 	],
 	"stats": {
-		"cards": 149,
-		"printings": 442,
+		"cards": 150,
+		"printings": 444,
 		"sets": 1
 	}
 }
