@@ -23,5 +23,13 @@
 			href="/syntax"
 			class="text-body underline decoration-dotted underline-offset-2 hover:text-neon">Syntax</a
 		>.
+		<a
+			href="/terms"
+			class="text-body underline decoration-dotted underline-offset-2 hover:text-neon">Terms</a
+		>.
+		<a
+			href="/privacy"
+			class="text-body underline decoration-dotted underline-offset-2 hover:text-neon">Privacy</a
+		>.
 	</p>
 </footer>
