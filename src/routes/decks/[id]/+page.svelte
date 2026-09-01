@@ -22,7 +22,6 @@
 	import { dataset } from '#lib/cards/index.js';
 	import { splitCardName } from '#lib/cards/derive.js';
 	import Meta from '#lib/components/Meta.svelte';
-	import { cardImageUrl } from '#lib/cards/schema.js';
 	import type { Card } from '#lib/cards/schema.js';
 	import { COLORS } from '#lib/cards/vocabulary.js';
 	import { LEGEND_SLOTS, MAX_DECK_SIZE, MIN_DECK_SIZE } from '#lib/decks/legality.js';
@@ -256,19 +255,16 @@
 </script>
 
 <!--
-	`image` is a stand-in (the same card `fallback` already picks for the preview panel above),
-	not a real per-deck composite (deck name + Legends + card grid). That would need server-side
-	rendering — satori + a WASM PNG renderer — and Cloudflare Workers' Free plan caps CPU time at
-	10ms/request, which that rendering would plausibly exceed. Paid ($5/mo minimum) allows 30s by
-	default, up to 5 min — comfortably enough — but novastack is on Free today. Revisit if that
-	changes; until then, this fallback is the deliberate choice, not a placeholder.
+	No `image`: a single card is a misleading preview for a deck, and a real per-deck composite
+	(deck name + Legends + card grid) needs server-side rendering — satori + a WASM PNG renderer —
+	which plausibly exceeds Cloudflare Workers' Free plan 10ms/request CPU cap. Revisit once on
+	Paid ($5/mo, 30s-5min cap).
 -->
 <Meta
 	title="{data.deckName} — novastack"
 	description="A {deck.totalCards}-card Cyberpunk TCG deck by {data.ownerName}."
 	origin={data.origin}
 	path="/decks/{data.deckId}"
-	image={fallback ? cardImageUrl(fallback.printings[0].id, 733) : undefined}
 />
 
 <!--
