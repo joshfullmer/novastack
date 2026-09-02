@@ -34,9 +34,11 @@ export const SORT_LABELS: Record<SortKey, string> = {
 
 /**
  * Compares two possibly-null numbers, keeping nulls last regardless of direction — so the
- * caller must apply direction to the *result* only when both values are present.
+ * caller must apply direction to the *result* only when both values are present. Exported for
+ * `#lib/decks/grouping.js`'s own Cost → Color → Name comparator, which needs the same
+ * nulls-last rule for `cost` without pulling in a whole `Sort` key for it.
  */
-function compareNullable(a: number | null, b: number | null, direction: SortDirection): number {
+export function compareNullable(a: number | null, b: number | null, direction: SortDirection): number {
 	if (a === null && b === null) return 0;
 	if (a === null) return 1;
 	if (b === null) return -1;

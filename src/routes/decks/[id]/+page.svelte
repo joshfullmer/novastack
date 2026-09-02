@@ -14,6 +14,7 @@
 	 */
 	import { resolve } from '$app/paths';
 	import { enhance } from '$app/forms';
+	import { menuPosition } from '#lib/menu-position.js';
 	import { SvelteSet } from 'svelte/reactivity';
 	import CardImage from '#lib/components/CardImage.svelte';
 	import CardMetaBadges from '#lib/components/CardMetaBadges.svelte';
@@ -169,7 +170,15 @@
 	// cyberpunk-tcg-sim.online's own import format, and a standardized JSON alternative. Image
 	// export opens a preview dialog rather than downloading straight away, so the user can also
 	// just right-click-copy the composited image.
+	// Widths match each panel's own `w-56`/`w-40` — `menuPosition` needs them to clamp against,
+	// since the panels are now positioned via inline `style`, not `absolute right-0`/`left-0`
+	// (which broke down once the trigger wasn't guaranteed to be the row's rightmost item, or the
+	// row wasn't guaranteed wider than the panel — see `#lib/menu-position.js`).
+	const EXPORT_MENU_WIDTH = 224;
+	const ROW_MENU_WIDTH = 160;
+
 	let exportMenuOpen = $state(false);
+	let exportMenuPos = $state<{ top: number; left: number } | null>(null);
 	let exportStatus = $state<'idle' | 'copied' | 'copy-failed'>('idle');
 
 	let imageDialogEl: HTMLDialogElement;
@@ -246,6 +255,7 @@
 	let renameValue = $state(data.deckName);
 
 	let rowMenuOpen = $state(false);
+	let rowMenuPos = $state<{ top: number; left: number } | null>(null);
 	let deleteDialogEl: HTMLDialogElement;
 
 	function startRename() {
@@ -277,8 +287,11 @@
 <div>
 	<div class="mx-auto max-w-[1800px] px-4 py-6 sm:px-6">
 		<div class="grid gap-6 lg:grid-cols-[240px_1fr_280px]">
-			<!-- Preview panel -->
-			<div class="lg:sticky lg:top-6 lg:self-start">
+			<!-- Preview panel — `lg:` and up only. Below that, tapping a card already navigates to
+			     its own `/cards/[slug]` page (a real `<a>`, not a hover-only preview trigger), so
+			     this panel has no mobile equivalent to serve as a substitute for — it was just dead
+			     weight pushing the real content down a screen's worth of scroll. -->
+			<div class="hidden lg:sticky lg:top-6 lg:block lg:self-start">
 				{#if shown}
 					<div class="card-frame overflow-hidden rounded-lg border border-edge">
 						<CardImage
@@ -315,7 +328,7 @@
 
 			<!-- Main column -->
 			<div class="min-w-0">
-				<div class="mb-4 flex items-center justify-between gap-4">
+				<div class="mb-4 flex flex-wrap items-center justify-between gap-4">
 					<div class="min-w-0">
 						{#if renaming}
 							<form
@@ -411,11 +424,18 @@
 							{/if}
 						</div>
 					</div>
-					<div class="flex shrink-0 items-center gap-2">
+					<div class="flex w-full shrink-0 items-center gap-2 sm:w-auto">
 						<div class="relative">
 							<button
 								type="button"
-								onclick={() => (exportMenuOpen = !exportMenuOpen)}
+								onclick={(event) => {
+									if (exportMenuOpen) {
+										exportMenuOpen = false;
+									} else {
+										exportMenuPos = menuPosition(event.currentTarget, EXPORT_MENU_WIDTH);
+										exportMenuOpen = true;
+									}
+								}}
 								class="rounded-md border border-edge px-3 py-1.5 text-sm text-body
 									hover:border-neon hover:text-neon"
 							>
@@ -425,7 +445,7 @@
 										? 'Copy failed'
 										: 'Export text ▾'}
 							</button>
-							{#if exportMenuOpen}
+							{#if exportMenuOpen && exportMenuPos}
 								<button
 									type="button"
 									aria-label="Close export menu"
@@ -433,8 +453,9 @@
 									class="fixed inset-0 z-10 cursor-default"
 								></button>
 								<div
-									class="absolute right-0 z-20 mt-1 w-56 rounded-md border border-edge bg-shell p-1
-										text-sm shadow-lg"
+									class="fixed z-20 rounded-md border border-edge bg-shell p-1 text-sm shadow-lg"
+									style="top: {exportMenuPos.top}px; left: {exportMenuPos.left}px;
+										width: {EXPORT_MENU_WIDTH}px;"
 								>
 									<button
 										type="button"
@@ -480,13 +501,20 @@
 								<button
 									type="button"
 									aria-label="Deck actions"
-									onclick={() => (rowMenuOpen = !rowMenuOpen)}
+									onclick={(event) => {
+										if (rowMenuOpen) {
+											rowMenuOpen = false;
+										} else {
+											rowMenuPos = menuPosition(event.currentTarget, ROW_MENU_WIDTH);
+											rowMenuOpen = true;
+										}
+									}}
 									class="rounded-md border border-edge px-2 py-1.5 text-sm text-body
 										hover:border-neon hover:text-neon"
 								>
 									⋯
 								</button>
-								{#if rowMenuOpen}
+								{#if rowMenuOpen && rowMenuPos}
 									<button
 										type="button"
 										aria-label="Close deck actions"
@@ -494,8 +522,9 @@
 										class="fixed inset-0 z-10 cursor-default"
 									></button>
 									<div
-										class="absolute right-0 z-20 mt-1 w-40 rounded-md border border-edge bg-shell
-											p-1 text-sm shadow-lg"
+										class="fixed z-20 rounded-md border border-edge bg-shell p-1 text-sm shadow-lg"
+										style="top: {rowMenuPos.top}px; left: {rowMenuPos.left}px;
+											width: {ROW_MENU_WIDTH}px;"
 									>
 										<form
 											method="POST"
@@ -522,6 +551,19 @@
 									</div>
 								{/if}
 							</div>
+						{:else}
+							<!-- Non-owner counterpart to "Edit deck" — copying someone else's public/unlisted
+							     deck is a legitimate way to start a build, and the whole point is skipping
+							     re-entering every card by hand. Always rendered regardless of sign-in state,
+							     same as the like button above — `?/copy` sends a signed-out viewer to log in
+							     rather than hiding the affordance. -->
+							<form method="POST" action="?/copy" use:enhance>
+								<button
+									type="submit"
+									class="rounded-md bg-neon px-3 py-1.5 text-sm font-medium text-void
+										hover:bg-neon-dim">Copy to my decks</button
+								>
+							</form>
 						{/if}
 					</div>
 				</div>
@@ -539,14 +581,15 @@
 					</div>
 				{/if}
 
-				<div class="mb-4 flex items-center gap-4">
+				<div class="mb-4 flex flex-wrap items-center gap-4">
 					<div class="flex items-center gap-3">
 						{#each legendSlots as slot (slot)}
 							{@const legend = deck.legends[slot]}
 							{#if legend}
 								<a
 									href={resolve('/cards/[slug]', { slug: legend.slug })}
-									class="card-frame w-24 shrink-0 overflow-hidden rounded-md border border-edge"
+									class="card-frame w-16 shrink-0 overflow-hidden rounded-md border border-edge
+										sm:w-24"
 									onmouseenter={() => (focused = legend)}
 								>
 									<CardImage
@@ -559,8 +602,8 @@
 								</a>
 							{:else}
 								<div
-									class="flex card-frame w-24 shrink-0 items-center justify-center rounded-md
-									border border-edge bg-surface text-muted"
+									class="flex card-frame w-16 shrink-0 items-center justify-center rounded-md
+									border border-edge bg-surface text-muted sm:w-24"
 								>
 									—
 								</div>
@@ -770,10 +813,11 @@
 						</li>
 						{#each mainGroups as group (group.cardType)}
 							<li
-								class="border-b border-edge/50 bg-shell px-4 py-1 text-xs font-medium
-								tracking-wide text-muted uppercase"
+								class="border-b border-edge/50 bg-raised px-4 py-1.5 text-xs tracking-wide
+								uppercase"
 							>
-								{group.label} ({group.quantity})
+								<span class="font-semibold text-bright">{group.label}</span>
+								<span class="text-muted tabular-nums">({group.quantity})</span>
 							</li>
 							{#each group.entries as entry (entry.card.slug)}
 								<li class="border-b border-edge/50 last:border-b-0">
@@ -806,10 +850,11 @@
 					<div>
 						{#each mainGroups as group (group.cardType)}
 							<p
-								class="mt-3 mb-1 text-xs font-medium tracking-wide text-muted uppercase
-								first:mt-0"
+								class="mt-3 mb-1.5 rounded-md bg-raised px-3 py-1.5 text-xs tracking-wide
+								uppercase first:mt-0"
 							>
-								{group.label} <span class="text-muted/70 tabular-nums">{group.quantity}</span>
+								<span class="font-semibold text-bright">{group.label}</span>
+								<span class="text-muted tabular-nums">{group.quantity}</span>
 							</p>
 							<ul class="grid grid-cols-5 gap-2">
 								{#each group.entries as entry (entry.card.slug)}

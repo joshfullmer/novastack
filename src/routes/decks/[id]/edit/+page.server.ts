@@ -1,7 +1,7 @@
 import { error, fail, redirect } from '@sveltejs/kit';
 import * as v from 'valibot';
 import { DeckVersionPayloadSchema } from '#lib/decks/schema.js';
-import { getDeck, getLatestVersion, saveDeckVersion } from '#lib/server/db/decks.js';
+import { getDeck, getLatestVersion, renameDeck, saveDeckVersion } from '#lib/server/db/decks.js';
 import { readViewPref } from '#lib/server/view-pref.js';
 import type { Actions, PageServerLoad } from './$types';
 
@@ -39,6 +39,16 @@ export const load: PageServerLoad = async (event) => {
 };
 
 export const actions: Actions = {
+	rename: async (event) => {
+		const deck = await requireOwnedDeck(event);
+		const formData = await event.request.formData();
+		const name = formData.get('name');
+		if (typeof name !== 'string' || name.trim().length === 0) {
+			return fail(400, { message: 'Deck name cannot be empty' });
+		}
+		await renameDeck(event.locals.db, deck.id, name.trim());
+	},
+
 	save: async (event) => {
 		const deck = await requireOwnedDeck(event);
 

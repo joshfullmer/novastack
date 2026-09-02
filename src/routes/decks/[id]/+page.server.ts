@@ -124,6 +124,28 @@ export const actions: Actions = {
 		return redirect(303, `/decks/${copy.id}`);
 	},
 
+	/**
+	 * `duplicate`'s non-owner counterpart — a public/unlisted deck is a legitimate starting point
+	 * for someone else's build, and re-entering every card by hand to use it as one is exactly
+	 * the busywork this exists to skip. Same `duplicateDeck` as owner-duplicate — it already takes
+	 * `ownerId` as its own parameter, decoupled from the original deck's owner, so the copy lands
+	 * in the *viewer's* decks, private, with no history or likes carried over — a fresh deck, not
+	 * a share of the original. Same login-redirect pattern as `toggleLike`: the button always
+	 * renders for a non-owner, signed in or not, and the action itself sends a signed-out viewer
+	 * to log in rather than hiding the affordance.
+	 */
+	copy: async (event) => {
+		if (!event.locals.user) return redirect(302, '/auth/login');
+		const deck = await getDeck(event.locals.db, event.params.id);
+		if (!deck) return error(404, 'Deck not found');
+		if (deck.visibility === 'private' && deck.ownerId !== event.locals.user.id) {
+			return error(403, 'This deck is private');
+		}
+		const copy = await duplicateDeck(event.locals.db, deck.id, event.locals.user.id);
+		if (!copy) return error(404, 'Deck not found');
+		return redirect(303, `/decks/${copy.id}`);
+	},
+
 	delete: async (event) => {
 		const { deckId } = await requireOwner(event);
 		await deleteDeck(event.locals.db, deckId);

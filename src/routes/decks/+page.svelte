@@ -9,11 +9,14 @@
 	 * always listed before deck rows/tiles, each group alphabetical — matching the real Moxfield
 	 * "Your Decks" table the design was checked against. Clicking a folder drills into it
 	 * client-side (`currentFolderId`, not a URL — the dedicated `/decks/folders/[id]` route is
-	 * what a *shared* link points at); a breadcrumb goes back out. Moving a deck is native
-	 * HTML5 drag-and-drop onto a folder (in) or the breadcrumb (out) — confirmed explicitly with
-	 * the user as the *only* move mechanism, no menu.
+	 * what a *shared* link points at); a breadcrumb goes back out. Moving a deck was originally
+	 * native HTML5 drag-and-drop onto a folder (in) or the breadcrumb (out) only, confirmed
+	 * explicitly with the user as the sole mechanism — since revised: HTML5 DnD has no touch
+	 * equivalent, so a "Folder" picker in the "⋯" menu (`actionsMenu` below) now does the same
+	 * move for anyone who can't drag. Desktop drag-and-drop is unchanged.
 	 */
 	import { enhance } from '$app/forms';
+	import { menuPosition } from '#lib/menu-position.js';
 	import CardImage from '#lib/components/CardImage.svelte';
 	import Meta from '#lib/components/Meta.svelte';
 	import { cardBySlug } from '#lib/decks/deck-state.svelte.js';
@@ -40,7 +43,14 @@
 	// svelte-ignore state_referenced_locally
 	const deckView = cookieState('decks-list-view', data.deckView);
 
+	// Matches each panel's own `w-48`/`w-36` — now expressed here too since `menuPosition` needs
+	// the width to clamp against, and the panel itself is sized via inline `style` (see below).
+	const DECK_MENU_WIDTH = 192;
+	const FOLDER_MENU_WIDTH = 144;
+
 	let openMenuId = $state<string | null>(null);
+	let deckMenuPos = $state<{ top: number; left: number } | null>(null);
+	let folderMenuPos = $state<{ top: number; left: number } | null>(null);
 	let renamingId = $state<string | null>(null);
 	let renameValue = $state('');
 
@@ -128,17 +138,24 @@
 	</form>
 {/snippet}
 
-{#snippet actionsMenu(deck: { id: string; name: string; visibility: string })}
+{#snippet actionsMenu(deck: { id: string; name: string; visibility: string; folderId: string | null })}
 	<div class="relative shrink-0">
 		<button
 			type="button"
 			aria-label="Deck actions"
-			onclick={() => (openMenuId = openMenuId === deck.id ? null : deck.id)}
+			onclick={(event) => {
+				if (openMenuId === deck.id) {
+					openMenuId = null;
+				} else {
+					deckMenuPos = menuPosition(event.currentTarget, DECK_MENU_WIDTH);
+					openMenuId = deck.id;
+				}
+			}}
 			class="rounded-md px-2 py-1.5 text-muted hover:bg-surface hover:text-bright"
 		>
 			⋯
 		</button>
-		{#if openMenuId === deck.id}
+		{#if openMenuId === deck.id && deckMenuPos}
 			<button
 				type="button"
 				aria-label="Close deck actions"
@@ -146,8 +163,8 @@
 				class="fixed inset-0 z-10 cursor-default"
 			></button>
 			<div
-				class="absolute right-0 z-20 mt-1 w-48 rounded-md border border-edge bg-shell p-1 text-sm
-					shadow-lg"
+				class="fixed z-20 rounded-md border border-edge bg-shell p-1 text-sm shadow-lg"
+				style="top: {deckMenuPos.top}px; left: {deckMenuPos.left}px; width: {DECK_MENU_WIDTH}px;"
 			>
 				<button
 					type="button"
@@ -191,6 +208,31 @@
 						</select>
 					</label>
 				</form>
+				{#if sortedFolders.length > 0 || deck.folderId}
+					<form method="POST" action="?/move" use:enhance>
+						<input type="hidden" name="deckId" value={deck.id} />
+						<label
+							class="flex items-center justify-between gap-2 rounded px-2 py-1.5 text-body
+								hover:bg-raised"
+						>
+							Folder
+							<select
+								name="folderId"
+								value={deck.folderId ?? ''}
+								onchange={(event) => {
+									event.currentTarget.form?.requestSubmit();
+									openMenuId = null;
+								}}
+								class="max-w-24 rounded border border-edge bg-void px-1 py-0.5 text-xs"
+							>
+								<option value="">No folder</option>
+								{#each sortedFolders as folder (folder.id)}
+									<option value={folder.id}>{folder.name}</option>
+								{/each}
+							</select>
+						</label>
+					</form>
+				{/if}
 				<div class="my-1 border-t border-edge"></div>
 				<button
 					type="button"
@@ -234,12 +276,19 @@
 		<button
 			type="button"
 			aria-label="Manage {folder.name}"
-			onclick={() => (openFolderMenuId = openFolderMenuId === folder.id ? null : folder.id)}
+			onclick={(event) => {
+				if (openFolderMenuId === folder.id) {
+					openFolderMenuId = null;
+				} else {
+					folderMenuPos = menuPosition(event.currentTarget, FOLDER_MENU_WIDTH);
+					openFolderMenuId = folder.id;
+				}
+			}}
 			class="rounded-md px-2 py-1.5 text-muted hover:bg-raised hover:text-bright"
 		>
 			⋯
 		</button>
-		{#if openFolderMenuId === folder.id}
+		{#if openFolderMenuId === folder.id && folderMenuPos}
 			<button
 				type="button"
 				aria-label="Close folder actions"
@@ -247,8 +296,8 @@
 				class="fixed inset-0 z-10 cursor-default"
 			></button>
 			<div
-				class="absolute right-0 z-20 mt-1 w-36 rounded-md border border-edge bg-shell p-1 text-xs
-					shadow-lg"
+				class="fixed z-20 rounded-md border border-edge bg-shell p-1 text-xs shadow-lg"
+				style="top: {folderMenuPos.top}px; left: {folderMenuPos.left}px; width: {FOLDER_MENU_WIDTH}px;"
 			>
 				<button
 					type="button"
@@ -471,11 +520,15 @@
 						draggable="true"
 						ondragstart={() => (draggingDeckId = deck.id)}
 						ondragend={() => (draggingDeckId = null)}
-						class="cursor-grab overflow-hidden rounded-lg border border-edge bg-shell
-							active:cursor-grabbing"
+						class="cursor-grab rounded-lg border border-edge bg-shell active:cursor-grabbing"
 						class:opacity-40={draggingDeckId === deck.id}
 					>
-						<a href="/decks/{deck.id}" class="flex gap-1 bg-void p-2">
+						<!-- `overflow-hidden` lives here, not on the `<li>` — the "⋯" actions menu below
+						     opens a dropdown that needs to escape the card's own box, and an `overflow-hidden`
+						     ancestor would clip it no matter how the dropdown itself is positioned. This is
+						     the only part that actually needs clipping: the art strip's square corners
+						     against the card's rounded ones. -->
+						<a href="/decks/{deck.id}" class="flex gap-1 overflow-hidden rounded-t-lg bg-void p-2">
 							{#each legendSlots as slot (slot)}
 								{@const slug = deck.legendSlugs[slot]}
 								{@const legend = slug ? cardBySlug(slug) : null}
@@ -580,8 +633,8 @@
 						draggable="true"
 						ondragstart={() => (draggingDeckId = deck.id)}
 						ondragend={() => (draggingDeckId = null)}
-						class="flex items-center gap-4 rounded-lg border border-edge bg-shell p-4
-							active:cursor-grabbing"
+						class="flex flex-col gap-3 rounded-lg border border-edge bg-shell p-4
+							active:cursor-grabbing sm:flex-row sm:items-center sm:gap-4"
 						class:opacity-40={draggingDeckId === deck.id}
 					>
 						<div class="flex shrink-0 gap-2">
@@ -589,7 +642,7 @@
 								{@const slug = deck.legendSlugs[slot]}
 								{@const legend = slug ? cardBySlug(slug) : null}
 								{#if legend}
-									<div class="size-20 overflow-hidden rounded-md border border-edge">
+									<div class="size-16 overflow-hidden rounded-md border border-edge sm:size-20">
 										<CardImage
 											printingId={legend.printings[0].id}
 											thumbhash={legend.printings[0].thumbhash}
@@ -600,8 +653,8 @@
 									</div>
 								{:else}
 									<div
-										class="flex size-20 items-center justify-center rounded-md border border-edge
-											bg-surface text-muted"
+										class="flex size-16 items-center justify-center rounded-md border border-edge
+											bg-surface text-muted sm:size-20"
 									>
 										—
 									</div>
@@ -611,7 +664,7 @@
 						{#if renamingId === deck.id}
 							{@render renameForm(deck, 'text-lg font-semibold')}
 						{:else}
-							<a href="/decks/{deck.id}" class="min-w-0 flex-1">
+							<a href="/decks/{deck.id}" class="min-w-0 sm:flex-1">
 								<p class="truncate text-lg font-semibold text-bright hover:text-neon">
 									{deck.name}
 								</p>
@@ -624,7 +677,7 @@
 								</p>
 							</a>
 						{/if}
-						<div class="flex shrink-0 items-center gap-3 text-sm text-muted">
+						<div class="flex items-center gap-3 text-sm text-muted sm:shrink-0">
 							<span class="rounded-full border border-edge px-3 py-1 capitalize"
 								>{deck.visibility}</span
 							>

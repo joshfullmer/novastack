@@ -56,7 +56,7 @@
 
 	const SEARCH_DEBOUNCE_MS = 250;
 	const DEFAULT_COLUMNS = 6;
-	const COLUMN_STEP = 2;
+	const COLUMN_STEP = 1;
 	const COLUMN_FLOOR = 2;
 	const COLUMN_CEILING = 12;
 	/** Below this, the three-pane layout fails: at 390px the pane crushed the grid to ~55px. */
