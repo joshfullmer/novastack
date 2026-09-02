@@ -112,7 +112,14 @@ export type Printing = v.InferOutput<typeof PrintingSchema>;
 export const CardSchema = v.object({
 	/** The Card Id. Canonical everywhere — URLs, stored data, decklists. */
 	slug: v.pipe(v.string(), v.nonEmpty()),
-	/** `name` and `display_name` are byte-identical on all 133. One string, not three. */
+	/**
+	 * Sourced from the API's `display_name`, not its `name`. The two are byte-identical today,
+	 * but a 2026-09 rollout (rolled back within hours, coinciding with netdeck.gg's own
+	 * deckbuilder launch) briefly split a Legend's subtitle out of `name` into `subname`,
+	 * leaving `name` alone-alone ("V") while `display_name` kept the full form ("V — Streetkid").
+	 * `display_name` was the one field that stayed correct across both shapes, so that's what
+	 * this is pinned to. See `checkRawInvariants`' `display-name-reconstructs`.
+	 */
 	name: v.pipe(v.string(), v.nonEmpty()),
 	color: ColorSchema,
 	cardType: CardTypeSchema,

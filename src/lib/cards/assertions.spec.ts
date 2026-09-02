@@ -33,7 +33,7 @@ describe('checkRawInvariants', () => {
 		expect(checks(checkRawInvariants(raw))).toContain('unique-slugs');
 	});
 
-	it('fails on a duplicate name — this is what makes a Card a mechanical identity', () => {
+	it('fails on a duplicate display name — this is what makes a Card a mechanical identity', () => {
 		const raw = [
 			makeNetdeckCard({ slug: 'a', name: 'Same' }),
 			makeNetdeckCard({ slug: 'b', name: 'Same' })
@@ -41,9 +41,16 @@ describe('checkRawInvariants', () => {
 		expect(checks(checkRawInvariants(raw))).toContain('unique-names');
 	});
 
-	it('fails when display_name diverges from name', () => {
+	it('fails when display_name is neither name nor name + " — " + subname', () => {
 		const raw = [makeNetdeckCard({ name: 'Alpha', display_name: 'Alpha (Promo)' })];
-		expect(checks(checkRawInvariants(raw))).toContain('display-name-mirrors-name');
+		expect(checks(checkRawInvariants(raw))).toContain('display-name-reconstructs');
+	});
+
+	it('passes when subname is populated and display_name reconstructs it', () => {
+		// The 2026-09 shape: a Legend's subtitle moved out of `name` into `subname`, but
+		// `display_name` stayed the full form. Legitimate, not a violation.
+		const raw = [makeNetdeckCard({ name: 'V', subname: 'Streetkid', display_name: 'V — Streetkid' })];
+		expect(checkRawInvariants(raw)).toEqual([]);
 	});
 
 	it('fails when external_id is not cb- + slug', () => {
@@ -64,7 +71,6 @@ describe('checkRawInvariants', () => {
 
 	it.each([
 		['always-empty-keywords', { keywords: ['Blocker'] }],
-		['always-empty-subname', { subname: 'StreetKid' }],
 		['always-empty-flavor-text', { flavor_text: 'Wake up, samurai.' }],
 		['constant-legality', { legality: 'banned' }]
 	])('fails on %s, because a competing source of truth has appeared', (check, overrides) => {

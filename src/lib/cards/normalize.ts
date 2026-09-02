@@ -37,7 +37,10 @@ export function buildSegmentContext(cards: readonly NetdeckCard[]): SegmentConte
 	const classificationByUpper = new Map<string, string>();
 
 	for (const card of cards) {
-		slugByUpperName.set(card.name.toUpperCase(), card.slug);
+		// `display_name`, not `name` — see the note on `CardSchema.name` in schema.ts. A rules-text
+		// reference is written against the full name a player sees, and only `display_name` has
+		// stayed that across every observed API shape.
+		slugByUpperName.set(card.display_name.toUpperCase(), card.slug);
 		for (const classification of card.classifications) {
 			classificationByUpper.set(classification.toUpperCase(), classification);
 		}
@@ -93,7 +96,7 @@ export function normalizeCard(
 
 	return {
 		slug: raw.slug,
-		name: raw.name,
+		name: raw.display_name,
 		color: raw.color,
 		cardType: raw.card_type,
 		cost: raw.cost,

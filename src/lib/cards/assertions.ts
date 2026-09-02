@@ -9,10 +9,14 @@
  * instead of the first, and each rule becomes independently testable — which is the point,
  * since an assertion nobody has seen fail is an assertion nobody has verified.
  *
- * The most important group is the always-empty fields. `keywords[]`, `subname`, `flavor_text`,
- * `finish` and a constant `legality` are empty *today*; we derive substitutes for two of them.
- * If one starts carrying values, our derivation has become a competing source of truth and the
+ * The most important group is the always-empty fields. `keywords[]`, `flavor_text`, `finish`
+ * and a constant `legality` are empty *today*; we derive substitutes for two of them. If one
+ * starts carrying values, our derivation has become a competing source of truth and the
  * decision has to be revisited — silently preferring ours would be the wrong default.
+ *
+ * `subname` is not in that group: it *has* been observed carrying a value (2026-09, alongside
+ * netdeck.gg's own deckbuilder launch, rolled back within hours) and that shape is legitimate
+ * rather than a violation — see `display-name-reconstructs` below.
  */
 import {
 	runOrder,
@@ -50,17 +54,32 @@ export function checkRawInvariants(cards: readonly NetdeckCard[]): Violation[] {
 	const repeatedSlugs = duplicates(cards.map((card) => card.slug));
 	if (repeatedSlugs.length > 0) add('unique-slugs', `repeated slugs: ${repeatedSlugs.join(', ')}`);
 
-	const repeatedNames = duplicates(cards.map((card) => card.name));
+	// Checked on `display_name`, not `name` — `name` alone stopped being unique the one time the
+	// API split a Legend's subtitle into `subname` (see `display-name-reconstructs` below).
+	// `display_name` stayed the full, unique form across both shapes.
+	const repeatedNames = duplicates(cards.map((card) => card.display_name));
 	if (repeatedNames.length > 0)
 		add(
 			'unique-names',
-			`repeated names: ${repeatedNames.join(', ')} — a Card is a mechanical identity, so two ` +
-				`cards sharing a name means the model no longer holds`
+			`repeated display names: ${repeatedNames.join(', ')} — a Card is a mechanical identity, ` +
+				`so two cards sharing a full name means the model no longer holds`
 		);
 
-	const misnamed = cards.filter((card) => card.name !== card.display_name);
-	if (misnamed.length > 0)
-		add('display-name-mirrors-name', `${misnamed.length} card(s), first: ${misnamed[0].slug}`);
+	// The relationship, not `display_name === name`: a 2026-09 rollout (rolled back within hours)
+	// briefly populated `subname` and split it out of `name`, while `display_name` kept the full
+	// form. That shape is legitimate, not a violation — only a `display_name` that reconstructs
+	// from neither form is. `normalize.ts` sources `Card.name` from `display_name` precisely
+	// because it is the field that held across both.
+	const misreconstructed = cards.filter(
+		(card) =>
+			card.display_name !== (card.subname === null ? card.name : `${card.name} — ${card.subname}`)
+	);
+	if (misreconstructed.length > 0)
+		add(
+			'display-name-reconstructs',
+			`${misreconstructed.length} card(s) where display_name isn't name (plus " — " + subname ` +
+				`when subname is set), first: ${misreconstructed[0].slug}`
+		);
 
 	const misidentified = cards.filter((card) => card.external_id !== `cb-${card.slug}`);
 	if (misidentified.length > 0)
@@ -89,10 +108,6 @@ export function checkRawInvariants(cards: readonly NetdeckCard[]): Violation[] {
 			`${withKeywords.length} card(s) now populate keywords[] — we derive keywords from ` +
 				`rules_text, so this is now a competing source of truth`
 		);
-
-	const withSubname = cards.filter((card) => card.subname !== null);
-	if (withSubname.length > 0)
-		add('always-empty-subname', `${withSubname.length} card(s), first: ${withSubname[0].slug}`);
 
 	const withFlavor = cards.filter((card) => card.flavor_text !== null);
 	if (withFlavor.length > 0)
