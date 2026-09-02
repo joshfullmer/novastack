@@ -98,33 +98,27 @@
 <div>
 	<div class="mx-auto max-w-5xl p-6">
 		<h1 class="mb-6 text-xl font-semibold text-bright">Explore decks</h1>
-		<div class="flex gap-6">
-			<nav class="w-36 shrink-0">
-				<ul class="flex flex-col gap-1 text-sm">
+		<div class="flex flex-col gap-4 sm:flex-row sm:gap-6">
+			<nav class="sm:w-36 sm:shrink-0">
+				<div class="flex gap-1 overflow-x-auto text-sm sm:flex-col sm:overflow-visible">
 					{#each SORTS as { value, label } (value)}
-						<li>
-							<a
-								href={tabHref(value)}
-								class="block rounded-md px-3 py-1.5"
-								class:bg-raised={data.tab === value}
-								class:text-bright={data.tab === value}
-								class:text-muted={data.tab !== value}>{label}</a
-							>
-						</li>
-					{/each}
-				</ul>
-				<div class="my-3 border-t border-edge/60"></div>
-				<ul class="flex flex-col gap-1 text-sm">
-					<li>
 						<a
-							href={tabHref('starter')}
-							class="block rounded-md px-3 py-1.5"
-							class:bg-raised={data.tab === 'starter'}
-							class:text-bright={data.tab === 'starter'}
-							class:text-muted={data.tab !== 'starter'}>Starter Decks</a
+							href={tabHref(value)}
+							class="block shrink-0 rounded-md px-3 py-1.5 whitespace-nowrap"
+							class:bg-raised={data.tab === value}
+							class:text-bright={data.tab === value}
+							class:text-muted={data.tab !== value}>{label}</a
 						>
-					</li>
-				</ul>
+					{/each}
+					<div class="w-px bg-edge/60 sm:my-2 sm:h-px sm:w-full"></div>
+					<a
+						href={tabHref('starter')}
+						class="block shrink-0 rounded-md px-3 py-1.5 whitespace-nowrap"
+						class:bg-raised={data.tab === 'starter'}
+						class:text-bright={data.tab === 'starter'}
+						class:text-muted={data.tab !== 'starter'}>Starter Decks</a
+					>
+				</div>
 			</nav>
 
 			<div class="min-w-0 flex-1">
@@ -160,7 +154,7 @@
 				{#if data.decks.length === 0}
 					<p class="text-sm text-muted">No public decks yet.</p>
 				{:else if deckView.value === 'grid'}
-					<ul class="grid grid-cols-2 gap-4">
+					<ul class="grid grid-cols-2 gap-4 lg:grid-cols-3">
 						{#each data.decks as deck (deck.id)}
 							<li class="overflow-hidden rounded-lg border border-edge bg-shell">
 								<a href="/decks/{deck.id}" class="flex gap-1 bg-void p-2">
@@ -216,13 +210,16 @@
 				{:else}
 					<ul class="flex flex-col gap-3">
 						{#each data.decks as deck (deck.id)}
-							<li class="flex items-center gap-4 rounded-lg border border-edge bg-shell p-4">
+							<li
+								class="flex flex-col gap-3 rounded-lg border border-edge bg-shell p-4 sm:flex-row
+									sm:items-center sm:gap-4"
+							>
 								<div class="flex shrink-0 gap-2">
 									{#each legendSlots as slot (slot)}
 										{@const slug = deck.legendSlugs[slot]}
 										{@const legend = slug ? cardBySlug(slug) : null}
 										{#if legend}
-											<div class="size-20 overflow-hidden rounded-md border border-edge">
+											<div class="size-16 overflow-hidden rounded-md border border-edge sm:size-20">
 												<CardImage
 													printingId={legend.printings[0].id}
 													thumbhash={legend.printings[0].thumbhash}
@@ -233,15 +230,15 @@
 											</div>
 										{:else}
 											<div
-												class="flex size-20 items-center justify-center rounded-md border
-													border-edge bg-surface text-muted"
+												class="flex size-16 items-center justify-center rounded-md border
+													border-edge bg-surface text-muted sm:size-20"
 											>
 												—
 											</div>
 										{/if}
 									{/each}
 								</div>
-								<a href="/decks/{deck.id}" class="min-w-0 flex-1">
+								<a href="/decks/{deck.id}" class="min-w-0 sm:flex-1">
 									<div class="flex items-center gap-1.5">
 										{@render starterBadge(deck)}
 										<p class="truncate text-lg font-semibold text-bright hover:text-neon">
@@ -256,7 +253,7 @@
 										cards · {deck.createdAt.toLocaleDateString()}
 									</p>
 								</a>
-								<div class="flex shrink-0 items-center gap-3 text-sm text-muted">
+								<div class="flex items-center gap-3 text-sm text-muted sm:shrink-0">
 									<a href="/explore?owner={deck.ownerId}" class="hover:text-neon"
 										>by {deck.ownerName}</a
 									>
