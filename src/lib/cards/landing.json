@@ -2,49 +2,49 @@
 	"heroes": [
 		{
 			"color": "Blue",
-			"name": "V — Corporate Exile",
+			"name": "V: Corporate Exile",
 			"printingId": "f509ebd8-c8b7-4a22-8922-2d71c6df0b6f",
 			"slug": "v-corporate-exile",
 			"thumbhash": "jPeFFAQPzKhXmcaAeARDFkKAgYGICBiIAA=="
 		},
 		{
 			"color": "Yellow",
-			"name": "Jackie Welles — Ride or Die Choom",
+			"name": "Jackie Welles: Ride or Die Choom",
 			"printingId": "12d44604-ad7b-4e82-b517-9edb0be44427",
 			"slug": "jackie-welles-ride-or-die-choom",
 			"thumbhash": "0SiGHAQPe8R3GNOAp6+m3l+FgYGICBiIAA=="
 		},
 		{
 			"color": "Green",
-			"name": "Hanako Arasaka — Daughter of the Emperor",
+			"name": "Hanako Arasaka: Daughter of the Emperor",
 			"printingId": "cc3ed2c4-6e6d-47aa-b358-152c56b24bad",
 			"slug": "hanako-arasaka-daughter-of-the-emperor",
 			"thumbhash": "VyiKFAYPWsNoB4d2M5kwSGmAgYGICBiIAA=="
 		},
 		{
 			"color": "Red",
-			"name": "Johnny Silverhand — Rocking Renegade",
+			"name": "Johnny Silverhand: Rocking Renegade",
 			"printingId": "4f8fbab4-7aad-4271-8dd6-8cdf68654c5e",
 			"slug": "johnny-silverhand-rocking-renegade",
 			"thumbhash": "HRiKDAQPq8Z3CFWEUo721niPgYGICBiIAA=="
 		},
 		{
 			"color": "Blue",
-			"name": "Judy Álvarez — Braindance Maestro",
+			"name": "Judy Álvarez: Braindance Maestro",
 			"printingId": "0324e335-2f17-496c-9789-59f93ed6d31e",
 			"slug": "judy-a-lvarez-braindance-maestro",
 			"thumbhash": "1QeGFAQPJfhFaaiEAZNUJniAgYGICBiIAA=="
 		},
 		{
 			"color": "Green",
-			"name": "Panam Palmer — Nomad Cavalry",
+			"name": "Panam Palmer: Nomad Cavalry",
 			"printingId": "20c0d91e-76d5-4904-82e8-53907537aee3",
 			"slug": "panam-palmer-nomad-cavalry",
 			"thumbhash": "0QiCFAQPb9IvF2hr88R8DsqDgYGICBiIAA=="
 		},
 		{
 			"color": "Yellow",
-			"name": "Adam Smasher — Metal Over Meat",
+			"name": "Adam Smasher: Metal Over Meat",
 			"printingId": "59d1ce5c-d616-45d5-9816-576f5f1509f3",
 			"slug": "adam-smasher-metal-over-meat",
 			"thumbhash": "U1mKHAYPl4aHCJeZZ5oHeH2AgYGICBiIAA=="

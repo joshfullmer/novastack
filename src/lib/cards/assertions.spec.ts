@@ -41,17 +41,24 @@ describe('checkRawInvariants', () => {
 		expect(checks(checkRawInvariants(raw))).toContain('unique-names');
 	});
 
-	it('fails when display_name is neither name nor name + " — " + subname', () => {
+	it('fails when display_name does not contain both name and subname', () => {
 		const raw = [makeNetdeckCard({ name: 'Alpha', display_name: 'Alpha (Promo)' })];
 		expect(checks(checkRawInvariants(raw))).toContain('display-name-reconstructs');
 	});
 
-	it('passes when subname is populated and display_name reconstructs it', () => {
-		// The 2026-09 shape: a Legend's subtitle moved out of `name` into `subname`, but
-		// `display_name` stayed the full form. Legitimate, not a violation.
-		const raw = [makeNetdeckCard({ name: 'V', subname: 'Streetkid', display_name: 'V — Streetkid' })];
-		expect(checkRawInvariants(raw)).toEqual([]);
-	});
+	it.each([
+		['an em dash', 'V — Streetkid'],
+		['a colon', 'V: Streetkid']
+	])(
+		'passes when subname is populated and display_name contains both, separated by %s',
+		(_label, display_name) => {
+			// Both are real: the em dash was the first, briefly-rolled-back shape; the colon is
+			// what replaced and kept it. Neither is a violation — only a display_name that
+			// doesn't actually contain both pieces is.
+			const raw = [makeNetdeckCard({ name: 'V', subname: 'Streetkid', display_name })];
+			expect(checkRawInvariants(raw)).toEqual([]);
+		}
+	);
 
 	it('fails when external_id is not cb- + slug', () => {
 		const raw = [makeNetdeckCard({ slug: 'alpha', external_id: 'cb-something-else' })];
@@ -120,7 +127,9 @@ describe('checkModelInvariants', () => {
 
 				return makeCard({
 					slug: `${color}-${cardType}`.toLowerCase(),
-					...(cardType === 'Legend' ? { name: `${color} Legend — Test Subtitle` } : {}),
+					...(cardType === 'Legend'
+						? { name: `${color} Legend: Test Subtitle`, subtitle: 'Test Subtitle' }
+						: {}),
 					color,
 					cardType,
 					ramProvided: cardType === 'Legend' ? 2 : null,
@@ -201,11 +210,14 @@ describe('checkModelInvariants', () => {
 		);
 	});
 
-	it('fails when a Legend’s name does not split into a "Name — Subtitle" pair', () => {
-		// legendBaseName() (derive.ts) and deck legality (legality.ts) both assume this shape;
-		// a Legend that stops matching it would silently group wrong instead of failing loudly.
+	it('fails when a Legend has no subtitle', () => {
+		// legendBaseName() (derive.ts) and deck legality (legality.ts) both assume every Legend
+		// has one; a Legend that stops having one would silently group wrong instead of failing
+		// loudly.
 		const cards = contiguousDataset().map((card) =>
-			card.cardType === 'Legend' && card.color === 'Blue' ? { ...card, name: 'No Subtitle' } : card
+			card.cardType === 'Legend' && card.color === 'Blue'
+				? { ...card, name: 'No Subtitle', subtitle: null }
+				: card
 		);
 		expect(checks(checkModelInvariants(cards))).toContain('legend-name-has-subtitle');
 	});

@@ -153,22 +153,21 @@ export function setExclusiveSlugs(cards: readonly Card[]): string[] {
 export type CardNameParts = { name: string; subtitle: string | null };
 
 /**
- * A printed name is one string, `"<Name> — <Subtitle>"` for a Legend (e.g. `"V — Streetkid"`),
- * just `"<Name>"` for everything else — there is no structured subtitle field anywhere in the
- * model (see `schema.ts`'s note on `subname`). This is the one parse of it, so a rename or a
- * punctuation change only has one call site to fix. No corpus-wide context is needed (unlike
- * `rulesText`'s `cardRef`/`classification` tokens, which cross-reference every other card), so
- * this stays a plain runtime function rather than a field baked into `cards.json` at ingest.
+ * `card.name` is the full printed identity (e.g. `"Royce: Psycho on the Edge"`); `card.subtitle`
+ * (straight from the API's `subname`) says whether one exists and what it is. The base name is
+ * `name` with that known suffix — and whatever separator precedes it — stripped, rather than
+ * `name` split on a hardcoded separator: the separator itself has already changed once (an em
+ * dash, then a colon) within a week, and stripping a known suffix survives it changing again.
  */
 export function splitCardName(card: Card): CardNameParts {
-	const [name, subtitle] = card.name.split(' — ');
-	return { name, subtitle: subtitle ?? null };
+	if (card.subtitle === null) return { name: card.name, subtitle: null };
+	const base = card.name.slice(0, card.name.length - card.subtitle.length).replace(/[\s:—-]+$/, '');
+	return { name: base, subtitle: card.subtitle };
 }
 
 /**
  * A Legend's base name, for grouping same-named Legends — `checkModelInvariants`
- * (`assertions.ts`) fails the build if a Legend's name ever stops matching the
- * `"<Name> — <Subtitle>"` shape `splitCardName` assumes, since deck legality
+ * (`assertions.ts`) fails the build if a Legend's `subtitle` is ever `null`, since deck legality
  * (`#lib/decks/legality.ts`) depends on grouping Legends by this.
  */
 export function legendBaseName(legend: Card): string {

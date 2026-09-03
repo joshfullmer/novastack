@@ -97,6 +97,7 @@ export function normalizeCard(
 	return {
 		slug: raw.slug,
 		name: raw.display_name,
+		subtitle: raw.subname,
 		color: raw.color,
 		cardType: raw.card_type,
 		cost: raw.cost,

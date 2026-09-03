@@ -16,6 +16,10 @@ import {
 	type DeckEntry
 } from './legality.js';
 
+/** A Legend fixture with an explicit base name and subtitle, matching the real API shape. */
+const legend = (name: string, subtitle: string) =>
+	makeCard({ cardType: 'Legend', name: `${name}: ${subtitle}`, subtitle });
+
 describe('budgetFromLegends', () => {
 	it('sums each chosen Legend’s own ramProvided per color, not a slot count × a constant', () => {
 		const legends = [
@@ -83,27 +87,25 @@ describe('ramViolations', () => {
 
 describe('legendNameConflicts', () => {
 	it('groups Legends that share a base name', () => {
-		const v1 = makeCard({ cardType: 'Legend', name: 'V — Streetkid' });
-		const v2 = makeCard({ cardType: 'Legend', name: 'V — Corporate Exile' });
-		const goro = makeCard({ cardType: 'Legend', name: 'Goro Takemura — Hands Unclean' });
+		const v1 = legend('V', 'Streetkid');
+		const v2 = legend('V', 'Corporate Exile');
+		const goro = legend('Goro Takemura', 'Hands Unclean');
 
 		expect(legendNameConflicts([v1, v2, goro])).toEqual([{ baseName: 'V', legends: [v1, v2] }]);
 	});
 
 	it('is empty when every chosen Legend has a distinct base name', () => {
 		const legends = [
-			makeCard({ cardType: 'Legend', name: 'V — Streetkid' }),
-			makeCard({ cardType: 'Legend', name: 'Goro Takemura — Hands Unclean' }),
-			makeCard({ cardType: 'Legend', name: 'Rebecca — Having a Moment' })
+			legend('V', 'Streetkid'),
+			legend('Goro Takemura', 'Hands Unclean'),
+			legend('Rebecca', 'Having a Moment')
 		];
 		expect(legendNameConflicts(legends)).toEqual([]);
 	});
 
 	it('is empty for zero or one Legend', () => {
 		expect(legendNameConflicts([])).toEqual([]);
-		expect(legendNameConflicts([makeCard({ cardType: 'Legend', name: 'V — Streetkid' })])).toEqual(
-			[]
-		);
+		expect(legendNameConflicts([legend('V', 'Streetkid')])).toEqual([]);
 	});
 });
 
@@ -145,8 +147,8 @@ describe('deckIssues', () => {
 	});
 
 	it('reports a Legend-name conflict by both full names and the shared base name', () => {
-		const v1 = makeCard({ cardType: 'Legend', name: 'V — Streetkid' });
-		const v2 = makeCard({ cardType: 'Legend', name: 'V — Corporate Exile' });
+		const v1 = legend('V', 'Streetkid');
+		const v2 = legend('V', 'Corporate Exile');
 		const issues = deckIssues({
 			...legal,
 			nameConflicts: legendNameConflicts([v1, v2])
@@ -154,7 +156,7 @@ describe('deckIssues', () => {
 		expect(issues).toEqual([
 			{
 				kind: 'legend-names',
-				message: 'Legends can\'t share a name: V — Streetkid and V — Corporate Exile are both "V".'
+				message: 'Legends can\'t share a name: V: Streetkid and V: Corporate Exile are both "V".'
 			}
 		]);
 	});
@@ -164,8 +166,8 @@ describe('deckIssues', () => {
 			card: makeCard({ name: 'Cyberdeck', cardType: 'Unit', ramRequired: 4 }),
 			quantity: 1
 		};
-		const v1 = makeCard({ cardType: 'Legend', name: 'V — Streetkid' });
-		const v2 = makeCard({ cardType: 'Legend', name: 'V — Corporate Exile' });
+		const v1 = legend('V', 'Streetkid');
+		const v2 = legend('V', 'Corporate Exile');
 		const issues = deckIssues({
 			totalCards: 39,
 			sizeStatus: 'under',

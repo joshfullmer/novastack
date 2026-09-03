@@ -161,11 +161,19 @@ describe('setExclusiveSlugs', () => {
 });
 
 describe('legendBaseName', () => {
-	it('reads the part before the " — " separator', () => {
-		expect(legendBaseName(makeCard({ cardType: 'Legend', name: 'V — Streetkid' }))).toBe('V');
+	it('strips the known subtitle suffix, whatever separates it', () => {
+		expect(
+			legendBaseName(makeCard({ cardType: 'Legend', name: 'V: Streetkid', subtitle: 'Streetkid' }))
+		).toBe('V');
 	});
 
-	it('is the whole name when there is no separator', () => {
+	it('also strips an em-dash separator — the API has used both', () => {
+		expect(
+			legendBaseName(makeCard({ cardType: 'Legend', name: 'V — Streetkid', subtitle: 'Streetkid' }))
+		).toBe('V');
+	});
+
+	it('is the whole name when there is no subtitle', () => {
 		expect(legendBaseName(makeCard({ cardType: 'Legend', name: 'No Subtitle' }))).toBe(
 			'No Subtitle'
 		);
@@ -174,13 +182,15 @@ describe('legendBaseName', () => {
 
 describe('splitCardName', () => {
 	it('splits a Legend name into name and subtitle', () => {
-		expect(splitCardName(makeCard({ cardType: 'Legend', name: 'V — Streetkid' }))).toEqual({
+		expect(
+			splitCardName(makeCard({ cardType: 'Legend', name: 'V: Streetkid', subtitle: 'Streetkid' }))
+		).toEqual({
 			name: 'V',
 			subtitle: 'Streetkid'
 		});
 	});
 
-	it('is a null subtitle when there is no separator', () => {
+	it('is a null subtitle when the card has none', () => {
 		expect(splitCardName(makeCard({ name: 'Japantown Jonin' }))).toEqual({
 			name: 'Japantown Jonin',
 			subtitle: null

@@ -4,8 +4,8 @@
  * Synthetic data keeps a filter test readable — the reader can see the whole dataset the
  * assertion runs against. The two fixtures the spec makes mandatory are exercised against the
  * *real* committed snapshot instead, in `dataset.spec.ts`, because their value is precisely
- * that they are real: `Rebecca — Having a Moment` is null on cost, power, RAM and rules text,
- * and `V — StreetKid` carries five printings across two artists.
+ * that they are real: `Rebecca: Having a Moment` is null on cost, power, RAM and rules text,
+ * and `V: Streetkid` carries five printings across two artists.
  */
 import type { Card, NetdeckCard, NetdeckPrinting, Printing, Snapshot } from './schema.ts';
 import { SET_IDENTIFIERS } from './sets.ts';
@@ -44,6 +44,7 @@ export function makeCard(overrides: CardOverrides = {}): Card {
 	return {
 		slug,
 		name: `Card ${sequence}`,
+		subtitle: null,
 		color: 'Red',
 		cardType,
 		cost: 3,

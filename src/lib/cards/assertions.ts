@@ -14,9 +14,11 @@
  * starts carrying values, our derivation has become a competing source of truth and the
  * decision has to be revisited — silently preferring ours would be the wrong default.
  *
- * `subname` is not in that group: it *has* been observed carrying a value (2026-09, alongside
- * netdeck.gg's own deckbuilder launch, rolled back within hours) and that shape is legitimate
- * rather than a violation — see `display-name-reconstructs` below.
+ * `subname` is not in that group: it *has* been observed carrying a value — first briefly
+ * (2026-09, alongside netdeck.gg's own deckbuilder launch, rolled back within hours with an
+ * " — " separator in `display_name`), then again permanently a day later with a ": " separator
+ * instead. Both are legitimate shapes, not violations — see `display-name-reconstructs` below,
+ * which checks the relationship rather than either exact string.
  */
 import {
 	runOrder,
@@ -65,20 +67,27 @@ export function checkRawInvariants(cards: readonly NetdeckCard[]): Violation[] {
 				`so two cards sharing a full name means the model no longer holds`
 		);
 
-	// The relationship, not `display_name === name`: a 2026-09 rollout (rolled back within hours)
-	// briefly populated `subname` and split it out of `name`, while `display_name` kept the full
-	// form. That shape is legitimate, not a violation — only a `display_name` that reconstructs
-	// from neither form is. `normalize.ts` sources `Card.name` from `display_name` precisely
-	// because it is the field that held across both.
-	const misreconstructed = cards.filter(
-		(card) =>
-			card.display_name !== (card.subname === null ? card.name : `${card.name} — ${card.subname}`)
-	);
+	// The relationship, not `display_name === name`: `subname` populating and splitting out of
+	// `name` while `display_name` keeps the full form is a legitimate shape now, not a violation
+	// — only a `display_name` that doesn't actually contain both pieces is. Checked by
+	// containment, not by rebuilding the string with a hardcoded separator: that separator has
+	// already changed once (an em dash, then a colon) within a week, and containment survives it
+	// changing again without ever needing to know what it currently is. `normalize.ts` sources
+	// `Card.name` from `display_name` and `Card.subtitle` straight from `subname` precisely
+	// because those are the two fields that held across every shape observed.
+	const misreconstructed = cards.filter((card) => {
+		if (card.subname === null) return card.display_name !== card.name;
+		return (
+			!card.display_name.startsWith(card.name) ||
+			!card.display_name.endsWith(card.subname) ||
+			card.display_name.length <= card.name.length + card.subname.length
+		);
+	});
 	if (misreconstructed.length > 0)
 		add(
 			'display-name-reconstructs',
-			`${misreconstructed.length} card(s) where display_name isn't name (plus " — " + subname ` +
-				`when subname is set), first: ${misreconstructed[0].slug}`
+			`${misreconstructed.length} card(s) where display_name doesn't start with name and end ` +
+				`with subname (with something separating them), first: ${misreconstructed[0].slug}`
 		);
 
 	const misidentified = cards.filter((card) => card.external_id !== `cb-${card.slug}`);
@@ -205,14 +214,14 @@ export function checkModelInvariants(cards: readonly Card[]): Violation[] {
 		);
 
 	const legendsWithoutSubtitle = cards.filter(
-		(card) => card.cardType === 'Legend' && card.name.split(' — ').length !== 2
+		(card) => card.cardType === 'Legend' && card.subtitle === null
 	);
 	if (legendsWithoutSubtitle.length > 0)
 		add(
 			'legend-name-has-subtitle',
-			`${legendsWithoutSubtitle.length} Legend(s) don't split into exactly one "Name — Subtitle" ` +
-				`pair on " — ", first: ${legendsWithoutSubtitle[0].slug} — legendBaseName() assumes this ` +
-				`shape to catch same-base-name Legend conflicts (comprehensive rules, "Card Data > Name")`
+			`${legendsWithoutSubtitle.length} Legend(s) have no subtitle, first: ` +
+				`${legendsWithoutSubtitle[0].slug} — legendBaseName() assumes every Legend has one, to ` +
+				`catch same-base-name Legend conflicts (comprehensive rules, "Card Data > Name")`
 		);
 
 	return violations;

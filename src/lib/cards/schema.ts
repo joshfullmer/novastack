@@ -113,14 +113,23 @@ export const CardSchema = v.object({
 	/** The Card Id. Canonical everywhere — URLs, stored data, decklists. */
 	slug: v.pipe(v.string(), v.nonEmpty()),
 	/**
-	 * Sourced from the API's `display_name`, not its `name`. The two are byte-identical today,
-	 * but a 2026-09 rollout (rolled back within hours, coinciding with netdeck.gg's own
-	 * deckbuilder launch) briefly split a Legend's subtitle out of `name` into `subname`,
-	 * leaving `name` alone-alone ("V") while `display_name` kept the full form ("V — Streetkid").
-	 * `display_name` was the one field that stayed correct across both shapes, so that's what
-	 * this is pinned to. See `checkRawInvariants`' `display-name-reconstructs`.
+	 * Sourced from the API's `display_name`, not its `name`. The two used to be byte-identical
+	 * for every card; alongside netdeck.gg's own deckbuilder, `name` narrowed to just a card's
+	 * base ("V") with the subtitle moved into `subname`, while `display_name` kept the full
+	 * form ("V: Streetkid") — first tried with an " — " separator and rolled back within hours,
+	 * then re-shipped with ": " and kept. `display_name` was the one field that stayed correct
+	 * across every shape observed, so that's what this is pinned to. See `checkRawInvariants`'
+	 * `display-name-reconstructs`.
 	 */
 	name: v.pipe(v.string(), v.nonEmpty()),
+	/**
+	 * The subtitle half of a printed name, straight from the API's `subname` — `null` when a
+	 * card has none. Not Legend-exclusive (e.g. La Llorona: Ghost of the Past is a Unit). Never
+	 * parsed out of `name`: unlike `name`, which needed one fixed field to pin to, this has no
+	 * punctuation to get wrong — the API already hands it over structured. `splitCardName`
+	 * (derive.ts) is what reassembles the base name for display.
+	 */
+	subtitle: v.nullable(v.pipe(v.string(), v.nonEmpty())),
 	color: ColorSchema,
 	cardType: CardTypeSchema,
 	cost: v.nullable(v.number()),
