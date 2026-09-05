@@ -8,7 +8,7 @@
  */
 import type { Card, SetSummary } from './schema.ts';
 import { BASE_SET_API_CODE, API_SET_CODE_TO_SET_ID, SET_IDENTIFIERS } from './sets.ts';
-import type { CardType, Color } from './vocabulary.ts';
+import { ICONIC_RARITIES, type CardType, type Color } from './vocabulary.ts';
 
 /** The Base Set's retail printing run, which is what carries the collector-number sequence. */
 export const BASE_SET_ID = API_SET_CODE_TO_SET_ID[BASE_SET_API_CODE];
@@ -33,7 +33,9 @@ function byCollectorNumber(a: string, b: string): number {
  *
  * Beta printings are excluded by their `β` prefix rather than by API set code: the printed
  * card is the authority, and interleaving a reprint run would destroy the contiguity the
- * ordering depends on.
+ * ordering depends on. Iconic-rarity printings are excluded for the same reason — they are a
+ * bonus alt-art treatment numbered well past the main run, not a second data point about it
+ * (see `ICONIC_RARITIES` in vocabulary.ts).
  */
 export function baseSetSequence(
 	cards: readonly Card[]
@@ -42,7 +44,10 @@ export function baseSetSequence(
 		.flatMap((card) =>
 			card.printings
 				.filter(
-					(printing) => printing.setId === BASE_SET_ID && !printing.collectorNumber.startsWith('β')
+					(printing) =>
+						printing.setId === BASE_SET_ID &&
+						!printing.collectorNumber.startsWith('β') &&
+						!(ICONIC_RARITIES as readonly string[]).includes(printing.rarity)
 				)
 				.map((printing) => ({
 					color: card.color,

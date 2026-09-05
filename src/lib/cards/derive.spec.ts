@@ -11,6 +11,7 @@ import {
 	splitCardName
 } from './derive.ts';
 import { makeCard, makePrinting } from './fixtures.ts';
+import { SET_IDENTIFIERS } from './sets.ts';
 
 describe('collectorNumberSortKey', () => {
 	it('orders numerically, not lexically', () => {
@@ -145,7 +146,7 @@ describe('deriveSets', () => {
 
 	it('reports a set with no printings as zero rather than omitting it', () => {
 		const sets = deriveSets([]);
-		expect(sets).toHaveLength(8);
+		expect(sets).toHaveLength(SET_IDENTIFIERS.length);
 		expect(sets.every((set) => set.cardCount === 0)).toBe(true);
 	});
 });

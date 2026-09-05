@@ -35,15 +35,15 @@ describe('the snapshot', () => {
 		expect(snapshot.stats.printings).toBe(
 			snapshot.cards.reduce((total, entry) => total + entry.printings.length, 0)
 		);
-		// Genuine releases, not the eight printed Set Identifiers: seven of those are starter decks,
-		// demo decks, box toppers, promos and a prerelease, and calling them sets would claim eight
-		// releases for a game that has had one.
+		// Genuine releases, not the nine printed Set Identifiers: eight of those are starter decks,
+		// demo decks, box toppers, promos, a prerelease and a tournament prize set, and calling
+		// them sets would claim nine releases for a game that has had one.
 		expect(snapshot.stats.sets).toBe(snapshot.sets.filter((set) => set.kind === 'base').length);
 		expect(snapshot.stats.sets).toBeLessThan(snapshot.sets.length);
 	});
 
-	it('collapses twelve API sets to eight printed Set Identifiers', () => {
-		expect(snapshot.sets).toHaveLength(8);
+	it('collapses thirteen API sets to nine printed Set Identifiers', () => {
+		expect(snapshot.sets).toHaveLength(9);
 		expect(snapshot.sets.filter((set) => set.kind === 'base')).toHaveLength(1);
 	});
 

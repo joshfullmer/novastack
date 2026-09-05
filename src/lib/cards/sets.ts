@@ -5,7 +5,7 @@
  * a slugified set *name*. So the mapping from API set to printed Set Identifier is curated
  * here, and ingest asserts that every API set code it sees has an entry (`assertions.ts`).
  *
- * Twelve API sets collapse to **eight** printed identifiers: the API models retail and beta
+ * Thirteen API sets collapse to **nine** printed identifiers: the API models retail and beta
  * as separate sets, which is its own invention. On the cards they carry the identical printed
  * identifier and differ only by a `β` prefix on the Collector Number — see CONTEXT.md,
  * "Print Treatment".
@@ -94,6 +94,14 @@ const CURATED: readonly CuratedSet[] = [
 		kind: 'derivative'
 	},
 	{
+		id: 'EOR01-WNC',
+		category: 'EOR01',
+		setCode: 'WNC',
+		cycle: null,
+		name: 'Edgerunner Open Season 1',
+		kind: 'derivative'
+	},
+	{
 		id: 'PRM01',
 		category: 'PRM01',
 		setCode: null,
@@ -127,6 +135,7 @@ export const API_SET_CODE_TO_SET_ID: Readonly<Record<string, string>> = {
 	boxtoppersretail: 'PRM-WNC',
 	boxtoppersbeta: 'PRM-WNC',
 	prereleasebeta: 'PRR01-WNC',
+	edgerunneropens1: 'EOR01-WNC',
 	PRM01: 'PRM01'
 };
 

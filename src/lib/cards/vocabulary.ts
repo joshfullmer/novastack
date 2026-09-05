@@ -38,20 +38,39 @@ export const KEYWORDS = [
 export const KeywordSchema = v.picklist(KEYWORDS, 'not a known Keyword');
 export type Keyword = v.InferOutput<typeof KeywordSchema>;
 
-/** Curated: rarity carries no orderable signal in the source data. */
+/**
+ * Curated: rarity carries no orderable signal in the source data.
+ *
+ * `Nova Rare` sits last, not between `Epic` and `Secret` — it isn't a power tier, it's the tag
+ * for a tournament/promo print run (Box Toppers, Edgerunner Open Season 1), so it doesn't
+ * belong in the mainline progression at all. This order also drives the query language's
+ * `rarity>=`/`rarity<`/etc. comparisons (`compile.ts`), not just display — a query that ranges
+ * up to or from `Nova Rare` specifically changes meaning with this move, though none of the
+ * mainline `Epic`/`Secret`/`Iconic` boundaries do.
+ */
 export const RARITY_ORDER = [
 	'Common',
 	'Uncommon',
 	'Rare',
 	'Epic',
-	'Nova Rare',
 	'Secret',
 	'Iconic Other',
 	'Iconic Legend',
-	'Iconic Secret'
+	'Iconic Secret',
+	'Nova Rare'
 ] as const;
 export const RaritySchema = v.picklist(RARITY_ORDER, 'not a known Rarity');
 export type Rarity = v.InferOutput<typeof RaritySchema>;
+
+/**
+ * Alt-art showcase treatments of an already-numbered card, printed with a collector number
+ * well past the Base Set's main run rather than in sequence with it (e.g. Alt Cunningham is
+ * both `106`, a normal Rare, and `155`, an Iconic Legend of the same card). `baseSetSequence`
+ * (derive.ts) excludes these for the same reason it excludes `β`-prefixed reprints: a bonus
+ * treatment carries no ordering information, and including one breaks the contiguous-run
+ * assumption the derived Color/Card Type order depends on.
+ */
+export const ICONIC_RARITIES = ['Iconic Other', 'Iconic Legend', 'Iconic Secret'] as const;
 
 /** Inline glyphs in rules text. Styled, never filterable. */
 export const SYMBOLS = {
