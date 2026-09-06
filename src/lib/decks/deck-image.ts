@@ -77,6 +77,22 @@ function roundedRectClip(
 	ctx.clip();
 }
 
+/**
+ * A square, opposite corners (top-right, bottom-left) chamfered — the printed card's own
+ * Eddiable badge shape (`eddie-badge` in `layout.css`), reused here for the quantity badge so
+ * the deck image matches the website's chip rather than reading as a generic rounded square.
+ */
+function chamferedSquarePath(ctx: CanvasRenderingContext2D, x: number, y: number, size: number, chop: number) {
+	ctx.beginPath();
+	ctx.moveTo(x, y);
+	ctx.lineTo(x + size - chop, y);
+	ctx.lineTo(x + size, y + chop);
+	ctx.lineTo(x + size, y + size);
+	ctx.lineTo(x + chop, y + size);
+	ctx.lineTo(x, y + size - chop);
+	ctx.closePath();
+}
+
 /** The novastack mark (`#lib/components/Mark.svelte`) redrawn with canvas paths — a 3×3 grid of
  * rounded outlined squares rotated 45°, at `size`'s bounding box, centered on `(cx, cy)`. */
 function drawMark(
@@ -242,18 +258,28 @@ export async function composeDeckImage(options: {
 		ctx.restore();
 
 		if (entry.quantity > 1) {
-			const badgeRadius = 12;
-			const badgeX = x + cellWidth - badgeRadius - 4;
-			const badgeY = cardY + badgeRadius + 4;
-			ctx.beginPath();
-			ctx.arc(badgeX, badgeY, badgeRadius, 0, Math.PI * 2);
-			ctx.fillStyle = themeColor('neon');
+			// Bottom-center, chamfered like the printed card's own Eddiable badge — matches the
+			// website's quantity badge (see `eddie-badge` in layout.css). Bottom-right was tried
+			// first and rejected: it sat right on top of a Unit's printed Power number.
+			const badgeSize = 28;
+			const badgeX = x + (cellWidth - badgeSize) / 2;
+			const badgeY = cardY + cellHeight - badgeSize - 4;
+			// A hollow `bright` outline over void, not a solid fill — matches the website's badge
+			// (see the comment on its own markup, `decks/[id]/+page.svelte`). Plain white reads
+			// clearly against any of the four card colours without picking a side among them,
+			// which a tinted fill (tried first: `neon`, then a dedicated pink `flare`) kept doing.
+			chamferedSquarePath(ctx, badgeX, badgeY, badgeSize, 10);
+			ctx.fillStyle = themeColor('bright');
 			ctx.fill();
+			const ring = 3;
+			chamferedSquarePath(ctx, badgeX + ring, badgeY + ring, badgeSize - ring * 2, 7);
 			ctx.fillStyle = themeColor('void');
-			ctx.font = 'bold 14px sans-serif';
+			ctx.fill();
+			ctx.fillStyle = themeColor('bright');
+			ctx.font = 'bold 15px sans-serif';
 			ctx.textAlign = 'center';
 			ctx.textBaseline = 'middle';
-			ctx.fillText(String(entry.quantity), badgeX, badgeY + 1);
+			ctx.fillText(`×${entry.quantity}`, badgeX + badgeSize / 2, badgeY + badgeSize / 2 + 1);
 			ctx.textAlign = 'left';
 			ctx.textBaseline = 'alphabetic';
 		}

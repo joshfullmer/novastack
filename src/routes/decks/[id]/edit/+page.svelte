@@ -371,11 +371,12 @@
 				sizes="{Math.round(100 / columns.value)}vw"
 			/>
 			{#if inDeck > 0}
-				<span
-					class="absolute top-1 right-1 flex size-5 items-center justify-center rounded-full
-						bg-neon text-xs font-bold text-void tabular-nums"
-				>
-					{inDeck}
+				<!-- Same chamfered-corner clip as the Eddiable "€$" badge (`CardStats.svelte`) — see
+					the deck view's own quantity badge for the two-layer rationale. -->
+				<span class="absolute bottom-1 left-1/2 -translate-x-1/2 isolate inline-flex size-6 items-center justify-center">
+					<span class="absolute inset-0 eddie-badge bg-bright"></span>
+					<span class="absolute inset-[2px] eddie-badge-inset bg-void"></span>
+					<span class="relative z-10 text-sm font-black text-bright tabular-nums">×{inDeck}</span>
 				</span>
 			{/if}
 		</button>
@@ -522,11 +523,14 @@
 									alt={entry.card.name}
 									sizes="80px"
 								/>
-								<span
-									class="absolute top-1 right-1 flex size-5 items-center justify-center
-										rounded-full bg-neon text-xs font-bold text-void tabular-nums"
-								>
-									{entry.quantity}
+								<!-- Same chamfered-corner clip as the Eddiable "€$" badge (`CardStats.svelte`)
+									— see the deck view's own quantity badge for the two-layer rationale. -->
+								<span class="absolute bottom-1 left-1/2 -translate-x-1/2 isolate inline-flex size-6 items-center justify-center">
+									<span class="absolute inset-0 eddie-badge bg-bright"></span>
+									<span class="absolute inset-[2px] eddie-badge-inset bg-void"></span>
+									<span class="relative z-10 text-sm font-black text-bright tabular-nums">
+										×{entry.quantity}
+									</span>
 								</span>
 							</button>
 						</li>

@@ -872,12 +872,25 @@
 												sizes="150px"
 											/>
 										</a>
+										<!-- Same chamfered-corner clip as the Eddiable "€$" badge
+											(`CardStats.svelte`) — the printed card's own UI chrome shape,
+											not a generic rounded square. Two layers because a `border`
+											can't follow an angled `clip-path` edge: `eddie-badge` is the
+											`bright` "ring", `eddie-badge-inset` sits 2px inside it in
+											void — a hollow outline, not a solid fill, so the badge reads
+											as a tag stamped on the card rather than a sticker covering
+											it. Plain white, not `neon` or a tinted accent: it reads
+											clearly against any of the four card colours without picking
+											a side among them. -->
 										<span
-											class="pointer-events-none absolute top-1 right-1 flex size-5
-											items-center justify-center rounded-full bg-neon text-xs font-bold
-											text-void tabular-nums"
+											class="pointer-events-none absolute bottom-1 left-1/2 -translate-x-1/2 isolate
+											inline-flex size-6 items-center justify-center"
 										>
-											{entry.quantity}
+											<span class="absolute inset-0 eddie-badge bg-bright"></span>
+											<span class="absolute inset-[2px] eddie-badge-inset bg-void"></span>
+											<span class="relative z-10 text-sm font-black text-bright tabular-nums">
+												×{entry.quantity}
+											</span>
 										</span>
 									</li>
 								{/each}
