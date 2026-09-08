@@ -158,10 +158,8 @@
 
 	const mainGroups = $derived(groupDeckEntries(dataset, deck.entries));
 
-	/** The Main Deck *browse* grid groups by type too, same order/labels as the already-added
-	 * list above — but Type→Cost→Color→Name, not `DEFAULT_SORT`'s Color→Type→Cost→Name. Once
-	 * cards are grouped by type, re-sorting by type within the group is a no-op; a readable cost
-	 * curve per type is what's actually useful while browsing. Legends tab is unaffected — it's a
+	/** The Main Deck *browse* grid groups by type too, same order/labels/sort as the already-added
+	 * list above (Cost → Color → Name within each group). Legends tab is unaffected — it's a
 	 * single type already, so grouping it would be a no-op there anyway. */
 	const mainMatchGroups = $derived(
 		tab === 'main' ? groupMatchesByType(dataset, visibleMatches) : []

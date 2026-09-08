@@ -5,16 +5,18 @@
  *
  * Group order follows `dataset.cardTypeOrder` (derived from the Base Set's own collector-number
  * sequence — `Legend, Unit, Gear, Program`) rather than a hardcoded list, so it stays correct if
- * that derivation ever changes. Cards within a group use the same `DEFAULT_SORT` as `/cards`.
+ * that derivation ever changes. Cards within a group sort by Cost → Color → Name (not
+ * `DEFAULT_SORT`'s Color → Type → Cost → Name) — Type is already the group boundary, so
+ * re-sorting by it within a group is a no-op, and a readable cost curve is more useful than
+ * re-asserting color as the primary key.
  *
- * `groupMatchesByType` below shares the same group order/labels for the deckbuilder's Main Deck
- * *browse* grid — search/filter results rather than what's already in the deck — but sorts within
- * each group by Cost → Color → Name instead, since Type is already the group boundary there.
+ * `groupMatchesByType` below shares the same group order/labels/sort for the deckbuilder's Main
+ * Deck *browse* grid — search/filter results rather than what's already in the deck.
  */
 import type { Dataset } from '#lib/cards/dataset.js';
 import type { Card } from '#lib/cards/schema.js';
 import type { CardType } from '#lib/cards/vocabulary.js';
-import { compareCards, compareNullable, DEFAULT_SORT } from '#lib/filters/sort.js';
+import { compareNullable } from '#lib/filters/sort.js';
 import type { Match } from '#lib/filters/predicate.js';
 import type { DeckEntry } from './legality.js';
 
@@ -38,7 +40,6 @@ export function groupDeckEntries(
 	dataset: Dataset,
 	entries: readonly DeckEntry[]
 ): DeckEntryGroup[] {
-	const compare = compareCards(dataset, DEFAULT_SORT);
 	const byType = new Map<CardType, DeckEntry[]>();
 	for (const entry of entries) {
 		const group = byType.get(entry.card.cardType);
@@ -50,7 +51,7 @@ export function groupDeckEntries(
 		.filter((cardType): cardType is NonLegendCardType => cardType !== 'Legend')
 		.map((cardType) => {
 			const groupEntries = [...(byType.get(cardType) ?? [])].sort((a, b) =>
-				compare(a.card, b.card)
+				compareByCostColorName(dataset, a.card, b.card)
 			);
 			return {
 				cardType,
