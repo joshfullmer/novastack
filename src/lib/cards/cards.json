@@ -2350,6 +2350,16 @@
 					"thumbhash": "TveFDAQPFPw1msihdkAXF3uAgYGICBiIAA=="
 				},
 				{
+					"artist": "Pandart Studio",
+					"collectorNumber": "156",
+					"id": "56628f3e-fb9d-4e9f-a525-360b08118cfd",
+					"key": "MS01-WNC-156",
+					"rarity": "Iconic Legend",
+					"setId": "MS01-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/56628f3e-fb9d-4e9f-a525-360b08118cfd/render-mpvmrpar.webp",
+					"thumbhash": "j0iGHAoPq6RpB3d113YJfZiAgYGICBiIAA=="
+				},
+				{
 					"artist": "Daniel Valaisis",
 					"collectorNumber": "β107",
 					"id": "080b22ac-9c3d-48ee-ad4f-4e9579f22adc",
@@ -2368,6 +2378,16 @@
 					"setId": "MS01-WNC",
 					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/22fe9365-6f33-4aeb-b3a4-a78ab563cbe9/render-mpxm50rb.webp",
 					"thumbhash": "E/eFDAQPVxqGB5l9eCL3OYWAgYGICBiIAA=="
+				},
+				{
+					"artist": "Pandart Studio",
+					"collectorNumber": "049",
+					"id": "989f714b-ed40-44c2-9f4b-819f011bc533",
+					"key": "EOR01-WNC-049",
+					"rarity": "Nova Rare",
+					"setId": "EOR01-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/989f714b-ed40-44c2-9f4b-819f011bc533/render-mtcqaegl.webp",
+					"thumbhash": "kFiCFAoPn6FqJld063YJfpeAgYGICBiIAA=="
 				}
 			],
 			"ramProvided": 2,
@@ -11104,7 +11124,7 @@
 		"Green",
 		"Blue"
 	],
-	"generatedAt": "2026-09-05T18:18:14.365Z",
+	"generatedAt": "2026-09-09T16:58:50.797Z",
 	"ramPerLegend": 2,
 	"sets": [
 		{
@@ -11115,7 +11135,7 @@
 			"kind": "base",
 			"name": "Welcome to Night City",
 			"printed": "MS01 - WNC [A]",
-			"printingCount": 314,
+			"printingCount": 315,
 			"setCode": "WNC"
 		},
 		{
@@ -11185,14 +11205,14 @@
 			"setCode": "WNC"
 		},
 		{
-			"cardCount": 11,
+			"cardCount": 12,
 			"category": "EOR01",
 			"cycle": null,
 			"id": "EOR01-WNC",
 			"kind": "derivative",
 			"name": "Edgerunner Open Season 1",
 			"printed": "EOR01 - WNC",
-			"printingCount": 11,
+			"printingCount": 12,
 			"setCode": "WNC"
 		},
 		{
@@ -11209,7 +11229,7 @@
 	],
 	"stats": {
 		"cards": 151,
-		"printings": 460,
+		"printings": 462,
 		"sets": 1
 	}
 }
