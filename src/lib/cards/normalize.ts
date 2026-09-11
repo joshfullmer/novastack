@@ -14,6 +14,7 @@
  * 3. **Keywords and flavour are derived from `rules_text`**, because the fields that should
  *    carry them are empty on every card.
  */
+import type { Faq } from './faq.ts';
 import { extractKeywords, splitRulesText, type SegmentContext } from './rules-text.ts';
 import type { Card, NetdeckCard, NetdeckPrinting, Printing } from './schema.ts';
 import { API_SET_CODE_TO_SET_ID } from './sets.ts';
@@ -81,7 +82,8 @@ function normalizePrinting(
 export function normalizeCard(
 	raw: NetdeckCard,
 	ctx: SegmentContext,
-	thumbhashes: ReadonlyMap<string, string>
+	thumbhashes: ReadonlyMap<string, string>,
+	faqsBySlug: ReadonlyMap<string, Faq[]> = new Map()
 ): Card {
 	const isLegend = raw.card_type === 'Legend';
 	const { rulesText, flavorText } = splitRulesText(raw.rules_text, ctx);
@@ -110,16 +112,18 @@ export function normalizeCard(
 		rulesText,
 		flavorText,
 		rawRulesText: raw.rules_text,
-		printings: [defaultPrinting, ...rest]
+		printings: [defaultPrinting, ...rest],
+		faqs: faqsBySlug.get(raw.slug) ?? []
 	};
 }
 
 export function normalizeCards(
 	raw: readonly NetdeckCard[],
-	thumbhashes: ReadonlyMap<string, string>
+	thumbhashes: ReadonlyMap<string, string>,
+	faqsBySlug: ReadonlyMap<string, Faq[]> = new Map()
 ): Card[] {
 	const ctx = buildSegmentContext(raw);
 	return raw
-		.map((card) => normalizeCard(card, ctx, thumbhashes))
+		.map((card) => normalizeCard(card, ctx, thumbhashes, faqsBySlug))
 		.sort((a, b) => a.slug.localeCompare(b.slug));
 }

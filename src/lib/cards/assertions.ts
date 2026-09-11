@@ -27,6 +27,7 @@ import {
 	deriveRamPerLegend,
 	deriveSets
 } from './derive.ts';
+import type { NetdeckFaq } from './faq.ts';
 import { extractKeywords } from './rules-text.ts';
 import type { Card, NetdeckCard } from './schema.ts';
 import { API_SET_CODE_TO_SET_ID } from './sets.ts';
@@ -160,6 +161,47 @@ export function checkRawInvariants(cards: readonly NetdeckCard[]): Violation[] {
 			'set-code-is-mapped',
 			`no curated Set Identifier for: ${unmappedSetCodes.join(', ')} — the printed identifier ` +
 				`is not exposed by the API, so it has to be added to sets.ts by hand`
+		);
+
+	return violations;
+}
+
+/**
+ * Checks against the FAQ API's own shape — a separate endpoint from card detail
+ * (`GET /api/faqs/{game}`, see `faq.ts`), so it gets its own violations rather than being folded
+ * silently into `checkRawInvariants`' card checks.
+ */
+export function checkFaqInvariants(
+	faqs: readonly NetdeckFaq[],
+	cardSlugs: ReadonlySet<string>
+): Violation[] {
+	const violations: Violation[] = [];
+	const add = (check: string, detail: string) => violations.push({ check, detail });
+
+	const repeatedIds = duplicates(faqs.map((faq) => faq.id));
+	if (repeatedIds.length > 0) add('unique-faq-ids', `repeated FAQ ids: ${repeatedIds.join(', ')}`);
+
+	const unknownSlugs = [
+		...new Set(
+			faqs
+				.filter((faq) => faq.scope === 'card' && faq.card !== null)
+				.map((faq) => faq.card!.slug)
+				.filter((slug) => !cardSlugs.has(slug))
+		)
+	].sort();
+	if (unknownSlugs.length > 0)
+		add(
+			'faq-card-slug-is-known',
+			`FAQ(s) reference card slug(s) not in the card dataset: ${unknownSlugs.join(', ')} — the ` +
+				`FAQ API has drifted from the card API`
+		);
+
+	const mismatched = faqs.filter((faq) => (faq.scope === 'card') !== (faq.card !== null));
+	if (mismatched.length > 0)
+		add(
+			'faq-scope-matches-card',
+			`${mismatched.length} FAQ(s) where scope and the presence of \`card\` disagree, first: ` +
+				`${mismatched[0].id}`
 		);
 
 	return violations;

@@ -9,6 +9,14 @@
 			"color": "Red",
 			"cost": 4,
 			"eddiable": false,
+			"faqs": [
+				{
+					"answer": "Yes, the effect triggers for each stolen d6.",
+					"id": "ed0b637f-567a-418c-a759-ab8deb631ce4",
+					"question": "If a friendly Unit steals two d6s simultaneously, can I increase two Gigs?",
+					"sortOrder": 100
+				}
+			],
 			"flavorText": null,
 			"keywords": [],
 			"name": "6th Street Recruits",
@@ -66,6 +74,32 @@
 			"color": "Red",
 			"cost": 9,
 			"eddiable": true,
+			"faqs": [
+				{
+					"answer": "No, the [PLAY] effect only activates when you play Adam Smasher to the field area.",
+					"id": "4dc5a7cb-cb53-4a44-bcd4-33e373dafbd3",
+					"question": "Does Adam Smasher’s [PLAY] effect trigger when he is called or flipped face-up as a Legend?",
+					"sortOrder": 100
+				},
+				{
+					"answer": "Yes. [GO SOLO] plays Adam Smasher to the field area and triggers the [PLAY] effect.",
+					"id": "439b43af-068f-4296-923b-fd7a55ec73a9",
+					"question": "Does Adam Smasher’s [PLAY] effect trigger when he Goes Solo?",
+					"sortOrder": 200
+				},
+				{
+					"answer": "Yes.",
+					"id": "89104f80-8329-4ad9-85ff-cb23f3320d53",
+					"question": "If Adam Smasher is removed from the field area after being played to the field area is Adam Smasher removed from the game instead of being placed in the designated area?",
+					"sortOrder": 300
+				},
+				{
+					"answer": "Yes.",
+					"id": "321ab46b-ddf1-4110-9078-9e691a8267e6",
+					"question": "If Adam Smasher’s cost is reduced does that also reduce cost to activate [GO SOLO]?",
+					"sortOrder": 400
+				}
+			],
 			"flavorText": null,
 			"keywords": [
 				"Play",
@@ -168,6 +202,14 @@
 			"color": "Yellow",
 			"cost": 9,
 			"eddiable": false,
+			"faqs": [
+				{
+					"answer": "Yes.",
+					"id": "a40401c6-6467-486a-9e91-a0e95a95b210",
+					"question": "If I manage to play Adam Smasher on my Rival's turn. Does it still get the [PLAY] effect?",
+					"sortOrder": 100
+				}
+			],
 			"flavorText": null,
 			"keywords": [
 				"Play"
@@ -234,6 +276,14 @@
 			"color": "Yellow",
 			"cost": 2,
 			"eddiable": true,
+			"faqs": [
+				{
+					"answer": "No, the Unit only has [ADRENALIINE] while the conditions are met.",
+					"id": "fc82d674-d5c0-42f8-9fd9-a47a71be9ec7",
+					"question": "If my Rival controls exactly 2 more Gigs than me when I play Adreanline Converter but I steal a Gig before I attack with the equipped Unit,  does it still have [ADRENALINE]?",
+					"sortOrder": 100
+				}
+			],
 			"flavorText": null,
 			"keywords": [
 				"Adrenaline"
@@ -304,6 +354,14 @@
 			"color": "Yellow",
 			"cost": 1,
 			"eddiable": true,
+			"faqs": [
+				{
+					"answer": "Yes.",
+					"id": "e81b51a1-5dd8-4a2b-9bb8-28b93b227bee",
+					"question": "If I choose not to adjust a Gig, can I still draw 1 if I control 2 or more Gigs with different values?",
+					"sortOrder": 100
+				}
+			],
 			"flavorText": null,
 			"keywords": [],
 			"name": "Afterparty at Lizzie's",
@@ -392,6 +450,26 @@
 			"color": "Red",
 			"cost": 1,
 			"eddiable": true,
+			"faqs": [
+				{
+					"answer": "Yes.",
+					"id": "6f7d6a80-3536-4417-bbb8-c27485f07557",
+					"question": "If All is Lost trashes one or more Units, do I have to add them to my hand  even if I don't want to?",
+					"sortOrder": 100
+				},
+				{
+					"answer": "No.",
+					"id": "086fb943-7bfb-4fee-8645-01f3cf132232",
+					"question": "If All is Lost's effect trashes no Units, can I still add a Unit to my hand?",
+					"sortOrder": 200
+				},
+				{
+					"answer": "Yes. Trash as many cards as possible, instead.",
+					"id": "8227301d-f845-4e94-b4ff-556fd7c9e5d0",
+					"question": "If I have fewer than 3 cards in my deck, can I still play All is Lost?",
+					"sortOrder": 300
+				}
+			],
 			"flavorText": null,
 			"keywords": [],
 			"name": "All is Lost",
@@ -441,6 +519,14 @@
 			"color": "Yellow",
 			"cost": 7,
 			"eddiable": false,
+			"faqs": [
+				{
+					"answer": "Yes.",
+					"id": "9c300537-ed1f-4196-a9c7-076dc5fd4603",
+					"question": "Do both effects work on either players turn?",
+					"sortOrder": 100
+				}
+			],
 			"flavorText": null,
 			"keywords": [],
 			"name": "Alt Cunningham: Mother of Daemons",
@@ -506,6 +592,26 @@
 			"color": "Blue",
 			"cost": null,
 			"eddiable": true,
+			"faqs": [
+				{
+					"answer": "Yes.",
+					"id": "f6e95797-6d5e-4a78-b1ab-dbc01b1821f4",
+					"question": "Does Alt Cunningham's first effect apply to Programs played from Trash, too?",
+					"sortOrder": 100
+				},
+				{
+					"answer": "Yes.",
+					"id": "c2b026c3-6e44-4b3e-97db-abef28faa220",
+					"question": "If I ready Alt Cunningham after using her first effect and use it again before playing a Program, does the discount stack?",
+					"sortOrder": 200
+				},
+				{
+					"answer": "No, the reduction amount is determined when you activate the effect.",
+					"id": "dd4138dc-c8ee-4d08-899a-d3f69fb00fc7",
+					"question": "I activated Alt Cunningham's first effect with 2 friendly min Gigs, but before I play my next Program I acquire a 3rd min Gig. Does my next Program play for -3 €$ instead of -2€$?",
+					"sortOrder": 300
+				}
+			],
 			"flavorText": null,
 			"keywords": [
 				"Spend"
@@ -619,6 +725,7 @@
 			"color": "Red",
 			"cost": 6,
 			"eddiable": false,
+			"faqs": [],
 			"flavorText": "Takes a lot of juice to break bones like they do.",
 			"keywords": [],
 			"name": "Animals Wrecker",
@@ -660,6 +767,26 @@
 			"color": "Red",
 			"cost": 3,
 			"eddiable": true,
+			"faqs": [
+				{
+					"answer": "You do not have to chose ahead of time a Unit. The condition will be met the first time a friendly Unit wins a fight.",
+					"id": "f7e7ce23-ddae-4f92-a770-e2e7a0fe368e",
+					"question": "When I play Appetite for Destruction, do I choose a friendly Unit, or can any friendly Unit satisfy the effect later this turn?",
+					"sortOrder": 100
+				},
+				{
+					"answer": "Yes.",
+					"id": "dd350a6e-8ee0-4c1f-9418-2d22a5160c40",
+					"question": "If a Unit steals a Gig because of Appetite for Destruction, does that count as that Unit stealing a Gig for effects that trigger when that Unit steals a Gig?",
+					"sortOrder": 200
+				},
+				{
+					"answer": "Yes.",
+					"id": "82802953-08ff-450a-8630-517546b3091a",
+					"question": "If the friendly Unit cannot defeat the rival Unit but still wins the fight, does it still steal a Gig?",
+					"sortOrder": 300
+				}
+			],
 			"flavorText": null,
 			"keywords": [],
 			"name": "Appetite for Destruction",
@@ -709,6 +836,14 @@
 			"color": "Red",
 			"cost": 2,
 			"eddiable": true,
+			"faqs": [
+				{
+					"answer": "Yes.",
+					"id": "d3587386-2389-4745-b6e9-8953bc790bfe",
+					"question": "If the equipped Unit or Legend is spent as part of an attack, can Arasaka Emergency Radioport Call a Legend before that Unit’s [ATTACK] effect resolves?",
+					"sortOrder": 100
+				}
+			],
 			"flavorText": null,
 			"keywords": [
 				"Go Solo"
@@ -808,6 +943,14 @@
 			"color": "Yellow",
 			"cost": 3,
 			"eddiable": false,
+			"faqs": [
+				{
+					"answer": "Yes.",
+					"id": "1dc1d892-bdbf-46a6-a217-ab452b6c0c63",
+					"question": "Can I use [BLOCKER] even if my Rival has no cards in their hand?",
+					"sortOrder": 100
+				}
+			],
 			"flavorText": null,
 			"keywords": [
 				"Blocker"
@@ -882,6 +1025,14 @@
 			"color": "Red",
 			"cost": 3,
 			"eddiable": true,
+			"faqs": [
+				{
+					"answer": "Yes.",
+					"id": "b3bcae3f-acb3-4891-a985-4d69fea65fc7",
+					"question": "If a Rival controls at least 2 more Gigs than me, can I still choose to defeat only one Unit?",
+					"sortOrder": 100
+				}
+			],
 			"flavorText": null,
 			"keywords": [],
 			"name": "Bonnie and Clyde",
@@ -930,6 +1081,26 @@
 			"color": "Yellow",
 			"cost": 5,
 			"eddiable": true,
+			"faqs": [
+				{
+					"answer": "No.",
+					"id": "63c9a5f8-27f2-485d-a779-79587ac49d91",
+					"question": "Do I reveal or get to look at the card I am selling?",
+					"sortOrder": 100
+				},
+				{
+					"answer": "Yes.",
+					"id": "71cfd404-4021-41e1-bebe-a468e11f0a3d",
+					"question": "If the top card of my deck doesn't have a sell tag, do I still sell it for this effect?",
+					"sortOrder": 200
+				},
+				{
+					"answer": "Yes.",
+					"id": "68737f4d-0d40-42b9-b490-30d02b06544f",
+					"question": "If I already sold a card during my main phase, can I still sell a card from Bootleg Sapphire's effect?",
+					"sortOrder": 300
+				}
+			],
 			"flavorText": null,
 			"keywords": [],
 			"name": "Bootleg Black Sapphire Show",
@@ -1005,6 +1176,20 @@
 			"color": "Yellow",
 			"cost": 5,
 			"eddiable": false,
+			"faqs": [
+				{
+					"answer": "Yes.",
+					"id": "31c66530-6c62-4ba8-a521-e34ec9be6b01",
+					"question": "Do I have to defeat a rival Unit with cost 2 or less even if I don't want to?",
+					"sortOrder": 100
+				},
+				{
+					"answer": "No.",
+					"id": "03bc1552-a6ba-410b-8c26-4fbc895a57d5",
+					"question": "If the second card my Rival discards also has a cost equal to a friendly Gig, does my rival have to discard again?",
+					"sortOrder": 200
+				}
+			],
 			"flavorText": null,
 			"keywords": [
 				"Play",
@@ -1073,6 +1258,14 @@
 			"color": "Red",
 			"cost": 6,
 			"eddiable": true,
+			"faqs": [
+				{
+					"answer": "No.",
+					"id": "31ed50ec-6a68-4eff-9f47-fc232e4e90e6",
+					"question": "When I play this Program for less because of it's effect does that change the cost of the card too?",
+					"sortOrder": 100
+				}
+			],
 			"flavorText": null,
 			"keywords": [],
 			"name": "Carnage at the Colosseum",
@@ -1147,6 +1340,38 @@
 			"color": "Red",
 			"cost": 5,
 			"eddiable": false,
+			"faqs": [
+				{
+					"answer": "Yes. Including any new rival Units played after Chrome Fang.",
+					"id": "42c38a1d-103c-4c9a-adf0-e199853a16e9",
+					"question": "Does Chrome Fang’s effect apply to all rival Units?",
+					"sortOrder": 100
+				},
+				{
+					"answer": "Yes.",
+					"id": "eb37dc38-f33d-49c8-aade-383f879945c8",
+					"question": "Does Chrome Fang’s effect continue to apply if Chrome Fang leaves the field before your next turn?",
+					"sortOrder": 200
+				},
+				{
+					"answer": "Yes.",
+					"id": "28a0d1ab-e3a1-4dd4-a952-b0ad4403f831",
+					"question": "If my rival Unit has power 6 can it steal a friendly Gig with value 6?",
+					"sortOrder": 300
+				},
+				{
+					"answer": "The attack still happens, but the rival Unit does not steal any Gigs.",
+					"id": "18a0c359-400b-43de-9055-c7fc79baf415",
+					"question": "What happens if a rival Unit attacks my Gig area while Chrome Fang's effect is active, but all friendly Gig values are higher than its power?",
+					"sortOrder": 400
+				},
+				{
+					"answer": "Yes.",
+					"id": "fa5d28f5-57df-451f-8246-cd8949f324ad",
+					"question": "If an effect says a Unit steals an additional Gig (like Gorilla Arms), does Chrome Fang's effect apply?",
+					"sortOrder": 500
+				}
+			],
 			"flavorText": null,
 			"keywords": [
 				"Play"
@@ -1222,6 +1447,26 @@
 			"color": "Blue",
 			"cost": 3,
 			"eddiable": true,
+			"faqs": [
+				{
+					"answer": "No.",
+					"id": "9caf46ed-3bf8-4dd7-9110-7d9e147e821e",
+					"question": "If I the chosen rival Unit that can't attack until my next turn is given the effect to attack. Can it?",
+					"sortOrder": 100
+				},
+				{
+					"answer": "A Gig showing it's 1 value.",
+					"id": "5139f71f-b1f8-4819-8a83-51880067dbea",
+					"question": "What is a min Gig?",
+					"sortOrder": 200
+				},
+				{
+					"answer": "No.",
+					"id": "1dc8b307-ebd1-43e8-9d14-d11a7893c1d1",
+					"question": "When resolving this effect and do not choose to Call a Legend for free. Can I call a Legend for free later in the turn from this effect?",
+					"sortOrder": 300
+				}
+			],
 			"flavorText": null,
 			"keywords": [],
 			"name": "Chrome Reverie",
@@ -1274,6 +1519,14 @@
 			"color": "Green",
 			"cost": 2,
 			"eddiable": false,
+			"faqs": [
+				{
+					"answer": "No.",
+					"id": "030e8902-1692-4ba3-86de-56b83c036897",
+					"question": "If this Unit gains [ADRENALINE] the turn it's played, can it attack?",
+					"sortOrder": 100
+				}
+			],
 			"flavorText": null,
 			"keywords": [
 				"Blocker"
@@ -1389,6 +1642,20 @@
 			"color": "Green",
 			"cost": 2,
 			"eddiable": true,
+			"faqs": [
+				{
+					"answer": "Yes.",
+					"id": "4496adf7-0641-4c06-a1f7-6eb120c075bf",
+					"question": "Can I play this card without a rival Unit on the field?",
+					"sortOrder": 100
+				},
+				{
+					"answer": "Yes.",
+					"id": "00513475-b873-4eec-b582-c8bb969fe1e5",
+					"question": "Can I choose a Unit that's already spent for this card's effect?",
+					"sortOrder": 200
+				}
+			],
 			"flavorText": null,
 			"keywords": [],
 			"name": "Corporate Surveillance",
@@ -1467,6 +1734,26 @@
 			"color": "Yellow",
 			"cost": 3,
 			"eddiable": true,
+			"faqs": [
+				{
+					"answer": "Yes.",
+					"id": "b59cc194-67ee-4b3e-9e4e-6858131f2903",
+					"question": "Can I choose an equipped rival Unit with this effect?",
+					"sortOrder": 100
+				},
+				{
+					"answer": "The rival Unit gets the power boost for the ensuing fight and is defeated at the end of the turn.",
+					"id": "0f661d5c-bfc7-4c2a-8174-b4f98e7d8b61",
+					"question": "If I play this Program [QUICK] as a reaction and choose the attacking rival Unit for the effect, what happens?",
+					"sortOrder": 200
+				},
+				{
+					"answer": "No.",
+					"id": "0a4c62a0-f5aa-4b7e-9341-db86caf28c81",
+					"question": "If a Unit  under the effect of Cyberpsychosis attacks but does not make it to the Fight or Steal step, is it still defeated at the end of the turn?",
+					"sortOrder": 300
+				}
+			],
 			"flavorText": null,
 			"keywords": [
 				"Quick"
@@ -1543,6 +1830,20 @@
 			"color": "Red",
 			"cost": 3,
 			"eddiable": true,
+			"faqs": [
+				{
+					"answer": "No, choose one of them.",
+					"id": "307b211e-ebe4-46db-9baa-e652918576fe",
+					"question": "If a Unit or Legend with two or more Deadman Transmitters is defeated, do I have to defeat both Deadman Transmitters?",
+					"sortOrder": 100
+				},
+				{
+					"answer": "Yes.",
+					"id": "4b85693e-f6d3-4895-8606-e9917f6c706a",
+					"question": "If Deadman Transmitter protects a Unit from being defeated in a fight did that Unit still lose the fight?",
+					"sortOrder": 200
+				}
+			],
 			"flavorText": null,
 			"keywords": [],
 			"name": "Deadman Transmitter",
@@ -1606,6 +1907,14 @@
 			"color": "Blue",
 			"cost": 4,
 			"eddiable": false,
+			"faqs": [
+				{
+					"answer": "No.",
+					"id": "59552a2f-6661-4130-95cd-6f119a95f6b6",
+					"question": "If this Unit steals a Gig but is no longer in the field area at the end of the turn, do I still ready 1 Eddie?",
+					"sortOrder": 100
+				}
+			],
 			"flavorText": null,
 			"keywords": [],
 			"name": "Delamain Cab",
@@ -1704,6 +2013,14 @@
 			"color": "Blue",
 			"cost": 3,
 			"eddiable": false,
+			"faqs": [
+				{
+					"answer": "Yes.",
+					"id": "cdc01e4e-6e36-43a8-a193-90564776528d",
+					"question": "Do I have to Draw 2 with this card's [PLAY] effect even if I don't want to?",
+					"sortOrder": 100
+				}
+			],
 			"flavorText": null,
 			"keywords": [
 				"Play"
@@ -1765,6 +2082,20 @@
 			"color": "Red",
 			"cost": 1,
 			"eddiable": true,
+			"faqs": [
+				{
+					"answer": "Yes.",
+					"id": "2ae2b855-aecf-4b12-9858-234649764cf1",
+					"question": "Can Detonate defeat Gear equipped to a face-up Legend?",
+					"sortOrder": 100
+				},
+				{
+					"answer": "Yes.",
+					"id": "c459acd1-042d-47ae-9278-3cdd05d98283",
+					"question": "Can I play Detonate if there are no rival Gears in play?",
+					"sortOrder": 200
+				}
+			],
 			"flavorText": null,
 			"keywords": [
 				"Quick"
@@ -1820,6 +2151,26 @@
 			"color": "Red",
 			"cost": null,
 			"eddiable": true,
+			"faqs": [
+				{
+					"answer": "No, you can still choose the other effect, it just fails.",
+					"id": "47feaf18-6dff-4cf7-b24f-ba01d2a92514",
+					"question": "If I don't have a friendly Unit on the field when I call Dexter Deshawn, do I have to choose Draw 1?",
+					"sortOrder": 100
+				},
+				{
+					"answer": "Yes.",
+					"id": "f868fe18-6a35-457a-9ed5-004b48956db9",
+					"question": "If I call Dexter Deshawn as a reaction, can I play a [QUICK] card that I drew off of Dexter's effect?",
+					"sortOrder": 200
+				},
+				{
+					"answer": "Yes.",
+					"id": "2a8619f2-2d2b-4b22-a190-623617b0b515",
+					"question": "Can Dexter Deshawn ’s [Spend Icon:] effect increase either a friendly Gig or a rival Gig?",
+					"sortOrder": 300
+				}
+			],
 			"flavorText": null,
 			"keywords": [
 				"Spend",
@@ -1915,6 +2266,14 @@
 			"color": "Yellow",
 			"cost": 3,
 			"eddiable": false,
+			"faqs": [
+				{
+					"answer": "No.",
+					"id": "ac95df60-d8dd-44bc-b04f-1246a08a8540",
+					"question": "With the [Play] and [Attack] effect. If I choose to adjust up to 0. Does that still count as adjusting a Gig?",
+					"sortOrder": 100
+				}
+			],
 			"flavorText": null,
 			"keywords": [
 				"Play",
@@ -2019,6 +2378,20 @@
 			"color": "Green",
 			"cost": 7,
 			"eddiable": true,
+			"faqs": [
+				{
+					"answer": "Yes.",
+					"id": "fc26a153-0d04-43ec-8f94-beaa97ce3a93",
+					"question": "If all rival Units are already spent, can I still use this card?",
+					"sortOrder": 100
+				},
+				{
+					"answer": "Yes.",
+					"id": "1715a8ca-857b-4dcc-9c1c-4782ccd13c04",
+					"question": "Can I defeat a spent Unit that I did not spend with this effect?",
+					"sortOrder": 200
+				}
+			],
 			"flavorText": null,
 			"keywords": [],
 			"name": "(Don't Fear) The Reaper",
@@ -2088,6 +2461,20 @@
 			"color": "Yellow",
 			"cost": null,
 			"eddiable": true,
+			"faqs": [
+				{
+					"answer": "Yes.",
+					"id": "94144c1c-7f0c-4bb0-898f-a9edaa1d0cd9",
+					"question": "Can Dum Dum’s [QUICK] effect choose a friendly Unit with no equipped Gear?",
+					"sortOrder": 100
+				},
+				{
+					"answer": "No.",
+					"id": "bfb1adc4-7e30-4d4c-8219-c62ee23df515",
+					"question": "If the chosen Unit gains or loses Gear after Dum Dum’s [QUICK] effect resolves, does the power bonus change?",
+					"sortOrder": 200
+				}
+			],
 			"flavorText": null,
 			"keywords": [
 				"Spend",
@@ -2195,6 +2582,20 @@
 			"color": "Blue",
 			"cost": 2,
 			"eddiable": true,
+			"faqs": [
+				{
+					"answer": "Yes.",
+					"id": "5f960b7a-2008-4b2c-bbfd-ec852848651f",
+					"question": "If I choose not to decrease a Gig, can I still ready 2 Eddies at the end of my turn if the equipped Unit is named \"V\"?",
+					"sortOrder": 100
+				},
+				{
+					"answer": "Yes.",
+					"id": "881c635b-268e-4855-8617-a84587951a8f",
+					"question": "If this Gear is attached to a Unit named \"V\" and the Unit attacks but is defeated before the end of the turn, can I still ready 2 Eddies?",
+					"sortOrder": 200
+				}
+			],
 			"flavorText": null,
 			"keywords": [
 				"Attack"
@@ -2315,6 +2716,26 @@
 			"color": "Red",
 			"cost": 5,
 			"eddiable": false,
+			"faqs": [
+				{
+					"answer": "Yes.",
+					"id": "2984e648-802f-48da-9ecd-0e0c0434f9e3",
+					"question": "If I control multiple friendly max Gigs, can I choose which one El Sombrerón's effect uses?",
+					"sortOrder": 100
+				},
+				{
+					"answer": "No.",
+					"id": "71386fef-475e-4a5f-9a81-084f6a32f02b",
+					"question": "If the value of my chosen friendly max Gig changes later in the turn, does El Sombrerón’s gained power change too?",
+					"sortOrder": 200
+				},
+				{
+					"answer": "Yes, but El Sombrerón won't gain any power from it.",
+					"id": "a51b1f00-a914-4586-8baf-9926b76fcbec",
+					"question": "If I do not control a friendly max Gig can I still pay 2 €$ for El Sombrerón’s effect?",
+					"sortOrder": 300
+				}
+			],
 			"flavorText": null,
 			"keywords": [
 				"Attack"
@@ -2381,6 +2802,7 @@
 			"color": "Green",
 			"cost": 3,
 			"eddiable": false,
+			"faqs": [],
 			"flavorText": "\"Grab the policyholder, leave the rest for the city meatwagon.\"",
 			"keywords": [],
 			"name": "Emergency Atlus",
@@ -2452,6 +2874,20 @@
 			"color": "Blue",
 			"cost": null,
 			"eddiable": true,
+			"faqs": [
+				{
+					"answer": "Yes; as long as the chosen Unit can attack, your Rival cannot end their turn until it attacks.",
+					"id": "6f60b8fc-5126-488c-9aeb-5ee39226a5f0",
+					"question": "If a rival Unit chosen by Evenlyn Parker's second effect makes an attack and then readies in the same turn, is it forced to make another attack?",
+					"sortOrder": 200
+				},
+				{
+					"answer": "You may do other actions but cannot end your turn if the Unit chosen by Evelyn Parker can still legally declare an attack.",
+					"id": "99f345a2-35ad-4d4e-8f7b-c6da08c50b4a",
+					"question": "If I have a Unit chosen by Evelyn Parker's second effect, do I have to attack with it as soon as possible, or can I play other cards first?",
+					"sortOrder": 300
+				}
+			],
 			"flavorText": null,
 			"keywords": [
 				"Spend"
@@ -2574,6 +3010,14 @@
 			"color": "Blue",
 			"cost": 2,
 			"eddiable": false,
+			"faqs": [
+				{
+					"answer": "Yes.",
+					"id": "21199b77-ad4d-42ac-834c-416bf3d458b5",
+					"question": "Is Evelyn Parker's [ATTACK] effect mandatory?",
+					"sortOrder": 100
+				}
+			],
 			"flavorText": null,
 			"keywords": [
 				"Attack"
@@ -2684,6 +3128,14 @@
 			"color": "Green",
 			"cost": 3,
 			"eddiable": false,
+			"faqs": [
+				{
+					"answer": "No.",
+					"id": "e83fc5f6-3649-4162-9415-f1ff3fde56ed",
+					"question": "Does 0 count as an even number?",
+					"sortOrder": 100
+				}
+			],
 			"flavorText": null,
 			"keywords": [
 				"Play"
@@ -2787,6 +3239,14 @@
 			"color": "Blue",
 			"cost": 1,
 			"eddiable": true,
+			"faqs": [
+				{
+					"answer": "Yes",
+					"id": "2c3ac370-03ca-4a5c-9cf3-a61e9789b515",
+					"question": "Can you play this with no rival Units in play?",
+					"sortOrder": 100
+				}
+			],
 			"flavorText": null,
 			"keywords": [
 				"Quick"
@@ -2892,6 +3352,14 @@
 			"color": "Green",
 			"cost": 2,
 			"eddiable": true,
+			"faqs": [
+				{
+					"answer": "Yes.",
+					"id": "7cc65141-2888-4258-9e95-b77b60f43754",
+					"question": "When I reveal the top 2 cards of my deck, are they still considered part of my deck?",
+					"sortOrder": 100
+				}
+			],
 			"flavorText": null,
 			"keywords": [],
 			"name": "Fool on the Hill",
@@ -2941,6 +3409,14 @@
 			"color": "Yellow",
 			"cost": 4,
 			"eddiable": false,
+			"faqs": [
+				{
+					"answer": "Yes.",
+					"id": "db8d72b0-4892-45a9-82fb-9d7cf1df3791",
+					"question": "If my Rival does not have a Unit, may I still defeat a friendly Gear?",
+					"sortOrder": 100
+				}
+			],
 			"flavorText": null,
 			"keywords": [
 				"Play"
@@ -2996,6 +3472,14 @@
 			"color": "Yellow",
 			"cost": 4,
 			"eddiable": true,
+			"faqs": [
+				{
+					"answer": "The Unit.",
+					"id": "978f0a21-058a-4676-8366-ce220a6f6aa4",
+					"question": "Who steals the Gig with this effect; the player, or the Unit equipped with Gorilla arms?",
+					"sortOrder": 100
+				}
+			],
 			"flavorText": null,
 			"keywords": [],
 			"name": "Gorilla Arms",
@@ -3051,6 +3535,14 @@
 			"color": "Green",
 			"cost": 5,
 			"eddiable": true,
+			"faqs": [
+				{
+					"answer": "No.",
+					"id": "9ad7e1cf-9965-4ba0-8503-ac17c897ffbd",
+					"question": "Can I use this Legend's [Blocker] in the Legend area?",
+					"sortOrder": 100
+				}
+			],
 			"flavorText": null,
 			"keywords": [
 				"Blocker",
@@ -3167,6 +3659,14 @@
 			"color": "Green",
 			"cost": 4,
 			"eddiable": false,
+			"faqs": [
+				{
+					"answer": "No.",
+					"id": "0c5b038a-705c-44ba-bff6-95403c35f032",
+					"question": "If all my friendly Legends become face-up after I declare an attack, does Goro Takemura's effect trigger?",
+					"sortOrder": 100
+				}
+			],
 			"flavorText": null,
 			"keywords": [
 				"Attack"
@@ -3233,6 +3733,32 @@
 			"color": "Green",
 			"cost": null,
 			"eddiable": true,
+			"faqs": [
+				{
+					"answer": "Yes.",
+					"id": "c40c2c04-c8eb-453b-8a04-2cb0cb4fd1a4",
+					"question": "If I manage to play a Unit during my React step and I give it [BLOCKER] from Goro Takemura, can that friendly Unit use [BLOCKER] immediately?",
+					"sortOrder": 100
+				},
+				{
+					"answer": "No.",
+					"id": "46be1b50-5788-41f0-92de-af2fb2f670be",
+					"question": "When a friendly Unit uses [BLOCKER] am I forced to discard 1?",
+					"sortOrder": 200
+				},
+				{
+					"answer": "Yes, but you must draw 1 after, so you will lose the game.",
+					"id": "3e703f01-25ac-4255-ae2f-b3c0fb7a816c",
+					"question": "If I have no cards in deck may I still discard 1?",
+					"sortOrder": 300
+				},
+				{
+					"answer": "Yes.",
+					"id": "048e77d0-3873-4e27-a4ee-b419fc503d3d",
+					"question": "Does a friendly Unit using [BLOCKER] trigger Goro Takemura's second effect even if it's not a result of first effect?",
+					"sortOrder": 400
+				}
+			],
 			"flavorText": null,
 			"keywords": [
 				"Blocker",
@@ -3353,6 +3879,20 @@
 			"color": "Red",
 			"cost": 4,
 			"eddiable": true,
+			"faqs": [
+				{
+					"answer": "No. You must resolve the effect from top to bottom.",
+					"id": "2a901389-f319-4b65-ae4b-00483f4e80f5",
+					"question": "Can I choose the order of the two effects?",
+					"sortOrder": 100
+				},
+				{
+					"answer": "No.",
+					"id": "e4e22bef-839b-49d6-9bed-8a34f59b95ce",
+					"question": "When my Rival chooses the effect for Gunpoint Diplomacy, do they also choose the friendly Unit?",
+					"sortOrder": 200
+				}
+			],
 			"flavorText": null,
 			"keywords": [],
 			"name": "Gunpoint Diplomacy",
@@ -3433,6 +3973,14 @@
 			"color": "Blue",
 			"cost": 4,
 			"eddiable": false,
+			"faqs": [
+				{
+					"answer": "Yes.",
+					"id": "d7f37678-fda8-4c98-b027-af22cc68b7c6",
+					"question": "After I trash 3 with this effect do I have to add a Program to hand from those 3?",
+					"sortOrder": 100
+				}
+			],
 			"flavorText": null,
 			"keywords": [
 				"Play"
@@ -3490,6 +4038,26 @@
 			"color": "Green",
 			"cost": null,
 			"eddiable": true,
+			"faqs": [
+				{
+					"answer": "No.",
+					"id": "b9dffd87-5e0a-45a6-92c3-dae20f68df5f",
+					"question": "If either myself or my Rival controls 0 Gigs, can I swap?",
+					"sortOrder": 100
+				},
+				{
+					"answer": "No.",
+					"id": "1b9a65e5-250a-446e-971f-867ab7f688fb",
+					"question": "Is swapping Gigs considered stealing?",
+					"sortOrder": 200
+				},
+				{
+					"answer": "Yes, you choose both Gigs involved in the swap.",
+					"id": "4b611db2-a369-4b7f-b074-377613c6cada",
+					"question": "When I activate this effect, do I get to choose the rival Gig too?",
+					"sortOrder": 300
+				}
+			],
 			"flavorText": null,
 			"keywords": [
 				"Spend"
@@ -3563,6 +4131,7 @@
 			"color": "Yellow",
 			"cost": 4,
 			"eddiable": false,
+			"faqs": [],
 			"flavorText": null,
 			"keywords": [
 				"Play"
@@ -3628,6 +4197,14 @@
 			"color": "Yellow",
 			"cost": 6,
 			"eddiable": false,
+			"faqs": [
+				{
+					"answer": "Yes.",
+					"id": "89eca244-872c-4c28-bf2c-7dbf294e0e6c",
+					"question": "May I defeat a Gear if I don't have any Gigs that match cost with value?",
+					"sortOrder": 100
+				}
+			],
 			"flavorText": null,
 			"keywords": [
 				"Play"
@@ -3704,6 +4281,20 @@
 			"color": "Red",
 			"cost": 1,
 			"eddiable": true,
+			"faqs": [
+				{
+					"answer": "Yes, but it does not count as \"adjusting\" a Gig for effects triggered by \"adjusting a Gig.\"",
+					"id": "ad3b75f8-1401-485f-891d-7e54fdbfe30f",
+					"question": "Can I choose to increase a Gig by 0?",
+					"sortOrder": 100
+				},
+				{
+					"answer": "Yes.",
+					"id": "2f4ce47f-25ba-4321-a673-809fc8f75bd7",
+					"question": "Can I adjust a rival Gig?",
+					"sortOrder": 200
+				}
+			],
 			"flavorText": null,
 			"keywords": [],
 			"name": "Industrial Assembly",
@@ -3793,6 +4384,14 @@
 			"color": "Blue",
 			"cost": 2,
 			"eddiable": false,
+			"faqs": [
+				{
+					"answer": "No.",
+					"id": "39c1b729-a65b-4cf6-81dd-150719aa38b3",
+					"question": "If this Unit gains [ADRENALINE] the turn it's played , can it attack even if I haven't played a Program yet?",
+					"sortOrder": 100
+				}
+			],
 			"flavorText": null,
 			"keywords": [],
 			"name": "Jacked-In Voodoo Boy",
@@ -3841,6 +4440,32 @@
 			"color": "Green",
 			"cost": 6,
 			"eddiable": true,
+			"faqs": [
+				{
+					"answer": "No.",
+					"id": "739fcd51-c571-4770-9ceb-dc6d7c785842",
+					"question": "When I defeat Jackie Welles instead of a friendly Unit, does the Unit's [DEFEATED] effect trigger?",
+					"sortOrder": 100
+				},
+				{
+					"answer": "Yes.",
+					"id": "659dec0e-519c-445d-966e-6e27e4ad5c1f",
+					"question": "Can I use this effect if Jackie Welles is in the Field area as a Unit?",
+					"sortOrder": 200
+				},
+				{
+					"answer": "Yes.",
+					"id": "2d22697d-50af-4372-bffb-29cae81f45cc",
+					"question": "Can I use this effect if Jackie Welles is in the Legends area?",
+					"sortOrder": 300
+				},
+				{
+					"answer": "Yes.",
+					"id": "ab195483-70b3-4bdf-9d42-488148b666ec",
+					"question": "If Jackie Welles would be defeated while it's a Unit, could I use Jackie Welle's effect to defeat himself instead of being defeated the other way?",
+					"sortOrder": 400
+				}
+			],
 			"flavorText": null,
 			"keywords": [
 				"Go Solo"
@@ -3939,6 +4564,26 @@
 			"color": "Blue",
 			"cost": null,
 			"eddiable": true,
+			"faqs": [
+				{
+					"answer": "No.",
+					"id": "15b27a52-f1e8-48fb-9c59-ac9d2d4c6824",
+					"question": "If I've already played a Blue Unit or Gear this turn before Jackie Welles is face-up, then flip Jackie, can I trigger Jackie's effect that turn by playing another Blue Gear or Unit?",
+					"sortOrder": 100
+				},
+				{
+					"answer": "Yes.",
+					"id": "763356ba-0750-492a-86d2-2b7b75325208",
+					"question": "Does playing a Legend from the Legends area to the field, trigger Jackie Welles's effect?",
+					"sortOrder": 200
+				},
+				{
+					"answer": "No.",
+					"id": "c58d792f-af25-4060-b261-dc7369c18aa2",
+					"question": "If I choose an already min Gig for Jackie Welles's effect, can I draw 1?",
+					"sortOrder": 300
+				}
+			],
 			"flavorText": null,
 			"keywords": [],
 			"name": "Jackie Welles: Pour One Out For Me",
@@ -4028,6 +4673,20 @@
 			"color": "Yellow",
 			"cost": 6,
 			"eddiable": false,
+			"faqs": [
+				{
+					"answer": "No.",
+					"id": "801aa9c8-c507-44e9-89c1-3477c1f8a2b1",
+					"question": "If Gig becomes odd after Jackie attacks, does Jackie lose the +2 power?",
+					"sortOrder": 100
+				},
+				{
+					"answer": "No.",
+					"id": "c61101be-05ed-46e3-b027-d05f5981632f",
+					"question": "If I acquire another friendly even Gig after Jackie Welles attacks, does Jackie Welles get another +2 power this turn?",
+					"sortOrder": 200
+				}
+			],
 			"flavorText": null,
 			"keywords": [
 				"Attack",
@@ -4115,6 +4774,14 @@
 			"color": "Red",
 			"cost": 2,
 			"eddiable": false,
+			"faqs": [
+				{
+					"answer": "Yes.",
+					"id": "cce96f5d-9d4d-4a30-b6ba-5e49c53280dc",
+					"question": "Can Japantown Jonin choose itself with its own [PLAY] effect?",
+					"sortOrder": 100
+				}
+			],
 			"flavorText": null,
 			"keywords": [
 				"Play"
@@ -4178,6 +4845,32 @@
 			"color": "Red",
 			"cost": 6,
 			"eddiable": false,
+			"faqs": [
+				{
+					"answer": "When Johnny Silvlerhand attacks (or is attacked by) a CORPO Unit,  he always wins the fight, regardless of power. So, Johnny Silverhand defeats the opposing COPRO Unit (as long as he has power 1+).",
+					"id": "3cfb42c3-4d87-44db-9b06-7f48c24b912f",
+					"question": "What \"This Unit wins all fights against CORPO Units\" mean?",
+					"sortOrder": 100
+				},
+				{
+					"answer": "Yes.",
+					"id": "e512816e-a856-491a-896b-fde16d661ea7",
+					"question": "If Johnny wins a fight during a Rival’s turn, does he still ready from his effect?",
+					"sortOrder": 200
+				},
+				{
+					"answer": "No.",
+					"id": "d33a4200-b3f8-48ee-8a83-35c113ee45da",
+					"question": "If Johnny wins his first fight this turn but is already ready, can I use the effect on his next attack instead?",
+					"sortOrder": 300
+				},
+				{
+					"answer": "No. Johnny Silverhand still wins the fight, but Units at power 0 can't defeat other Units in a fight, so neither Unit is defeated.",
+					"id": "69794180-6e80-4a4c-b0dc-df8c290bdc19",
+					"question": "If Johnny has power 0 when he fights a CORPO Unit., does he still defeat the opposing rival Unit?",
+					"sortOrder": 400
+				}
+			],
 			"flavorText": null,
 			"keywords": [],
 			"name": "Johnny Silverhand: Never Stop Fighting",
@@ -4253,6 +4946,26 @@
 			"color": "Red",
 			"cost": null,
 			"eddiable": true,
+			"faqs": [
+				{
+					"answer": "Yes, but you still need to spend Johnny Silverhand to activate it.",
+					"id": "97a58f36-cd0e-4e0b-9be0-b1ff61a9d2b4",
+					"question": "Can I reduce Johnny Silverhand’s effect cost to 0 €$?",
+					"sortOrder": 100
+				},
+				{
+					"answer": "Yes.",
+					"id": "7af4302f-2f3e-4ddc-9445-fe0ac9f755d7",
+					"question": "Can I use Johnny's effect on a Unit that wasn't played this turn?",
+					"sortOrder": 200
+				},
+				{
+					"answer": "Yes.",
+					"id": "e403c866-e7b1-4982-8c0c-0b7d672b7185",
+					"question": "Can a Unit played on a previous turn still attack the rival Gig area if I use Johnny's effect on it?",
+					"sortOrder": 300
+				}
+			],
 			"flavorText": null,
 			"keywords": [
 				"Spend"
@@ -4351,6 +5064,32 @@
 			"color": "Blue",
 			"cost": null,
 			"eddiable": true,
+			"faqs": [
+				{
+					"answer": "Yes.",
+					"id": "3dbd8dd8-e076-4ca2-8103-e648718f35e6",
+					"question": "If I play a Program from my trash, does the first effect still trigger?",
+					"sortOrder": 100
+				},
+				{
+					"answer": "Yes.",
+					"id": "179be304-b54b-47f7-8358-eac64e44f31e",
+					"question": "Can I trigger the first effect multiple times in a turn by playing multiple BRAINDANCE Programs?",
+					"sortOrder": 200
+				},
+				{
+					"answer": "Yes.",
+					"id": "5822e4e8-3878-49b3-b0d0-fb241272ae6d",
+					"question": "Can I choose the same friendly Unit with this card's first effect each time I play a Program?",
+					"sortOrder": 300
+				},
+				{
+					"answer": "Yes.",
+					"id": "284c60bf-247b-4ff1-8bcb-d60361138dad",
+					"question": "If I play a [QUICK] BRAINDANCE Program as a reaction on my Rival's turn, does first effect trigger?",
+					"sortOrder": 400
+				}
+			],
 			"flavorText": null,
 			"keywords": [
 				"Spend"
@@ -4443,6 +5182,14 @@
 			"color": "Blue",
 			"cost": 6,
 			"eddiable": false,
+			"faqs": [
+				{
+					"answer": "Yes.",
+					"id": "90d8581b-b42a-4061-a7d4-d589879389cc",
+					"question": "Can I activate this card's effect if I have no cards left in my deck?",
+					"sortOrder": 100
+				}
+			],
 			"flavorText": null,
 			"keywords": [
 				"Spend"
@@ -4522,6 +5269,14 @@
 			"color": "Yellow",
 			"cost": null,
 			"eddiable": true,
+			"faqs": [
+				{
+					"answer": "No.",
+					"id": "91ff465b-38fc-45b1-8db2-d8cbe6b465cc",
+					"question": "If I roll a 1 on a friendly Gig and choose to reroll with Kerry Eurodyne's effect, but don't roll a 1 or 20 on that Gig, do I still get the draw effect for the first result?",
+					"sortOrder": 100
+				}
+			],
 			"flavorText": null,
 			"keywords": [],
 			"name": "Kerry Eurodyne: Axe, Attitude, Audience",
@@ -4595,6 +5350,26 @@
 			"color": "Red",
 			"cost": 4,
 			"eddiable": false,
+			"faqs": [
+				{
+					"answer": "No.",
+					"id": "d23941b5-53c4-4036-b19d-cfa8bf059c5a",
+					"question": "Can I activate Kerry's [Spend Icon:] effect the turn I play him?",
+					"sortOrder": 100
+				},
+				{
+					"answer": "Yes, but you won't get to draw 2.",
+					"id": "1da9b201-025a-487d-b49b-b1c8523579a8",
+					"question": "Can I activate Kerry’s [Spend Icon:] effect if I do not control an 8+ Gig?",
+					"sortOrder": 200
+				},
+				{
+					"answer": "Yes.",
+					"id": "498e223a-b488-4fc8-a8cf-35f5e800543a",
+					"question": "If Kerry readies after I activated his [Spend Icon:] effect, can I activate  it again on the same turn?",
+					"sortOrder": 300
+				}
+			],
 			"flavorText": null,
 			"keywords": [
 				"Spend"
@@ -4670,6 +5445,14 @@
 			"color": "Yellow",
 			"cost": 1,
 			"eddiable": true,
+			"faqs": [
+				{
+					"answer": "Yes.",
+					"id": "22d75516-cd32-4b86-bce5-915d075c3ec3",
+					"question": "Do I have to look at at friendly face-down Legend even if I don't want to?",
+					"sortOrder": 100
+				}
+			],
 			"flavorText": null,
 			"keywords": [
 				"Attack"
@@ -4766,6 +5549,26 @@
 			"color": "Red",
 			"cost": 3,
 			"eddiable": false,
+			"faqs": [
+				{
+					"answer": "Before.",
+					"id": "7cf45f7a-84df-4193-9f28-656d3054d183",
+					"question": "When La Llorona uses [BLOCKER], do I increase a Gig for her second effect before or after the ensuing fight?",
+					"sortOrder": 100
+				},
+				{
+					"answer": "Yes. There is no limit of how many times you can use [BLOCKER] in one turn.",
+					"id": "10236d8a-b781-4d18-8857-57f7b3555983",
+					"question": "Can I use  a different Unit's [BLOCKER] effect after I block with La Llorna to redirect the attack again?",
+					"sortOrder": 200
+				},
+				{
+					"answer": "Up to means 0, 1, 2, or 3.",
+					"id": "287826c0-e5e6-4383-ab1a-a24314ebc44d",
+					"question": "Can La Llorona increase a Gig by 0, 1, 2, or 3, or must it increase by exactly 3?",
+					"sortOrder": 300
+				}
+			],
 			"flavorText": null,
 			"keywords": [
 				"Blocker"
@@ -4840,6 +5643,20 @@
 			"color": "Blue",
 			"cost": 5,
 			"eddiable": true,
+			"faqs": [
+				{
+					"answer": "The Player activating the card Chooses.",
+					"id": "9a85bf8b-c371-4d1a-8d13-22976fb78130",
+					"question": "Who chooses?",
+					"sortOrder": 100
+				},
+				{
+					"answer": "Yes.",
+					"id": "072482a5-a9f6-4f39-9d18-53f483613eed",
+					"question": "Can I play this card if there is no Rival Unit?",
+					"sortOrder": 200
+				}
+			],
 			"flavorText": null,
 			"keywords": [],
 			"name": "Les Élémens",
@@ -4892,6 +5709,26 @@
 			"color": "Yellow",
 			"cost": 3,
 			"eddiable": true,
+			"faqs": [
+				{
+					"answer": "Yes.",
+					"id": "3c7f6d4d-2ff5-42a8-a56b-71767d912551",
+					"question": "Can I play this Program if I do not have a friendly Unit in the field area?",
+					"sortOrder": 100
+				},
+				{
+					"answer": "Yes.",
+					"id": "a391a6fc-a480-4d18-b451-438ba58948e1",
+					"question": "Can I play this Program if there is no rival Unit in the field area?",
+					"sortOrder": 200
+				},
+				{
+					"answer": "Yes.",
+					"id": "8ebfb418-5733-4153-a981-8076cb0e9f41",
+					"question": "Can I play this Program if there are no Units in the field area?",
+					"sortOrder": 300
+				}
+			],
 			"flavorText": null,
 			"keywords": [],
 			"name": "Live with the Aftermath",
@@ -4940,6 +5777,7 @@
 			"color": "Blue",
 			"cost": 5,
 			"eddiable": false,
+			"faqs": [],
 			"flavorText": null,
 			"keywords": [
 				"Play",
@@ -5004,6 +5842,14 @@
 			"color": "Yellow",
 			"cost": 3,
 			"eddiable": false,
+			"faqs": [
+				{
+					"answer": "Yes.",
+					"id": "bd1e1e2f-a20a-40dc-be90-265bfcb367aa",
+					"question": "If I steal more than 1 Gig at a time, does my Rival have to discard more than 1?",
+					"sortOrder": 100
+				}
+			],
 			"flavorText": null,
 			"keywords": [],
 			"name": "Maelstrom Goons",
@@ -5053,6 +5899,20 @@
 			"color": "Green",
 			"cost": 4,
 			"eddiable": false,
+			"faqs": [
+				{
+					"answer": "It's the Unit in a fight with your friendly Unit.",
+					"id": "a40d7f07-d5ed-4ae5-88f7-f5e4e4d4b28f",
+					"question": "What is \"the opposing rival Unit?\"",
+					"sortOrder": 100
+				},
+				{
+					"answer": "Yes.",
+					"id": "3dc2ff22-518e-4809-ae1e-f778621642f0",
+					"question": "If my Unit loses a fight but has an effect that it cannot be defeated, does it still lose the fight?",
+					"sortOrder": 200
+				}
+			],
 			"flavorText": null,
 			"keywords": [],
 			"name": "Maelstrom Zealots",
@@ -5109,6 +5969,14 @@
 			"color": "Blue",
 			"cost": 5,
 			"eddiable": false,
+			"faqs": [
+				{
+					"answer": "No. You may discard 2 to resolve the full effect or none at all.",
+					"id": "9d6d9ce9-9dca-42f9-bb90-0e89c5fed80b",
+					"question": "If I can't discard 2 Programs to gain the rest of the effect, can I choose to just discard 1 anyway?",
+					"sortOrder": 100
+				}
+			],
 			"flavorText": null,
 			"keywords": [
 				"Play"
@@ -5194,6 +6062,7 @@
 			"color": "Yellow",
 			"cost": 1,
 			"eddiable": true,
+			"faqs": [],
 			"flavorText": null,
 			"keywords": [
 				"Blocker"
@@ -5309,6 +6178,7 @@
 			"color": "Red",
 			"cost": 1,
 			"eddiable": true,
+			"faqs": [],
 			"flavorText": "\"One cut, one kill.\"",
 			"keywords": [],
 			"name": "Mantis Blades",
@@ -5398,6 +6268,14 @@
 			"color": "Green",
 			"cost": 5,
 			"eddiable": false,
+			"faqs": [
+				{
+					"answer": "No.",
+					"id": "9dfba4f9-6ebe-46ab-adcf-757a0e407d11",
+					"question": "Am I forced to Swap Gigs?",
+					"sortOrder": 100
+				}
+			],
 			"flavorText": null,
 			"keywords": [
 				"Play"
@@ -5473,6 +6351,14 @@
 			"color": "Green",
 			"cost": 7,
 			"eddiable": false,
+			"faqs": [
+				{
+					"answer": "No, only the amount you pay.",
+					"id": "86289bd1-7a4f-4b3e-b588-b8acc2212ad7",
+					"question": "Does MaxTac Heavy's effect change the cost of the card?",
+					"sortOrder": 100
+				}
+			],
 			"flavorText": null,
 			"keywords": [],
 			"name": "MaxTac Heavy",
@@ -5539,6 +6425,14 @@
 			"color": "Green",
 			"cost": 3,
 			"eddiable": false,
+			"faqs": [
+				{
+					"answer": "No. To avoid invalidating Maxtac Squadron's effect, resolve it before any effects that would ready it.",
+					"id": "36ecf80a-cd64-4a27-91ac-a079e8d4250b",
+					"question": "If I ready my Maxtac Squadron with a different end-of-turn effect before I resolve this effect, can I still ready a friendly face-up Legend?",
+					"sortOrder": 100
+				}
+			],
 			"flavorText": null,
 			"keywords": [],
 			"name": "MaxTac Squadron",
@@ -5607,6 +6501,14 @@
 			"color": "Yellow",
 			"cost": 5,
 			"eddiable": false,
+			"faqs": [
+				{
+					"answer": "No.",
+					"id": "00a253c5-f0a2-4f13-a7a3-520c703c2402",
+					"question": "I played a friendly Legend to the field area with [GO SOLO] this turn. Can it attack even if my rival has a Maxtax Suppression Team?",
+					"sortOrder": 100
+				}
+			],
 			"flavorText": null,
 			"keywords": [],
 			"name": "MaxTac Suppression Team",
@@ -5655,6 +6557,14 @@
 			"color": "Green",
 			"cost": 4,
 			"eddiable": true,
+			"faqs": [
+				{
+					"answer": "Yes.",
+					"id": "5e7e7fa9-d975-45fd-aaaf-27cd449ac788",
+					"question": "Can I choose a Unit that's already spent for this card's effect?",
+					"sortOrder": 100
+				}
+			],
 			"flavorText": null,
 			"keywords": [],
 			"name": "Memory Relapse",
@@ -5721,6 +6631,14 @@
 			"color": "Red",
 			"cost": 4,
 			"eddiable": false,
+			"faqs": [
+				{
+					"answer": "No.",
+					"id": "ae3bd50b-b937-4a8a-8c8a-24dab0acd367",
+					"question": "If a Rival adjusts or swaps multiple friendly Gigs simultaneously, does Meredith Stout's effect trigger for each of them?",
+					"sortOrder": 100
+				}
+			],
 			"flavorText": null,
 			"keywords": [
 				"Blocker"
@@ -5786,6 +6704,20 @@
 			"color": "Red",
 			"cost": 7,
 			"eddiable": false,
+			"faqs": [
+				{
+					"answer": "Yes.",
+					"id": "a6bfa127-ff5b-4aed-a261-fac2be6a71c5",
+					"question": "Can I still play this card if I don't have more Street Cred than my Rival?",
+					"sortOrder": 100
+				},
+				{
+					"answer": "Yes.",
+					"id": "1528eec2-100f-4436-9874-d45f3589e9af",
+					"question": "Do I have to defeat a rival Unit with power 5 or less, even if I don't want to?",
+					"sortOrder": 200
+				}
+			],
 			"flavorText": null,
 			"keywords": [
 				"Play"
@@ -5888,6 +6820,20 @@
 			"color": "Blue",
 			"cost": 3,
 			"eddiable": false,
+			"faqs": [
+				{
+					"answer": "Yes.",
+					"id": "e82502be-aaff-4d75-bd4b-87e00e760fa1",
+					"question": "Do card types include Legends?",
+					"sortOrder": 100
+				},
+				{
+					"answer": "Yes.",
+					"id": "1d61a391-26ad-484b-9ae5-621df7aa2adc",
+					"question": "Can I choose \"Legends\" for this effect?",
+					"sortOrder": 200
+				}
+			],
 			"flavorText": null,
 			"keywords": [],
 			"name": "Misty Olszewski: Mender of Broken Spirits",
@@ -5949,6 +6895,14 @@
 			"color": "Blue",
 			"cost": 6,
 			"eddiable": false,
+			"faqs": [
+				{
+					"answer": "No.",
+					"id": "e6eaf7b6-9d18-41a9-8e01-d2d060dafc03",
+					"question": "Can this effect be used in the trash?",
+					"sortOrder": 100
+				}
+			],
 			"flavorText": null,
 			"keywords": [
 				"Adrenaline"
@@ -6014,6 +6968,14 @@
 			"color": "Blue",
 			"cost": 5,
 			"eddiable": false,
+			"faqs": [
+				{
+					"answer": "Yes.",
+					"id": "d0a32e18-0674-4b46-ae37-e4f5dd4ab053",
+					"question": "If I have less (Street Cred) than a Rival at the end of my turn, am I forced to ready this Unit?",
+					"sortOrder": 100
+				}
+			],
 			"flavorText": null,
 			"keywords": [],
 			"name": "Modded Muramasa",
@@ -6080,6 +7042,14 @@
 			"color": "Blue",
 			"cost": 3,
 			"eddiable": false,
+			"faqs": [
+				{
+					"answer": "No.",
+					"id": "993d5dde-b6f3-4e0a-b6de-48fe2efda10c",
+					"question": "I use this on my rival's Unit that has an effect that reads \"This Unit can't attack.\" will that Unit be able to make an attack?",
+					"sortOrder": 100
+				}
+			],
 			"flavorText": null,
 			"keywords": [
 				"Play",
@@ -6152,6 +7122,20 @@
 			"color": "Blue",
 			"cost": 5,
 			"eddiable": true,
+			"faqs": [
+				{
+					"answer": "Yes.",
+					"id": "b0b79c55-4167-448c-8717-b9f9f60b7ea6",
+					"question": "Am I able to sell this card even if it is a Unit?",
+					"sortOrder": 100
+				},
+				{
+					"answer": "No.",
+					"id": "4ab27f37-6192-43a3-97eb-cf81060bb6d3",
+					"question": "If I have lower Street Cred when I attack with MT0D12 Flathead, but triggered effects or reactions make my Rival's Street Cred lower than mine, can my Rival then block the MT0D12 Flathead's attack?",
+					"sortOrder": 200
+				}
+			],
 			"flavorText": null,
 			"keywords": [],
 			"name": "MT0D12 Flathead",
@@ -6227,6 +7211,26 @@
 			"color": "Yellow",
 			"cost": null,
 			"eddiable": true,
+			"faqs": [
+				{
+					"answer": "No. You can still \"choose\" the other effect, it just fails.",
+					"id": "63f515ca-17b9-40ee-83ae-30abb4404bb4",
+					"question": "If I do not have a friendly Unit, do I have to choose the Draw 1 effect?",
+					"sortOrder": 100
+				},
+				{
+					"answer": "Yes.",
+					"id": "329babc2-5aa7-40ee-a760-126d86bdc2c5",
+					"question": "Does Muamar Reyes's effect each fight the Unit is in this turn?",
+					"sortOrder": 200
+				},
+				{
+					"answer": "Yes.",
+					"id": "c155d52c-a1ee-42f6-8698-13721cb2b6b9",
+					"question": "If the chosen Unit with Muamar Reye's effect can't be defeated, can it still lose a fight?",
+					"sortOrder": 300
+				}
+			],
 			"flavorText": null,
 			"keywords": [
 				"Spend",
@@ -6323,6 +7327,14 @@
 			"color": "Green",
 			"cost": 6,
 			"eddiable": false,
+			"faqs": [
+				{
+					"answer": "No.",
+					"id": "526169c5-08ff-4dfe-9690-c385754b658c",
+					"question": "If Nadia attacks the rival Gig area the turn she is played but an effect causes my Rival to have less Gig's than me, does that cancel Nadia's attack?",
+					"sortOrder": 100
+				}
+			],
 			"flavorText": null,
 			"keywords": [],
 			"name": "Nadia: Fighting Through Grief",
@@ -6373,6 +7385,32 @@
 			"color": "Blue",
 			"cost": 3,
 			"eddiable": true,
+			"faqs": [
+				{
+					"answer": "Before.",
+					"id": "44cc0af1-c683-4dd4-882e-7eefd4c443b3",
+					"question": "When I spend a Unit equipped with Netwatch Netdriver to declare an attack, do I get Netwatch Netdriver's effect before or after I resolve the attack?",
+					"sortOrder": 100
+				},
+				{
+					"answer": "You can choose the order you resolve these effects.",
+					"id": "e7efa410-6ebf-4195-9e8e-8a31a00f20b2",
+					"question": "If I spend a Unit equipped with Netwatch Netdriver to declare an attack, and the Unit or Legend has an [ATTACK] effect, do I get Netwatch Netdriver's effect before or after the [ATTACK] effect?",
+					"sortOrder": 200
+				},
+				{
+					"answer": "After. Resolve the activated [Spend Icon:] effect first.",
+					"id": "6a903897-b1e2-486f-835e-3c702fcbe77c",
+					"question": "If I spend a Unit or Legend equipped with Netwatch Netdriver to activate the Unit/Legend's [Spend Icon:] effect, do I resolve Netwatch Netdriver's effect before or after the activated effect?",
+					"sortOrder": 300
+				},
+				{
+					"answer": "After.",
+					"id": "52e98457-4afa-4996-972b-5ec373a331c5",
+					"question": "If I spend a Legend equipped with Netwatch Netdriver to pay a card's cost, do I resolve Netwatch Netdriver's effect before or after I play the card?",
+					"sortOrder": 400
+				}
+			],
 			"flavorText": null,
 			"keywords": [],
 			"name": "NetWatch Netdriver",
@@ -6448,6 +7486,26 @@
 			"color": "Blue",
 			"cost": 3,
 			"eddiable": true,
+			"faqs": [
+				{
+					"answer": "If there are no longer any Gig die in the fixer area then the fixer area is now empty.",
+					"id": "d1fecc2d-4186-438c-9de7-de02184f0ad7",
+					"question": "How do I know if my fixer area is empty?",
+					"sortOrder": 100
+				},
+				{
+					"answer": "Yes.",
+					"id": "d9d3bf9e-e13a-4a19-9220-7fcc74e47eae",
+					"question": "May I chose an effect even if I cannot meet the requirements to fufill the effect?",
+					"sortOrder": 200
+				},
+				{
+					"answer": "Yes.",
+					"id": "0bba2dd4-1887-48bc-a577-9411b1081a64",
+					"question": "If your fixer area is empty am I forced to play this for 1 eddie?",
+					"sortOrder": 300
+				}
+			],
 			"flavorText": null,
 			"keywords": [
 				"Go Solo"
@@ -6562,6 +7620,14 @@
 			"color": "Red",
 			"cost": 7,
 			"eddiable": false,
+			"faqs": [
+				{
+					"answer": "No, only the amount you pay.",
+					"id": "79a2970c-40e7-4d7f-a419-57a4b8eb3c76",
+					"question": "Does Octant's effect change the cost of the card?",
+					"sortOrder": 100
+				}
+			],
 			"flavorText": null,
 			"keywords": [],
 			"name": "Octant",
@@ -6629,6 +7695,14 @@
 			"color": "Yellow",
 			"cost": 4,
 			"eddiable": false,
+			"faqs": [
+				{
+					"answer": "Yes.",
+					"id": "b91fa741-e2c0-4974-8663-74d7f661d3e3",
+					"question": "If my Rival does not have a Unit on the field when I play Offduty Malfini, do I still have to spend it?",
+					"sortOrder": 100
+				}
+			],
 			"flavorText": null,
 			"keywords": [
 				"Play"
@@ -6704,6 +7778,26 @@
 			"color": "Red",
 			"cost": 3,
 			"eddiable": true,
+			"faqs": [
+				{
+					"answer": "No.",
+					"id": "3aec4fa6-6b30-466a-a4a8-7449ce7ab078",
+					"question": "Can I use this to defeat a Unit with 0 power if I do not have a friendly D20?",
+					"sortOrder": 100
+				},
+				{
+					"answer": "Yes.",
+					"id": "6b61f796-5665-4ae0-bb6a-4b607cb20b28",
+					"question": "Can I defeat my own Unit with this effect?",
+					"sortOrder": 200
+				},
+				{
+					"answer": "Yes, but you cannot defeat a Unit.",
+					"id": "00b41165-2bad-41c3-8a4a-be0c6747f4d7",
+					"question": "If I do not control a friendly d20, can I play Over the Edge?",
+					"sortOrder": 300
+				}
+			],
 			"flavorText": null,
 			"keywords": [],
 			"name": "Over the Edge",
@@ -6790,6 +7884,14 @@
 			"color": "Green",
 			"cost": 4,
 			"eddiable": true,
+			"faqs": [
+				{
+					"answer": "No, you must discard 1.",
+					"id": "7f11608a-92cf-4b9f-a3b0-9d170ef231c7",
+					"question": "If I use this card's [Spend Icon:] effect but my hand is empty, can I still do the rest of the effect?",
+					"sortOrder": 100
+				}
+			],
 			"flavorText": null,
 			"keywords": [
 				"Spend",
@@ -6874,6 +7976,14 @@
 			"color": "Green",
 			"cost": 4,
 			"eddiable": false,
+			"faqs": [
+				{
+					"answer": "Yes.",
+					"id": "933f4b48-5e65-48a8-97ba-3a2e255a8b7d",
+					"question": "Do I have to choose a rival Unit with this effect when played?",
+					"sortOrder": 100
+				}
+			],
 			"flavorText": null,
 			"keywords": [
 				"Play"
@@ -6948,6 +8058,20 @@
 			"color": "Green",
 			"cost": null,
 			"eddiable": true,
+			"faqs": [
+				{
+					"answer": "No. You can still \"choose\" the other effect, it just fails.",
+					"id": "2376d51c-ae2c-4eb6-aed9-d25a05d56e09",
+					"question": "If there are no viable rival Units, do I have to choose the draw effect?",
+					"sortOrder": 100
+				},
+				{
+					"answer": "Yes.",
+					"id": "afa9a2eb-1766-49c4-95d5-2c1673aae7dd",
+					"question": "May I use this card's [Spend Icon:] if all Gigs are already the same value?",
+					"sortOrder": 200
+				}
+			],
 			"flavorText": null,
 			"keywords": [
 				"Spend",
@@ -7045,6 +8169,20 @@
 			"color": "Green",
 			"cost": null,
 			"eddiable": true,
+			"faqs": [
+				{
+					"answer": "Yes.",
+					"id": "097a8261-ba28-407e-9f81-1cf59c8e995b",
+					"question": "Can I move a Gear from this Legend to an unequipped friendly Unit that's already ready?",
+					"sortOrder": 100
+				},
+				{
+					"answer": "No, a combination of any 5 equipped Units and equipped Legends satisfies the condition.",
+					"id": "5c29eb76-b653-47e4-a7c5-ad38e770890c",
+					"question": "For the second effect,  do I need both Units and Legends equipped?",
+					"sortOrder": 200
+				}
+			],
 			"flavorText": null,
 			"keywords": [
 				"Spend"
@@ -7141,6 +8279,14 @@
 			"color": "Green",
 			"cost": 6,
 			"eddiable": false,
+			"faqs": [
+				{
+					"answer": "No.",
+					"id": "eb1edc97-4acc-49ca-b9e7-8c07cb28e1d9",
+					"question": "If I already Called a Legend this turn, can I call another Legend with Panam Palmer's effect?",
+					"sortOrder": 100
+				}
+			],
 			"flavorText": null,
 			"keywords": [
 				"Attack"
@@ -7212,6 +8358,14 @@
 			"color": "Green",
 			"cost": 1,
 			"eddiable": true,
+			"faqs": [
+				{
+					"answer": "No. Any friendly value-pair satisfies the conditions.",
+					"id": "070c816a-ea6e-43b6-9408-cf976ef42dac",
+					"question": "Does the Gig I set need to be part of the value-pair in order to draw 1?",
+					"sortOrder": 100
+				}
+			],
 			"flavorText": null,
 			"keywords": [],
 			"name": "Peace Offering",
@@ -7270,6 +8424,14 @@
 			"color": "Green",
 			"cost": 4,
 			"eddiable": false,
+			"faqs": [
+				{
+					"answer": "Two Gigs with the same value within the same Gig area.",
+					"id": "1f2d750b-a776-4d1c-bc79-a4621ab2cf0d",
+					"question": "What's a value-pair?",
+					"sortOrder": 100
+				}
+			],
 			"flavorText": null,
 			"keywords": [
 				"Attack"
@@ -7336,6 +8498,14 @@
 			"color": "Blue",
 			"cost": 8,
 			"eddiable": false,
+			"faqs": [
+				{
+					"answer": "Yes.",
+					"id": "ae31fcd3-d3db-4bbe-b099-2a07cc0ba270",
+					"question": "May I discard 1 Program even if there's no rival Unit to bottom-deck?",
+					"sortOrder": 100
+				}
+			],
 			"flavorText": null,
 			"keywords": [
 				"Play",
@@ -7401,6 +8571,7 @@
 			"color": "Blue",
 			"cost": 4,
 			"eddiable": false,
+			"faqs": [],
 			"flavorText": "Their protocol stops at “shoot first.”",
 			"keywords": [],
 			"name": "Psycho Squad",
@@ -7472,6 +8643,14 @@
 			"color": "Blue",
 			"cost": 3,
 			"eddiable": true,
+			"faqs": [
+				{
+					"answer": "No, you must resolve the top effect first, then the bottom one.",
+					"id": "29b8e233-81e1-4660-9df8-eb9002af9562",
+					"question": "If I choose both effetcs, can I choose what order I resolve them?",
+					"sortOrder": 100
+				}
+			],
 			"flavorText": null,
 			"keywords": [],
 			"name": "Pyramid Song",
@@ -7544,6 +8723,7 @@
 			"color": "Red",
 			"cost": null,
 			"eddiable": false,
+			"faqs": [],
 			"flavorText": null,
 			"keywords": [],
 			"name": "Rebecca: Having a Moment",
@@ -7585,6 +8765,14 @@
 			"color": "Blue",
 			"cost": 2,
 			"eddiable": true,
+			"faqs": [
+				{
+					"answer": "Yes.",
+					"id": "e18d31dd-7ee1-4494-8098-a72db45bfa2d",
+					"question": "If my Unit loses a fight but isn't defeated due to this effect, does it still count as losing the fight?",
+					"sortOrder": 100
+				}
+			],
 			"flavorText": null,
 			"keywords": [
 				"Quick"
@@ -7670,6 +8858,7 @@
 			"color": "Green",
 			"cost": 5,
 			"eddiable": false,
+			"faqs": [],
 			"flavorText": null,
 			"keywords": [
 				"Adrenaline"
@@ -7729,6 +8918,14 @@
 			"color": "Green",
 			"cost": 2,
 			"eddiable": true,
+			"faqs": [
+				{
+					"answer": "No.",
+					"id": "06f40e31-2d2e-46d4-bfab-7670da4c189c",
+					"question": "Does this effect force my Rival to use [GO SOLO] on their turn if they have enough €$ available?",
+					"sortOrder": 100
+				}
+			],
 			"flavorText": null,
 			"keywords": [
 				"Blocker",
@@ -7820,6 +9017,14 @@
 			"color": "Blue",
 			"cost": 4,
 			"eddiable": false,
+			"faqs": [
+				{
+					"answer": "Yes.",
+					"id": "7b34456c-7332-4134-9650-5864aee59890",
+					"question": "If I have no cards left in my deck when I spend a friendly Rita Wheeler, do I lose the game?",
+					"sortOrder": 100
+				}
+			],
 			"flavorText": null,
 			"keywords": [
 				"Blocker"
@@ -7885,6 +9090,32 @@
 			"color": "Yellow",
 			"cost": null,
 			"eddiable": true,
+			"faqs": [
+				{
+					"answer": "Yes.",
+					"id": "88707f62-0eaf-4383-9304-c28a50c995e3",
+					"question": "Can I activate River Ward’s [QUICK] [Spend Icon:] effect if I have no Gear cards in hand?",
+					"sortOrder": 100
+				},
+				{
+					"answer": "No.",
+					"id": "81489d83-54af-42d9-a5b3-8eb4e5399ae6",
+					"question": "Does the Gear have to be equipped to this Legend?",
+					"sortOrder": 200
+				},
+				{
+					"answer": "Yes.",
+					"id": "a6ed37cc-f3f9-42e6-8246-0edf668b0bc5",
+					"question": "Do you have to Trash the top card after searching?",
+					"sortOrder": 300
+				},
+				{
+					"answer": "Yes.",
+					"id": "28a594b5-9188-4f9b-9d3d-8e0100d6ce5e",
+					"question": "Do I keep the card not Trashed on top of my deck?",
+					"sortOrder": 400
+				}
+			],
 			"flavorText": null,
 			"keywords": [
 				"Spend",
@@ -7976,6 +9207,7 @@
 			"color": "Yellow",
 			"cost": 5,
 			"eddiable": false,
+			"faqs": [],
 			"flavorText": "Scream your throat raw for something. Anything.",
 			"keywords": [],
 			"name": "Rockn' Rockerboy",
@@ -8017,6 +9249,20 @@
 			"color": "Yellow",
 			"cost": 7,
 			"eddiable": true,
+			"faqs": [
+				{
+					"answer": "Yes.",
+					"id": "e4837808-b775-4bbb-8e98-6c5c8441324e",
+					"question": "Does Rogue Amendiares' effect trigger if she steals a Gig herself?",
+					"sortOrder": 100
+				},
+				{
+					"answer": "Yes.",
+					"id": "c66b9c47-a74d-4293-89ae-3d04bbb5bf92",
+					"question": "Does Rogue Amendiares' effect work while face-up in the Legend area?",
+					"sortOrder": 200
+				}
+			],
 			"flavorText": null,
 			"keywords": [
 				"Go Solo"
@@ -8103,6 +9349,14 @@
 			"color": "Blue",
 			"cost": 5,
 			"eddiable": false,
+			"faqs": [
+				{
+					"answer": "No.",
+					"id": "9ce8258b-6b6a-4157-9054-7923068292d5",
+					"question": "If I manage to play Rogue Amendiares on my Rival's turn, can I use her [QUICK] effect that turn?",
+					"sortOrder": 100
+				}
+			],
 			"flavorText": null,
 			"keywords": [
 				"Spend",
@@ -8194,6 +9448,20 @@
 			"color": "Red",
 			"cost": 5,
 			"eddiable": false,
+			"faqs": [
+				{
+					"answer": "Yes.",
+					"id": "506cd2e9-d647-404d-a713-14e340241fcc",
+					"question": "Do I have to defeat a rival Unit even if I don't want to?",
+					"sortOrder": 100
+				},
+				{
+					"answer": "Yes.",
+					"id": "3ae8916f-514c-47dd-b078-a5844f21277d",
+					"question": "If a rival Unit’s power is reduced to 2 or 3 by another effect this turn, can Royce defeat it?",
+					"sortOrder": 200
+				}
+			],
 			"flavorText": null,
 			"keywords": [
 				"Play"
@@ -8267,6 +9535,26 @@
 			"color": "Red",
 			"cost": 6,
 			"eddiable": true,
+			"faqs": [
+				{
+					"answer": "Yes, you can equip face-up Legends in the Legends area.",
+					"id": "4c90424e-2603-4927-8bbd-067de4332a36",
+					"question": "Can I equip Gear to Royce in the Legends area?",
+					"sortOrder": 100
+				},
+				{
+					"answer": "Yes.",
+					"id": "46c436af-2ee0-4b1a-b7d5-03df43ed5203",
+					"question": "Does the Royce +2 power for each equipped Gear apply while he is still in the Legend area?",
+					"sortOrder": 200
+				},
+				{
+					"answer": "When a Legend leaves the field or Legends area, its attached Gear follows the Legend to that area, then is no longer equipped in the new area. So, the Gear remains in that new area when you remove the Legend from play.",
+					"id": "903ccbd0-d2d9-46e0-9ffc-cd5ebddef04a",
+					"question": "What happens to a Gear on a Legend when the Legend is removed from play?",
+					"sortOrder": 300
+				}
+			],
 			"flavorText": null,
 			"keywords": [
 				"Go Solo"
@@ -8353,6 +9641,14 @@
 			"color": "Red",
 			"cost": 2,
 			"eddiable": false,
+			"faqs": [
+				{
+					"answer": "No.",
+					"id": "76746ab1-b325-427c-a8ca-499dcff97fb3",
+					"question": "If this Unit is chosen by Mox Inciters to attack but there's no spent rival Unit, is this Unit forced to make an attack on the rival's Gig area?",
+					"sortOrder": 100
+				}
+			],
 			"flavorText": null,
 			"keywords": [],
 			"name": "Ruthless Lowlife",
@@ -8426,6 +9722,14 @@
 			"color": "Green",
 			"cost": null,
 			"eddiable": true,
+			"faqs": [
+				{
+					"answer": "Yes.",
+					"id": "18318e94-6979-4623-9cf5-fee73924d728",
+					"question": "Do my Friendly Arasaka Units have +1 power while in the fight or steal step?",
+					"sortOrder": 100
+				}
+			],
 			"flavorText": null,
 			"keywords": [],
 			"name": "Saburo Arasaka: Stubborn Patriarch",
@@ -8529,6 +9833,14 @@
 			"color": "Yellow",
 			"cost": 2,
 			"eddiable": true,
+			"faqs": [
+				{
+					"answer": "Yes.",
+					"id": "6b38d8b1-470f-402a-aeca-024e1db97b4d",
+					"question": "Do I need to choose a Unit on the field for this Program to effect?",
+					"sortOrder": 100
+				}
+			],
 			"flavorText": null,
 			"keywords": [
 				"Quick"
@@ -8585,6 +9897,14 @@
 			"color": "Green",
 			"cost": 7,
 			"eddiable": false,
+			"faqs": [
+				{
+					"answer": "No.",
+					"id": "2507570b-3a3a-4c5e-bb34-451ebf248cc4",
+					"question": "Can this Unit attack ready Units with its effect?",
+					"sortOrder": 100
+				}
+			],
 			"flavorText": null,
 			"keywords": [
 				"Play"
@@ -8656,6 +9976,14 @@
 			"color": "Green",
 			"cost": 3,
 			"eddiable": true,
+			"faqs": [
+				{
+					"answer": "Yes.",
+					"id": "66f0aa50-b90c-4bf0-9a02-ddfbec146375",
+					"question": "At the end of my turn do I have to ready this Unit or Legend even if I don't want to?",
+					"sortOrder": 100
+				}
+			],
 			"flavorText": null,
 			"keywords": [],
 			"name": "Sandevistan",
@@ -8732,6 +10060,20 @@
 			"color": "Blue",
 			"cost": 5,
 			"eddiable": true,
+			"faqs": [
+				{
+					"answer": "No.",
+					"id": "8b665720-9bdc-47ee-8930-9e8b6f6d41ef",
+					"question": "If I attack the rival Gig area with Sasha but she has 0 power, does she steal a Gig?",
+					"sortOrder": 100
+				},
+				{
+					"answer": "No. You must declare the attack target before revealing the card for her [ATTACK] effect.",
+					"id": "f548eacd-802d-4101-b47c-36cf1155e1df",
+					"question": "When I declare an attack with Sasha Yakovleva, can I use her [ATTACK] effect before I choose a target?",
+					"sortOrder": 200
+				}
+			],
 			"flavorText": null,
 			"keywords": [
 				"Attack",
@@ -8818,6 +10160,20 @@
 			"color": "Red",
 			"cost": 2,
 			"eddiable": true,
+			"faqs": [
+				{
+					"answer": "No.",
+					"id": "d9ad00b9-ab93-498f-a6fa-bab6d833d949",
+					"question": "If a friendly Unit equipped with Satori fights a Unit of the same power and they defeat each other, do I still draw 1?",
+					"sortOrder": 100
+				},
+				{
+					"answer": "Yes.",
+					"id": "8ba81187-0232-4320-b876-cae87a389ea5",
+					"question": "If my Unit equipped with Satori is attacked by a rival Unit and my Unit wins the fight, do I draw 1?",
+					"sortOrder": 200
+				}
+			],
 			"flavorText": null,
 			"keywords": [],
 			"name": "Satori: Sword of Saburo",
@@ -8923,6 +10279,14 @@
 			"color": "Green",
 			"cost": 8,
 			"eddiable": false,
+			"faqs": [
+				{
+					"answer": "Yes.",
+					"id": "1f7a2ac5-b236-4b1c-9f4b-6e0b34441174",
+					"question": "Do other Units keep the +2 power while fighting and stealing too?",
+					"sortOrder": 100
+				}
+			],
 			"flavorText": null,
 			"keywords": [],
 			"name": "Saul Bright: Stormrider",
@@ -8978,6 +10342,20 @@
 			"color": "Red",
 			"cost": 5,
 			"eddiable": false,
+			"faqs": [
+				{
+					"answer": "Yes.",
+					"id": "461379b1-06dd-4753-91b2-1fdabc5024e0",
+					"question": "If I have another Unit in my trash, do I have to add it to my hand  even if I don't want to?",
+					"sortOrder": 100
+				},
+				{
+					"answer": "Yes.",
+					"id": "0db0dbe4-a10b-458b-9b5c-9e478b71c615",
+					"question": "Can Screw's effect add a different copy of Screw from my trash to my hand?",
+					"sortOrder": 200
+				}
+			],
 			"flavorText": null,
 			"keywords": [
 				"Defeated"
@@ -9034,6 +10412,7 @@
 			"color": "Yellow",
 			"cost": 2,
 			"eddiable": false,
+			"faqs": [],
 			"flavorText": null,
 			"keywords": [
 				"Blocker"
@@ -9149,6 +10528,14 @@
 			"color": "Red",
 			"cost": 4,
 			"eddiable": true,
+			"faqs": [
+				{
+					"answer": "Each player may still choose to draw 5, and the total number of discarded cards equals 0.",
+					"id": "0d03437c-9149-4ee7-8006-7bb8fd044608",
+					"question": "If neither player has cards in hand when I play Shattered Memories, what happens?",
+					"sortOrder": 100
+				}
+			],
 			"flavorText": null,
 			"keywords": [],
 			"name": "Shattered Memories",
@@ -9225,6 +10612,14 @@
 			"color": "Yellow",
 			"cost": 2,
 			"eddiable": false,
+			"faqs": [
+				{
+					"answer": "Yes.",
+					"id": "9e6de445-d9cb-42cc-8e94-20c941da7cd9",
+					"question": "When I search the top 3 cards of my deck, can I choose not to reveal any cards and bottom-deck them all even if there's a Gear among them?",
+					"sortOrder": 100
+				}
+			],
 			"flavorText": null,
 			"keywords": [
 				"Attack"
@@ -9286,6 +10681,14 @@
 			"color": "Red",
 			"cost": 3,
 			"eddiable": false,
+			"faqs": [
+				{
+					"answer": "No.",
+					"id": "c41cdb0c-25d6-47ec-8c4c-5bb900a14b3e",
+					"question": "If this Unit gains 5+ power while fighting or after I declare an attack or in a fight. Do I draw 1?",
+					"sortOrder": 100
+				}
+			],
 			"flavorText": null,
 			"keywords": [
 				"Attack"
@@ -9371,6 +10774,20 @@
 			"color": "Green",
 			"cost": 1,
 			"eddiable": true,
+			"faqs": [
+				{
+					"answer": "Yes.",
+					"id": "9f5fa425-bb0f-4f5f-908c-d56b67d14862",
+					"question": "Does this effect count friendly face-up Legends in the field area?",
+					"sortOrder": 100
+				},
+				{
+					"answer": "Yes.",
+					"id": "2a2b9c9f-1076-493c-aa0f-24a274fbf85a",
+					"question": "If I use this on a friendly Legend in that field area that is now a also a Unit, does the Legend count itself for a +1?",
+					"sortOrder": 200
+				}
+			],
 			"flavorText": null,
 			"keywords": [
 				"Quick"
@@ -9427,6 +10844,20 @@
 			"color": "Yellow",
 			"cost": 4,
 			"eddiable": false,
+			"faqs": [
+				{
+					"answer": "No.",
+					"id": "2110a5e9-a27c-42b5-b3e4-ca464f1d2dd0",
+					"question": "Do I have to reveal the friendly face-down Legends I look at?",
+					"sortOrder": 100
+				},
+				{
+					"answer": "Yes.",
+					"id": "2a1bca2f-eaca-4418-baeb-96aab1b4e476",
+					"question": "Do I have to look at my Legends even if I don't want to?",
+					"sortOrder": 200
+				}
+			],
 			"flavorText": null,
 			"keywords": [
 				"Defeated"
@@ -9506,6 +10937,20 @@
 			"color": "Green",
 			"cost": 2,
 			"eddiable": true,
+			"faqs": [
+				{
+					"answer": "Yes.",
+					"id": "4e9fde1b-cbe0-4025-9a04-c61b13ecde02",
+					"question": "Does this apply to Units stealing Gigs through effects outside of attacking?",
+					"sortOrder": 100
+				},
+				{
+					"answer": "0 Gigs. Take Control's effect prevents the rival Unit from stealing a Gig, which means Gorilla Arms does not activate.",
+					"id": "b6be2042-7260-4c72-a7e0-0478c9cda9f9",
+					"question": "If I use Take Control on a rival Unit that would normally steal 1 Gig but is equipped with Gorilla Arms, how many Gigs does it actually steal?",
+					"sortOrder": 200
+				}
+			],
 			"flavorText": null,
 			"keywords": [
 				"Quick"
@@ -9588,6 +11033,14 @@
 			"color": "Blue",
 			"cost": 1,
 			"eddiable": true,
+			"faqs": [
+				{
+					"answer": "Yes.",
+					"id": "5ecbb33e-871b-40cd-bb66-6997a692e1a6",
+					"question": "When searching the top card of the deck is the card still currently counted as being in the deck?",
+					"sortOrder": 100
+				}
+			],
 			"flavorText": null,
 			"keywords": [],
 			"name": "Tetratronic Rippler",
@@ -9666,6 +11119,20 @@
 			"color": "Yellow",
 			"cost": 2,
 			"eddiable": true,
+			"faqs": [
+				{
+					"answer": "Yes.",
+					"id": "8151aa53-358f-4d39-b3f6-58b165127b8e",
+					"question": "If I trash 1 or more Gears from this effect, do I have to add one to my hand even if I don't want to?",
+					"sortOrder": 100
+				},
+				{
+					"answer": "You may add it to your hand if you don't want to play it immediately. (But if you play it later, you must pay its cost normally.)",
+					"id": "4f2133a0-c3cc-4955-9815-6026ed16735d",
+					"question": "If I choose a Gear with cost equal to the value of a friendly Gig, do I have to play it for free, or can I just add it to my hand?",
+					"sortOrder": 200
+				}
+			],
 			"flavorText": null,
 			"keywords": [],
 			"name": "The Heist",
@@ -9715,6 +11182,14 @@
 			"color": "Yellow",
 			"cost": 5,
 			"eddiable": true,
+			"faqs": [
+				{
+					"answer": "No. The Unit/Legend moves to the trash first, so any Gear (including The Relic) remains in the trash when you bottom-deck the Unit/Legend.",
+					"id": "91373c98-159f-48e1-a231-045b5fe34631",
+					"question": "When a Unit or Legend equipped with The Relic is defeated, do I move any equipped Gear on it to the bottom-deck, too?",
+					"sortOrder": 100
+				}
+			],
 			"flavorText": null,
 			"keywords": [
 				"Defeated"
@@ -9781,6 +11256,14 @@
 			"color": "Blue",
 			"cost": 2,
 			"eddiable": true,
+			"faqs": [
+				{
+					"answer": "Yes.",
+					"id": "71b6fcd4-2bac-430b-8589-258ab1aae486",
+					"question": "When searching the top 3 cards of my deck, are the cards still considered part of the deck?",
+					"sortOrder": 100
+				}
+			],
 			"flavorText": null,
 			"keywords": [],
 			"name": "Three Mouths, One Desire",
@@ -9829,6 +11312,20 @@
 			"color": "Blue",
 			"cost": 6,
 			"eddiable": true,
+			"faqs": [
+				{
+					"answer": "No.",
+					"id": "2a2fadce-85ca-49cd-a9a5-76a77e5cf615",
+					"question": "IfI have the same amount of Street Cred as a Rival, do I get both effects?",
+					"sortOrder": 100
+				},
+				{
+					"answer": "No, you must resolve the top effect first, then the bottom one.",
+					"id": "cabf44d5-8f4c-420e-b149-e408e4fcc699",
+					"question": "If I choose both effetcs, can I choose what order I resolve them?",
+					"sortOrder": 200
+				}
+			],
 			"flavorText": null,
 			"keywords": [],
 			"name": "Towerfall",
@@ -9923,6 +11420,14 @@
 			"color": "Yellow",
 			"cost": 6,
 			"eddiable": false,
+			"faqs": [
+				{
+					"answer": "No, only the amount you pay.",
+					"id": "b7e62adb-5a98-482e-8ec7-39fc3d176aa1",
+					"question": "Does Trauma Team Operatives' effect change the cost of the card?",
+					"sortOrder": 100
+				}
+			],
 			"flavorText": null,
 			"keywords": [],
 			"name": "Trauma Team Operatives",
@@ -9989,6 +11494,14 @@
 			"color": "Blue",
 			"cost": 1,
 			"eddiable": true,
+			"faqs": [
+				{
+					"answer": "No.",
+					"id": "cc187a60-e949-4ff2-a8d2-38adf6ff32e9",
+					"question": "Does the Gig I decrease with the effect have to be the min Gig I use for the draw 1 effect condition?",
+					"sortOrder": 100
+				}
+			],
 			"flavorText": null,
 			"keywords": [],
 			"name": "Trust No One",
@@ -10048,6 +11561,26 @@
 			"color": "Green",
 			"cost": 2,
 			"eddiable": false,
+			"faqs": [
+				{
+					"answer": "No.",
+					"id": "0c12a0d1-b75a-4269-b1b5-68d5e80acf4b",
+					"question": "If I don't Call a Legend for free when I play this card, can I Call a Legend for free later instead?",
+					"sortOrder": 100
+				},
+				{
+					"answer": "Yes.",
+					"id": "1dcc06cf-2c53-4507-88d8-f5f002e2d656",
+					"question": "If I manage to play Tyger's Whisper on my Rival's turn, can I Call a Legend for free through its [PLAY] effect?",
+					"sortOrder": 200
+				},
+				{
+					"answer": "No.",
+					"id": "92d69f9f-e14d-491e-8589-7f79d56b5320",
+					"question": "If I already Called a Legend this turn, can I call another Legend with Tyger's Whisper's [PLAY] effect?",
+					"sortOrder": 300
+				}
+			],
 			"flavorText": null,
 			"keywords": [
 				"Play"
@@ -10114,6 +11647,14 @@
 			"color": "Blue",
 			"cost": 4,
 			"eddiable": true,
+			"faqs": [
+				{
+					"answer": "Yes.",
+					"id": "51314e7a-dea5-4d38-aeeb-52f58dc2a55a",
+					"question": "If I play this when there are no rival Units do I still have to bottom deck a friendly Unit?",
+					"sortOrder": 100
+				}
+			],
 			"flavorText": null,
 			"keywords": [],
 			"name": "Unlikely Bond",
@@ -10163,6 +11704,14 @@
 			"color": "Blue",
 			"cost": 5,
 			"eddiable": true,
+			"faqs": [
+				{
+					"answer": "Yes.",
+					"id": "22eadcab-b88a-45cd-9e07-ef51084da8cf",
+					"question": "Can I play this Legend to the Field area without using the [GO SOLO] keyword?",
+					"sortOrder": 100
+				}
+			],
 			"flavorText": null,
 			"keywords": [
 				"Go Solo"
@@ -10263,6 +11812,14 @@
 			"color": "Red",
 			"cost": 5,
 			"eddiable": false,
+			"faqs": [
+				{
+					"answer": "Yes, as this card specifies 'A Gig' so each Gig that gets stolen may be increased by the effect.",
+					"id": "9eee394b-2dc7-4750-a5ef-5cb0fc988ee9",
+					"question": "If V steals multiple Gigs in one attack, can V increase each stolen Gig?",
+					"sortOrder": 100
+				}
+			],
 			"flavorText": null,
 			"keywords": [],
 			"name": "V: Roamer of the Badlands",
@@ -10317,6 +11874,32 @@
 			"color": "Red",
 			"cost": 5,
 			"eddiable": true,
+			"faqs": [
+				{
+					"answer": "Yes. If there is a BRAINDANCE Program among the 3 cards trashed from the top of the deck, you will be forced to add 1 of them to your hand.",
+					"id": "1dd664ff-e61f-4b15-8e96-45f0dd31a13a",
+					"question": "I Trash 3 will I need to add a BRAINDANCE Program from the cards I trashed?",
+					"sortOrder": 100
+				},
+				{
+					"answer": "You add no cards.",
+					"id": "e605a916-b579-4144-9152-ec3abc825b56",
+					"question": "If I Trash 3 and there's no BRAINDANCE Program, what happens?",
+					"sortOrder": 200
+				},
+				{
+					"answer": "Yes. Trash as many cards as possible, instead.",
+					"id": "ba7d3b2f-96f6-4570-8e03-b7f514512d9a",
+					"question": "If there are fewer than 3 cards in my deck, can I still call V?",
+					"sortOrder": 300
+				},
+				{
+					"answer": "No.",
+					"id": "15ebfd43-82fa-4e07-a8e5-2432562e32ef",
+					"question": "If V’s [CALL] effect trashes multiple BRAINDANCE Programs,  can I choose more than 1?",
+					"sortOrder": 400
+				}
+			],
 			"flavorText": null,
 			"keywords": [
 				"Go Solo",
@@ -10428,6 +12011,14 @@
 			"color": "Red",
 			"cost": 3,
 			"eddiable": false,
+			"faqs": [
+				{
+					"answer": "No.",
+					"id": "fbe43ae0-a606-4391-8183-342a43213365",
+					"question": "If Valentino Guerrera attacks a ready rival Unit with [BLOCKER], can the attacked Unit use its own [BLOCKER] effect?",
+					"sortOrder": 100
+				}
+			],
 			"flavorText": null,
 			"keywords": [
 				"Blocker"
@@ -10505,6 +12096,14 @@
 			"color": "Green",
 			"cost": 3,
 			"eddiable": false,
+			"faqs": [
+				{
+					"answer": "No.",
+					"id": "c78f53c3-489c-4a0e-8d73-9ab7a8431419",
+					"question": "If I give a friendly Unit [ADRENALINE] on my Rival's turn, can it make an attack?",
+					"sortOrder": 100
+				}
+			],
 			"flavorText": null,
 			"keywords": [
 				"Play",
@@ -10574,6 +12173,20 @@
 			"color": "Yellow",
 			"cost": 5,
 			"eddiable": false,
+			"faqs": [
+				{
+					"answer": "Yes.",
+					"id": "80577b2c-f335-442e-9476-b2e38d0d03dd",
+					"question": "If I have a way to play a Gear on my rival's turn, do I still get the  -3 €$ discount?",
+					"sortOrder": 100
+				},
+				{
+					"answer": "Yes, the discount is mandatory.",
+					"id": "449ecd14-296c-4431-b445-261265f89c1d",
+					"question": "When I play my first Cyberware each turn, do I have to pay the reduced amount even if I would prefer to pay full price?",
+					"sortOrder": 200
+				}
+			],
 			"flavorText": null,
 			"keywords": [],
 			"name": "Viktor Vektor: Drop Your Illusions",
@@ -10649,6 +12262,14 @@
 			"color": "Yellow",
 			"cost": null,
 			"eddiable": true,
+			"faqs": [
+				{
+					"answer": "Yes.",
+					"id": "03d7a874-2d53-4fc9-9f7d-905cebcedcc7",
+					"question": "When I search the top 5 cards of my deck, can I choose not to reveal any cards and bottom-deck them all even if there's a viable Gear among them?",
+					"sortOrder": 100
+				}
+			],
 			"flavorText": null,
 			"keywords": [
 				"Call"
@@ -10744,6 +12365,14 @@
 			"color": "Yellow",
 			"cost": 3,
 			"eddiable": false,
+			"faqs": [
+				{
+					"answer": "No, the effect is mandatory. If you can do it, you must.",
+					"id": "602f90aa-bda8-44dc-97b6-f3e23e59918f",
+					"question": "Can I choose not to use Viktor Vektor's [PLAY] effect?",
+					"sortOrder": 100
+				}
+			],
 			"flavorText": null,
 			"keywords": [
 				"Play"
@@ -10809,6 +12438,20 @@
 			"color": "Blue",
 			"cost": null,
 			"eddiable": true,
+			"faqs": [
+				{
+					"answer": "No. You can still \"choose\" the other effect, it just fails.",
+					"id": "ab2739ef-ffc9-493d-b523-b6823ba1b618",
+					"question": "If there are no viable rival Units, do I have to choose the draw effect?",
+					"sortOrder": 100
+				},
+				{
+					"answer": "Yes.",
+					"id": "8bbbcb97-0cb0-41b9-a674-7647d6085163",
+					"question": "Can I use this card's [Spend Icon:] effect on an already min Gig?",
+					"sortOrder": 200
+				}
+			],
 			"flavorText": null,
 			"keywords": [
 				"Spend",
@@ -10905,6 +12548,20 @@
 			"color": "Green",
 			"cost": 5,
 			"eddiable": true,
+			"faqs": [
+				{
+					"answer": "No, only the amount you pay.",
+					"id": "972b7a64-cc96-4e31-8e7f-5718d319914a",
+					"question": "Does this card's effect change the cost of the card?",
+					"sortOrder": 100
+				},
+				{
+					"answer": "No, the discount is mandatory.",
+					"id": "abf24590-be16-41a4-9314-05cf9964a483",
+					"question": "Can I choose to play this card for it's full cost if my Rival has 2 or more Gigs?",
+					"sortOrder": 200
+				}
+			],
 			"flavorText": null,
 			"keywords": [],
 			"name": "We Gotta Live Together",
@@ -10988,6 +12645,20 @@
 			"color": "Blue",
 			"cost": 4,
 			"eddiable": false,
+			"faqs": [
+				{
+					"answer": "No.",
+					"id": "6a19fd88-c002-4d46-914c-dfe3b13fd27b",
+					"question": "If my Rival plays a Legend to the field after I play Westbrook Netrunner, can the Legend steal a Gig with value less than their power?",
+					"sortOrder": 100
+				},
+				{
+					"answer": "Yes.",
+					"id": "5b17e2c5-e679-4dad-a131-815a6618dd48",
+					"question": "If Westbrook Netrunner is defeated before my next turn, is its effect still active?",
+					"sortOrder": 200
+				}
+			],
 			"flavorText": null,
 			"keywords": [
 				"Play"
@@ -11043,6 +12714,26 @@
 			"color": "Green",
 			"cost": 5,
 			"eddiable": true,
+			"faqs": [
+				{
+					"answer": "Yes.",
+					"id": "d0d1a60f-cb84-4dbf-b131-c2ee9f7bae22",
+					"question": "Can I play this card if there are no spent Units on the field?",
+					"sortOrder": 100
+				},
+				{
+					"answer": "Yes.",
+					"id": "192c3c09-2160-4818-840a-ae6b1d9cf27f",
+					"question": "Can I choose a friendly Unit with this effect?",
+					"sortOrder": 200
+				},
+				{
+					"answer": "Yes.",
+					"id": "7ea036d0-1f07-4425-9a47-198eec19fef1",
+					"question": "If I play this Program and there is only a spent friendly Unit in the Field areas. Will I have to choose my Unit?",
+					"sortOrder": 300
+				}
+			],
 			"flavorText": null,
 			"keywords": [],
 			"name": "Wild in the Streets",
@@ -11093,6 +12784,14 @@
 			"color": "Green",
 			"cost": 5,
 			"eddiable": false,
+			"faqs": [
+				{
+					"answer": "Yes.",
+					"id": "7ec76a28-572e-45e7-81b2-53c8f38b8ce3",
+					"question": "When this card steals a Gig do I have to ready another friendly Unit even if I don't want to?",
+					"sortOrder": 100
+				}
+			],
 			"flavorText": null,
 			"keywords": [],
 			"name": "Wraith Marauders",
@@ -11162,6 +12861,14 @@
 			"color": "Red",
 			"cost": null,
 			"eddiable": true,
+			"faqs": [
+				{
+					"answer": "No.",
+					"id": "61ad63b3-47d9-48ee-a3f6-4c2842b11c66",
+					"question": "If I've already attacked with an ARASAKA Unit this turn before Yorinobu Arasaka is face-up, then flip Yorinobu, can I trigger Yorinobu's effect that turn by attacking with another ARASAKA Unit?",
+					"sortOrder": 100
+				}
+			],
 			"flavorText": null,
 			"keywords": [],
 			"name": "Yorinobu Arasaka: Embracing Destruction",
@@ -11277,6 +12984,26 @@
 			"color": "Red",
 			"cost": 7,
 			"eddiable": false,
+			"faqs": [
+				{
+					"answer": "Yes.",
+					"id": "16ff9b92-68eb-4215-9e05-eaa8bcd9afa4",
+					"question": "If the Unit played by Yorinobu has [ADRENALINE], can it attack the rival Gig area this turn?",
+					"sortOrder": 100
+				},
+				{
+					"answer": "Yes.",
+					"id": "6e649617-ec75-42db-a1b0-a3c2b1ebee6c",
+					"question": "Does Yorinobu count itself for “the first time an ARASAKA Unit is defeated each turn”?",
+					"sortOrder": 200
+				},
+				{
+					"answer": "No.",
+					"id": "d2074e1b-4efa-4cfb-bc7a-0ca063fcf804",
+					"question": "If a friendly Arasaka Unit was defeated previusly during my turn and then play Yorinobu Arasaka. If another friendly Arasaka Unit is then defeated this turn. Will I draw 1 off Yorinobu's effect?",
+					"sortOrder": 300
+				}
+			],
 			"flavorText": null,
 			"keywords": [
 				"Play"
@@ -11348,6 +13075,14 @@
 			"color": "Green",
 			"cost": 6,
 			"eddiable": true,
+			"faqs": [
+				{
+					"answer": "No, only the amount you pay.",
+					"id": "fc46987c-3869-4d97-b73b-686e1e08120e",
+					"question": "Does this card's effect change the cost of the card?",
+					"sortOrder": 100
+				}
+			],
 			"flavorText": null,
 			"keywords": [],
 			"name": "Zetatech Berserk",
@@ -11415,6 +13150,32 @@
 			"color": "Yellow",
 			"cost": 2,
 			"eddiable": true,
+			"faqs": [
+				{
+					"answer": "Before. Adjust the Gig for Zetatech Faceplate's effect before moving on to your Rival's react step.",
+					"id": "a4b85193-1647-4001-a076-846f54d54481",
+					"question": "When I spend a Unit equipped with Zetatech Faceplate to declare an attack, do I get Zetatech Faceplate's effect before or after I resolve the attack?",
+					"sortOrder": 100
+				},
+				{
+					"answer": "You can choose the order you resolve these effects.",
+					"id": "9f87591e-514c-44ee-bba4-515fc488fb77",
+					"question": "If I spend a Unit equipped with Zetatech Faceplate to declare an attack, and the Unit or Legend has an [ATTACK] effect, do I get Zetatech Faceplacte's effect before or after the [ATTACK] effect?",
+					"sortOrder": 200
+				},
+				{
+					"answer": "After. Resolve the activated [Spend Icon:] effect first.",
+					"id": "9b281489-5883-47ca-80a9-fa6707655b12",
+					"question": "If I spend a Unit or Legend equipped with Zetatech Faceplate to activate the Unit/Legend's [Spend Icon:] effect, do I get Zetatech Faceplate's effect before or after the activated effect?",
+					"sortOrder": 300
+				},
+				{
+					"answer": "After. Play the card first, then adjust the Gig.",
+					"id": "62c60c04-72ec-4231-9ea7-f5b8048eb4d8",
+					"question": "If I spend a Legend equipped with Zetatech Faceplate to pay a card's cost, do I get Zetatech Faceplate's effect before or after I play the card?",
+					"sortOrder": 400
+				}
+			],
 			"flavorText": null,
 			"keywords": [],
 			"name": "Zetatech Faceplate",
@@ -11494,7 +13255,159 @@
 		"Green",
 		"Blue"
 	],
-	"generatedAt": "2026-09-11T17:50:55.870Z",
+	"generalFaqs": [
+		{
+			"answer": "No",
+			"id": "3783e495-b9c5-4843-839c-0a1e82dbdd85",
+			"question": "If a Unit has [ADRENALINE], can I use its [Spend Icon:] the turn it's played?",
+			"sortOrder": 100
+		},
+		{
+			"answer": "Yes",
+			"id": "5ca60092-163a-4c34-a2c6-9478f712d5d4",
+			"question": "Can I use a Unit's [BLOCKER] effect the turn it's played?",
+			"sortOrder": 200
+		},
+		{
+			"answer": "Yes",
+			"id": "c3602a95-5322-4bfb-84c8-5d9058fb3700",
+			"question": "If I have used a friendly Unit's [BLOCKER] to redirect an attack, can I use [BLOCKER] on another Unit to redirect that attack again to that Unit?",
+			"sortOrder": 300
+		},
+		{
+			"answer": "No",
+			"id": "7f3b28ce-2f88-4d36-96ad-5f64574c82e7",
+			"question": "If my ready friendly Unit with [BLOCKER] is being attacked, can it use [BLOCKER]?",
+			"sortOrder": 400
+		},
+		{
+			"answer": "Yes",
+			"id": "e945f6ca-4886-41ff-b72a-ea15b52b4636",
+			"question": "Can I use [BLOCKER] when my Rival is attacking the Gig area and not another Unit?",
+			"sortOrder": 500
+		},
+		{
+			"answer": "Yes",
+			"id": "24be8b8e-5034-471f-8f9e-1692529efb14",
+			"question": "Can I use [BLOCKER] when my Rival is attacking another Unit and not the friendly Gig area?",
+			"sortOrder": 600
+		},
+		{
+			"answer": "No. The Legend must be on the field to use [BLOCKER].",
+			"id": "84df4181-958f-4308-a597-66b9e663f8a3",
+			"question": "Can I use a Legend's [BLOCKER] in the Legends area?",
+			"sortOrder": 700
+		},
+		{
+			"answer": "Yes",
+			"id": "3783f3cd-6ffd-42f9-8044-44907f873136",
+			"question": "Can I use [GO SOLO] the turn I called my Legend?",
+			"sortOrder": 800
+		},
+		{
+			"answer": "Yes",
+			"id": "d623c586-4120-4400-95d8-85217458d538",
+			"question": "Can I [GO SOLO] on a spent Legend?",
+			"sortOrder": 900
+		},
+		{
+			"answer": "Yes",
+			"id": "bc136327-399a-4dde-837b-82883c61f0ac",
+			"question": "Can I spend a Legend for an Eddie when playing it with it's own [GO SOLO]?",
+			"sortOrder": 1000
+		},
+		{
+			"answer": "Yes",
+			"id": "76cbd585-1b97-432e-8df8-9e19d7142826",
+			"question": "Can I play a Legend without using [GO SOLO] if it has [GO SOLO]?",
+			"sortOrder": 1100
+		},
+		{
+			"answer": "No",
+			"id": "0e18028c-4e39-4218-87b3-ee73599c3040",
+			"question": "Can a Legend in the field use its [Spend Icon:] effect the turn that it was played to the field area?",
+			"sortOrder": 1200
+		},
+		{
+			"answer": "Yes",
+			"id": "0b681b30-8a97-48be-8e70-73e820e5b50c",
+			"question": "When a Legend uses [GO SOLO] is it still a Legend?",
+			"sortOrder": 1300
+		},
+		{
+			"answer": "Yes",
+			"id": "50377773-e5d9-4efc-877b-878a594087e5",
+			"question": "Can I use a [QUICK] during my turn?",
+			"sortOrder": 1400
+		},
+		{
+			"answer": "Yes",
+			"id": "30222dcc-e521-4d51-b211-420d264e939b",
+			"question": "Can I use more than 1 [QUICK] during my Rival's attack?",
+			"sortOrder": 1500
+		},
+		{
+			"answer": "No",
+			"id": "312c580c-a919-45ee-9524-6fd49671a731",
+			"question": "Does [QUICK] allow me to use [Spend Icon:] the turn the Unit is played?",
+			"sortOrder": 1600
+		},
+		{
+			"answer": "No",
+			"id": "a80e4bdc-2603-46cc-9631-28c09c76c2e0",
+			"question": "My Rival plays a [QUICK] am I allowed to respond with a [QUICK]?",
+			"sortOrder": 1700
+		},
+		{
+			"answer": "Yes",
+			"id": "3bfca564-d31f-46c6-b15c-88c7e6f31f5e",
+			"question": "When I have mulitple [ATTACK] effects that activate and go into pending at the same time. Can I choose any order to resolve them?",
+			"sortOrder": 1800
+		},
+		{
+			"answer": "Yes",
+			"id": "1d2ed684-e326-4423-ae2d-ba3d4d885b70",
+			"question": "I have a Unit with [ATTACK] and a Unit with \"When a friendly Unit attacks. Draw 1\". Will I be able to choose the order to resolve them?",
+			"sortOrder": 1900
+		},
+		{
+			"answer": "Yes",
+			"id": "3d7dd7c9-f7aa-4540-a1e7-fd65f2ea474d",
+			"question": "I have a Unit with [Play] and a Unit with \"When a friendly Legend is spent. Draw 1\". Will I be able to choose the order to resolve them?",
+			"sortOrder": 2000
+		},
+		{
+			"answer": "No",
+			"id": "d05760ef-d02e-4be9-9cda-aee7a2fe196f",
+			"question": "If a Unit or Legend with [DEFEATED] would be defeated but is prevented by an effect. Will I still get the [DEFEATED] effect?",
+			"sortOrder": 2100
+		},
+		{
+			"answer": "No",
+			"id": "24fbf142-d9a7-4646-a8a1-5b28e692b652",
+			"question": "Can I use a Unit's [Spend Icon:] effect the turn it's played?",
+			"sortOrder": 2200
+		},
+		{
+			"answer": "Yes",
+			"id": "89f8938c-3523-458e-a5db-4a8a9faf169c",
+			"question": "Can I use a Legend's [Spend Icon:] effect the turn it's called?",
+			"sortOrder": 2300
+		},
+		{
+			"answer": "Yes, as long as the Legend has a numeric cost value, you may pay its cost to play it to the field. It enters the field with lag, and in the same orientation it was in the Legends area.",
+			"id": "67f85db0-cb40-403f-b304-9cfc0d31e541",
+			"question": "Can I play a Legend to the field from the Legends area without using [GO SOLO]?",
+			"sortOrder": 2400
+		},
+		{
+			"answer": "Yes, but that does not count as adjusting a Gig for the sake of effects triggered \"when you adjust a Gig.\"",
+			"id": "51e197ed-c63f-4f99-973a-67342836a059",
+			"question": "Can I choose to adjust a Gig by 0 for \"adjust a Gig by up to X\" effects?",
+			"sortOrder": 2500
+		}
+	],
+	"generatedAt": "2026-09-11T20:57:52.377Z",
 	"ramPerLegend": 2,
 	"sets": [
 		{

@@ -52,6 +52,19 @@ describe('the snapshot', () => {
 		expect(snapshot.cardTypeOrder).toEqual(['Legend', 'Unit', 'Gear', 'Program']);
 		expect(snapshot.ramPerLegend).toBe(2);
 	});
+
+	it('has at least the general FAQs known at the time this was written', () => {
+		// A floor, not an exact figure — same reasoning as this file's card-count check: the FAQ
+		// API adds rulings over time, and a test that breaks on a new one is a test that gets
+		// deleted.
+		expect(snapshot.generalFaqs.length).toBeGreaterThanOrEqual(25);
+	});
+
+	it('has at least the card-specific FAQs known at the time this was written, all uniquely ided', () => {
+		const cardFaqIds = snapshot.cards.flatMap((card) => card.faqs.map((faq) => faq.id));
+		expect(cardFaqIds.length).toBeGreaterThanOrEqual(245);
+		expect(new Set(cardFaqIds).size).toBe(cardFaqIds.length);
+	});
 });
 
 describe('Rebecca — Having a Moment, the mandatory fixture', () => {

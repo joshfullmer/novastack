@@ -29,6 +29,7 @@
 	import CardImage from '#lib/components/CardImage.svelte';
 	import CardMetaBadges from '#lib/components/CardMetaBadges.svelte';
 	import CardStats from '#lib/components/CardStats.svelte';
+	import FaqText from '#lib/components/FaqText.svelte';
 	import Meta from '#lib/components/Meta.svelte';
 	import RulesText from '#lib/components/RulesText.svelte';
 	import { splitCardName } from '#lib/cards/derive.js';
@@ -199,4 +200,28 @@
 			{/each}
 		</ul>
 	</section>
+
+	<!-- 11 of 151 cards have no ruling yet — no section rather than an empty one. -->
+	{#if card.faqs.length > 0}
+		<section class="mt-12">
+			<h2 class="text-lg font-semibold text-bright">FAQ</h2>
+			<dl class="mt-4 space-y-5">
+				{#each card.faqs as faq (faq.id)}
+					<div>
+						<dt class="font-medium text-body">
+							<FaqText text={faq.question} />
+						</dt>
+						<dd class="mt-1 text-muted">
+							<FaqText text={faq.answer} />
+						</dd>
+					</div>
+				{/each}
+			</dl>
+			<p class="mt-4 text-sm text-muted">
+				Rules questions? See <a href="/faq" class="text-neon hover:text-neon-dim"
+					>General Rulings →</a
+				>
+			</p>
+		</section>
+	{/if}
 </article>

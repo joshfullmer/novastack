@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import {
+	checkFaqInvariants,
 	checkModelInvariants,
 	checkRawInvariants,
 	checkSlugStability,
@@ -8,6 +9,7 @@ import {
 import {
 	makeCard,
 	makeNetdeckCard,
+	makeNetdeckFaq,
 	makeNetdeckPrinting,
 	makePrinting,
 	thumbhashesFor
@@ -236,6 +238,49 @@ describe('checkSlugStability', () => {
 
 	it('has nothing to check on a first run', () => {
 		expect(checkSlugStability([], ['alpha'])).toEqual([]);
+	});
+});
+
+describe('checkFaqInvariants', () => {
+	const knownSlugs = new Set(['alpha', 'beta']);
+
+	const cardFor = (slug: string) => ({
+		id: `card-uuid-${slug}`,
+		external_id: `cb-${slug}`,
+		name: slug,
+		slug,
+		image_url: `https://example.invalid/${slug}.webp`
+	});
+
+	it('passes a clean dataset', () => {
+		const faqs = [
+			makeNetdeckFaq({ card: cardFor('alpha') }),
+			makeNetdeckFaq({ scope: 'game', card: null })
+		];
+		expect(checkFaqInvariants(faqs, knownSlugs)).toEqual([]);
+	});
+
+	it('fails on a duplicate id', () => {
+		const faq = makeNetdeckFaq({ card: cardFor('alpha') });
+		expect(checks(checkFaqInvariants([faq, faq], knownSlugs))).toContain('unique-faq-ids');
+	});
+
+	it('fails when a card-scope FAQ points at an unknown slug', () => {
+		const faq = makeNetdeckFaq({ card: cardFor('nope') });
+		const violations = checkFaqInvariants([faq], knownSlugs);
+		expect(checks(violations)).toContain('faq-card-slug-is-known');
+		expect(violations[0].detail).toContain('nope');
+	});
+
+	it('fails when scope and the presence of `card` disagree', () => {
+		const gameScopeWithCard = makeNetdeckFaq({ scope: 'game', card: cardFor('alpha') });
+		const cardScopeWithoutCard = makeNetdeckFaq({ scope: 'card', card: null });
+		expect(checks(checkFaqInvariants([gameScopeWithCard], knownSlugs))).toContain(
+			'faq-scope-matches-card'
+		);
+		expect(checks(checkFaqInvariants([cardScopeWithoutCard], knownSlugs))).toContain(
+			'faq-scope-matches-card'
+		);
 	});
 });
 

@@ -9,9 +9,11 @@
 	 * Set is a filter, not a route — `Sets` here is a stage-past-this-one landing page, not the
 	 * Set facet.
 	 *
-	 * **Rules links out** to the community gameplay guide rather than sitting dimmed — there's no
-	 * in-app rules page yet, but an external stopgap beats offering nothing. Swap for a real route
-	 * once there's a comprehensive ruleset worth rendering ourselves.
+	 * **Rules is a link with a hover dropdown**, same shape as Decks below: the trigger itself
+	 * links out to the community gameplay guide (there's no in-app rules page yet, but an
+	 * external stopgap beats offering nothing — swap for a real route once there's a
+	 * comprehensive ruleset worth rendering ourselves), and the dropdown adds `/faq`'s general
+	 * rulings as the one rules-adjacent page this app *does* render itself.
 	 *
 	 * **Decks is a link with a hover dropdown** — `/decks` (My Decks, owner-only) and `/explore`
 	 * (public, §9) are separate top-level routes, matching how every reference site (swudb,
@@ -39,7 +41,10 @@
 	const stickyHeader = $derived(page.url.pathname !== '/cards');
 
 	$effect(() => {
-		document.documentElement.style.setProperty('--spacing-nav', stickyHeader ? `${height}px` : '0px');
+		document.documentElement.style.setProperty(
+			'--spacing-nav',
+			stickyHeader ? `${height}px` : '0px'
+		);
 	});
 
 	const LIVE = [{ href: '/cards', label: 'Cards' }];
@@ -47,14 +52,19 @@
 		{ href: '/decks', label: 'My Decks' },
 		{ href: '/explore', label: 'Explore' }
 	];
+	const RULES_URL = 'https://cyberpunktcg.com/comprehensive-rules';
+	const RULES = [
+		{ href: RULES_URL, label: 'Comprehensive Rules', external: true },
+		{ href: '/faq', label: 'FAQ' }
+	];
 
 	const isCurrent = (href: string) => page.url.pathname.startsWith(href);
 
 	/** Below `sm` the full link row plus Discord/Account/Sign-out doesn't fit — it was overflowing
 	 * the viewport outright (no wrapping, no shrinking anywhere) rather than degrading gracefully.
 	 * Collapsed into a hamburger there instead of trying to cram it in. Also folds the desktop
-	 * "Decks" item's hover dropdown (My Decks / Explore) into two flat links — hover has no touch
-	 * equivalent, so Explore was flat-out unreachable from this nav on a phone. */
+	 * "Decks" and "Rules" items' hover dropdowns into flat links — hover has no touch equivalent,
+	 * so Explore and FAQ were flat-out unreachable from this nav on a phone. */
 	let mobileMenuOpen = $state(false);
 	const closeMobileMenu = () => (mobileMenuOpen = false);
 
@@ -128,13 +138,37 @@
 				>
 			</li>
 
-			<li>
+			<li class="group relative">
 				<a
-					href="https://cyberpunktcg.com/comprehensive-rules"
+					href={RULES_URL}
 					target="_blank"
 					rel="noopener noreferrer"
-					class="text-muted transition-colors hover:text-bright">Rules</a
+					class="transition-colors hover:text-bright"
+					class:text-bright={isCurrent('/faq')}
+					class:text-muted={!isCurrent('/faq')}
 				>
+					Rules
+				</a>
+				<ul
+					class="invisible absolute top-full left-0 z-30 w-40 rounded-md border border-edge
+						bg-shell p-1 text-sm opacity-0 shadow-lg transition-opacity group-focus-within:visible
+						group-focus-within:opacity-100 group-hover:visible group-hover:opacity-100"
+				>
+					{#each RULES as item (item.href)}
+						<li>
+							<a
+								href={item.href}
+								target={item.external ? '_blank' : undefined}
+								rel={item.external ? 'noopener noreferrer' : undefined}
+								class="block rounded px-2 py-1.5 hover:bg-raised"
+								class:text-bright={!item.external && isCurrent(item.href)}
+								class:text-muted={item.external || !isCurrent(item.href)}
+								aria-current={!item.external && isCurrent(item.href) ? 'page' : undefined}
+								>{item.label}</a
+							>
+						</li>
+					{/each}
+				</ul>
 			</li>
 		</ul>
 
@@ -235,16 +269,22 @@
 						aria-current={isCurrent('/sets') ? 'page' : undefined}>Sets</a
 					>
 				</li>
-				<li>
-					<a
-						href="https://cyberpunktcg.com/comprehensive-rules"
-						target="_blank"
-						rel="noopener noreferrer"
-						onclick={closeMobileMenu}
-						class="block rounded-md px-2 py-2 text-muted transition-colors hover:bg-raised"
-						>Rules</a
-					>
-				</li>
+				{#each RULES as item, index (item.href)}
+					<li>
+						<a
+							href={item.href}
+							target={item.external ? '_blank' : undefined}
+							rel={item.external ? 'noopener noreferrer' : undefined}
+							onclick={closeMobileMenu}
+							class="block rounded-md px-2 py-2 transition-colors hover:bg-raised"
+							class:pl-6={index > 0}
+							class:text-bright={!item.external && isCurrent(item.href)}
+							class:text-muted={item.external || !isCurrent(item.href)}
+							aria-current={!item.external && isCurrent(item.href) ? 'page' : undefined}
+							>{item.label}</a
+						>
+					</li>
+				{/each}
 			</ul>
 
 			<div class="mt-2 flex items-center gap-4 border-t border-edge/60 px-2 pt-3">

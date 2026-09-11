@@ -7,6 +7,7 @@
  * that they are real: `Rebecca: Having a Moment` is null on cost, power, RAM and rules text,
  * and `V: Streetkid` carries five printings across two artists.
  */
+import type { Faq, NetdeckFaq } from './faq.ts';
 import type { Card, NetdeckCard, NetdeckPrinting, Printing, Snapshot } from './schema.ts';
 import { SET_IDENTIFIERS } from './sets.ts';
 import type { CardType, Color } from './vocabulary.ts';
@@ -58,6 +59,7 @@ export function makeCard(overrides: CardOverrides = {}): Card {
 		flavorText: null,
 		rawRulesText: null,
 		printings: [makePrinting()],
+		faqs: [],
 		...overrides
 	};
 }
@@ -121,6 +123,42 @@ export function thumbhashesFor(cards: readonly NetdeckCard[]): Map<string, strin
 	return new Map(cards.flatMap((card) => card.printings.map((p) => [p.id, 'AAAAAAAA'])));
 }
 
+export function makeFaq(overrides: Partial<Faq> = {}): Faq {
+	sequence += 1;
+	return {
+		id: `faq-${sequence}`,
+		question: `Question ${sequence}?`,
+		answer: `Answer ${sequence}.`,
+		sortOrder: sequence * 100,
+		...overrides
+	};
+}
+
+export function makeNetdeckFaq(overrides: Partial<NetdeckFaq> = {}): NetdeckFaq {
+	sequence += 1;
+	const scope = overrides.scope ?? 'card';
+
+	return {
+		id: `faq-uuid-${sequence}`,
+		scope,
+		question: `Question ${sequence}?`,
+		answer: `Answer ${sequence}.`,
+		sort_order: sequence * 100,
+		published_at: '2026-09-04T00:00:00.000Z',
+		card:
+			scope === 'card'
+				? {
+						id: `card-uuid-${sequence}`,
+						external_id: `cb-card-${sequence}`,
+						name: `Card ${sequence}`,
+						slug: `card-${sequence}`,
+						image_url: `https://example.invalid/card-${sequence}.webp`
+					}
+				: null,
+		...overrides
+	};
+}
+
 export function makeSnapshot(cards: readonly Card[], overrides: Partial<Snapshot> = {}): Snapshot {
 	return {
 		generatedAt: '2026-08-20T00:00:00.000Z',
@@ -130,6 +168,7 @@ export function makeSnapshot(cards: readonly Card[], overrides: Partial<Snapshot
 		sets: SET_IDENTIFIERS.map((set) => ({ ...set, cardCount: 0, printingCount: 0 })),
 		stats: { cards: cards.length, printings: 0, sets: SET_IDENTIFIERS.length },
 		cards: [...cards],
+		generalFaqs: [],
 		...overrides
 	};
 }

@@ -13,6 +13,7 @@
  * the only route from JSON to a typed value.
  */
 import * as v from 'valibot';
+import { FaqSchema } from './faq.ts';
 import { ParagraphSchema } from './rules-text.ts';
 import { SetIdentifierSchema } from './sets.ts';
 import {
@@ -146,7 +147,10 @@ export const CardSchema = v.object({
 	/** The untouched original. The flavour split is fragile; this makes it re-runnable. */
 	rawRulesText: v.nullable(v.string()),
 	/** `printings[0]` is the Default Printing, guaranteed by ingest — hence the tuple. */
-	printings: v.tupleWithRest([PrintingSchema], PrintingSchema)
+	printings: v.tupleWithRest([PrintingSchema], PrintingSchema),
+	/** `scope: "card"` entries from the FAQ API (`faq.ts`), sorted by `sortOrder`. `[]` for the
+	 * 11 cards nobody has asked a ruling question about yet. */
+	faqs: v.array(FaqSchema)
 });
 export type Card = v.InferOutput<typeof CardSchema>;
 
@@ -181,7 +185,9 @@ export const SnapshotSchema = v.object({
 	ramPerLegend: v.number(),
 	sets: v.array(SetSummarySchema),
 	stats: StatsSchema,
-	cards: v.array(CardSchema)
+	cards: v.array(CardSchema),
+	/** `scope: "game"` FAQ entries — general rulings, tied to no Card. See `faq.ts`. */
+	generalFaqs: v.array(FaqSchema)
 });
 export type Snapshot = v.InferOutput<typeof SnapshotSchema>;
 

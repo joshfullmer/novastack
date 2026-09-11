@@ -9,6 +9,7 @@
  * pipeline (§12 rules that out until someone measures it); it is the difference between
  * building a search haystack once per load and once per keystroke.
  */
+import type { Faq } from './faq.ts';
 import type { Card, SetSummary, Snapshot, Stats } from './schema.ts';
 import { plainText } from './rules-text.ts';
 import { RARITY_ORDER, type CardType, type Color, type Rarity } from './vocabulary.ts';
@@ -63,6 +64,9 @@ export type Dataset = {
 	ramPerLegend: number;
 	sets: readonly SetSummary[];
 	stats: Stats;
+	/** Game-scope FAQ entries — general rulings, tied to no Card. Card-scope ones live on the
+	 * Card itself (`Card.faqs`); see `faq.ts`. */
+	generalFaqs: readonly Faq[];
 	bySlug: ReadonlyMap<string, Card>;
 	/** slug → the normalized haystack text search matches against. */
 	searchText: ReadonlyMap<string, string>;
@@ -114,6 +118,7 @@ export function createDataset(snapshot: Snapshot): Dataset {
 		ramPerLegend: snapshot.ramPerLegend,
 		sets: snapshot.sets,
 		stats: snapshot.stats,
+		generalFaqs: snapshot.generalFaqs,
 		bySlug: new Map(cards.map((card) => [card.slug, card])),
 		searchText: new Map(cards.map((card) => [card.slug, searchHaystack(card)])),
 		colorRank: new Map(snapshot.colorOrder.map((color, index) => [color, index])),

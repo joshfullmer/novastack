@@ -6,10 +6,14 @@
  * detail endpoint, one request per card, and the slug is the only key it accepts (UUIDs 404).
  */
 import * as v from 'valibot';
+import { NetdeckFaqPageSchema, type NetdeckFaq } from '../../src/lib/cards/faq.ts';
 import { NetdeckCardSchema, NetdeckPageSchema } from '../../src/lib/cards/schema.ts';
 import { fetchJson, pool, type RetryOptions } from './http.ts';
 
 export const API = 'https://api.netdeck.gg/api/cards/cyberpunk';
+
+/** A sibling resource, not nested under `API` — `GET /api/faqs/{game}`, not `/api/cards/{game}`. */
+export const FAQ_API = 'https://api.netdeck.gg/api/faqs/cyberpunk';
 
 /**
  * The notes measured concurrency 12 as safe, but without retries. Eight with backoff is the
@@ -58,3 +62,19 @@ export async function fetchCardDetails(
 }
 
 export type NetdeckCard = v.InferOutput<typeof NetdeckCardSchema>;
+
+/**
+ * Fetches every FAQ entry in one request. `limit`/`offset` are silently ignored here too — the
+ * endpoint always returns everything, so unlike `enumerateSlugs` there is nothing to paginate,
+ * only to verify: `items.length` disagreeing with `total` means that stopped being true.
+ */
+export async function fetchFaqs(options: RetryOptions = {}): Promise<NetdeckFaq[]> {
+	const page = await fetchJson(FAQ_API, NetdeckFaqPageSchema, options);
+	if (page.items.length !== page.total) {
+		throw new Error(
+			`Fetched ${page.items.length} FAQ(s) but the API reports ${page.total}. ` +
+				`The endpoint may have started paginating.`
+		);
+	}
+	return page.items;
+}

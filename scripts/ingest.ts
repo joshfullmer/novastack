@@ -3,7 +3,8 @@
  *
  * ```
  * enumerate slugs → fetch detail per card → v.parse(NetdeckCardSchema)
- *   → assert the API's shape        (checkRawInvariants)
+ *                 → fetch every FAQ         (a sibling resource, not nested under card detail)
+ *   → assert the API's shape        (checkRawInvariants, checkFaqInvariants)
  *   → mirror images, derive tiers + ThumbHashes
  *   → normalize                     (the flattened printing fields are discarded here)
  *   → assert our model              (checkModelInvariants, checkSlugStability)
@@ -20,6 +21,7 @@ import { writeFile, readFile } from 'node:fs/promises';
 import path from 'node:path';
 import * as v from 'valibot';
 import {
+	checkFaqInvariants,
 	checkModelInvariants,
 	checkRawInvariants,
 	checkSlugStability,
@@ -34,6 +36,7 @@ import {
 	runOrder,
 	setExclusiveSlugs
 } from '../src/lib/cards/derive.ts';
+import { groupFaqsByCardSlug, normalizeGeneralFaqs } from '../src/lib/cards/faq.ts';
 import { HEROES, type HeroChoice } from '../src/lib/cards/hero.ts';
 import { normalizeCards } from '../src/lib/cards/normalize.ts';
 import {
@@ -44,7 +47,7 @@ import {
 	type Snapshot
 } from '../src/lib/cards/schema.ts';
 import { mirrorImages, readMirroredThumbhashes } from './lib/images.ts';
-import { enumerateSlugs, fetchCardDetails } from './lib/netdeck.ts';
+import { enumerateSlugs, fetchCardDetails, fetchFaqs } from './lib/netdeck.ts';
 import { stableStringify } from './lib/stable-json.ts';
 
 const CARDS_PATH = path.join('src', 'lib', 'cards', 'cards.json');
@@ -169,6 +172,9 @@ function describeChanges(previous: Snapshot, next: Snapshot): string[] {
 	const setIds = (snapshot: Snapshot) => snapshot.sets.map((set) => set.id).join(',');
 	if (setIds(previous) !== setIds(next)) lines.push('  sets: the curated set list changed');
 
+	if (previous.generalFaqs.length !== next.generalFaqs.length)
+		lines.push(`  general FAQs: ${previous.generalFaqs.length} → ${next.generalFaqs.length}`);
+
 	if (previous.ramPerLegend !== next.ramPerLegend)
 		lines.push(`  RAM per Legend: ${previous.ramPerLegend} → ${next.ramPerLegend}`);
 
@@ -211,8 +217,15 @@ async function main(): Promise<void> {
 		}
 	});
 
+	log('→ fetching FAQs');
+	const rawFaqs = await fetchFaqs({ onRetry });
+	log(`  ${rawFaqs.length} FAQ(s)`);
+
 	log('→ asserting the API’s shape');
-	const rawViolations = checkRawInvariants(raw);
+	const rawViolations = [
+		...checkRawInvariants(raw),
+		...checkFaqInvariants(rawFaqs, new Set(raw.map((card) => card.slug)))
+	];
 	if (rawViolations.length > 0) fail('Source API shape', rawViolations);
 
 	const printings = raw.flatMap((card) =>
@@ -256,7 +269,8 @@ async function main(): Promise<void> {
 	}
 
 	log('→ normalizing');
-	const cards = normalizeCards(raw, thumbhashes);
+	const cards = normalizeCards(raw, thumbhashes, groupFaqsByCardSlug(rawFaqs));
+	const generalFaqs = normalizeGeneralFaqs(rawFaqs);
 
 	log('→ deriving orderings and counts');
 	const sequence = baseSetSequence(cards);
@@ -292,10 +306,11 @@ async function main(): Promise<void> {
 		stats: {
 			cards: cards.length,
 			printings: cards.reduce((total, card) => total + card.printings.length, 0),
-			// Genuine releases only. The other seven printed identifiers are derivative products.
+			// Genuine releases only. The other nine printed identifiers are derivative products.
 			sets: sets.filter((set) => set.kind === 'base').length
 		},
-		cards
+		cards,
+		generalFaqs
 	} satisfies Snapshot);
 
 	if (check) {
@@ -334,6 +349,8 @@ async function main(): Promise<void> {
 	log(`  card-type order ${snapshot.cardTypeOrder.join(' → ')}`);
 	log(`  RAM per Legend  ${snapshot.ramPerLegend}`);
 	log(`  set-exclusive   ${setExclusiveSlugs(cards).length} card(s)`);
+	const cardFaqCount = cards.reduce((total, card) => total + card.faqs.length, 0);
+	log(`  FAQs            ${cardFaqCount} card-specific, ${snapshot.generalFaqs.length} general`);
 }
 
 /**
