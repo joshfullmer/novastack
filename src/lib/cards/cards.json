@@ -228,6 +228,16 @@
 					"thumbhash": "ETmGHAQP6QaoWKdcYg1ndoOAgYGICBiIAA=="
 				},
 				{
+					"artist": "Łukasz Poller",
+					"collectorNumber": "160",
+					"id": "726b13d2-0d74-42db-a5e9-b8b852224a16",
+					"key": "MS01-WNC-160",
+					"rarity": "Iconic Other",
+					"setId": "MS01-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/726b13d2-0d74-42db-a5e9-b8b852224a16/render-mpvlq7t9.webp",
+					"thumbhash": "TwiGDAIPVfdlqqmkci72iKBycIGIGAh5AA=="
+				},
+				{
 					"artist": "Dardo Studios",
 					"collectorNumber": "β041",
 					"id": "fdb7a7c3-350e-49ea-8a9e-8477ce6c657a",
@@ -13407,7 +13417,7 @@
 			"sortOrder": 2500
 		}
 	],
-	"generatedAt": "2026-09-11T20:57:52.377Z",
+	"generatedAt": "2026-09-12T18:03:54.572Z",
 	"ramPerLegend": 2,
 	"sets": [
 		{
@@ -13418,7 +13428,7 @@
 			"kind": "base",
 			"name": "Welcome to Night City",
 			"printed": "MS01 - WNC [A]",
-			"printingCount": 315,
+			"printingCount": 316,
 			"setCode": "WNC"
 		},
 		{
@@ -13523,7 +13533,7 @@
 	],
 	"stats": {
 		"cards": 151,
-		"printings": 499,
+		"printings": 500,
 		"sets": 1
 	}
 }
