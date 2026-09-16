@@ -234,6 +234,21 @@ export function cardImageUrl(printingId: string, width: ImageWidth): string {
  */
 export const PRINTING_PARAM = 'printing';
 
+/**
+ * The `?printing=` suffix for a link to `card`'s detail page that should land on `printing`
+ * specifically — `''` for the Default Printing, since that's the param's absent state
+ * (`+page.svelte`'s `choose()` deletes it for the same reason: one canonical URL per card).
+ *
+ * Anywhere a `Printing` is shown that isn't necessarily the Default one — a Set page's grid, a
+ * filtered `/cards` tile, the detail pane — linking to just `/cards/[slug]` would silently swap
+ * back to the Default Printing's art on arrival, which is a worse deep link than none at all.
+ */
+export function printingQuery(card: Card, printing: Printing): string {
+	return printing.id === card.printings[0].id
+		? ''
+		: `?${PRINTING_PARAM}=${encodeURIComponent(printing.key)}`;
+}
+
 /** A `srcset` across every mirrored tier, so the browser picks by rendered size. */
 export function cardImageSrcset(printingId: string): string {
 	return IMAGE_WIDTHS.map((width) => `${cardImageUrl(printingId, width)} ${width}w`).join(', ');

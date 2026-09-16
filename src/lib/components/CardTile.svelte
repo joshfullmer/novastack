@@ -13,7 +13,7 @@
 	 * fallback rather than a special case.
 	 */
 	import { resolve } from '$app/paths';
-	import type { Card, Printing } from '#lib/cards/schema.js';
+	import { printingQuery, type Card, type Printing } from '#lib/cards/schema.js';
 	import CardImage from './CardImage.svelte';
 
 	let {
@@ -41,7 +41,7 @@
 </script>
 
 <a
-	href={resolve('/cards/[slug]', { slug: card.slug })}
+	href="{resolve('/cards/[slug]', { slug: card.slug })}{printingQuery(card, printing)}"
 	onclick={(event) => {
 		// Never swallow a modified click: those mean "new tab", not "select".
 		if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button !== 0)

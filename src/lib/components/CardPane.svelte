@@ -11,7 +11,7 @@
 	import { resolve } from '$app/paths';
 	import { splitCardName } from '#lib/cards/derive.js';
 	import { findSetIdentifier } from '#lib/cards/sets.js';
-	import type { Card, Printing } from '#lib/cards/schema.js';
+	import { printingQuery, type Card, type Printing } from '#lib/cards/schema.js';
 	import CardImage from './CardImage.svelte';
 	import CardMetaBadges from './CardMetaBadges.svelte';
 	import CardStats from './CardStats.svelte';
@@ -54,7 +54,9 @@
 			class="rounded-lg shadow-xl shadow-black/50"
 		/>
 
-		<h2 class="mt-3 text-lg leading-tight font-semibold text-bright uppercase">{nameParts?.name}</h2>
+		<h2 class="mt-3 text-lg leading-tight font-semibold text-bright uppercase">
+			{nameParts?.name}
+		</h2>
 		{#if nameParts?.subtitle}
 			<p class="text-sm font-medium tracking-wide text-muted uppercase">{nameParts.subtitle}</p>
 		{/if}
@@ -97,7 +99,7 @@
 		</dl>
 
 		<a
-			href={resolve('/cards/[slug]', { slug: card.slug })}
+			href="{resolve('/cards/[slug]', { slug: card.slug })}{printingQuery(card, printing)}"
 			class="mt-4 inline-block text-sm text-neon underline decoration-dotted underline-offset-4
 				transition-colors hover:text-bright"
 		>
