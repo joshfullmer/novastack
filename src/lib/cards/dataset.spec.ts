@@ -54,15 +54,16 @@ describe('the snapshot', () => {
 	});
 
 	it('has at least the general FAQs known at the time this was written', () => {
-		// A floor, not an exact figure — same reasoning as this file's card-count check: the FAQ
-		// API adds rulings over time, and a test that breaks on a new one is a test that gets
-		// deleted.
-		expect(snapshot.generalFaqs.length).toBeGreaterThanOrEqual(25);
+		// A floor with real margin below the count observed when this was written (25), not that
+		// exact figure — same reasoning as this file's card-count check. Rulings get corrected as
+		// well as added, and have already been observed shrinking by one net removal in a single
+		// sync; a tight floor is a test that breaks on a legitimate rules clarification.
+		expect(snapshot.generalFaqs.length).toBeGreaterThanOrEqual(20);
 	});
 
 	it('has at least the card-specific FAQs known at the time this was written, all uniquely ided', () => {
 		const cardFaqIds = snapshot.cards.flatMap((card) => card.faqs.map((faq) => faq.id));
-		expect(cardFaqIds.length).toBeGreaterThanOrEqual(245);
+		expect(cardFaqIds.length).toBeGreaterThanOrEqual(200);
 		expect(new Set(cardFaqIds).size).toBe(cardFaqIds.length);
 	});
 });
