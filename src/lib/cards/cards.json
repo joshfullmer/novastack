@@ -256,6 +256,26 @@
 					"setId": "MS01-WNC",
 					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/59d1ce5c-d616-45d5-9816-576f5f1509f3/render-mqfcs01b.webp",
 					"thumbhash": "U1mKHAYPl4aHCJeZZ5oHeH2AgYGICBiIAA=="
+				},
+				{
+					"artist": "Łukasz Poller",
+					"collectorNumber": "002",
+					"id": "2a0fa3c6-f259-49ad-88a2-843713712ccd",
+					"key": "NCS01-WNC-002",
+					"rarity": "Epic",
+					"setId": "NCS01-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/2a0fa3c6-f259-49ad-88a2-843713712ccd/render-mqfjmon1.webp",
+					"thumbhash": "iiiGFAQPvAOF6teapwzVbHCFgHB3CAiHAA=="
+				},
+				{
+					"artist": "Łukasz Poller",
+					"collectorNumber": "004",
+					"id": "b2d8aa5e-0d41-4c9e-b736-9d61e8153651",
+					"key": "NCS01-WNC-004",
+					"rarity": "Epic",
+					"setId": "NCS01-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/b2d8aa5e-0d41-4c9e-b736-9d61e8153651/render-mshyd29m.webp",
+					"thumbhash": "iziGHAYPqTSU+beYpwvVa3CIgYGICBiIAA=="
 				}
 			],
 			"ramProvided": null,
@@ -288,9 +308,9 @@
 			"eddiable": true,
 			"faqs": [
 				{
-					"answer": "No, the Unit only has [ADRENALIINE] while the conditions are met.",
+					"answer": "No, the Unit only has [ADRENALINE] while the conditions are met.",
 					"id": "fc82d674-d5c0-42f8-9fd9-a47a71be9ec7",
-					"question": "If my Rival controls exactly 2 more Gigs than me when I play Adreanline Converter but I steal a Gig before I attack with the equipped Unit,  does it still have [ADRENALINE]?",
+					"question": "If my Rival controls exactly 2 more Gigs than me when I play Adrenline Converter but I steal a Gig before I attack with the equipped Unit,  does it still have [ADRENALINE]?",
 					"sortOrder": 100
 				}
 			],
@@ -779,7 +799,7 @@
 			"eddiable": true,
 			"faqs": [
 				{
-					"answer": "You do not have to chose ahead of time a Unit. The condition will be met the first time a friendly Unit wins a fight.",
+					"answer": "You must choose a friendly Unit when you play this card. The condition will only be met when that Unit wins a fight.",
 					"id": "f7e7ce23-ddae-4f92-a770-e2e7a0fe368e",
 					"question": "When I play Appetite for Destruction, do I choose a friendly Unit, or can any friendly Unit satisfy the effect later this turn?",
 					"sortOrder": 100
@@ -4494,6 +4514,16 @@
 					"thumbhash": "zhiGHAgPXPNYJ4NwtccHSXyAgYGICBiIAA=="
 				},
 				{
+					"artist": "Pandart Studio",
+					"collectorNumber": "152",
+					"id": "60a2f877-f004-43c0-a7a8-9e54258caf31",
+					"key": "MS01-WNC-152",
+					"rarity": "Iconic Legend",
+					"setId": "MS01-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/60a2f877-f004-43c0-a7a8-9e54258caf31/render-mpvmtkcs.webp",
+					"thumbhash": "EQiKDAQPavZXiHaEg/WVGY2AgYGICBiIAA=="
+				},
+				{
 					"artist": "Daniel Valaisis",
 					"collectorNumber": "β073",
 					"id": "c1f9ae1a-841f-431f-919a-429de14be070",
@@ -4522,6 +4552,16 @@
 					"setId": "PRR01-WNC",
 					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/5620aa1a-94e9-43c4-b89e-fea304e4257c/render-mqi3brwo.webp",
 					"thumbhash": "zxiGHAgPbPNoJ4OAtccHSYyAgHB3CAiHAA=="
+				},
+				{
+					"artist": "Pandart Studio",
+					"collectorNumber": "044",
+					"id": "eb5b20c4-da57-4e36-b45f-330ac15eb6c0",
+					"key": "EOR01-WNC-044",
+					"rarity": "Nova Rare",
+					"setId": "EOR01-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/eb5b20c4-da57-4e36-b45f-330ac15eb6c0/render-mtcqd8df.webp",
+					"thumbhash": "UwiKDAQPWvZXuGeGhva2GY+BgYGICBiIAA=="
 				}
 			],
 			"ramProvided": 2,
@@ -4857,7 +4897,7 @@
 			"eddiable": false,
 			"faqs": [
 				{
-					"answer": "When Johnny Silvlerhand attacks (or is attacked by) a CORPO Unit,  he always wins the fight, regardless of power. So, Johnny Silverhand defeats the opposing COPRO Unit (as long as he has power 1+).",
+					"answer": "When Johnny Silvlerhand attacks (or is attacked by) a CORPO Unit,  he always wins the fight, regardless of power. So, Johnny Silverhand defeats the opposing CORPO Unit (as long as he has power 1+).",
 					"id": "3cfb42c3-4d87-44db-9b06-7f48c24b912f",
 					"question": "What \"This Unit wins all fights against CORPO Units\" mean?",
 					"sortOrder": 100
@@ -9145,6 +9185,16 @@
 					"thumbhash": "jAiGFAIPOHdXuPeDel73+3mNgYGICBiIAA=="
 				},
 				{
+					"artist": "Pandart Studio",
+					"collectorNumber": "148",
+					"id": "ef33c0b9-0e13-438e-952b-5d834485b0aa",
+					"key": "MS01-WNC-148",
+					"rarity": "Iconic Legend",
+					"setId": "MS01-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/ef33c0b9-0e13-438e-952b-5d834485b0aa/render-mpvmuzif.webp",
+					"thumbhash": "0ReGFAIPVvQkp4fHcHz2MF6GgYGICBiIAA=="
+				},
+				{
 					"artist": "Daniel Valaisis",
 					"collectorNumber": "β039",
 					"id": "b217ae88-52a6-44b3-b021-964db4534dbd",
@@ -9173,6 +9223,16 @@
 					"setId": "PRR01-WNC",
 					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/f6e85d48-0d0b-4cfa-9cdf-1b66f8104328/render-mqi3cpxo.webp",
 					"thumbhash": "jAiGFAIPSHZXuPaDeV73+3mNgHB3CAiHAA=="
+				},
+				{
+					"artist": "Pandart Studio",
+					"collectorNumber": "037",
+					"id": "6545a2e6-9de1-419e-964c-a55d07f9e34d",
+					"key": "EOR01-WNC-037",
+					"rarity": "Nova Rare",
+					"setId": "EOR01-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/6545a2e6-9de1-419e-964c-a55d07f9e34d/render-mtcqhj8c.webp",
+					"thumbhash": "0xeGFAIPR9VG92epd2z2IW+JgYGICBiIAA=="
 				}
 			],
 			"ramProvided": 2,
@@ -10038,6 +10098,36 @@
 					"setId": "SD02-EBP",
 					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/e1a14bfa-cd87-4fa9-bfe8-207abb4545c4/render-mpwbized.webp",
 					"thumbhash": "yteFDAIPCHd4CPh3i073+XiOgYGICBiIAA=="
+				},
+				{
+					"artist": "CD Projekt Red",
+					"collectorNumber": "001",
+					"id": "a9eb38f2-fe64-47c5-9938-9b6ecb01c913",
+					"key": "NCS01-WNC-001",
+					"rarity": "Uncommon",
+					"setId": "NCS01-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/a9eb38f2-fe64-47c5-9938-9b6ecb01c913/render-mqfjnjyt.webp",
+					"thumbhash": "U+eFFAQPbqRIBsV0pQOWBmWAgHB3CAiHAA=="
+				},
+				{
+					"artist": "CD Projekt Red",
+					"collectorNumber": "003",
+					"id": "6f8d1015-dd5d-49c4-9620-6b3b0c7ee82a",
+					"key": "NCS01-WNC-003",
+					"rarity": "Uncommon",
+					"setId": "NCS01-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/6f8d1015-dd5d-49c4-9620-6b3b0c7ee82a/render-mqfk0chp.webp",
+					"thumbhash": "U+eFFAQPbqRIBsV0pQOWBmWAgHB3CAiHAA=="
+				},
+				{
+					"artist": "CD Projekt Red",
+					"collectorNumber": "005",
+					"id": "36d42759-0199-47f0-835b-ee6616842e49",
+					"key": "NCS01-WNC-005",
+					"rarity": "Uncommon",
+					"setId": "NCS01-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/36d42759-0199-47f0-835b-ee6616842e49/render-mshye1d4.webp",
+					"thumbhash": "U+eFFAQPbqRHBcV0pQOWBmWAgYGICBiIAA=="
 				}
 			],
 			"ramProvided": null,
@@ -11886,16 +11976,10 @@
 			"eddiable": true,
 			"faqs": [
 				{
-					"answer": "Yes. If there is a BRAINDANCE Program among the 3 cards trashed from the top of the deck, you will be forced to add 1 of them to your hand.",
+					"answer": "No. You can add any BRAINDANCE Program from your trash.",
 					"id": "1dd664ff-e61f-4b15-8e96-45f0dd31a13a",
-					"question": "I Trash 3 will I need to add a BRAINDANCE Program from the cards I trashed?",
+					"question": "When I trash 3, do I need to add a BRAINDANCE Program from the cards I trashed?",
 					"sortOrder": 100
-				},
-				{
-					"answer": "You add no cards.",
-					"id": "e605a916-b579-4144-9152-ec3abc825b56",
-					"question": "If I Trash 3 and there's no BRAINDANCE Program, what happens?",
-					"sortOrder": 200
 				},
 				{
 					"answer": "Yes. Trash as many cards as possible, instead.",
@@ -13417,7 +13501,7 @@
 			"sortOrder": 2500
 		}
 	],
-	"generatedAt": "2026-09-12T18:03:54.572Z",
+	"generatedAt": "2026-09-16T16:30:45.128Z",
 	"ramPerLegend": 2,
 	"sets": [
 		{
@@ -13428,7 +13512,7 @@
 			"kind": "base",
 			"name": "Welcome to Night City",
 			"printed": "MS01 - WNC [A]",
-			"printingCount": 316,
+			"printingCount": 318,
 			"setCode": "WNC"
 		},
 		{
@@ -13498,14 +13582,14 @@
 			"setCode": "WNC"
 		},
 		{
-			"cardCount": 12,
+			"cardCount": 14,
 			"category": "EOR01",
 			"cycle": null,
 			"id": "EOR01-WNC",
 			"kind": "derivative",
 			"name": "Edgerunner Open Season 1",
 			"printed": "EOR01 - WNC",
-			"printingCount": 12,
+			"printingCount": 14,
 			"setCode": "WNC"
 		},
 		{
@@ -13529,11 +13613,22 @@
 			"printed": "NCB01 - WNC",
 			"printingCount": 37,
 			"setCode": "WNC"
+		},
+		{
+			"cardCount": 2,
+			"category": "NCS01",
+			"cycle": null,
+			"id": "NCS01-WNC",
+			"kind": "derivative",
+			"name": "Night City Showdown Season 1",
+			"printed": "NCS01 - WNC",
+			"printingCount": 5,
+			"setCode": "WNC"
 		}
 	],
 	"stats": {
 		"cards": 151,
-		"printings": 500,
+		"printings": 509,
 		"sets": 1
 	}
 }

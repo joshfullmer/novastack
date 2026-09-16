@@ -27,7 +27,7 @@ _Avoid_: selected printing, primary printing, main printing
 **Set**:
 A named release that Printings belong to, identified by its printed Set Identifier — a main set, a
 starter deck, a demo deck, a box-topper run, a promo run, a prerelease run, a tournament prize
-run. **Ten today.** The source API reports fourteen, because it splits each Set into separate
+run. **Eleven today.** The source API reports fifteen, because it splits each Set into separate
 retail and beta entries; that split is the API's own and does not exist on the cards — see Print
 Treatment.
 _Avoid_: expansion, release, product
@@ -56,7 +56,7 @@ _Avoid_: edition, variant, version
 The code printed on a Printing: `<Set Category> - <Set Code> [<Cycle>]`, as in `MS01 - WNC [A]` or
 `PRM - DD2 [A]`. Not exposed by the source API at all — it supplies only a slugified set _name_ — so
 the mapping from API set to printed identifier is curated. Components can be absent: `PRR01 - WNC`
-has no Cycle, and `PRM01` has only a Category. Fourteen API sets reduce to **ten** printed
+has no Cycle, and `PRM01` has only a Category. Fifteen API sets reduce to **eleven** printed
 identifiers, because retail and beta share one.
 
 **Set Code**:
