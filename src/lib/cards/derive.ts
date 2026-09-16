@@ -6,7 +6,7 @@
  * `Red, Yellow, Green, Blue` today is an observation about one printing run, and the moment
  * that run stops being contiguous the derivation is meaningless rather than merely stale.
  */
-import type { Card, SetSummary } from './schema.ts';
+import type { Card, Printing, SetSummary } from './schema.ts';
 import { BASE_SET_API_CODE, API_SET_CODE_TO_SET_ID, SET_IDENTIFIERS } from './sets.ts';
 import { ICONIC_RARITIES, type CardType, type Color } from './vocabulary.ts';
 
@@ -143,6 +143,58 @@ export function deriveSets(cards: readonly Card[]): SetSummary[] {
 		cardCount: cardCounts.get(set.id)?.size ?? 0,
 		printingCount: printingCounts.get(set.id) ?? 0
 	}));
+}
+
+/**
+ * Every Printing belonging to `setId`, one entry per Printing rather than per Card.
+ *
+ * A Set's detail page is a checklist, not the `/cards` grid: `evaluate`'s "one Match per Card"
+ * (`filters/predicate.ts`) is right for a browsing grid, where a card matching a filter through
+ * one printing should not appear as several identical-looking tiles — but it's exactly wrong
+ * here, where a card with two printings in the set (a retail/beta pair, a tournament-prize
+ * variant) belongs on the checklist twice, and the count needs to agree with `deriveSets`'
+ * `printingCount` rather than its `cardCount`.
+ */
+export function printingsInSet(
+	cards: readonly Card[],
+	setId: string
+): { card: Card; printing: Printing }[] {
+	const results: { card: Card; printing: Printing }[] = [];
+	for (const card of cards) {
+		for (const printing of card.printings) {
+			if (printing.setId === setId) results.push({ card, printing });
+		}
+	}
+	return results;
+}
+
+export type PrintTreatment = 'retail' | 'beta';
+
+/**
+ * A Printing's Print Treatment (`CONTEXT.md`) — retail or the Kickstarter-only beta run. The `β`
+ * Collector Number prefix is the only signal for this; it is not tied to any particular Set, so
+ * a Set that never had a beta run (everything after Set 1) simply never produces `'beta'` here.
+ */
+export function printTreatment(printing: Printing): PrintTreatment {
+	return printing.collectorNumber.startsWith('β') ? 'beta' : 'retail';
+}
+
+/**
+ * Reduces a Printing list to one entry per Card, keeping the first occurrence.
+ *
+ * "First" only means something useful because callers sort by Collector Number before calling
+ * this — so it's the lowest-numbered Printing in whatever's already been filtered (a Set, and
+ * possibly a Print Treatment within it), not an arbitrary pick.
+ */
+export function collapseToUniqueCards<T extends { card: Card }>(entries: readonly T[]): T[] {
+	const seen = new Set<string>();
+	const unique: T[] = [];
+	for (const entry of entries) {
+		if (seen.has(entry.card.slug)) continue;
+		seen.add(entry.card.slug);
+		unique.push(entry);
+	}
+	return unique;
 }
 
 /**

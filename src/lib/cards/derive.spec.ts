@@ -2,10 +2,13 @@ import { describe, expect, it } from 'vitest';
 import {
 	baseSetSequence,
 	cardTypeRunsWithinColors,
+	collapseToUniqueCards,
 	collectorNumberSortKey,
 	deriveRamPerLegend,
 	deriveSets,
 	legendBaseName,
+	printTreatment,
+	printingsInSet,
 	runOrder,
 	setExclusiveSlugs,
 	splitCardName
@@ -148,6 +151,69 @@ describe('deriveSets', () => {
 		const sets = deriveSets([]);
 		expect(sets).toHaveLength(SET_IDENTIFIERS.length);
 		expect(sets.every((set) => set.cardCount === 0)).toBe(true);
+	});
+});
+
+describe('printingsInSet', () => {
+	it('lists a card once per printing in the set, not once per card', () => {
+		const twoInSet = makeCard({
+			slug: 'twice',
+			printings: [
+				makePrinting({ setId: 'MS01-WNC', collectorNumber: '001' }),
+				makePrinting({ setId: 'MS01-WNC', collectorNumber: 'β001' })
+			]
+		});
+		const oneInSet = makeCard({
+			slug: 'once',
+			printings: [makePrinting({ setId: 'MS01-WNC', collectorNumber: '002' })]
+		});
+		const elsewhere = makeCard({
+			slug: 'elsewhere',
+			printings: [makePrinting({ setId: 'SD01-HEI', collectorNumber: '001' })]
+		});
+
+		const results = printingsInSet([twoInSet, oneInSet, elsewhere], 'MS01-WNC');
+		expect(results).toHaveLength(3);
+		expect(results.filter((result) => result.card.slug === 'twice')).toHaveLength(2);
+		expect(results.every((result) => result.printing.setId === 'MS01-WNC')).toBe(true);
+	});
+
+	it('returns nothing for a set with no printings', () => {
+		expect(printingsInSet([makeCard()], 'SD02-EBP')).toEqual([]);
+	});
+});
+
+describe('printTreatment', () => {
+	it('reads retail off a plain collector number', () => {
+		expect(printTreatment(makePrinting({ collectorNumber: '001' }))).toBe('retail');
+	});
+
+	it('reads beta off the β prefix, nothing else', () => {
+		expect(printTreatment(makePrinting({ collectorNumber: 'β001' }))).toBe('beta');
+	});
+});
+
+describe('collapseToUniqueCards', () => {
+	it('keeps the first occurrence per card and preserves order', () => {
+		const first = {
+			card: makeCard({ slug: 'a' }),
+			printing: makePrinting({ collectorNumber: '001' })
+		};
+		const second = {
+			card: makeCard({ slug: 'b' }),
+			printing: makePrinting({ collectorNumber: '002' })
+		};
+		const dupe = { card: first.card, printing: makePrinting({ collectorNumber: 'β001' }) };
+
+		expect(collapseToUniqueCards([first, second, dupe])).toEqual([first, second]);
+	});
+
+	it('is a no-op on a list that is already unique', () => {
+		const entries = [
+			{ card: makeCard({ slug: 'a' }), printing: makePrinting() },
+			{ card: makeCard({ slug: 'b' }), printing: makePrinting() }
+		];
+		expect(collapseToUniqueCards(entries)).toEqual(entries);
 	});
 });
 
