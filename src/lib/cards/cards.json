@@ -258,21 +258,21 @@
 					"thumbhash": "U1mKHAYPl4aHCJeZZ5oHeH2AgYGICBiIAA=="
 				},
 				{
-					"artist": "Łukasz Poller",
+					"artist": "Envar",
 					"collectorNumber": "002",
 					"id": "2a0fa3c6-f259-49ad-88a2-843713712ccd",
 					"key": "NCS01-WNC-002",
-					"rarity": "Epic",
+					"rarity": "Nova Rare",
 					"setId": "NCS01-WNC",
 					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/2a0fa3c6-f259-49ad-88a2-843713712ccd/render-mqfjmon1.webp",
 					"thumbhash": "iiiGFAQPvAOF6teapwzVbHCFgHB3CAiHAA=="
 				},
 				{
-					"artist": "Łukasz Poller",
+					"artist": "Envar",
 					"collectorNumber": "004",
 					"id": "b2d8aa5e-0d41-4c9e-b736-9d61e8153651",
 					"key": "NCS01-WNC-004",
-					"rarity": "Epic",
+					"rarity": "Nova Rare",
 					"setId": "NCS01-WNC",
 					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/b2d8aa5e-0d41-4c9e-b736-9d61e8153651/render-mshyd29m.webp",
 					"thumbhash": "iziGHAYPqTSU+beYpwvVa3CIgYGICBiIAA=="
@@ -9226,12 +9226,12 @@
 				},
 				{
 					"artist": "Pandart Studio",
-					"collectorNumber": "037",
+					"collectorNumber": "038",
 					"id": "6545a2e6-9de1-419e-964c-a55d07f9e34d",
-					"key": "EOR01-WNC-037",
+					"key": "EOR01-WNC-038",
 					"rarity": "Nova Rare",
 					"setId": "EOR01-WNC",
-					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/6545a2e6-9de1-419e-964c-a55d07f9e34d/render-mtcqhj8c.webp",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/6545a2e6-9de1-419e-964c-a55d07f9e34d/render-mu5gkjzf.webp",
 					"thumbhash": "0xeGFAIPR9VG92epd2z2IW+JgYGICBiIAA=="
 				}
 			],
@@ -10100,31 +10100,31 @@
 					"thumbhash": "yteFDAIPCHd4CPh3i073+XiOgYGICBiIAA=="
 				},
 				{
-					"artist": "CD Projekt Red",
+					"artist": "Envar",
 					"collectorNumber": "001",
 					"id": "a9eb38f2-fe64-47c5-9938-9b6ecb01c913",
 					"key": "NCS01-WNC-001",
-					"rarity": "Uncommon",
+					"rarity": "Nova Rare",
 					"setId": "NCS01-WNC",
 					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/a9eb38f2-fe64-47c5-9938-9b6ecb01c913/render-mqfjnjyt.webp",
 					"thumbhash": "U+eFFAQPbqRIBsV0pQOWBmWAgHB3CAiHAA=="
 				},
 				{
-					"artist": "CD Projekt Red",
+					"artist": "Envar",
 					"collectorNumber": "003",
 					"id": "6f8d1015-dd5d-49c4-9620-6b3b0c7ee82a",
 					"key": "NCS01-WNC-003",
-					"rarity": "Uncommon",
+					"rarity": "Nova Rare",
 					"setId": "NCS01-WNC",
 					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/6f8d1015-dd5d-49c4-9620-6b3b0c7ee82a/render-mqfk0chp.webp",
 					"thumbhash": "U+eFFAQPbqRIBsV0pQOWBmWAgHB3CAiHAA=="
 				},
 				{
-					"artist": "CD Projekt Red",
+					"artist": "Envar",
 					"collectorNumber": "005",
 					"id": "36d42759-0199-47f0-835b-ee6616842e49",
 					"key": "NCS01-WNC-005",
-					"rarity": "Uncommon",
+					"rarity": "Nova Rare",
 					"setId": "NCS01-WNC",
 					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/36d42759-0199-47f0-835b-ee6616842e49/render-mshye1d4.webp",
 					"thumbhash": "U+eFFAQPbqRHBcV0pQOWBmWAgYGICBiIAA=="
@@ -13501,7 +13501,7 @@
 			"sortOrder": 2500
 		}
 	],
-	"generatedAt": "2026-09-17T09:45:07.664Z",
+	"generatedAt": "2026-09-17T19:31:59.183Z",
 	"ramPerLegend": 2,
 	"sets": [
 		{
