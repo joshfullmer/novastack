@@ -456,6 +456,16 @@
 					"setId": "EOR01-WNC",
 					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/c28c3d15-1e03-465c-a696-cf395a795abc/render-msyh0r9p.webp",
 					"thumbhash": "lSaGJAYPCGhHt4dpYon2A3WJgYGICBiIAA=="
+				},
+				{
+					"artist": "Alicja Użarowska",
+					"collectorNumber": "009",
+					"id": "08a9b9ec-16b7-407a-90f2-a9536937b879",
+					"key": "EOR01-WNC-009",
+					"rarity": "Nova Rare",
+					"setId": "EOR01-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/08a9b9ec-16b7-407a-90f2-a9536937b879/render-msyhbkhl.webp",
+					"thumbhash": "liaGJAYPBohVx4d4UIn2A3WJgYGICBiIAA=="
 				}
 			],
 			"ramProvided": null,
@@ -2238,6 +2248,46 @@
 					"setId": "MS01-WNC",
 					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/9d04877f-050d-485d-9447-1bef7ee6ed40/render-mpxm6ua0.webp",
 					"thumbhash": "jRiGDAQP2veHmoZyY8922ZiPgYGICBiIAA=="
+				},
+				{
+					"artist": "TOPDOG Entertainment",
+					"collectorNumber": "012",
+					"id": "57e9c376-6cc1-4f05-9b8f-0b161b5c635a",
+					"key": "EOR01-WNC-012",
+					"rarity": "Nova Rare",
+					"setId": "EOR01-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/57e9c376-6cc1-4f05-9b8f-0b161b5c635a/render-msygzgyk.webp",
+					"thumbhash": "0TeGDAIPn8dXiEN3Ry/S9V2MgYGICBiIAA=="
+				},
+				{
+					"artist": "TOPDOG Entertainment",
+					"collectorNumber": "016",
+					"id": "167ad190-3e97-44bf-bda9-5272774d4025",
+					"key": "EOR01-WNC-016",
+					"rarity": "Nova Rare",
+					"setId": "EOR01-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/167ad190-3e97-44bf-bda9-5272774d4025/render-mt7oagnb.webp",
+					"thumbhash": "0TeGDAIPr9dXiEJ3Ry/S9WyMgYGICBiIAA=="
+				},
+				{
+					"artist": "TOPDOG Entertainment",
+					"collectorNumber": "020",
+					"id": "b7ae9f99-d205-4330-b90d-c7d89313274a",
+					"key": "EOR01-WNC-020",
+					"rarity": "Nova Rare",
+					"setId": "EOR01-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/b7ae9f99-d205-4330-b90d-c7d89313274a/render-msyhe5xc.webp",
+					"thumbhash": "0TeGDAIPr9dXiEKGRy/S9V2MgYGICBiIAA=="
+				},
+				{
+					"artist": "TOPDOG Entertainment",
+					"collectorNumber": "024",
+					"id": "a2f65b15-6ff1-4214-bd89-11685ef9817f",
+					"key": "EOR01-WNC-024",
+					"rarity": "Nova Rare",
+					"setId": "EOR01-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/a2f65b15-6ff1-4214-bd89-11685ef9817f/render-msyhesk6.webp",
+					"thumbhash": "0jeGDAIPv+dWeDKFRi/S9WyMgYGICBiIAA=="
 				}
 			],
 			"ramProvided": 2,
@@ -3222,6 +3272,16 @@
 					"setId": "PRM-DD2",
 					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/45ae40b9-f0f3-4fd9-901a-cd1bed292133/render-mqf832zu.webp",
 					"thumbhash": "jQeGDAIPfqKIB6SEVxj4aY6AgYGICBiIAA=="
+				},
+				{
+					"artist": "Michal Ivan",
+					"collectorNumber": "002",
+					"id": "398de6dd-f801-45ca-a183-17de617cf973",
+					"key": "EOR01-WNC-002",
+					"rarity": "Nova Rare",
+					"setId": "EOR01-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/398de6dd-f801-45ca-a183-17de617cf973/render-msyh2cwm.webp",
+					"thumbhash": "UPeJDAYPj3WHJqVnJkn6SImAgYGICBiIAA=="
 				}
 			],
 			"ramProvided": null,
@@ -4389,6 +4449,16 @@
 					"setId": "EOR01-WNC",
 					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/36728e75-5520-4ba8-a82d-e5d884b18170/render-msyh2wcu.webp",
 					"thumbhash": "zgeGFAYPS/eWZ7d7eTv3t3ePgYGICBiIAA=="
+				},
+				{
+					"artist": "Alexander Dudar",
+					"collectorNumber": "008",
+					"id": "5d10162b-32ad-4391-bc39-8b652142e707",
+					"key": "EOR01-WNC-008",
+					"rarity": "Nova Rare",
+					"setId": "EOR01-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/5d10162b-32ad-4391-bc39-8b652142e707/render-msyham3q.webp",
+					"thumbhash": "zgeGFAYPWfeVd7eKZzv3t3ePgYGICBiIAA=="
 				}
 			],
 			"ramProvided": null,
@@ -5186,6 +5256,46 @@
 					"setId": "PRR01-WNC",
 					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/e902c6ed-7f60-42e1-b3e1-e3804181222f/render-mqi3atsw.webp",
 					"thumbhash": "0vaFFAQPM/hVeKmlpzn4F4+FgHB3CAiHAA=="
+				},
+				{
+					"artist": "Envar Studio",
+					"collectorNumber": "015",
+					"id": "ffef2e56-444f-4b37-83a1-10a1a4be38fb",
+					"key": "EOR01-WNC-015",
+					"rarity": "Nova Rare",
+					"setId": "EOR01-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/ffef2e56-444f-4b37-83a1-10a1a4be38fb/render-msygzgi4.webp",
+					"thumbhash": "kBeGDAYPEfolyZmG9iWYB36HgYGICBiIAA=="
+				},
+				{
+					"artist": "Envar Studio",
+					"collectorNumber": "019",
+					"id": "acdef65d-d889-4321-9b97-961a4b05d481",
+					"key": "EOR01-WNC-019",
+					"rarity": "Nova Rare",
+					"setId": "EOR01-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/acdef65d-d889-4321-9b97-961a4b05d481/render-mt7oco3l.webp",
+					"thumbhash": "kBeGDAYPIfo1uZmG9SWYB36HgYGICBiIAA=="
+				},
+				{
+					"artist": "Envar Studio",
+					"collectorNumber": "023",
+					"id": "2de969bb-8353-46c5-b0ea-09d4378fcaae",
+					"key": "EOR01-WNC-023",
+					"rarity": "Nova Rare",
+					"setId": "EOR01-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/2de969bb-8353-46c5-b0ea-09d4378fcaae/render-msyh482v.webp",
+					"thumbhash": "kBeGDAYPIfk1uZmV9SWYB36HgYGICBiIAA=="
+				},
+				{
+					"artist": "Envar Studio",
+					"collectorNumber": "027",
+					"id": "a920bb39-b0e6-4d5e-a8e9-eca50d3dce10",
+					"key": "EOR01-WNC-027",
+					"rarity": "Nova Rare",
+					"setId": "EOR01-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/a920bb39-b0e6-4d5e-a8e9-eca50d3dce10/render-msyhffyb.webp",
+					"thumbhash": "kBeGDAYPIfo1uZmV9SWYB36HgYGICBiIAA=="
 				}
 			],
 			"ramProvided": 2,
@@ -6908,6 +7018,16 @@
 					"setId": "MS01-WNC",
 					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/e4a8b8fc-fbc7-41ce-9f89-7538690b9c62/render-mpv4pu0h.webp",
 					"thumbhash": "jgeGDAYPSfVWiMNwCaVBQ0+DgYGICBiIAA=="
+				},
+				{
+					"artist": "Bruno Ferreira (Bit Bot)",
+					"collectorNumber": "006",
+					"id": "17517c74-9e61-423a-9d65-c7f4b56af29a",
+					"key": "PRM01-006",
+					"rarity": "Nova Rare",
+					"setId": "PRM01",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/17517c74-9e61-423a-9d65-c7f4b56af29a/render-msyijccq.webp",
+					"thumbhash": "WDiGNAgPCKh4iJZpZgRIJ4CCgHB3CAiHAA=="
 				}
 			],
 			"ramProvided": null,
@@ -7318,6 +7438,46 @@
 					"setId": "MS01-WNC",
 					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/2e06439f-fab6-4a65-a1fc-e5f4afc84eb0/render-mswya1fx.webp",
 					"thumbhash": "TwiGDAIP0Mh1aIqWZp+1i3eAgYGICBiIAA=="
+				},
+				{
+					"artist": "Envar Studio",
+					"collectorNumber": "014",
+					"id": "8ed5d5d5-92b6-4f25-b7aa-fa9bee7948d6",
+					"key": "EOR01-WNC-014",
+					"rarity": "Nova Rare",
+					"setId": "EOR01-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/8ed5d5d5-92b6-4f25-b7aa-fa9bee7948d6/render-msyh046y.webp",
+					"thumbhash": "VUiGDAQPsbEIipl5di30d2SAgYGICBiIAA=="
+				},
+				{
+					"artist": "Envar Studio",
+					"collectorNumber": "018",
+					"id": "b2240e25-e4ff-4992-9455-8a56bdbbcdb8",
+					"key": "EOR01-WNC-018",
+					"rarity": "Nova Rare",
+					"setId": "EOR01-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/b2240e25-e4ff-4992-9455-8a56bdbbcdb8/render-mt7obl02.webp",
+					"thumbhash": "VUiGDAQPsMEHiph5di30d2SAgYGICBiIAA=="
+				},
+				{
+					"artist": "Envar Studio",
+					"collectorNumber": "022",
+					"id": "4399e640-6e66-4c0b-b0f5-bb68d26e0e3f",
+					"key": "EOR01-WNC-022",
+					"rarity": "Nova Rare",
+					"setId": "EOR01-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/4399e640-6e66-4c0b-b0f5-bb68d26e0e3f/render-msyhe4a5.webp",
+					"thumbhash": "VUiGDAQPsMEHipl5di30d2SAgYGICBiIAA=="
+				},
+				{
+					"artist": "Envar Studio",
+					"collectorNumber": "026",
+					"id": "f83303e6-72c1-4305-90be-7e4ef6b480f1",
+					"key": "EOR01-WNC-026",
+					"rarity": "Nova Rare",
+					"setId": "EOR01-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/f83303e6-72c1-4305-90be-7e4ef6b480f1/render-msyhffe5.webp",
+					"thumbhash": "VkiGDAQPsMIXiomIdS30d2SAgYGICBiIAA=="
 				}
 			],
 			"ramProvided": 2,
@@ -8450,6 +8610,16 @@
 					"setId": "EOR01-WNC",
 					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/98fc95b4-44ec-4de0-bec3-77762792fa0f/render-msyhbmat.webp",
 					"thumbhash": "ltiFFAYPbAiXaGaKRDf3dXaPgYGICBiIAA=="
+				},
+				{
+					"artist": "Mattia De Iulis",
+					"collectorNumber": "010",
+					"id": "af1c8374-41a9-4fd7-8597-c6481705c210",
+					"key": "EOR01-WNC-010",
+					"rarity": "Nova Rare",
+					"setId": "EOR01-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/af1c8374-41a9-4fd7-8597-c6481705c210/render-msyhbbbr.webp",
+					"thumbhash": "lsiFFAYPawimaGaaQzf3dnaPgYGICBiIAA=="
 				}
 			],
 			"ramProvided": null,
@@ -8935,6 +9105,16 @@
 					"setId": "MS01-WNC",
 					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/29b3036d-306a-485f-af6c-b08fb5b912ac/render-mpv4hde3.webp",
 					"thumbhash": "TgiGFAYPiuZoGHaApGgHaoeAgYGICBiIAA=="
+				},
+				{
+					"artist": "Michal Ivan",
+					"collectorNumber": "003",
+					"id": "4f69c4bd-5b50-4892-a348-1ca16a81f8d6",
+					"key": "EOR01-WNC-003",
+					"rarity": "Nova Rare",
+					"setId": "EOR01-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/4f69c4bd-5b50-4892-a348-1ca16a81f8d6/render-msyh2u9f.webp",
+					"thumbhash": "kRiGFAYPmtJXCHaAsBoHaYOAgYGICBiIAA=="
 				}
 			],
 			"ramProvided": null,
@@ -9558,6 +9738,16 @@
 					"setId": "MS01-WNC",
 					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/a4276d5e-cdf1-42cb-a6c3-8722d8c7c595/render-mpv4n2r4.webp",
 					"thumbhash": "UiiKFAQPRZp3CKmHeARYZpCJgYGICBiIAA=="
+				},
+				{
+					"artist": "Mooncolony",
+					"collectorNumber": "001",
+					"id": "b3fe1a4f-74da-4882-82a9-14aebd392be4",
+					"key": "EOR01-WNC-001",
+					"rarity": "Nova Rare",
+					"setId": "EOR01-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/b3fe1a4f-74da-4882-82a9-14aebd392be4/render-msyh03l0.webp",
+					"thumbhash": "myiKHAQPIwqYiJh5hQa4eICNgYGICBiIAA=="
 				}
 			],
 			"ramProvided": null,
@@ -11636,6 +11826,16 @@
 					"setId": "EOR01-WNC",
 					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/a0d5fd79-b00b-408d-89c5-ff8721da568c/render-msyh3iss.webp",
 					"thumbhash": "VFiKHAwPJ/dluoeIdvQoR4+DgYGICBiIAA=="
+				},
+				{
+					"artist": "Jesús Hervás",
+					"collectorNumber": "011",
+					"id": "959451ee-79cc-4caa-97bd-cbb3e5f1a70a",
+					"key": "EOR01-WNC-011",
+					"rarity": "Nova Rare",
+					"setId": "EOR01-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/959451ee-79cc-4caa-97bd-cbb3e5f1a70a/render-msyhbaup.webp",
+					"thumbhash": "VViKHAwPN/d1uoaYdvQoR4+DgYGICBiIAA=="
 				}
 			],
 			"ramProvided": null,
@@ -12051,6 +12251,46 @@
 					"setId": "MS01-WNC",
 					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/20debd66-ff1c-42c3-9869-928cba33ccb5/render-mpxm5mbr.webp",
 					"thumbhash": "0ieGHAYP5Kd2CXaWVlv2xHePgYGICBiIAA=="
+				},
+				{
+					"artist": "Envar Studio",
+					"collectorNumber": "013",
+					"id": "ce137eea-c335-4f03-81f0-4717b75d5ce7",
+					"key": "EOR01-WNC-013",
+					"rarity": "Nova Rare",
+					"setId": "EOR01-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/ce137eea-c335-4f03-81f0-4717b75d5ce7/render-msyh4ii0.webp",
+					"thumbhash": "zliGFAQPnAevJ7QqNwRm8tWLgYGICBiIAA=="
+				},
+				{
+					"artist": "Envar Studio",
+					"collectorNumber": "017",
+					"id": "0f082a95-b3e2-4563-be0b-88b5d85d6138",
+					"key": "EOR01-WNC-017",
+					"rarity": "Nova Rare",
+					"setId": "EOR01-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/0f082a95-b3e2-4563-be0b-88b5d85d6138/render-mt7ob1qo.webp",
+					"thumbhash": "z1iCFAQPuwe/J9IaNQRm8tWLgYGICBiIAA=="
+				},
+				{
+					"artist": "Envar Studio",
+					"collectorNumber": "021",
+					"id": "248f408c-437b-48df-8410-b7419e2f54d2",
+					"key": "EOR01-WNC-021",
+					"rarity": "Nova Rare",
+					"setId": "EOR01-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/248f408c-437b-48df-8410-b7419e2f54d2/render-msyh51ny.webp",
+					"thumbhash": "z1iGFAQPuwe/F8M4NQRm8tWLgYGICBiIAA=="
+				},
+				{
+					"artist": "Envar Studio",
+					"collectorNumber": "025",
+					"id": "ccbdc832-812d-4b93-abd2-c2a5ba1684d2",
+					"key": "EOR01-WNC-025",
+					"rarity": "Nova Rare",
+					"setId": "EOR01-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/ccbdc832-812d-4b93-abd2-c2a5ba1684d2/render-msyheqjy.webp",
+					"thumbhash": "z1iCFAQPySfOB8RGMwRm8tWMgYGICBiIAA=="
 				}
 			],
 			"ramProvided": 2,
@@ -13501,7 +13741,7 @@
 			"sortOrder": 2500
 		}
 	],
-	"generatedAt": "2026-09-17T19:31:59.183Z",
+	"generatedAt": "2026-09-18T16:59:24.096Z",
 	"ramPerLegend": 2,
 	"sets": [
 		{
@@ -13582,25 +13822,25 @@
 			"setCode": "WNC"
 		},
 		{
-			"cardCount": 14,
+			"cardCount": 21,
 			"category": "EOR01",
 			"cycle": null,
 			"id": "EOR01-WNC",
 			"kind": "derivative",
 			"name": "Edgerunner Open Season 1",
 			"printed": "EOR01 - WNC",
-			"printingCount": 14,
+			"printingCount": 37,
 			"setCode": "WNC"
 		},
 		{
-			"cardCount": 2,
+			"cardCount": 3,
 			"category": "PRM01",
 			"cycle": null,
 			"id": "PRM01",
 			"kind": "derivative",
 			"name": "Set 1 Promos",
 			"printed": "PRM01",
-			"printingCount": 3,
+			"printingCount": 4,
 			"setCode": null
 		},
 		{
@@ -13628,7 +13868,7 @@
 	],
 	"stats": {
 		"cards": 151,
-		"printings": 509,
+		"printings": 533,
 		"sets": 1
 	}
 }
