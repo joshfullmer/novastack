@@ -1,18 +1,18 @@
 {
 	"heroes": [
 		{
-			"color": "Blue",
-			"name": "V: Corporate Exile",
-			"printingId": "f509ebd8-c8b7-4a22-8922-2d71c6df0b6f",
-			"slug": "v-corporate-exile",
-			"thumbhash": "jPeFFAQPzKhXmcaAeARDFkKAgYGICBiIAA=="
+			"color": "Red",
+			"name": "Johnny Silverhand: Never Stop Fighting",
+			"printingId": "7b113940-7325-4304-b07a-61719b47a49c",
+			"slug": "johnny-silverhand-never-stop-fighting",
+			"thumbhash": "UUiGJAYPafh3OKeEAoiEkFyJgYGICBiIAA=="
 		},
 		{
-			"color": "Yellow",
-			"name": "Jackie Welles: Ride or Die Choom",
-			"printingId": "12d44604-ad7b-4e82-b517-9edb0be44427",
-			"slug": "jackie-welles-ride-or-die-choom",
-			"thumbhash": "0SiGHAQPe8R3GNOAp6+m3l+FgYGICBiIAA=="
+			"color": "Blue",
+			"name": "Jackie Welles: Pour One Out For Me",
+			"printingId": "e4e17d32-3ec4-4c74-927c-fd0911b86e72",
+			"slug": "jackie-welles-pour-one-out-for-me",
+			"thumbhash": "1ueJFAQPybiHCHdyh/YZHK+CgYGICBiIAA=="
 		},
 		{
 			"color": "Green",
@@ -23,10 +23,24 @@
 		},
 		{
 			"color": "Red",
-			"name": "Johnny Silverhand: Rocking Renegade",
-			"printingId": "4f8fbab4-7aad-4271-8dd6-8cdf68654c5e",
-			"slug": "johnny-silverhand-rocking-renegade",
-			"thumbhash": "HRiKDAQPq8Z3CFWEUo721niPgYGICBiIAA=="
+			"name": "V: Streetkid",
+			"printingId": "20debd66-ff1c-42c3-9869-928cba33ccb5",
+			"slug": "v-streetkid",
+			"thumbhash": "0ieGHAYP5Kd2CXaWVlv2xHePgYGICBiIAA=="
+		},
+		{
+			"color": "Blue",
+			"name": "Alt Cunningham: Soulkiller Architect",
+			"printingId": "7a6a5336-2b6c-4d8a-b1f0-595a787255ce",
+			"slug": "alt-cunningham-soulkiller-architect",
+			"thumbhash": "EeiFFAQPCnaIF+Z7ZbUHgm+EgYGICBiIAA=="
+		},
+		{
+			"color": "Yellow",
+			"name": "River Ward: Detective on the Hunt",
+			"printingId": "e59b67b3-a388-4228-94a3-84ee12e68937",
+			"slug": "river-ward-detective-on-the-hunt",
+			"thumbhash": "UfiFFAIPfvVKdYV0RFv2UkCKgYGICBiIAA=="
 		},
 		{
 			"color": "Blue",
@@ -34,20 +48,6 @@
 			"printingId": "0324e335-2f17-496c-9789-59f93ed6d31e",
 			"slug": "judy-a-lvarez-braindance-maestro",
 			"thumbhash": "1QeGFAQPJfhFaaiEAZNUJniAgYGICBiIAA=="
-		},
-		{
-			"color": "Green",
-			"name": "Panam Palmer: Nomad Cavalry",
-			"printingId": "20c0d91e-76d5-4904-82e8-53907537aee3",
-			"slug": "panam-palmer-nomad-cavalry",
-			"thumbhash": "0QiCFAQPb9IvF2hr88R8DsqDgYGICBiIAA=="
-		},
-		{
-			"color": "Yellow",
-			"name": "Adam Smasher: Metal Over Meat",
-			"printingId": "726b13d2-0d74-42db-a5e9-b8b852224a16",
-			"slug": "adam-smasher-metal-over-meat",
-			"thumbhash": "TwiGDAIPVfdlqqmkci72iKBycIGIGAh5AA=="
 		}
 	],
 	"stats": {

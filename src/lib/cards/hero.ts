@@ -18,6 +18,7 @@
  * A unit test asserts the two agree, so a forgotten re-run fails the suite rather than silently
  * rendering the previous seven cards.
  */
+import type { PrintTreatment } from './derive.ts';
 import type { Rarity } from './vocabulary.ts';
 
 export type HeroChoice = {
@@ -26,25 +27,33 @@ export type HeroChoice = {
 	 * Which printing to show. Omit for the Default Printing. Criteria are ANDed, and ingest fails
 	 * the build when nothing matches — so a renumbered or withdrawn printing is loud, not silent.
 	 *
-	 * Where several printings still match, ingest prefers the retail one. A retail/beta pair is the
-	 * common case: same art, same rarity, distinguished only by a `β` on the collector number.
+	 * Where several printings still match and `treatment` is unset, ingest prefers the retail one.
+	 * A retail/beta pair is the common case: same art, same rarity, distinguished only by a `β` on
+	 * the collector number — `treatment` is the escape hatch for the handful of Iconics picked for
+	 * the beta art specifically.
 	 */
-	printing?: { rarity?: Rarity; setId?: string };
+	printing?: { rarity?: Rarity; setId?: string; treatment?: PrintTreatment };
 };
 
 export const HEROES: readonly HeroChoice[] = [
-	// Blue — the box-topper art rather than the starter-deck default.
-	{ slug: 'v-corporate-exile', printing: { setId: 'PRM-WNC' } },
-	// Yellow
-	{ slug: 'jackie-welles-ride-or-die-choom' },
+	// Red — the non-Legend Johnny, at his only Iconic tier.
+	{ slug: 'johnny-silverhand-never-stop-fighting', printing: { rarity: 'Iconic Other' } },
+	// Blue — the box-topper art rather than the Legend's mainline printing.
+	{ slug: 'jackie-welles-pour-one-out-for-me', printing: { setId: 'PRM-WNC' } },
 	// Green
 	{ slug: 'hanako-arasaka-daughter-of-the-emperor', printing: { rarity: 'Iconic Legend' } },
 	// Red — the centre card
-	{ slug: 'johnny-silverhand-rocking-renegade', printing: { rarity: 'Iconic Secret' } },
+	{ slug: 'v-streetkid', printing: { rarity: 'Iconic Legend', treatment: 'beta' } },
 	// Blue
-	{ slug: 'judy-a-lvarez-braindance-maestro', printing: { rarity: 'Iconic Legend' } },
-	// Green
-	{ slug: 'panam-palmer-nomad-cavalry', printing: { rarity: 'Iconic Legend' } },
+	{
+		slug: 'alt-cunningham-soulkiller-architect',
+		printing: { rarity: 'Iconic Legend', treatment: 'beta' }
+	},
 	// Yellow
-	{ slug: 'adam-smasher-metal-over-meat', printing: { rarity: 'Iconic Other' } }
+	{
+		slug: 'river-ward-detective-on-the-hunt',
+		printing: { rarity: 'Iconic Legend', treatment: 'beta' }
+	},
+	// Blue
+	{ slug: 'judy-a-lvarez-braindance-maestro', printing: { rarity: 'Iconic Legend' } }
 ];

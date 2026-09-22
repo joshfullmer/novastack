@@ -33,6 +33,7 @@ import {
 	cardTypeRunsWithinColors,
 	deriveRamPerLegend,
 	deriveSets,
+	printTreatment,
 	runOrder,
 	setExclusiveSlugs
 } from '../src/lib/cards/derive.ts';
@@ -363,16 +364,17 @@ async function main(): Promise<void> {
 function resolveHeroPrinting(card: Card, choice: HeroChoice): Printing {
 	if (choice.printing === undefined) return card.printings[0];
 
-	const { rarity, setId } = choice.printing;
+	const { rarity, setId, treatment } = choice.printing;
 	const matches = card.printings.filter(
 		(printing) =>
 			(rarity === undefined || printing.rarity === rarity) &&
-			(setId === undefined || printing.setId === setId)
+			(setId === undefined || printing.setId === setId) &&
+			(treatment === undefined || printTreatment(printing) === treatment)
 	);
 
 	const [first] = matches;
 	if (first === undefined) {
-		const asked = [rarity, setId].filter((part) => part !== undefined).join(' + ');
+		const asked = [rarity, setId, treatment].filter((part) => part !== undefined).join(' + ');
 		const available = card.printings
 			.map((printing) => `${printing.key} (${printing.rarity})`)
 			.join(', ');
@@ -382,7 +384,10 @@ function resolveHeroPrinting(card: Card, choice: HeroChoice): Printing {
 		);
 	}
 
-	// Prefer retail over its beta twin: same art, same rarity, differing only by the β prefix.
+	// An explicit `treatment` has already picked the side of the retail/beta pair; only the
+	// unset case needs a tiebreak, and it prefers retail — same art, same rarity, differing only
+	// by the β prefix.
+	if (treatment !== undefined) return first;
 	return matches.find((printing) => !printing.collectorNumber.startsWith('β')) ?? first;
 }
 

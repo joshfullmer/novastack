@@ -12,6 +12,7 @@
  */
 import { describe, expect, it } from 'vitest';
 import { existsSync } from 'node:fs';
+import { printTreatment } from './derive.js';
 import { HEROES } from './hero.js';
 import { landing } from './landing.js';
 import { dataset, snapshot } from './index.js';
@@ -254,6 +255,9 @@ describe('the landing artifact', () => {
 			}
 			if (choice.printing.setId !== undefined) {
 				expect(printing?.setId, hero.slug).toBe(choice.printing.setId);
+			}
+			if (choice.printing.treatment !== undefined) {
+				expect(printing && printTreatment(printing), hero.slug).toBe(choice.printing.treatment);
 			}
 		}
 	});
