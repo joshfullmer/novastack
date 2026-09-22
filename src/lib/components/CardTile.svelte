@@ -14,6 +14,7 @@
 	 */
 	import { resolve } from '$app/paths';
 	import { printingQuery, type Card, type Printing } from '#lib/cards/schema.js';
+	import { DEFAULT_LOCALE } from '#lib/cards/vocabulary.js';
 	import CardImage from './CardImage.svelte';
 
 	let {
@@ -70,7 +71,8 @@
 			class="absolute right-1 bottom-1 rounded bg-void/85 px-1.5 py-0.5 font-mono text-[0.65rem]
 				text-bright tabular-nums backdrop-blur-sm"
 		>
-			{printing.collectorNumber}
+			{printing.collectorNumber}{#if printing.locale !== DEFAULT_LOCALE}
+				&nbsp;· {printing.locale.toUpperCase()}{/if}
 		</span>
 	{/if}
 </a>

@@ -8,7 +8,7 @@
  */
 import type { Card, Printing, SetSummary } from './schema.ts';
 import { BASE_SET_API_CODE, API_SET_CODE_TO_SET_ID, SET_IDENTIFIERS } from './sets.ts';
-import { ICONIC_RARITIES, type CardType, type Color } from './vocabulary.ts';
+import { DEFAULT_LOCALE, ICONIC_RARITIES, type CardType, type Color } from './vocabulary.ts';
 
 /** The Base Set's retail printing run, which is what carries the collector-number sequence. */
 export const BASE_SET_ID = API_SET_CODE_TO_SET_ID[BASE_SET_API_CODE];
@@ -35,7 +35,9 @@ function byCollectorNumber(a: string, b: string): number {
  * card is the authority, and interleaving a reprint run would destroy the contiguity the
  * ordering depends on. Iconic-rarity printings are excluded for the same reason — they are a
  * bonus alt-art treatment numbered well past the main run, not a second data point about it
- * (see `ICONIC_RARITIES` in vocabulary.ts).
+ * (see `ICONIC_RARITIES` in vocabulary.ts). Localized reprints are excluded for the same
+ * reason again — a `fr` printing repeats the retail run's own Collector Numbers verbatim, so
+ * interleaving it would duplicate the sequence rather than extend it.
  */
 export function baseSetSequence(
 	cards: readonly Card[]
@@ -47,7 +49,8 @@ export function baseSetSequence(
 					(printing) =>
 						printing.setId === BASE_SET_ID &&
 						!printing.collectorNumber.startsWith('β') &&
-						!(ICONIC_RARITIES as readonly string[]).includes(printing.rarity)
+						!(ICONIC_RARITIES as readonly string[]).includes(printing.rarity) &&
+						printing.locale === DEFAULT_LOCALE
 				)
 				.map((printing) => ({
 					color: card.color,

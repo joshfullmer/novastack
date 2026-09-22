@@ -5,12 +5,12 @@
  * assertion runs against. The two fixtures the spec makes mandatory are exercised against the
  * *real* committed snapshot instead, in `dataset.spec.ts`, because their value is precisely
  * that they are real: `Rebecca: Having a Moment` is null on cost, power, RAM and rules text,
- * and `V: Streetkid` carries five printings across two artists.
+ * and `V: Streetkid` carries printings across multiple artists and rarities.
  */
 import type { Faq, NetdeckFaq } from './faq.ts';
 import type { Card, NetdeckCard, NetdeckPrinting, Printing, Snapshot } from './schema.ts';
 import { SET_IDENTIFIERS } from './sets.ts';
-import type { CardType, Color } from './vocabulary.ts';
+import { DEFAULT_LOCALE, type CardType, type Color } from './vocabulary.ts';
 
 let sequence = 0;
 
@@ -25,6 +25,7 @@ export function makePrinting(overrides: Partial<Printing> = {}): Printing {
 		collectorNumber,
 		setId,
 		key: `${setId}-${collectorNumber}`,
+		locale: DEFAULT_LOCALE,
 		rarity: 'Common',
 		artist: 'Test Artist',
 		sourceImageUrl: `https://example.invalid/${id}.webp`,

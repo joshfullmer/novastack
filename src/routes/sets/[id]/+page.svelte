@@ -17,12 +17,15 @@
 	 * here rather than an extension to the shared `Sort` type — `collectorNumberSortKey`
 	 * (`derive.ts`) is what reads through the `β` prefix and letter suffixes.
 	 *
-	 * **Retail/Beta tabs and a "one per card" toggle, both in `?treatment=`/`?unique=`.** Beta is
-	 * a Kickstarter-only phenomenon of Set 1's sets, and it's detected from the data (any `β`
-	 * Collector Number present), not hardcoded to those sets by id — a set that never had a beta
-	 * run just never shows the tabs. Both params use the same shallow-navigation pattern the card
-	 * detail page's `?printing=` chooser already uses (`currentUrl()`, `goto(..., { shallow:
-	 * true })`), so a link to "the Beta checklist" or "the collapsed view" is shareable.
+	 * **Retail/Beta tabs, Locale tabs, and a "one per card" toggle** — in `?treatment=`,
+	 * `?locale=`, `?unique=`. Beta is a Kickstarter-only phenomenon of Set 1's sets, and it's
+	 * detected from the data (any `β` Collector Number present), not hardcoded to those sets by
+	 * id — a set that never had a beta run just never shows the tabs. Locale tabs follow the
+	 * same rule: a set with no localized reprint never shows them, and the tab list itself is
+	 * whichever locales the set's own printings carry, not a hardcoded pair. All three params
+	 * use the same shallow-navigation pattern the card detail page's `?printing=` chooser
+	 * already uses (`currentUrl()`, `goto(..., { shallow: true })`), so a link to "the Beta
+	 * checklist", "the FR checklist" or "the collapsed view" is shareable.
 	 */
 	import { goto } from '$app/navigation';
 	import { page } from '$app/state';
@@ -39,8 +42,10 @@
 	import Meta from '#lib/components/Meta.svelte';
 	import wncLogo from '#lib/assets/wnc-logo.png';
 	import { cardImageUrl } from '#lib/cards/schema.js';
+	import { DEFAULT_LOCALE, type Locale } from '#lib/cards/vocabulary.js';
 
 	const TREATMENT_PARAM = 'treatment';
+	const LOCALE_PARAM = 'locale';
 	const UNIQUE_PARAM = 'unique';
 
 	let { data } = $props();
@@ -75,16 +80,34 @@
 			: allResults
 	);
 
-	// Only worth showing the control where it would do something — a set (or a treatment within
-	// one) with no duplicate cards has nothing to collapse.
+	// Order: `DEFAULT_LOCALE` first, so its tab reads as "the" checklist and the others as
+	// variants of it — same convention as retail sitting before beta.
+	const localesPresent = $derived(
+		[...new Set(allResults.map((match) => match.printing.locale))].sort((a, b) =>
+			a === DEFAULT_LOCALE ? -1 : b === DEFAULT_LOCALE ? 1 : a.localeCompare(b)
+		)
+	);
+	const hasMultipleLocales = $derived(localesPresent.length > 1);
+
+	const activeLocale = $derived<Locale>(
+		localesPresent.find((locale) => locale === currentUrl().searchParams.get(LOCALE_PARAM)) ??
+			DEFAULT_LOCALE
+	);
+
+	const localeFiltered = $derived(
+		hasMultipleLocales
+			? treatmentFiltered.filter((match) => match.printing.locale === activeLocale)
+			: treatmentFiltered
+	);
+
+	// Only worth showing the control where it would do something — a set (or a
+	// treatment/locale combination within one) with no duplicate cards has nothing to collapse.
 	const canCollapse = $derived(
-		treatmentFiltered.length > new Set(treatmentFiltered.map((match) => match.card.slug)).size
+		localeFiltered.length > new Set(localeFiltered.map((match) => match.card.slug)).size
 	);
 	const collapsed = $derived(canCollapse && currentUrl().searchParams.has(UNIQUE_PARAM));
 
-	const results = $derived(
-		collapsed ? collapseToUniqueCards(treatmentFiltered) : treatmentFiltered
-	);
+	const results = $derived(collapsed ? collapseToUniqueCards(localeFiltered) : localeFiltered);
 	const shownCardCount = $derived(new Set(results.map((match) => match.card.slug)).size);
 
 	function chooseTreatment(treatment: PrintTreatment) {
@@ -93,6 +116,15 @@
 		// absent state" convention — one canonical URL for the common case.
 		if (treatment === 'retail') next.searchParams.delete(TREATMENT_PARAM);
 		else next.searchParams.set(TREATMENT_PARAM, treatment);
+		void goto(next, { shallow: true, replace: true });
+	}
+
+	function chooseLocale(locale: Locale) {
+		const next = new URL(currentUrl().href);
+		// `DEFAULT_LOCALE` is the absent state, matching the treatment/printing choosers'
+		// "the common case has one canonical URL" convention.
+		if (locale === DEFAULT_LOCALE) next.searchParams.delete(LOCALE_PARAM);
+		else next.searchParams.set(LOCALE_PARAM, locale);
 		void goto(next, { shallow: true, replace: true });
 	}
 
@@ -147,7 +179,7 @@
 				<a href="/cards?q=set:{set.id}" class="text-neon hover:text-neon-dim">Browse in Cards →</a>
 			</div>
 
-			{#if hasBothTreatments || canCollapse}
+			{#if hasBothTreatments || hasMultipleLocales || canCollapse}
 				<div class="mt-5 flex flex-wrap items-center gap-4">
 					{#if hasBothTreatments}
 						<div class="inline-flex overflow-hidden rounded-md border border-edge text-sm">
@@ -159,6 +191,21 @@
 									class="px-3 py-1 capitalize transition-colors {activeTreatment === treatment
 										? 'bg-neon text-void'
 										: 'text-body hover:bg-raised'}">{treatment}</button
+								>
+							{/each}
+						</div>
+					{/if}
+
+					{#if hasMultipleLocales}
+						<div class="inline-flex overflow-hidden rounded-md border border-edge text-sm">
+							{#each localesPresent as locale (locale)}
+								<button
+									type="button"
+									aria-pressed={activeLocale === locale}
+									onclick={() => chooseLocale(locale)}
+									class="px-3 py-1 uppercase transition-colors {activeLocale === locale
+										? 'bg-neon text-void'
+										: 'text-body hover:bg-raised'}">{locale}</button
 								>
 							{/each}
 						</div>

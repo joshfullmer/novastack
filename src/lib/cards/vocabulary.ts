@@ -86,3 +86,14 @@ export type ImageWidth = (typeof IMAGE_WIDTHS)[number];
 
 /** Uniform across all 389 printings — hardcoded so the grid never shifts. See notes §3. */
 export const CARD_ASPECT_RATIO = '733 / 1024';
+
+/**
+ * A Printing's language, curated per API set code in `sets.ts` — the API carries no locale
+ * field of its own, only a second `set.code` per language (e.g. `welcometonightcityretail-fr`).
+ * `en` is the absent default: unmapped codes are assumed English rather than requiring every
+ * existing entry to be listed by hand.
+ */
+export const LOCALES = ['en', 'fr'] as const;
+export const LocaleSchema = v.picklist(LOCALES, 'not a known Locale');
+export type Locale = v.InferOutput<typeof LocaleSchema>;
+export const DEFAULT_LOCALE: Locale = 'en';

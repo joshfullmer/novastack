@@ -20,6 +20,13 @@
 	 * number and rarity, so they differ by metadata even when the art does not. The user is
 	 * choosing a *printing*, not an art.
 	 *
+	 * **A Locale toggle, exclusive rather than a disclosure** — same `?locale=` shallow-nav
+	 * pattern as the Set detail page's tabs, chosen over an inline "+N localized" reveal because
+	 * it's the more familiar convention (Scryfall). It defaults to whichever locale the deep-linked
+	 * printing carries, not always `DEFAULT_LOCALE`: a shared link to a French printing should land
+	 * on a gallery that shows it, not one that's filtered it out. Only appears when the card
+	 * actually has a localized printing.
+	 *
 	 * Back-navigation needs no work: filters live in query params, so history returns the reader to
 	 * the narrowed grid.
 	 */
@@ -35,6 +42,9 @@
 	import { splitCardName } from '#lib/cards/derive.js';
 	import { cardImageUrl, PRINTING_PARAM } from '#lib/cards/schema.js';
 	import { findSetIdentifier } from '#lib/cards/sets.js';
+	import { DEFAULT_LOCALE, type Locale } from '#lib/cards/vocabulary.js';
+
+	const LOCALE_PARAM = 'locale';
 
 	let { data } = $props();
 
@@ -67,7 +77,38 @@
 		void goto(next, { shallow: true, replace: true });
 	}
 
-	const artists = $derived([...new Set(card.printings.map((entry) => entry.artist))]);
+	// `DEFAULT_LOCALE` first, same convention as the Set detail page's tabs.
+	const localesPresent = $derived(
+		[...new Set(card.printings.map((entry) => entry.locale))].sort((a, b) =>
+			a === DEFAULT_LOCALE ? -1 : b === DEFAULT_LOCALE ? 1 : a.localeCompare(b)
+		)
+	);
+	const hasMultipleLocales = $derived(localesPresent.length > 1);
+
+	// Falls back to the deep-linked printing's own locale, not always `DEFAULT_LOCALE` — see the
+	// header comment.
+	const activeLocale = $derived<Locale>(
+		localesPresent.find((locale) => locale === currentUrl().searchParams.get(LOCALE_PARAM)) ??
+			printing.locale
+	);
+
+	// Always explicit, unlike `choose()` above — the absent state here defaults to the
+	// deep-linked printing's own locale, not always `DEFAULT_LOCALE`, so deleting the param on a
+	// choice of `DEFAULT_LOCALE` wouldn't select it back when viewing a non-default printing; it
+	// would just fall through to `activeLocale`'s `printing.locale` fallback again.
+	function chooseLocale(locale: Locale) {
+		const next = new URL(currentUrl().href);
+		next.searchParams.set(LOCALE_PARAM, locale);
+		void goto(next, { shallow: true, replace: true });
+	}
+
+	const visiblePrintings = $derived(
+		hasMultipleLocales
+			? card.printings.filter((entry) => entry.locale === activeLocale)
+			: card.printings
+	);
+
+	const artists = $derived([...new Set(visiblePrintings.map((entry) => entry.artist))]);
 
 	const nameParts = $derived(splitCardName(card));
 
@@ -145,13 +186,28 @@
 		<h2 class="text-lg font-semibold text-bright">
 			Printings
 			<span class="ml-1 text-sm font-normal text-muted tabular-nums">
-				{card.printings.length}{#if artists.length > 1}
+				{visiblePrintings.length}{#if artists.length > 1}
 					· {artists.length} artists{/if}
 			</span>
 		</h2>
 
+		{#if hasMultipleLocales}
+			<div class="mt-3 inline-flex overflow-hidden rounded-md border border-edge text-sm">
+				{#each localesPresent as locale (locale)}
+					<button
+						type="button"
+						aria-pressed={activeLocale === locale}
+						onclick={() => chooseLocale(locale)}
+						class="px-3 py-1 uppercase transition-colors {activeLocale === locale
+							? 'bg-neon text-void'
+							: 'text-body hover:bg-raised'}">{locale}</button
+					>
+				{/each}
+			</div>
+		{/if}
+
 		<ul class="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-			{#each card.printings as entry, index (entry.id)}
+			{#each visiblePrintings as entry, index (entry.id)}
 				{@const entrySet = findSetIdentifier(entry.setId)}
 				{@const current = entry.key === printing.key}
 				<li>
@@ -174,6 +230,12 @@
 						/>
 
 						<dl class="mt-3 space-y-0.5 text-xs">
+							{#if entry.locale !== DEFAULT_LOCALE}
+								<div class="flex justify-between gap-2">
+									<dt class="text-muted">Locale</dt>
+									<dd class="text-right font-mono text-body uppercase">{entry.locale}</dd>
+								</div>
+							{/if}
 							<div class="flex justify-between gap-2">
 								<dt class="text-muted">Set</dt>
 								<dd class="text-right text-body">{entrySet?.name ?? entry.setId}</dd>

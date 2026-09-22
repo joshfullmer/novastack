@@ -21,6 +21,7 @@ import {
 	ColorSchema,
 	IMAGE_WIDTHS,
 	KeywordSchema,
+	LocaleSchema,
 	RaritySchema,
 	type ImageWidth
 } from './vocabulary.ts';
@@ -98,10 +99,14 @@ export const PrintingSchema = v.object({
 	/** `<Category>-<Set Code>` — see `sets.ts`. */
 	setId: v.pipe(v.string(), v.nonEmpty()),
 	/**
-	 * `<Category>-<Set Code>-<Collector Number>`. Unique across all printings, and the
-	 * URL-facing key for a printing deep-link. The UUID stays canonical for storage.
+	 * `<Category>-<Set Code>-<Collector Number>`, plus a `-<LOCALE>` suffix when `locale` isn't
+	 * `DEFAULT_LOCALE` — a localized reprint carries the same Collector Number as the run it
+	 * translates. Unique across all printings, and the URL-facing key for a printing deep-link.
+	 * The UUID stays canonical for storage.
 	 */
 	key: v.pipe(v.string(), v.nonEmpty()),
+	/** `DEFAULT_LOCALE` for every printing except a curated set of localized reprints. */
+	locale: LocaleSchema,
 	rarity: RaritySchema,
 	artist: v.pipe(v.string(), v.nonEmpty()),
 	sourceImageUrl: v.pipe(v.string(), v.nonEmpty()),

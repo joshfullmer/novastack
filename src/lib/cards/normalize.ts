@@ -17,7 +17,8 @@
 import type { Faq } from './faq.ts';
 import { extractKeywords, splitRulesText, type SegmentContext } from './rules-text.ts';
 import type { Card, NetdeckCard, NetdeckPrinting, Printing } from './schema.ts';
-import { API_SET_CODE_TO_SET_ID } from './sets.ts';
+import { API_SET_CODE_TO_SET_ID, localeForApiSetCode } from './sets.ts';
+import { DEFAULT_LOCALE } from './vocabulary.ts';
 
 /**
  * Artist strings need whitespace folding before anything can render or sort them — one artist
@@ -67,11 +68,18 @@ function normalizePrinting(
 		throw new Error(`No ThumbHash mirrored for printing ${raw.id} (${raw.collector_number}).`);
 	}
 
+	const locale = localeForApiSetCode(raw.set.code);
+	const key =
+		locale === DEFAULT_LOCALE
+			? `${setId}-${raw.collector_number}`
+			: `${setId}-${raw.collector_number}-${locale.toUpperCase()}`;
+
 	return {
 		id: raw.id,
 		collectorNumber: raw.collector_number,
 		setId,
-		key: `${setId}-${raw.collector_number}`,
+		key,
+		locale,
 		rarity: raw.rarity,
 		artist: normalizeArtist(raw.artist),
 		sourceImageUrl: raw.source_image_url,

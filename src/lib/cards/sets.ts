@@ -14,6 +14,7 @@
  * three sets. The pair is the identity, which is why `id` is `<Category>-<Set Code>`.
  */
 import * as v from 'valibot';
+import { DEFAULT_LOCALE, type Locale } from './vocabulary.ts';
 
 export const SetKindSchema = v.picklist(['base', 'derivative'], 'not a known set kind');
 export type SetKind = v.InferOutput<typeof SetKindSchema>;
@@ -142,6 +143,7 @@ export const SET_IDENTIFIERS: readonly SetIdentifier[] = CURATED.map((set) => ({
 export const API_SET_CODE_TO_SET_ID: Readonly<Record<string, string>> = {
 	welcometonightcityretail: 'MS01-WNC',
 	welcometonightcitybeta: 'MS01-WNC',
+	'welcometonightcityretail-fr': 'MS01-WNC',
 	theheistretailstarterdeck: 'SD01-HEI',
 	theheistbetastarterdeck: 'SD01-HEI',
 	embracingpowerretailstarterdeck: 'SD02-EBP',
@@ -156,6 +158,18 @@ export const API_SET_CODE_TO_SET_ID: Readonly<Record<string, string>> = {
 	nightcitybrawls1: 'NCB01-WNC',
 	nightcityshowdowns1: 'NCS01-WNC'
 };
+
+/**
+ * API `set.code` → Locale, curated for the handful of codes that aren't `DEFAULT_LOCALE`. A
+ * code absent here is assumed English rather than requiring every existing entry to be listed.
+ */
+export const API_SET_CODE_TO_LOCALE: Readonly<Record<string, Locale>> = {
+	'welcometonightcityretail-fr': 'fr'
+};
+
+export function localeForApiSetCode(code: string): Locale {
+	return API_SET_CODE_TO_LOCALE[code] ?? DEFAULT_LOCALE;
+}
 
 /**
  * The one API set code that is the Base Set's retail printing run. Ingest derives Color and
