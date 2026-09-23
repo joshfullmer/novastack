@@ -16240,7 +16240,7 @@
 			"sortOrder": 2500
 		}
 	],
-	"generatedAt": "2026-09-23T16:26:45.160Z",
+	"generatedAt": "2026-09-23T16:53:46.221Z",
 	"ramPerLegend": 2,
 	"sets": [
 		{
@@ -16315,7 +16315,7 @@
 			"cycle": null,
 			"id": "PRR01-WNC",
 			"kind": "derivative",
-			"name": "Prerelease",
+			"name": "Prerelease (Beta)",
 			"printed": "PRR01 - WNC",
 			"printingCount": 11,
 			"setCode": "WNC"
@@ -16326,7 +16326,7 @@
 			"cycle": null,
 			"id": "PRR02-WNC",
 			"kind": "derivative",
-			"name": "Prerelease II",
+			"name": "Prerelease (Retail)",
 			"printed": "PRR02 - WNC",
 			"printingCount": 11,
 			"setCode": "WNC"

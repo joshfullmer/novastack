@@ -98,7 +98,7 @@ const CURATED: readonly CuratedSet[] = [
 		category: 'PRR01',
 		setCode: 'WNC',
 		cycle: null,
-		name: 'Prerelease',
+		name: 'Prerelease (Beta)',
 		kind: 'derivative'
 	},
 	{
@@ -106,7 +106,7 @@ const CURATED: readonly CuratedSet[] = [
 		category: 'PRR02',
 		setCode: 'WNC',
 		cycle: null,
-		name: 'Prerelease II',
+		name: 'Prerelease (Retail)',
 		kind: 'derivative'
 	},
 	{
