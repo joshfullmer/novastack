@@ -245,22 +245,41 @@ grid's own inner scroll and then discovering an outer page scroll was also neede
   owner most recently saved is what a viewer sees. Version history (§3.2) already answers "what
   did this look like before" for anyone who needs it; the link itself carries no separate version
   concept.
-- **Plain-text export**, both copy-to-clipboard and file download, one format:
+- **Plain-text export**, both copy-to-clipboard and file download, two formats behind one
+  dropdown (`#lib/decks/export.ts`):
+
+  **Sim format** — matches cyberpunk-tcg-sim.online's own import/export shape, verified live
+  against the sim (2026-09-23), not assumed:
 
   ```
-  Legends:
-  1 Adam Smasher — Ender of Legends
-  1 Alt Cunningham — Soulkiller Architect
-  1 Dexter DeShawn — Off the Grid
+  # Name: Custom Deck 1
 
-  Main Deck (43):
-  3 6th Street Recruits
-  2 Chrome Fang
+  # Legends
+  1x 002 Dexter DeShawn — Off the Grid
+
+  # Main Deck
+  3x 008 Chrome Fang
   ...
   ```
 
-  Quantity-first, a labelled Legends section separate from Main Deck. This is a human-paste format
-  (Discord, forums), not a machine-import format — no card-Id or Printing encoded.
+  The code is the bare Collector Number of the card's Default Printing (`printings[0]`) —
+  **not** `<Category>-<CollectorNumber>` as an earlier version of this spec and `export.ts`
+  assumed. That was never checked against the sim and was wrong: the sim ignores whatever comes
+  before a `-`, so a `MS01-`-style prefix doesn't scope a match to one Set, it silently widens it
+  to a search across the sim's whole card pool by number alone — which is why real imports like
+  `MS01-002` were colliding with five unrelated cards. The bare number alone still collides
+  (Collector Numbers restart at `001` per Set), which is exactly why the sim's own export pairs
+  the number with the card's name on every line; this format does the same.
+
+  Checked against the sim's own `/api/cards/catalog` that `card.printings[0]` always matches the
+  sim's own "primary" printing, in both Set and Collector Number, for every card the sim carries
+  (everything but our one not-tournament-legal promo stub, which the sim excludes too) — a
+  checked fact about today's data, not a documented contract, worth re-verifying if a future
+  export mismatch is reported.
+
+  **JSON** — a standardized alternative for anything that wants structure instead of a line
+  format, using the same bare import code; it was never claimed to match the sim and isn't meant
+  to.
 
 - **Image export, client-side canvas, no new backend surface.** Composited entirely in the
   browser from the deck's already-mirrored, same-origin static card art (`drawImage()` into a

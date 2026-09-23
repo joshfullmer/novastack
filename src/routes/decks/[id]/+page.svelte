@@ -211,10 +211,10 @@
 	}
 
 	function copySimFormat() {
-		copyExport(deckToSimFormat(deck.legends, mainGroups));
+		copyExport(deckToSimFormat(data.deckName, deck.legends, mainGroups));
 	}
 	function downloadSimFormat() {
-		downloadExport(deckToSimFormat(deck.legends, mainGroups), 'text/plain', 'txt');
+		downloadExport(deckToSimFormat(data.deckName, deck.legends, mainGroups), 'text/plain', 'txt');
 	}
 	function copyJson() {
 		copyExport(deckToJson(data.deckName, deck.legends, mainGroups));
@@ -883,11 +883,11 @@
 											clearly against any of the four card colours without picking
 											a side among them. -->
 										<span
-											class="pointer-events-none absolute bottom-1 left-1/2 -translate-x-1/2 isolate
-											inline-flex size-6 items-center justify-center"
+											class="pointer-events-none absolute bottom-1 left-1/2 isolate inline-flex
+											size-6 -translate-x-1/2 items-center justify-center"
 										>
-											<span class="absolute inset-0 eddie-badge bg-bright"></span>
-											<span class="absolute inset-[2px] eddie-badge-inset bg-void"></span>
+											<span class="absolute inset-0 bg-bright eddie-badge"></span>
+											<span class="absolute inset-[2px] bg-void eddie-badge-inset"></span>
 											<span class="relative z-10 text-sm font-black text-bright tabular-nums">
 												×{entry.quantity}
 											</span>
