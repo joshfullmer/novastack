@@ -25,6 +25,7 @@
 		power: 'Power',
 		ram: 'RAM',
 		eddiable: 'Eddiable',
+		tournamentLegal: 'Tournament Legal',
 		set: 'Set',
 		rarity: 'Rarity',
 		name: 'Name',

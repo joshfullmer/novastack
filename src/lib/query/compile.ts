@@ -254,6 +254,8 @@ export function compileField(
 			return compileSet(node, ctx, warnings);
 		case 'eddiable':
 			return compileEddiable(node, warnings);
+		case 'tournamentLegal':
+			return compileTournamentLegal(node, warnings);
 		case 'cost':
 		case 'power':
 		case 'ram':
@@ -419,6 +421,21 @@ function compileEddiable(node: FieldNode, warnings: ParseWarning[]): Predicate |
 	const raw = valueText(node.value).toLowerCase();
 	if (raw === 'true') return { kind: 'eddiable', value: true };
 	if (raw === 'false') return { kind: 'eddiable', value: false };
+	return malformed(node, warnings);
+}
+
+// ---------------------------------------------------------------------------
+// Tournament Legal — boolean, never null
+// ---------------------------------------------------------------------------
+
+function compileTournamentLegal(node: FieldNode, warnings: ParseWarning[]): Predicate | null {
+	if (!requireSimpleOperator(node, warnings)) return null;
+	if (isReservedWord(node.value, 'none') || isReservedWord(node.value, 'has')) {
+		return droppedInapplicable(node, warnings);
+	}
+	const raw = valueText(node.value).toLowerCase();
+	if (raw === 'true') return { kind: 'tournamentLegal', value: true };
+	if (raw === 'false') return { kind: 'tournamentLegal', value: false };
 	return malformed(node, warnings);
 }
 

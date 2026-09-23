@@ -342,6 +342,18 @@ describe('eddiable', () => {
 	});
 });
 
+describe('tournamentLegal', () => {
+	it('reads true and false', () => {
+		expect(run('legal:true').slugs).toHaveLength(3);
+		expect(run('legal:false').slugs).toEqual([]);
+	});
+
+	it('drops legal:none as inapplicable — never null', () => {
+		const { warnings } = run('legal:none');
+		expect(warnings).toMatchObject([{ reason: 'inapplicable-field' }]);
+	});
+});
+
 describe('flattening a redundant parenthesised AND, for chip representability', () => {
 	it('does not hide a facet behind nesting someone did not need to type', () => {
 		const { predicate } = run('(c:red type:legend) tag:tyger-claws');

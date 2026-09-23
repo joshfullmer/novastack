@@ -94,7 +94,8 @@
 					facet.interactive &&
 					(facet.value.min !== null || facet.value.max !== null || !facet.value.includeNull)
 			).length +
-			(view.eddiable.interactive && view.eddiable.value !== null ? 1 : 0)
+			(view.eddiable.interactive && view.eddiable.value !== null ? 1 : 0) +
+			(view.tournamentLegal.interactive && view.tournamentLegal.value !== null ? 1 : 0)
 	);
 
 	function setSort(key: SortKey) {
@@ -311,6 +312,35 @@
 					</fieldset>
 				{:else}
 					{@render readOnlyNotice('Eddiable')}
+				{/if}
+
+				{#if view.tournamentLegal.interactive}
+					{@const tournamentLegalOptions = [
+						{ value: null, label: 'Any' },
+						{ value: true, label: 'Yes' },
+						{ value: false, label: 'No' }
+					] as const}
+					<fieldset>
+						<legend class="mb-1.5 text-xs font-medium tracking-wide text-muted uppercase">
+							Tournament Legal
+						</legend>
+						<div class="inline-flex overflow-hidden rounded-md border border-edge text-sm">
+							{#each tournamentLegalOptions as option (option.label)}
+								<button
+									type="button"
+									aria-pressed={view.tournamentLegal.interactive &&
+										view.tournamentLegal.value === option.value}
+									onclick={() => onFacetEdit({ facet: 'tournamentLegal', value: option.value })}
+									class="px-2.5 py-1 transition-colors {view.tournamentLegal.interactive &&
+									view.tournamentLegal.value === option.value
+										? 'bg-neon text-void'
+										: 'text-body hover:bg-raised'}">{option.label}</button
+								>
+							{/each}
+						</div>
+					</fieldset>
+				{:else}
+					{@render readOnlyNotice('Tournament Legal')}
 				{/if}
 
 				{#if view.legendColors.interactive}

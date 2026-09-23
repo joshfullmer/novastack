@@ -17,6 +17,7 @@ export const FIELD_KINDS = [
 	'power',
 	'ram',
 	'eddiable',
+	'tournamentLegal',
 	'set',
 	'rarity',
 	'name',
@@ -106,6 +107,16 @@ export const FIELDS: readonly FieldSpec[] = [
 		kind: 'eddiable',
 		canonical: 'eddiable',
 		aliases: ['ed'],
+		value: 'boolean',
+		comparisons: false,
+		nullable: false
+	},
+	{
+		// A straight pass-through of the source API's own `legality`, not derived — see
+		// `Card.tournamentLegal` (`#lib/cards/schema.ts`) and CONTEXT.md's "Tournament Legal".
+		kind: 'tournamentLegal',
+		canonical: 'legal',
+		aliases: [],
 		value: 'boolean',
 		comparisons: false,
 		nullable: false

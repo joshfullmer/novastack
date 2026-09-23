@@ -182,3 +182,18 @@ describe('eddiable', () => {
 		});
 	});
 });
+
+describe('tournamentLegal', () => {
+	it('is interactive for true, false, and absent', () => {
+		expect(
+			readChipView({ kind: 'tournamentLegal', value: false }, dataset).tournamentLegal
+		).toEqual({
+			interactive: true,
+			value: false
+		});
+		expect(readChipView({ kind: 'all' }, dataset).tournamentLegal).toEqual({
+			interactive: true,
+			value: null
+		});
+	});
+});

@@ -73,6 +73,15 @@ describe('withFacetEdit', () => {
 		expect(next).toBe('');
 	});
 
+	it('serialises a boolean facet, and clears it back to absent', () => {
+		expect(withFacetEdit('', dataset, { facet: 'tournamentLegal', value: false })).toBe(
+			'legal:false'
+		);
+		expect(
+			withFacetEdit('legal:false type:legend', dataset, { facet: 'tournamentLegal', value: null })
+		).toBe('type:legend');
+	});
+
 	it('serialises legend colors as a tally, in RAM points not slot counts', () => {
 		// Two Red slots at ramPerLegend=2 is 4 Red RAM, tallying as four letters, not two.
 		expect(withFacetEdit('', dataset, { facet: 'legends', colors: ['Red', 'Red', 'Blue'] })).toBe(

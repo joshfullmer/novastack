@@ -26,6 +26,7 @@ export type ChipView = {
 	rarities: FacetView<readonly Rarity[]>;
 	setIds: FacetView<readonly string[]>;
 	eddiable: FacetView<boolean | null>;
+	tournamentLegal: FacetView<boolean | null>;
 	cost: FacetView<NumericRange>;
 	power: FacetView<NumericRange>;
 	ram: FacetView<NumericRange>;
@@ -88,6 +89,9 @@ function isSet(p: Predicate): p is Extract<Predicate, { kind: 'set' }> {
 }
 function isEddiable(p: Predicate): p is Extract<Predicate, { kind: 'eddiable' }> {
 	return p.kind === 'eddiable';
+}
+function isTournamentLegal(p: Predicate): p is Extract<Predicate, { kind: 'tournamentLegal' }> {
+	return p.kind === 'tournamentLegal';
 }
 function isNumeric(
 	field: 'cost' | 'power' | 'ram'
@@ -169,6 +173,17 @@ function readEddiable(
 	return { interactive: true, value: matches[0].value };
 }
 
+function readTournamentLegal(
+	children: readonly Predicate[],
+	blocked: Set<FacetKey>
+): FacetView<boolean | null> {
+	if (blocked.has('tournamentLegal')) return { interactive: false };
+	const matches = children.filter(isTournamentLegal);
+	if (matches.length === 0) return { interactive: true, value: null };
+	if (matches.length > 1) return { interactive: false };
+	return { interactive: true, value: matches[0].value };
+}
+
 /** Reachable iff some combination of up to three Legend color slots at `ramPerLegend` each
  * produces this exact budget — every color's total a non-negative multiple of `ramPerLegend`,
  * summing to at most three slots (spec §3.3's own "0/2/4/6 per color" observation, generalized). */
@@ -214,6 +229,7 @@ export function readChipView(predicate: Predicate, dataset: Dataset): ChipView {
 		rarities: readValueList(children, blocked, 'rarity', isRarity),
 		setIds: readValueList(children, blocked, 'set', isSet),
 		eddiable: readEddiable(children, blocked),
+		tournamentLegal: readTournamentLegal(children, blocked),
 		cost: readNumeric(children, blocked, 'cost'),
 		power: readNumeric(children, blocked, 'power'),
 		ram: readNumeric(children, blocked, 'ram'),

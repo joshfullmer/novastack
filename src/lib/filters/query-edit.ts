@@ -28,6 +28,7 @@ export type FacetEdit =
 	| { facet: 'rarity'; values: readonly Rarity[] }
 	| { facet: 'set'; values: readonly string[] }
 	| { facet: 'eddiable'; value: boolean | null }
+	| { facet: 'tournamentLegal'; value: boolean | null }
 	| { facet: 'cost' | 'power' | 'ram'; range: NumericRange }
 	| { facet: 'legends'; colors: readonly Color[] };
 
@@ -41,6 +42,7 @@ type FacetTarget =
 				| 'set'
 				| 'rarity'
 				| 'eddiable'
+				| 'tournamentLegal'
 				| 'ramBudget';
 	  }
 	| { kind: 'numeric'; field: 'cost' | 'power' | 'ram' };
@@ -87,6 +89,8 @@ function clauseFor(edit: FacetEdit, dataset: Dataset): string | null {
 			return orGroup('set', edit.values);
 		case 'eddiable':
 			return edit.value === null ? null : `eddiable:${edit.value}`;
+		case 'tournamentLegal':
+			return edit.value === null ? null : `legal:${edit.value}`;
 		case 'cost':
 		case 'power':
 		case 'ram':
@@ -115,6 +119,8 @@ function targetFor(facet: FacetEdit['facet']): FacetTarget {
 			return { kind: 'set' };
 		case 'eddiable':
 			return { kind: 'eddiable' };
+		case 'tournamentLegal':
+			return { kind: 'tournamentLegal' };
 		case 'legends':
 			return { kind: 'ramBudget' };
 		case 'cost':

@@ -49,6 +49,7 @@ export type Predicate =
 			empty?: boolean;
 	  }
 	| { kind: 'eddiable'; value: boolean }
+	| { kind: 'tournamentLegal'; value: boolean }
 	| {
 			kind: 'numeric';
 			field: NumericField;
@@ -178,6 +179,8 @@ export function test(
 			return predicate.values.some((value) => card.classifications.includes(value));
 		case 'eddiable':
 			return card.eddiable === predicate.value;
+		case 'tournamentLegal':
+			return card.tournamentLegal === predicate.value;
 		case 'numeric':
 			return testNumeric(card, predicate);
 		case 'text':

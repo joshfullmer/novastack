@@ -111,6 +111,7 @@ Origin: [Scryfall's grammar in detail](../../.scratch/query-language/issues/01-s
 | power                            | `power:` `pow:`               | `: = < <= > >=` | integer, or `none`/`has`                        | null bucket                                                | yes           |
 | ram (required)                   | `ram:`                        | `: = < <= > >=` | integer, or `none`/`has`                        | null bucket                                                | yes           |
 | eddiable                         | `eddiable:` `ed:`             | `:` `=`*        | `true`/`false`                                  | never null                                                 | no            |
+| tournamentLegal                  | `legal:`                      | `:` `=`*        | `true`/`false`                                  | never null                                                 | no            |
 | set                              | `set:` `s:`                   | `:` `=`*        | quoted or slug string                           | never null                                                 | no            |
 | rarity                           | `rarity:` `r:`                | `: = < <= > >=` | Rarity enum                                     | never null                                                 | yes           |
 | text (bare / `name:` / `rules:`) | _(none)_ / `name:` / `rules:` | `:` `=`*        | word, quoted phrase, `/regex/`, or `none`/`has` | rules-haystack-empty (`empty`); `name:none` always dropped | no            |
@@ -123,6 +124,11 @@ Case-insensitive throughout, for field names and enumerated values alike. Multi-
 accept either a quoted display string (`tag:"Tyger Claws"`) or the slugified hyphen form
 (`tag:tyger-claws`) — the latter isn't a special rule, it falls out of hyphens being ordinary
 value characters. `cost:` has no short alias, deliberately, so `c:` stays color's alone.
+
+`tournamentLegal` (keyword `legal:`) was added after this table's original draft, once the
+source API started marking individual cards `"not-legal"` (`Card.tournamentLegal` —
+`#lib/cards/schema.ts`). Same shape as Eddiable in every respect — boolean, never null, no
+`none`/`has` — so it's added as a sibling row rather than a new section.
 
 Origin: [Keyword vocabulary](../../.scratch/query-language/issues/02-keyword-vocabulary.md).
 
@@ -248,19 +254,19 @@ membership-style (§3.6), not an ordered comparison — there is no null-rule am
 
 **Scope, generalised beyond the three numeric fields.** Tags and Keywords get the same
 `field:none`/`field:has` syntax, meaning array emptiness (`classifications: []` is real data: 58
-of 133 cards have no keywords, snapshot). Color, Card Type, Eddiable, Rarity, and Set are
-schema-guaranteed never-absent: `color:none` is **dropped as an inapplicable clause** (§6), never
-compiled into a silent always-false predicate.
+of 133 cards have no keywords, snapshot). Color, Card Type, Eddiable, Tournament Legal, Rarity,
+and Set are schema-guaranteed never-absent: `color:none` is **dropped as an inapplicable clause**
+(§6), never compiled into a silent always-false predicate.
 
 Origin: [Nulls in the language](../../.scratch/query-language/issues/04-nulls-in-the-language.md).
 
 ### 3.6 Negation
 
-| category                       | fields                                                                        | mechanism                                                     | null under negation       |
-| ------------------------------ | ----------------------------------------------------------------------------- | ------------------------------------------------------------- | ------------------------- |
-| Membership                     | color, cardType, keyword, tag, set, rarity-as-membership, eddiable, ramBudget | generic `not` node, true complement                           | included where applicable |
-| Ordered comparison             | cost, power, ram, rarity-as-comparison                                        | **parser-level operator inversion**, compiled to a fresh leaf | always excluded           |
-| Presence test (`:none`/`:has`) | any nullable field                                                            | generic `not` node                                            | n/a                       |
+| category                       | fields                                                                                         | mechanism                                                     | null under negation       |
+| ------------------------------ | ---------------------------------------------------------------------------------------------- | ------------------------------------------------------------- | ------------------------- |
+| Membership                     | color, cardType, keyword, tag, set, rarity-as-membership, eddiable, tournamentLegal, ramBudget | generic `not` node, true complement                           | included where applicable |
+| Ordered comparison             | cost, power, ram, rarity-as-comparison                                                         | **parser-level operator inversion**, compiled to a fresh leaf | always excluded           |
+| Presence test (`:none`/`:has`) | any nullable field                                                                             | generic `not` node                                            | n/a                       |
 
 Membership negation maps directly onto `{ kind: 'not', child }` wrapping the leaf — the existing
 evaluator (`!test(child, …)`) already does the right thing: a card with no tags at all correctly
@@ -317,6 +323,7 @@ export type Predicate =
 	| { kind: 'keyword'; values: readonly Keyword[]; empty?: boolean } // + empty
 	| { kind: 'classification'; values: readonly string[]; empty?: boolean } // + empty
 	| { kind: 'eddiable'; value: boolean }
+	| { kind: 'tournamentLegal'; value: boolean } // added post-launch, same shape as eddiable
 	| {
 			kind: 'numeric';
 			field: NumericField;
@@ -336,9 +343,9 @@ export type Predicate =
 	| { kind: 'rarity'; values: readonly Rarity[] };
 ```
 
-- **`numeric`, `ramBudget`, `color`, `cardType`, `eddiable`, `set`, `rarity`, and the four
-  structural kinds need zero changes.** Ranges, both forms of negation, and `field:none`/`:has`
-  for numerics are all already expressible via `min`/`max`/`includeNull`.
+- **`numeric`, `ramBudget`, `color`, `cardType`, `eddiable`, `tournamentLegal`, `set`, `rarity`,
+  and the four structural kinds need zero changes.** Ranges, both forms of negation, and
+  `field:none`/`:has` for numerics are all already expressible via `min`/`max`/`includeNull`.
 - **`text` needs `mode`, `scope`, and `empty`** — found across three separate tickets (§3.7's
   regex, §3.4's name/rules split, §3.5's rules-haystack-emptiness), each independent, each
   additive, each optional with a backward-compatible default.
