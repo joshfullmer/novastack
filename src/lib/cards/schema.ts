@@ -75,7 +75,10 @@ export const NetdeckCardSchema = v.object({
 	/** `[]` on all 133. The real keywords are `{Brace}` markup in `rules_text`. */
 	keywords: v.array(text('keywords[]'), 'keywords: expected an array'),
 	is_eddiable: v.boolean('is_eddiable: expected a boolean'),
-	legality: nonEmptyText('legality'),
+	/** `"legal"` on every card until 2026-09; `"not-legal"` appeared on one promo stub since.
+	 * Normalized to `Card.tournamentLegal`. A third value is a schema drift, not a card-data
+	 * change, so it fails parsing here rather than surfacing as a `checkRawInvariants` violation. */
+	legality: v.picklist(['legal', 'not-legal'], 'not a known legality'),
 	/** `null` in list responses, a UUID in detail responses. */
 	selected_printing_id: v.nullable(text('selected_printing_id')),
 	printings: v.array(NetdeckPrintingSchema, 'printings: expected an array')
@@ -145,6 +148,10 @@ export const CardSchema = v.object({
 	/** What a Legend contributes to a deck. Never set on anything else. */
 	ramProvided: v.nullable(v.number()),
 	eddiable: v.boolean(),
+	/** `false` for a card the source API itself marks `"not-legal"` — e.g. a promo stub with no
+	 * cost/power/RAM/rules yet. Feeds `deckIssues()` (`#lib/decks/legality.ts`) as its own,
+	 * non-blocking issue; does not remove the card from search or the deckbuilder's browser. */
+	tournamentLegal: v.boolean(),
 	classifications: v.array(v.pipe(v.string(), v.nonEmpty())),
 	keywords: v.array(KeywordSchema),
 	rulesText: v.array(ParagraphSchema),

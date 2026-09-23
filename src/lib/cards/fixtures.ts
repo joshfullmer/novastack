@@ -54,6 +54,7 @@ export function makeCard(overrides: CardOverrides = {}): Card {
 		ramRequired: cardType === 'Legend' ? null : 2,
 		ramProvided: cardType === 'Legend' ? 2 : null,
 		eddiable: false,
+		tournamentLegal: true,
 		classifications: [],
 		keywords: [],
 		rulesText: [],

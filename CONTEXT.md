@@ -26,10 +26,12 @@ _Avoid_: selected printing, primary printing, main printing
 
 **Set**:
 A named release that Printings belong to, identified by its printed Set Identifier — a main set, a
-starter deck, a demo deck, a box-topper run, a promo run, a prerelease run, a tournament prize
-run. **Eleven today.** The source API reports fifteen, because it splits each Set into separate
+starter deck, a demo deck, a box-topper run, a promo run, two prerelease runs, a tournament prize
+run. **Twelve today.** The source API reports sixteen, because it splits most Sets into separate
 retail and beta entries; that split is the API's own and does not exist on the cards — see Print
-Treatment.
+Treatment. (The two prerelease Sets are the one exception: `PRR01` and `PRR02` really are distinct
+Sets, not a treatment pair — the API's `retail`/`beta` naming on them is coincidental, not the
+usual split. Checked against the printed card, not assumed.)
 _Avoid_: expansion, release, product
 
 **Base Set**:
@@ -56,21 +58,22 @@ _Avoid_: edition, variant, version
 The code printed on a Printing: `<Set Category> - <Set Code> [<Cycle>]`, as in `MS01 - WNC [A]` or
 `PRM - DD2 [A]`. Not exposed by the source API at all — it supplies only a slugified set _name_ — so
 the mapping from API set to printed identifier is curated. Components can be absent: `PRR01 - WNC`
-has no Cycle, and `PRM01` has only a Category. Fifteen API sets reduce to **eleven** printed
-identifiers, because retail and beta share one.
+has no Cycle, and `PRM01` has only a Category. Sixteen API sets reduce to **twelve** printed
+identifiers, because retail and beta usually share one — see Set's note on the two prerelease
+Sets being the exception.
 
 **Set Code**:
 The second component of a Set Identifier, naming the product line or deck — `WNC`, `HEI`, `EBP`,
-`DD1`, `DD2`. **Not unique on its own**: `WNC` is shared by the main set, the box toppers, and the
-prerelease run, which differ only by Set Category. Identity requires the Category and Set Code
+`DD1`, `DD2`. **Not unique on its own**: `WNC` is shared by the main set, the box toppers, and both
+prerelease runs, which differ only by Set Category. Identity requires the Category and Set Code
 _together_.
 
 **Set Category**:
 The leading component of a Set Identifier, naming the product type and its number — `MS01` (main
-set), `SD01`/`SD02` (starter decks), `PRM` (promotional), `PRR01` (prerelease). **Part of a
-Printing's identity, not just a grouping** — `PRM` alone spans three different Sets, and `WNC` alone
-spans three different Categories. The pair `<Category>-<Set Code>` is what identifies a Set and what
-appears in a Printing's URL.
+set), `SD01`/`SD02` (starter decks), `PRM` (promotional), `PRR01`/`PRR02` (the two prerelease
+runs). **Part of a Printing's identity, not just a grouping** — `PRM` alone spans three different
+Sets, and `WNC` alone spans four different Categories. The pair `<Category>-<Set Code>` is what
+identifies a Set and what appears in a Printing's URL.
 
 **Cycle**:
 The bracketed component of a Set Identifier, e.g. `[A]`. Believed to govern format rotation — which
@@ -140,6 +143,13 @@ _Avoid_: sellable, pitchable
 **Legend**:
 A Card type chosen during deck construction rather than played from hand. A deck picks three
 Legends, and their combined RAM Provided per Color sets which Cards the deck may include.
+
+**Tournament Legal**:
+Whether the source API itself considers a Card usable in a deck — a straight pass-through of its
+`legality` field (`"legal"` / `"not-legal"`), not derived. Distinct from deck legality (§4 of
+`docs/spec/deckbuilder.md`), which is about a _deck's_ size, RAM budget, and Legend names, not a
+_Card's_ own status. First seen `false` in 2026-09, on a promo stub with no other stats yet — the
+API gives no reason code, so this project reads it as a plain fact, not a ban.
 
 ### Identity
 

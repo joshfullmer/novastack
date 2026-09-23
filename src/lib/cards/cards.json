@@ -76,7 +76,8 @@
 				]
 			],
 			"slug": "6th-street-recruits",
-			"subtitle": null
+			"subtitle": null,
+			"tournamentLegal": true
 		},
 		{
 			"cardType": "Legend",
@@ -157,6 +158,17 @@
 				{
 					"artist": "Michał Dziekan",
 					"collectorNumber": "001",
+					"id": "3d5b7ebf-0378-401b-bfa2-32a02734c921",
+					"key": "PRR02-WNC-001",
+					"locale": "en",
+					"rarity": "Epic",
+					"setId": "PRR02-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/3d5b7ebf-0378-401b-bfa2-32a02734c921/render-mrjq8fp3.webp",
+					"thumbhash": "zjiCFAQPpDeCmYf7sAqGy4CMgHB3CAiHAA=="
+				},
+				{
+					"artist": "Michał Dziekan",
+					"collectorNumber": "001",
 					"id": "10ca370b-deb7-4c58-a9f9-faf4f9708f6d",
 					"key": "PRR01-WNC-001",
 					"locale": "en",
@@ -220,7 +232,8 @@
 				]
 			],
 			"slug": "adam-smasher-ender-of-legends",
-			"subtitle": "Ender of Legends"
+			"subtitle": "Ender of Legends",
+			"tournamentLegal": true
 		},
 		{
 			"cardType": "Unit",
@@ -352,7 +365,8 @@
 				]
 			],
 			"slug": "adam-smasher-metal-over-meat",
-			"subtitle": "Metal Over Meat"
+			"subtitle": "Metal Over Meat",
+			"tournamentLegal": true
 		},
 		{
 			"cardType": "Gear",
@@ -443,7 +457,8 @@
 				]
 			],
 			"slug": "adrenaline-converter",
-			"subtitle": null
+			"subtitle": null,
+			"tournamentLegal": true
 		},
 		{
 			"cardType": "Program",
@@ -568,7 +583,8 @@
 				]
 			],
 			"slug": "afterparty-at-lizzie-s",
-			"subtitle": null
+			"subtitle": null,
+			"tournamentLegal": true
 		},
 		{
 			"cardType": "Program",
@@ -649,7 +665,8 @@
 				]
 			],
 			"slug": "all-is-lost",
-			"subtitle": null
+			"subtitle": null,
+			"tournamentLegal": true
 		},
 		{
 			"cardType": "Unit",
@@ -736,7 +753,8 @@
 				]
 			],
 			"slug": "alt-cunningham-mother-of-daemons",
-			"subtitle": "Mother of Daemons"
+			"subtitle": "Mother of Daemons",
+			"tournamentLegal": true
 		},
 		{
 			"cardType": "Legend",
@@ -821,6 +839,17 @@
 				{
 					"artist": "Daniel Valaisis",
 					"collectorNumber": "009",
+					"id": "e2b7ca4a-ebb6-48d4-b0b7-59865c6c85f0",
+					"key": "PRR02-WNC-009",
+					"locale": "en",
+					"rarity": "Rare",
+					"setId": "PRR02-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/e2b7ca4a-ebb6-48d4-b0b7-59865c6c85f0/render-mrjqax4c.webp",
+					"thumbhash": "iueFFAYPZ3Zm+LeIh3MHOIiAgHB3CAiHAA=="
+				},
+				{
+					"artist": "Daniel Valaisis",
+					"collectorNumber": "009",
 					"id": "32d12432-acad-4a11-b8eb-1dd8fb2297f3",
 					"key": "PRR01-WNC-009",
 					"locale": "en",
@@ -897,7 +926,8 @@
 				]
 			],
 			"slug": "alt-cunningham-soulkiller-architect",
-			"subtitle": "Soulkiller Architect"
+			"subtitle": "Soulkiller Architect",
+			"tournamentLegal": true
 		},
 		{
 			"cardType": "Unit",
@@ -953,7 +983,8 @@
 			"rawRulesText": "[Flavour Text] Takes a lot of juice to break bones like they do.",
 			"rulesText": [],
 			"slug": "animals-wrecker",
-			"subtitle": null
+			"subtitle": null,
+			"tournamentLegal": true
 		},
 		{
 			"cardType": "Program",
@@ -1034,7 +1065,8 @@
 				]
 			],
 			"slug": "appetite-for-destruction",
-			"subtitle": null
+			"subtitle": null,
+			"tournamentLegal": true
 		},
 		{
 			"cardType": "Gear",
@@ -1156,7 +1188,8 @@
 				]
 			],
 			"slug": "arasaka-emergency-radioport",
-			"subtitle": null
+			"subtitle": null,
+			"tournamentLegal": true
 		},
 		{
 			"cardType": "Unit",
@@ -1252,7 +1285,8 @@
 				]
 			],
 			"slug": "augmented-negotiators",
-			"subtitle": null
+			"subtitle": null,
+			"tournamentLegal": true
 		},
 		{
 			"cardType": "Program",
@@ -1321,7 +1355,8 @@
 				]
 			],
 			"slug": "bonnie-and-clyde",
-			"subtitle": null
+			"subtitle": null,
+			"tournamentLegal": true
 		},
 		{
 			"cardType": "Program",
@@ -1430,7 +1465,8 @@
 				]
 			],
 			"slug": "bootleg-black-sapphire-show",
-			"subtitle": null
+			"subtitle": null,
+			"tournamentLegal": true
 		},
 		{
 			"cardType": "Unit",
@@ -1525,7 +1561,8 @@
 				]
 			],
 			"slug": "caliber-totentanz-s-top-dog",
-			"subtitle": "Totentanz's Top Dog"
+			"subtitle": "Totentanz's Top Dog",
+			"tournamentLegal": true
 		},
 		{
 			"cardType": "Program",
@@ -1619,7 +1656,8 @@
 				]
 			],
 			"slug": "carnage-at-the-colosseum",
-			"subtitle": null
+			"subtitle": null,
+			"tournamentLegal": true
 		},
 		{
 			"cardType": "Unit",
@@ -1743,7 +1781,8 @@
 				]
 			],
 			"slug": "chrome-fang",
-			"subtitle": null
+			"subtitle": null,
+			"tournamentLegal": true
 		},
 		{
 			"cardType": "Program",
@@ -1828,7 +1867,8 @@
 				]
 			],
 			"slug": "chrome-reverie",
-			"subtitle": null
+			"subtitle": null,
+			"tournamentLegal": true
 		},
 		{
 			"cardType": "Unit",
@@ -1969,7 +2009,8 @@
 				]
 			],
 			"slug": "corpo-security",
-			"subtitle": null
+			"subtitle": null,
+			"tournamentLegal": true
 		},
 		{
 			"cardType": "Program",
@@ -2077,7 +2118,8 @@
 				]
 			],
 			"slug": "corporate-surveillance",
-			"subtitle": null
+			"subtitle": null,
+			"tournamentLegal": true
 		},
 		{
 			"cardType": "Program",
@@ -2187,7 +2229,8 @@
 				]
 			],
 			"slug": "cyberpsychosis",
-			"subtitle": null
+			"subtitle": null,
+			"tournamentLegal": true
 		},
 		{
 			"cardType": "Gear",
@@ -2278,7 +2321,8 @@
 				]
 			],
 			"slug": "deadman-transmitter",
-			"subtitle": null
+			"subtitle": null,
+			"tournamentLegal": true
 		},
 		{
 			"cardType": "Unit",
@@ -2402,7 +2446,8 @@
 				]
 			],
 			"slug": "delamain-cab",
-			"subtitle": null
+			"subtitle": null,
+			"tournamentLegal": true
 		},
 		{
 			"cardType": "Unit",
@@ -2484,7 +2529,8 @@
 				]
 			],
 			"slug": "delamain-rideshare-ai",
-			"subtitle": "Rideshare AI"
+			"subtitle": "Rideshare AI",
+			"tournamentLegal": true
 		},
 		{
 			"cardType": "Program",
@@ -2566,7 +2612,8 @@
 				]
 			],
 			"slug": "detonate",
-			"subtitle": null
+			"subtitle": null,
+			"tournamentLegal": true
 		},
 		{
 			"cardType": "Legend",
@@ -2636,6 +2683,17 @@
 					"setId": "MS01-WNC",
 					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/9d04877f-050d-485d-9447-1bef7ee6ed40/render-mpxm6ua0.webp",
 					"thumbhash": "jRiGDAQP2veHmoZyY8922ZiPgYGICBiIAA=="
+				},
+				{
+					"artist": "Envar",
+					"collectorNumber": "002",
+					"id": "352acc48-3842-4e10-b9b8-157f8a5f7286",
+					"key": "PRR02-WNC-002",
+					"locale": "en",
+					"rarity": "Rare",
+					"setId": "PRR02-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/352acc48-3842-4e10-b9b8-157f8a5f7286/render-mrjq8dtu.webp",
+					"thumbhash": "jCiGDAYPaNRVmJWQlQo1uZCLgHB3CAiHAA=="
 				},
 				{
 					"artist": "TOPDOG Entertainment",
@@ -2739,7 +2797,8 @@
 				]
 			],
 			"slug": "dexter-deshawn-off-the-grid",
-			"subtitle": "Off the Grid"
+			"subtitle": "Off the Grid",
+			"tournamentLegal": true
 		},
 		{
 			"cardType": "Unit",
@@ -2854,7 +2913,8 @@
 				]
 			],
 			"slug": "dexter-deshawn-one-last-chance",
-			"subtitle": "One Last Chance"
+			"subtitle": "One Last Chance",
+			"tournamentLegal": true
 		},
 		{
 			"cardType": "Program",
@@ -2951,7 +3011,8 @@
 				]
 			],
 			"slug": "don-t-fear-the-reaper",
-			"subtitle": null
+			"subtitle": null,
+			"tournamentLegal": true
 		},
 		{
 			"cardType": "Legend",
@@ -3017,6 +3078,17 @@
 					"setId": "MS01-WNC",
 					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/b3b78f89-424e-41b6-9fa9-aea256568dcc/render-mpxm4d3x.webp",
 					"thumbhash": "EAiGDAIPiNV4tqeCUE70mn+HgYGICBiIAA=="
+				},
+				{
+					"artist": "Łukasz Poller",
+					"collectorNumber": "004",
+					"id": "3282ec42-006b-4214-a6c9-7c09f1278b26",
+					"key": "PRR02-WNC-004",
+					"locale": "en",
+					"rarity": "Rare",
+					"setId": "PRR02-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/3282ec42-006b-4214-a6c9-7c09f1278b26/render-mrjq94xf.webp",
+					"thumbhash": "EhmGHAYPkfpkGYqwB1sVc2aAgHB3CAiHAA=="
 				},
 				{
 					"artist": "Łukasz Poller",
@@ -3087,7 +3159,8 @@
 				]
 			],
 			"slug": "dum-dum-maelstrom-triggerman",
-			"subtitle": "Maelstrom Triggerman"
+			"subtitle": "Maelstrom Triggerman",
+			"tournamentLegal": true
 		},
 		{
 			"cardType": "Gear",
@@ -3239,7 +3312,8 @@
 				]
 			],
 			"slug": "dying-night-v-s-pistol",
-			"subtitle": "V's Pistol"
+			"subtitle": "V's Pistol",
+			"tournamentLegal": true
 		},
 		{
 			"cardType": "Unit",
@@ -3337,7 +3411,8 @@
 				]
 			],
 			"slug": "el-sombrero-n-la-venganza-lenta",
-			"subtitle": "La Venganza Lenta"
+			"subtitle": "La Venganza Lenta",
+			"tournamentLegal": true
 		},
 		{
 			"cardType": "Unit",
@@ -3427,7 +3502,8 @@
 			"rawRulesText": "\"Grab the policyholder, leave the rest for the city meatwagon.\"",
 			"rulesText": [],
 			"slug": "emergency-atlus",
-			"subtitle": null
+			"subtitle": null,
+			"tournamentLegal": true
 		},
 		{
 			"cardType": "Legend",
@@ -3590,7 +3666,8 @@
 				]
 			],
 			"slug": "evelyn-parker-beautiful-enigma",
-			"subtitle": "Beautiful Enigma"
+			"subtitle": "Beautiful Enigma",
+			"tournamentLegal": true
 		},
 		{
 			"cardType": "Unit",
@@ -3722,7 +3799,8 @@
 				]
 			],
 			"slug": "evelyn-parker-scheming-siren",
-			"subtitle": "Scheming Siren"
+			"subtitle": "Scheming Siren",
+			"tournamentLegal": true
 		},
 		{
 			"cardType": "Unit",
@@ -3861,7 +3939,8 @@
 				]
 			],
 			"slug": "field-operator",
-			"subtitle": null
+			"subtitle": null,
+			"tournamentLegal": true
 		},
 		{
 			"cardType": "Program",
@@ -3993,7 +4072,8 @@
 				]
 			],
 			"slug": "floor-it",
-			"subtitle": null
+			"subtitle": null,
+			"tournamentLegal": true
 		},
 		{
 			"cardType": "Program",
@@ -4062,7 +4142,8 @@
 				]
 			],
 			"slug": "fool-on-the-hill",
-			"subtitle": null
+			"subtitle": null,
+			"tournamentLegal": true
 		},
 		{
 			"cardType": "Unit",
@@ -4139,7 +4220,8 @@
 				]
 			],
 			"slug": "gilded-mato-n",
-			"subtitle": null
+			"subtitle": null,
+			"tournamentLegal": true
 		},
 		{
 			"cardType": "Gear",
@@ -4186,6 +4268,17 @@
 				},
 				{
 					"artist": "TOPDOG Entertainment",
+					"collectorNumber": "011",
+					"id": "e6663f3c-5668-4bab-ba3c-6e2b78636f2c",
+					"key": "PRR02-WNC-011",
+					"locale": "en",
+					"rarity": "Nova Rare",
+					"setId": "PRR02-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/e6663f3c-5668-4bab-ba3c-6e2b78636f2c/render-mrjqbebl.webp",
+					"thumbhash": "UiiGDAQPlKd2CKiVFz+GVomAgHB3CAiHAA=="
+				},
+				{
+					"artist": "TOPDOG Entertainment",
 					"collectorNumber": "060",
 					"id": "f6a5ea4d-32d6-438d-b14b-83a743d90244",
 					"key": "MS01-WNC-060-FR",
@@ -4214,7 +4307,8 @@
 				]
 			],
 			"slug": "gorilla-arms",
-			"subtitle": null
+			"subtitle": null,
+			"tournamentLegal": true
 		},
 		{
 			"cardType": "Legend",
@@ -4344,7 +4438,8 @@
 				]
 			],
 			"slug": "goro-takemura-hands-unclean",
-			"subtitle": "Hands Unclean"
+			"subtitle": "Hands Unclean",
+			"tournamentLegal": true
 		},
 		{
 			"cardType": "Unit",
@@ -4421,7 +4516,8 @@
 				]
 			],
 			"slug": "goro-takemura-losing-his-way",
-			"subtitle": "Losing His Way"
+			"subtitle": "Losing His Way",
+			"tournamentLegal": true
 		},
 		{
 			"cardType": "Legend",
@@ -4499,6 +4595,17 @@
 					"setId": "MS01-WNC",
 					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/af82881d-9e19-46b3-a723-a2ef224687d8/render-mpxm0y2d.webp",
 					"thumbhash": "kgeGDAQPlbZVCXepA3PnI2mAgYGICBiIAA=="
+				},
+				{
+					"artist": "Daniel Valaisis",
+					"collectorNumber": "007",
+					"id": "34436540-0422-4a92-8757-c15dded67ea9",
+					"key": "PRR02-WNC-007",
+					"locale": "en",
+					"rarity": "Rare",
+					"setId": "PRR02-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/34436540-0422-4a92-8757-c15dded67ea9/render-mrjqae4j.webp",
+					"thumbhash": "DPiFDAQPNvZGt4eUUvLVCHqCgHB3CAiHAA=="
 				},
 				{
 					"artist": "Daniel Valaisis",
@@ -4582,7 +4689,8 @@
 				]
 			],
 			"slug": "goro-takemura-vengeful-bodyguard",
-			"subtitle": "Vengeful Bodyguard"
+			"subtitle": "Vengeful Bodyguard",
+			"tournamentLegal": true
 		},
 		{
 			"cardType": "Program",
@@ -4689,7 +4797,8 @@
 				]
 			],
 			"slug": "gunpoint-diplomacy",
-			"subtitle": null
+			"subtitle": null,
+			"tournamentLegal": true
 		},
 		{
 			"cardType": "Unit",
@@ -4766,7 +4875,8 @@
 				]
 			],
 			"slug": "hacked-corpo",
-			"subtitle": null
+			"subtitle": null,
+			"tournamentLegal": true
 		},
 		{
 			"cardType": "Legend",
@@ -4873,7 +4983,8 @@
 				]
 			],
 			"slug": "hanako-arasaka-daughter-of-the-emperor",
-			"subtitle": "Daughter of the Emperor"
+			"subtitle": "Daughter of the Emperor",
+			"tournamentLegal": true
 		},
 		{
 			"cardType": "Unit",
@@ -4955,7 +5066,8 @@
 				]
 			],
 			"slug": "hanako-arasaka-in-a-gilded-cage",
-			"subtitle": "In a Gilded Cage"
+			"subtitle": "In a Gilded Cage",
+			"tournamentLegal": true
 		},
 		{
 			"cardType": "Unit",
@@ -5053,7 +5165,8 @@
 				]
 			],
 			"slug": "heywood-ripperdoc",
-			"subtitle": null
+			"subtitle": null,
+			"tournamentLegal": true
 		},
 		{
 			"cardType": "Program",
@@ -5184,7 +5297,8 @@
 				]
 			],
 			"slug": "industrial-assembly",
-			"subtitle": null
+			"subtitle": null,
+			"tournamentLegal": true
 		},
 		{
 			"cardType": "Unit",
@@ -5254,7 +5368,8 @@
 				]
 			],
 			"slug": "jacked-in-voodoo-boy",
-			"subtitle": null
+			"subtitle": null,
+			"tournamentLegal": true
 		},
 		{
 			"cardType": "Legend",
@@ -5426,7 +5541,8 @@
 				]
 			],
 			"slug": "jackie-welles-mama-s-favorite",
-			"subtitle": "Mama's Favorite"
+			"subtitle": "Mama's Favorite",
+			"tournamentLegal": true
 		},
 		{
 			"cardType": "Legend",
@@ -5540,7 +5656,8 @@
 				]
 			],
 			"slug": "jackie-welles-pour-one-out-for-me",
-			"subtitle": "Pour One Out For Me"
+			"subtitle": "Pour One Out For Me",
+			"tournamentLegal": true
 		},
 		{
 			"cardType": "Unit",
@@ -5657,7 +5774,8 @@
 				]
 			],
 			"slug": "jackie-welles-ride-or-die-choom",
-			"subtitle": "Ride or Die Choom"
+			"subtitle": "Ride or Die Choom",
+			"tournamentLegal": true
 		},
 		{
 			"cardType": "Unit",
@@ -5739,7 +5857,8 @@
 				]
 			],
 			"slug": "japantown-jonin",
-			"subtitle": null
+			"subtitle": null,
+			"tournamentLegal": true
 		},
 		{
 			"cardType": "Unit",
@@ -5854,7 +5973,8 @@
 				]
 			],
 			"slug": "johnny-silverhand-never-stop-fighting",
-			"subtitle": "Never Stop Fighting"
+			"subtitle": "Never Stop Fighting",
+			"tournamentLegal": true
 		},
 		{
 			"cardType": "Legend",
@@ -5986,7 +6106,8 @@
 				]
 			],
 			"slug": "johnny-silverhand-rocking-renegade",
-			"subtitle": "Rocking Renegade"
+			"subtitle": "Rocking Renegade",
+			"tournamentLegal": true
 		},
 		{
 			"cardType": "Legend",
@@ -6163,7 +6284,8 @@
 				]
 			],
 			"slug": "judy-a-lvarez-braindance-maestro",
-			"subtitle": "Braindance Maestro"
+			"subtitle": "Braindance Maestro",
+			"tournamentLegal": true
 		},
 		{
 			"cardType": "Unit",
@@ -6265,7 +6387,8 @@
 				]
 			],
 			"slug": "judy-a-lvarez-nothing-to-doubt",
-			"subtitle": "Nothing to Doubt"
+			"subtitle": "Nothing to Doubt",
+			"tournamentLegal": true
 		},
 		{
 			"cardType": "Legend",
@@ -6360,7 +6483,8 @@
 				]
 			],
 			"slug": "kerry-eurodyne-axe-attitude-audience",
-			"subtitle": "Axe, Attitude, Audience"
+			"subtitle": "Axe, Attitude, Audience",
+			"tournamentLegal": true
 		},
 		{
 			"cardType": "Unit",
@@ -6471,7 +6595,8 @@
 				]
 			],
 			"slug": "kerry-eurodyne-the-last-rockerboy",
-			"subtitle": "The Last Rockerboy"
+			"subtitle": "The Last Rockerboy",
+			"tournamentLegal": true
 		},
 		{
 			"cardType": "Gear",
@@ -6590,7 +6715,8 @@
 				]
 			],
 			"slug": "kiroshi-optics",
-			"subtitle": null
+			"subtitle": null,
+			"tournamentLegal": true
 		},
 		{
 			"cardType": "Unit",
@@ -6698,7 +6824,8 @@
 				]
 			],
 			"slug": "la-llorona-ghost-of-the-past",
-			"subtitle": "Ghost of the Past"
+			"subtitle": "Ghost of the Past",
+			"tournamentLegal": true
 		},
 		{
 			"cardType": "Program",
@@ -6777,7 +6904,8 @@
 				]
 			],
 			"slug": "les-e-le-mens",
-			"subtitle": null
+			"subtitle": null,
+			"tournamentLegal": true
 		},
 		{
 			"cardType": "Program",
@@ -6858,7 +6986,8 @@
 				]
 			],
 			"slug": "live-with-the-aftermath",
-			"subtitle": null
+			"subtitle": null,
+			"tournamentLegal": true
 		},
 		{
 			"cardType": "Unit",
@@ -6935,7 +7064,8 @@
 				]
 			],
 			"slug": "lizzy-wizzy-delicate-weapon",
-			"subtitle": "Delicate Weapon"
+			"subtitle": "Delicate Weapon",
+			"tournamentLegal": true
 		},
 		{
 			"cardType": "Unit",
@@ -6980,6 +7110,17 @@
 					"setId": "MS01-WNC",
 					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/42236397-716c-422c-8868-9f33dd33b089/render-mqs6lkni.webp",
 					"thumbhash": "TSiKDAQPeKaHOKeAB7ZzRW6AgYGICBiIAA=="
+				},
+				{
+					"artist": "Alexander Dudar",
+					"collectorNumber": "049",
+					"id": "2cfce483-dd05-48b4-a525-ca88c31de39b",
+					"key": "MS01-WNC-049-FR",
+					"locale": "fr",
+					"rarity": "Common",
+					"setId": "MS01-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/2cfce483-dd05-48b4-a525-ca88c31de39b/render-e12312cc-3b18-4028-bb25-aae67ea9741d.webp",
+					"thumbhash": "jSiKDAQPeKaHOKeAB7dzRW6AgYGICBiIAA=="
 				}
 			],
 			"ramProvided": null,
@@ -6994,7 +7135,8 @@
 				]
 			],
 			"slug": "maelstrom-goons",
-			"subtitle": null
+			"subtitle": null,
+			"tournamentLegal": true
 		},
 		{
 			"cardType": "Unit",
@@ -7076,7 +7218,8 @@
 				]
 			],
 			"slug": "maelstrom-zealots",
-			"subtitle": null
+			"subtitle": null,
+			"tournamentLegal": true
 		},
 		{
 			"cardType": "Unit",
@@ -7187,7 +7330,8 @@
 				]
 			],
 			"slug": "maman-brigitte-spirit-of-death",
-			"subtitle": "Spirit of Death"
+			"subtitle": "Spirit of Death",
+			"tournamentLegal": true
 		},
 		{
 			"cardType": "Gear",
@@ -7321,7 +7465,8 @@
 				]
 			],
 			"slug": "mandibular-upgrade",
-			"subtitle": null
+			"subtitle": null,
+			"tournamentLegal": true
 		},
 		{
 			"cardType": "Gear",
@@ -7427,7 +7572,8 @@
 				]
 			],
 			"slug": "mantis-blades",
-			"subtitle": null
+			"subtitle": null,
+			"tournamentLegal": true
 		},
 		{
 			"cardType": "Unit",
@@ -7526,7 +7672,8 @@
 				]
 			],
 			"slug": "maxtac-av",
-			"subtitle": null
+			"subtitle": null,
+			"tournamentLegal": true
 		},
 		{
 			"cardType": "Unit",
@@ -7613,7 +7760,8 @@
 				]
 			],
 			"slug": "maxtac-heavy",
-			"subtitle": null
+			"subtitle": null,
+			"tournamentLegal": true
 		},
 		{
 			"cardType": "Unit",
@@ -7704,7 +7852,8 @@
 				]
 			],
 			"slug": "maxtac-squadron",
-			"subtitle": null
+			"subtitle": null,
+			"tournamentLegal": true
 		},
 		{
 			"cardType": "Unit",
@@ -7773,7 +7922,8 @@
 				]
 			],
 			"slug": "maxtac-suppression-team",
-			"subtitle": null
+			"subtitle": null,
+			"tournamentLegal": true
 		},
 		{
 			"cardType": "Program",
@@ -7859,7 +8009,8 @@
 				]
 			],
 			"slug": "memory-relapse",
-			"subtitle": null
+			"subtitle": null,
+			"tournamentLegal": true
 		},
 		{
 			"cardType": "Unit",
@@ -7944,7 +8095,8 @@
 				]
 			],
 			"slug": "meredith-stout-stone-cold-corpo",
-			"subtitle": "Stone Cold Corpo"
+			"subtitle": "Stone Cold Corpo",
+			"tournamentLegal": true
 		},
 		{
 			"cardType": "Unit",
@@ -8067,7 +8219,8 @@
 				]
 			],
 			"slug": "minotaur",
-			"subtitle": null
+			"subtitle": null,
+			"tournamentLegal": true
 		},
 		{
 			"cardType": "Unit",
@@ -8165,7 +8318,8 @@
 				]
 			],
 			"slug": "misty-olszewski-mender-of-broken-spirits",
-			"subtitle": "Mender of Broken Spirits"
+			"subtitle": "Mender of Broken Spirits",
+			"tournamentLegal": true
 		},
 		{
 			"cardType": "Unit",
@@ -8252,7 +8406,8 @@
 				]
 			],
 			"slug": "modded-kusanagi",
-			"subtitle": null
+			"subtitle": null,
+			"tournamentLegal": true
 		},
 		{
 			"cardType": "Unit",
@@ -8338,7 +8493,8 @@
 				]
 			],
 			"slug": "modded-muramasa",
-			"subtitle": null
+			"subtitle": null,
+			"tournamentLegal": true
 		},
 		{
 			"cardType": "Unit",
@@ -8431,7 +8587,8 @@
 				]
 			],
 			"slug": "mox-inciters",
-			"subtitle": null
+			"subtitle": null,
+			"tournamentLegal": true
 		},
 		{
 			"cardType": "Unit",
@@ -8524,7 +8681,8 @@
 				]
 			],
 			"slug": "mt0d12-flathead",
-			"subtitle": null
+			"subtitle": null,
+			"tournamentLegal": true
 		},
 		{
 			"cardType": "Legend",
@@ -8594,6 +8752,17 @@
 					"setId": "MS01-WNC",
 					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/2e06439f-fab6-4a65-a1fc-e5f4afc84eb0/render-mswya1fx.webp",
 					"thumbhash": "TwiGDAIP0Mh1aIqWZp+1i3eAgYGICBiIAA=="
+				},
+				{
+					"artist": "Mooncolony",
+					"collectorNumber": "005",
+					"id": "80efc8c5-c352-4d3a-b713-bfcf593a7f2a",
+					"key": "PRR02-WNC-005",
+					"locale": "en",
+					"rarity": "Rare",
+					"setId": "PRR02-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/80efc8c5-c352-4d3a-b713-bfcf593a7f2a/render-mrjq9rg2.webp",
+					"thumbhash": "FSmKFAQPmPZmOHWBhp9leGyAgHB3CAiHAA=="
 				},
 				{
 					"artist": "Envar Studio",
@@ -8697,7 +8866,8 @@
 				]
 			],
 			"slug": "muamar-reyes-el-capita-n",
-			"subtitle": "El Capitán"
+			"subtitle": "El Capitán",
+			"tournamentLegal": true
 		},
 		{
 			"cardType": "Unit",
@@ -8767,7 +8937,8 @@
 				]
 			],
 			"slug": "nadia-fighting-through-grief",
-			"subtitle": "Fighting Through Grief"
+			"subtitle": "Fighting Through Grief",
+			"tournamentLegal": true
 		},
 		{
 			"cardType": "Gear",
@@ -8884,7 +9055,8 @@
 				]
 			],
 			"slug": "netwatch-netdriver",
-			"subtitle": null
+			"subtitle": null,
+			"tournamentLegal": true
 		},
 		{
 			"cardType": "Program",
@@ -9030,7 +9202,8 @@
 				]
 			],
 			"slug": "nocturne-op55-n1",
-			"subtitle": null
+			"subtitle": null,
+			"tournamentLegal": true
 		},
 		{
 			"cardType": "Unit",
@@ -9119,7 +9292,8 @@
 				]
 			],
 			"slug": "octant",
-			"subtitle": null
+			"subtitle": null,
+			"tournamentLegal": true
 		},
 		{
 			"cardType": "Unit",
@@ -9218,7 +9392,8 @@
 				]
 			],
 			"slug": "offduty-malfini",
-			"subtitle": null
+			"subtitle": null,
+			"tournamentLegal": true
 		},
 		{
 			"cardType": "Program",
@@ -9340,7 +9515,8 @@
 				]
 			],
 			"slug": "over-the-edge",
-			"subtitle": null
+			"subtitle": null,
+			"tournamentLegal": true
 		},
 		{
 			"cardType": "Gear",
@@ -9446,7 +9622,8 @@
 				]
 			],
 			"slug": "overwatch-panam-s-gift",
-			"subtitle": "Panam's Gift"
+			"subtitle": "Panam's Gift",
+			"tournamentLegal": true
 		},
 		{
 			"cardType": "Unit",
@@ -9539,7 +9716,8 @@
 				]
 			],
 			"slug": "pacifica-netrunner",
-			"subtitle": null
+			"subtitle": null,
+			"tournamentLegal": true
 		},
 		{
 			"cardType": "Legend",
@@ -9608,6 +9786,17 @@
 				},
 				{
 					"artist": "Mooncolony",
+					"collectorNumber": "008",
+					"id": "c12c4516-264b-4f7a-9d99-de7bc3ebb0fb",
+					"key": "PRR02-WNC-008",
+					"locale": "en",
+					"rarity": "Rare",
+					"setId": "PRR02-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/c12c4516-264b-4f7a-9d99-de7bc3ebb0fb/render-mrjqair6.webp",
+					"thumbhash": "09eJHAYPesVYB3eHdwhHN3SAgHB3CAiHAA=="
+				},
+				{
+					"artist": "Mooncolony",
 					"collectorNumber": "074",
 					"id": "dae6ee14-750c-4ccf-b5c5-adba5e5585e8",
 					"key": "MS01-WNC-074-FR",
@@ -9664,7 +9853,8 @@
 				]
 			],
 			"slug": "padre-man-of-the-cross",
-			"subtitle": "Man of the Cross"
+			"subtitle": "Man of the Cross",
+			"tournamentLegal": true
 		},
 		{
 			"cardType": "Legend",
@@ -9789,7 +9979,8 @@
 				]
 			],
 			"slug": "panam-palmer-nomad-cavalry",
-			"subtitle": "Nomad Cavalry"
+			"subtitle": "Nomad Cavalry",
+			"tournamentLegal": true
 		},
 		{
 			"cardType": "Unit",
@@ -9884,7 +10075,8 @@
 				]
 			],
 			"slug": "panam-palmer-strength-through-family",
-			"subtitle": "Strength Through Family"
+			"subtitle": "Strength Through Family",
+			"tournamentLegal": true
 		},
 		{
 			"cardType": "Program",
@@ -9975,7 +10167,8 @@
 				]
 			],
 			"slug": "peace-offering",
-			"subtitle": null
+			"subtitle": null,
+			"tournamentLegal": true
 		},
 		{
 			"cardType": "Unit",
@@ -10060,7 +10253,8 @@
 				]
 			],
 			"slug": "pepe-najarro-working-doubles",
-			"subtitle": "Working Doubles"
+			"subtitle": "Working Doubles",
+			"tournamentLegal": true
 		},
 		{
 			"cardType": "Unit",
@@ -10148,7 +10342,8 @@
 				]
 			],
 			"slug": "placide-voodoo-sentinel",
-			"subtitle": "Voodoo Sentinel"
+			"subtitle": "Voodoo Sentinel",
+			"tournamentLegal": true
 		},
 		{
 			"cardType": "Unit",
@@ -10236,7 +10431,8 @@
 			"rawRulesText": "[Flavour] Their protocol stops at “shoot first.”",
 			"rulesText": [],
 			"slug": "psycho-squad",
-			"subtitle": null
+			"subtitle": null,
+			"tournamentLegal": true
 		},
 		{
 			"cardType": "Program",
@@ -10331,7 +10527,8 @@
 				]
 			],
 			"slug": "pyramid-song",
-			"subtitle": null
+			"subtitle": null,
+			"tournamentLegal": true
 		},
 		{
 			"cardType": "Legend",
@@ -10373,7 +10570,8 @@
 			"rawRulesText": null,
 			"rulesText": [],
 			"slug": "rebecca-having-a-moment",
-			"subtitle": "Having a Moment"
+			"subtitle": "Having a Moment",
+			"tournamentLegal": false
 		},
 		{
 			"cardType": "Program",
@@ -10482,7 +10680,8 @@
 				]
 			],
 			"slug": "reboot-optics",
-			"subtitle": null
+			"subtitle": null,
+			"tournamentLegal": true
 		},
 		{
 			"cardType": "Unit",
@@ -10566,7 +10765,8 @@
 				]
 			],
 			"slug": "riding-nomad",
-			"subtitle": null
+			"subtitle": null,
+			"tournamentLegal": true
 		},
 		{
 			"cardType": "Gear",
@@ -10677,7 +10877,8 @@
 				]
 			],
 			"slug": "riot-shield",
-			"subtitle": null
+			"subtitle": null,
+			"tournamentLegal": true
 		},
 		{
 			"cardType": "Unit",
@@ -10764,7 +10965,8 @@
 				]
 			],
 			"slug": "rita-wheeler-no-stupid-questions",
-			"subtitle": "No Stupid Questions"
+			"subtitle": "No Stupid Questions",
+			"tournamentLegal": true
 		},
 		{
 			"cardType": "Legend",
@@ -10929,7 +11131,8 @@
 				]
 			],
 			"slug": "river-ward-detective-on-the-hunt",
-			"subtitle": "Detective on the Hunt"
+			"subtitle": "Detective on the Hunt",
+			"tournamentLegal": true
 		},
 		{
 			"cardType": "Unit",
@@ -10984,7 +11187,8 @@
 			"rawRulesText": "[Flavor] Scream your throat raw for something. Anything.",
 			"rulesText": [],
 			"slug": "rockn-rockerboy",
-			"subtitle": null
+			"subtitle": null,
+			"tournamentLegal": true
 		},
 		{
 			"cardType": "Legend",
@@ -11050,6 +11254,17 @@
 				},
 				{
 					"artist": "Olgierd Ciszak",
+					"collectorNumber": "006",
+					"id": "ce3dacce-fb10-488c-9001-95fe7f3329a4",
+					"key": "PRR02-WNC-006",
+					"locale": "en",
+					"rarity": "Rare",
+					"setId": "PRR02-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/ce3dacce-fb10-488c-9001-95fe7f3329a4/render-mrjq9ul6.webp",
+					"thumbhash": "TviFHAIPRPk26tixUQ/G4XCFgHB3CAiHAA=="
+				},
+				{
+					"artist": "Olgierd Ciszak",
 					"collectorNumber": "005",
 					"id": "254975e9-0381-4a1c-96c7-19186a855e48",
 					"key": "PRR01-WNC-005",
@@ -11098,7 +11313,8 @@
 				]
 			],
 			"slug": "rogue-amendiares-preem-solo",
-			"subtitle": "Preem Solo"
+			"subtitle": "Preem Solo",
+			"tournamentLegal": true
 		},
 		{
 			"cardType": "Unit",
@@ -11211,7 +11427,8 @@
 				]
 			],
 			"slug": "rogue-amendiares-queen-of-the-afterlife",
-			"subtitle": "Queen of the Afterlife"
+			"subtitle": "Queen of the Afterlife",
+			"tournamentLegal": true
 		},
 		{
 			"cardType": "Unit",
@@ -11322,7 +11539,8 @@
 				]
 			],
 			"slug": "royce-don-t-call-me-simon",
-			"subtitle": "Don't Call Me Simon"
+			"subtitle": "Don't Call Me Simon",
+			"tournamentLegal": true
 		},
 		{
 			"cardType": "Legend",
@@ -11406,6 +11624,17 @@
 				},
 				{
 					"artist": "Michal Ivan",
+					"collectorNumber": "003",
+					"id": "c89f2af6-dab2-40fe-a29e-6e98c0322f5d",
+					"key": "PRR02-WNC-003",
+					"locale": "en",
+					"rarity": "Rare",
+					"setId": "PRR02-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/c89f2af6-dab2-40fe-a29e-6e98c0322f5d/render-mrjq91zw.webp",
+					"thumbhash": "TDiGDAQPJZZl2Ni0gAu31YCMgHB3CAiHAA=="
+				},
+				{
+					"artist": "Michal Ivan",
 					"collectorNumber": "002",
 					"id": "cbbe5954-ce33-47aa-83c1-bdda4c7b907f",
 					"key": "PRR01-WNC-002",
@@ -11476,7 +11705,8 @@
 				]
 			],
 			"slug": "royce-psycho-on-the-edge",
-			"subtitle": "Psycho on the Edge"
+			"subtitle": "Psycho on the Edge",
+			"tournamentLegal": true
 		},
 		{
 			"cardType": "Unit",
@@ -11572,7 +11802,8 @@
 				]
 			],
 			"slug": "ruthless-lowlife",
-			"subtitle": null
+			"subtitle": null,
+			"tournamentLegal": true
 		},
 		{
 			"cardType": "Legend",
@@ -11690,7 +11921,8 @@
 				]
 			],
 			"slug": "saburo-arasaka-stubborn-patriarch",
-			"subtitle": "Stubborn Patriarch"
+			"subtitle": "Stubborn Patriarch",
+			"tournamentLegal": true
 		},
 		{
 			"cardType": "Program",
@@ -11766,7 +11998,8 @@
 				]
 			],
 			"slug": "safety-override",
-			"subtitle": null
+			"subtitle": null,
+			"tournamentLegal": true
 		},
 		{
 			"cardType": "Unit",
@@ -11860,7 +12093,8 @@
 				]
 			],
 			"slug": "sandayu-oda-hanako-s-guardian",
-			"subtitle": "Hanako's Guardian"
+			"subtitle": "Hanako's Guardian",
+			"tournamentLegal": true
 		},
 		{
 			"cardType": "Gear",
@@ -11990,7 +12224,8 @@
 				]
 			],
 			"slug": "sandevistan",
-			"subtitle": null
+			"subtitle": null,
+			"tournamentLegal": true
 		},
 		{
 			"cardType": "Legend",
@@ -12105,7 +12340,8 @@
 				]
 			],
 			"slug": "sasha-yakovleva-won-t-let-you-down",
-			"subtitle": "Won't Let You Down"
+			"subtitle": "Won't Let You Down",
+			"tournamentLegal": true
 		},
 		{
 			"cardType": "Gear",
@@ -12242,7 +12478,8 @@
 				]
 			],
 			"slug": "satori-sword-of-saburo",
-			"subtitle": "Sword of Saburo"
+			"subtitle": "Sword of Saburo",
+			"tournamentLegal": true
 		},
 		{
 			"cardType": "Unit",
@@ -12318,7 +12555,8 @@
 				]
 			],
 			"slug": "saul-bright-stormrider",
-			"subtitle": "Stormrider"
+			"subtitle": "Stormrider",
+			"tournamentLegal": true
 		},
 		{
 			"cardType": "Unit",
@@ -12401,7 +12639,8 @@
 				]
 			],
 			"slug": "screw-lovelorn-fool",
-			"subtitle": "Lovelorn Fool"
+			"subtitle": "Lovelorn Fool",
+			"tournamentLegal": true
 		},
 		{
 			"cardType": "Unit",
@@ -12536,7 +12775,8 @@
 				]
 			],
 			"slug": "secondhand-bombus",
-			"subtitle": null
+			"subtitle": null,
+			"tournamentLegal": true
 		},
 		{
 			"cardType": "Program",
@@ -12633,7 +12873,8 @@
 				]
 			],
 			"slug": "shattered-memories",
-			"subtitle": null
+			"subtitle": null,
+			"tournamentLegal": true
 		},
 		{
 			"cardType": "Unit",
@@ -12717,7 +12958,8 @@
 				]
 			],
 			"slug": "sketchy-ripper",
-			"subtitle": null
+			"subtitle": null,
+			"tournamentLegal": true
 		},
 		{
 			"cardType": "Unit",
@@ -12826,7 +13068,8 @@
 				]
 			],
 			"slug": "swordwise-huscle",
-			"subtitle": null
+			"subtitle": null,
+			"tournamentLegal": true
 		},
 		{
 			"cardType": "Program",
@@ -12908,7 +13151,8 @@
 				]
 			],
 			"slug": "synapse-burnout",
-			"subtitle": null
+			"subtitle": null,
+			"tournamentLegal": true
 		},
 		{
 			"cardType": "Unit",
@@ -13017,7 +13261,8 @@
 				]
 			],
 			"slug": "t-bug-amateur-philosopher",
-			"subtitle": "Amateur Philosopher"
+			"subtitle": "Amateur Philosopher",
+			"tournamentLegal": true
 		},
 		{
 			"cardType": "Program",
@@ -13126,7 +13371,8 @@
 				]
 			],
 			"slug": "take-control",
-			"subtitle": null
+			"subtitle": null,
+			"tournamentLegal": true
 		},
 		{
 			"cardType": "Gear",
@@ -13227,7 +13473,8 @@
 				]
 			],
 			"slug": "tetratronic-rippler",
-			"subtitle": null
+			"subtitle": null,
+			"tournamentLegal": true
 		},
 		{
 			"cardType": "Program",
@@ -13302,7 +13549,8 @@
 				]
 			],
 			"slug": "the-heist",
-			"subtitle": null
+			"subtitle": null,
+			"tournamentLegal": true
 		},
 		{
 			"cardType": "Gear",
@@ -13412,7 +13660,8 @@
 				]
 			],
 			"slug": "the-relic-experimental-biochip",
-			"subtitle": "Experimental Biochip"
+			"subtitle": "Experimental Biochip",
+			"tournamentLegal": true
 		},
 		{
 			"cardType": "Program",
@@ -13482,7 +13731,8 @@
 				]
 			],
 			"slug": "three-mouths-one-desire",
-			"subtitle": null
+			"subtitle": null,
+			"tournamentLegal": true
 		},
 		{
 			"cardType": "Program",
@@ -13603,7 +13853,8 @@
 				]
 			],
 			"slug": "towerfall",
-			"subtitle": null
+			"subtitle": null,
+			"tournamentLegal": true
 		},
 		{
 			"cardType": "Unit",
@@ -13691,7 +13942,8 @@
 				]
 			],
 			"slug": "trauma-team-operatives",
-			"subtitle": null
+			"subtitle": null,
+			"tournamentLegal": true
 		},
 		{
 			"cardType": "Program",
@@ -13782,7 +14034,8 @@
 				]
 			],
 			"slug": "trust-no-one",
-			"subtitle": null
+			"subtitle": null,
+			"tournamentLegal": true
 		},
 		{
 			"cardType": "Unit",
@@ -13881,7 +14134,8 @@
 				]
 			],
 			"slug": "tyger-s-whisper",
-			"subtitle": null
+			"subtitle": null,
+			"tournamentLegal": true
 		},
 		{
 			"cardType": "Program",
@@ -13951,7 +14205,8 @@
 				]
 			],
 			"slug": "unlikely-bond",
-			"subtitle": null
+			"subtitle": null,
+			"tournamentLegal": true
 		},
 		{
 			"cardType": "Legend",
@@ -14065,7 +14320,8 @@
 				]
 			],
 			"slug": "v-corporate-exile",
-			"subtitle": "Corporate Exile"
+			"subtitle": "Corporate Exile",
+			"tournamentLegal": true
 		},
 		{
 			"cardType": "Unit",
@@ -14141,7 +14397,8 @@
 				]
 			],
 			"slug": "v-roamer-of-the-badlands",
-			"subtitle": "Roamer of the Badlands"
+			"subtitle": "Roamer of the Badlands",
+			"tournamentLegal": true
 		},
 		{
 			"cardType": "Legend",
@@ -14375,7 +14632,8 @@
 				]
 			],
 			"slug": "v-streetkid",
-			"subtitle": "Streetkid"
+			"subtitle": "Streetkid",
+			"tournamentLegal": true
 		},
 		{
 			"cardType": "Unit",
@@ -14473,7 +14731,8 @@
 				]
 			],
 			"slug": "valentino-guerrera",
-			"subtitle": null
+			"subtitle": null,
+			"tournamentLegal": true
 		},
 		{
 			"cardType": "Unit",
@@ -14564,7 +14823,8 @@
 				]
 			],
 			"slug": "valentino-street-racer",
-			"subtitle": null
+			"subtitle": null,
+			"tournamentLegal": true
 		},
 		{
 			"cardType": "Unit",
@@ -14666,7 +14926,8 @@
 				]
 			],
 			"slug": "viktor-vektor-drop-your-illusions",
-			"subtitle": "Drop Your Illusions"
+			"subtitle": "Drop Your Illusions",
+			"tournamentLegal": true
 		},
 		{
 			"cardType": "Legend",
@@ -14775,7 +15036,8 @@
 				]
 			],
 			"slug": "viktor-vektor-sit-down-and-relax",
-			"subtitle": "Sit Down and Relax"
+			"subtitle": "Sit Down and Relax",
+			"tournamentLegal": true
 		},
 		{
 			"cardType": "Unit",
@@ -14860,7 +15122,8 @@
 				]
 			],
 			"slug": "viktor-vektor-you-might-feel-a-little-pinch",
-			"subtitle": "You Might Feel a Little Pinch"
+			"subtitle": "You Might Feel a Little Pinch",
+			"tournamentLegal": true
 		},
 		{
 			"cardType": "Legend",
@@ -14928,6 +15191,17 @@
 				},
 				{
 					"artist": "Mooncolony",
+					"collectorNumber": "010",
+					"id": "ecfd2d86-f9dc-47c4-a4ec-4a1155217dc7",
+					"key": "PRR02-WNC-010",
+					"locale": "en",
+					"rarity": "Rare",
+					"setId": "PRR02-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/ecfd2d86-f9dc-47c4-a4ec-4a1155217dc7/render-mrjqb57t.webp",
+					"thumbhash": "DfiBHAQPTvMnldJWpKMIKomAgHB3CAiHAA=="
+				},
+				{
+					"artist": "Mooncolony",
 					"collectorNumber": "110",
 					"id": "69380cd8-83e0-4802-bfe1-54e7d214d30d",
 					"key": "MS01-WNC-110-FR",
@@ -14984,7 +15258,8 @@
 				]
 			],
 			"slug": "wakako-okada-peace-and-harmony",
-			"subtitle": "Peace and Harmony"
+			"subtitle": "Peace and Harmony",
+			"tournamentLegal": true
 		},
 		{
 			"cardType": "Program",
@@ -15097,7 +15372,8 @@
 				]
 			],
 			"slug": "we-gotta-live-together",
-			"subtitle": null
+			"subtitle": null,
+			"tournamentLegal": true
 		},
 		{
 			"cardType": "Unit",
@@ -15179,7 +15455,8 @@
 				]
 			],
 			"slug": "westbrook-netrunner",
-			"subtitle": null
+			"subtitle": null,
+			"tournamentLegal": true
 		},
 		{
 			"cardType": "Program",
@@ -15260,7 +15537,8 @@
 				]
 			],
 			"slug": "wild-in-the-streets",
-			"subtitle": null
+			"subtitle": null,
+			"tournamentLegal": true
 		},
 		{
 			"cardType": "Unit",
@@ -15353,7 +15631,8 @@
 				]
 			],
 			"slug": "wraith-marauders",
-			"subtitle": null
+			"subtitle": null,
+			"tournamentLegal": true
 		},
 		{
 			"cardType": "Legend",
@@ -15482,7 +15761,8 @@
 				]
 			],
 			"slug": "yorinobu-arasaka-embracing-destruction",
-			"subtitle": "Embracing Destruction"
+			"subtitle": "Embracing Destruction",
+			"tournamentLegal": true
 		},
 		{
 			"cardType": "Unit",
@@ -15586,7 +15866,8 @@
 				]
 			],
 			"slug": "yorinobu-arasaka-steel-dragon",
-			"subtitle": "Steel Dragon"
+			"subtitle": "Steel Dragon",
+			"tournamentLegal": true
 		},
 		{
 			"cardType": "Gear",
@@ -15674,7 +15955,8 @@
 				]
 			],
 			"slug": "zetatech-berserk",
-			"subtitle": null
+			"subtitle": null,
+			"tournamentLegal": true
 		},
 		{
 			"cardType": "Gear",
@@ -15790,7 +16072,8 @@
 				]
 			],
 			"slug": "zetatech-faceplate",
-			"subtitle": null
+			"subtitle": null,
+			"tournamentLegal": true
 		}
 	],
 	"cardTypeOrder": [
@@ -15957,7 +16240,7 @@
 			"sortOrder": 2500
 		}
 	],
-	"generatedAt": "2026-09-22T09:54:39.392Z",
+	"generatedAt": "2026-09-23T16:26:45.160Z",
 	"ramPerLegend": 2,
 	"sets": [
 		{
@@ -15968,7 +16251,7 @@
 			"kind": "base",
 			"name": "Welcome to Night City",
 			"printed": "MS01 - WNC [A]",
-			"printingCount": 469,
+			"printingCount": 470,
 			"setCode": "WNC"
 		},
 		{
@@ -16038,6 +16321,17 @@
 			"setCode": "WNC"
 		},
 		{
+			"cardCount": 11,
+			"category": "PRR02",
+			"cycle": null,
+			"id": "PRR02-WNC",
+			"kind": "derivative",
+			"name": "Prerelease II",
+			"printed": "PRR02 - WNC",
+			"printingCount": 11,
+			"setCode": "WNC"
+		},
+		{
 			"cardCount": 22,
 			"category": "EOR01",
 			"cycle": null,
@@ -16084,7 +16378,7 @@
 	],
 	"stats": {
 		"cards": 151,
-		"printings": 686,
+		"printings": 698,
 		"sets": 1
 	}
 }

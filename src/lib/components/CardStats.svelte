@@ -42,6 +42,12 @@
 			</dd>
 		</div>
 	{/each}
+	{#if !card.tournamentLegal}
+		<div class="flex items-baseline gap-1.5">
+			<dt class="text-xs tracking-wide text-muted uppercase">Legality</dt>
+			<dd class="font-medium text-card-red">Not tournament legal</dd>
+		</div>
+	{/if}
 	{#if card.eddiable}
 		<div class="flex items-baseline gap-1.5">
 			<dt class="text-xs tracking-wide text-muted uppercase">Eddiable</dt>

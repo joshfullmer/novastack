@@ -115,6 +115,7 @@ export function normalizeCard(
 		ramRequired: isLegend ? null : raw.ram,
 		ramProvided: isLegend ? raw.ram : null,
 		eddiable: raw.is_eddiable,
+		tournamentLegal: raw.legality === 'legal',
 		classifications: raw.classifications,
 		keywords: extractKeywords(raw.rules_text).keywords,
 		rulesText,

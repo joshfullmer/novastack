@@ -36,15 +36,15 @@ describe('the snapshot', () => {
 		expect(snapshot.stats.printings).toBe(
 			snapshot.cards.reduce((total, entry) => total + entry.printings.length, 0)
 		);
-		// Genuine releases, not the eleven printed Set Identifiers: ten of those are starter decks,
-		// demo decks, box toppers, promos, a prerelease, a tournament prize set, and weekly-play
+		// Genuine releases, not the twelve printed Set Identifiers: eleven of those are starter decks,
+		// demo decks, box toppers, promos, two prereleases, a tournament prize set, and weekly-play
 		// mini-sets, and calling them sets would claim eleven releases for a game that has had one.
 		expect(snapshot.stats.sets).toBe(snapshot.sets.filter((set) => set.kind === 'base').length);
 		expect(snapshot.stats.sets).toBeLessThan(snapshot.sets.length);
 	});
 
-	it('collapses fifteen API sets to eleven printed Set Identifiers', () => {
-		expect(snapshot.sets).toHaveLength(11);
+	it('collapses sixteen API sets to twelve printed Set Identifiers', () => {
+		expect(snapshot.sets).toHaveLength(12);
 		expect(snapshot.sets.filter((set) => set.kind === 'base')).toHaveLength(1);
 	});
 
@@ -77,6 +77,10 @@ describe('Rebecca — Having a Moment, the mandatory fixture', () => {
 		expect(rebecca.power).toBeNull();
 		expect(rebecca.ramRequired).toBeNull();
 		expect(rebecca.ramProvided).toBeNull();
+	});
+
+	it('is the one card not tournament legal — a promo stub, not a ban, per the source API', () => {
+		expect(rebecca.tournamentLegal).toBe(false);
 	});
 
 	it('carries no classifications and no rules text', () => {

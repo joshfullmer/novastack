@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import * as v from 'valibot';
 import {
 	checkFaqInvariants,
 	checkModelInvariants,
@@ -15,6 +16,7 @@ import {
 	thumbhashesFor
 } from './fixtures.ts';
 import { normalizeCards } from './normalize.ts';
+import { NetdeckCardSchema } from './schema.ts';
 import { SET_IDENTIFIERS } from './sets.ts';
 
 const checks = (violations: readonly Violation[]) => violations.map((violation) => violation.check);
@@ -80,10 +82,22 @@ describe('checkRawInvariants', () => {
 
 	it.each([
 		['always-empty-keywords', { keywords: ['Blocker'] }],
-		['always-empty-flavor-text', { flavor_text: 'Wake up, samurai.' }],
-		['constant-legality', { legality: 'banned' }]
+		['always-empty-flavor-text', { flavor_text: 'Wake up, samurai.' }]
 	])('fails on %s, because a competing source of truth has appeared', (check, overrides) => {
 		expect(checks(checkRawInvariants([makeNetdeckCard(overrides)]))).toContain(check);
+	});
+
+	it.each([['legal'], ['not-legal']] as const)(
+		'accepts %s as a legality value at the schema level',
+		(legality) => {
+			const result = v.safeParse(NetdeckCardSchema, makeNetdeckCard({ legality }));
+			expect(result.success).toBe(true);
+		}
+	);
+
+	it('fails to parse a legality value outside the known two — schema drift, not card data', () => {
+		const raw = { ...makeNetdeckCard(), legality: 'banned' };
+		expect(v.safeParse(NetdeckCardSchema, raw).success).toBe(false);
 	});
 
 	it('fails when finish starts carrying a value', () => {

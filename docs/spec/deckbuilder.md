@@ -75,6 +75,13 @@ Stated directly by the person who knows the game; not derived, not inferred from
   what the actual chosen Legends provide, not a derived stand-in. `admits()` needs no changes
   either way — it already takes a plain `ColorBudget`.
 
+- **Tournament legality** (not the RAM-budget "Legality" above — distinct concept, same word):
+  the source API marks individual Cards `"legal"` or `"not-legal"`, surfaced as
+  `Card.tournamentLegal`. Not derived by this project — a straight pass-through of the source
+  API's own field. Today's only `false` case is a promo stub with no cost/power/RAM/rules text,
+  so it reads as "not released yet" rather than "banned"; nothing in this project assumes either
+  reading, since the API exposes no reason code.
+
 ---
 
 ## 3. Data model
@@ -155,21 +162,26 @@ any card could be added.
   moment for an unfinished count.
 - **A Legend-name conflict does not block picking a Legend either** — same reasoning as RAM: there
   is no sensible moment to reject a pick, since the third slot might still resolve it.
-- **RAM mismatches, an out-of-range deck size, and Legend-name conflicts all surface as entries in
-  one persistent, non-blocking `DeckIssue` list** (`deckIssues()` in `legality.ts`) — never
-  silent, and never blocking. This is the authoritative legality signal; nothing about it depends
-  on _when_ a mismatch arose (cards added before Legends existed produce the identical issue to
-  cards that became illegal after a Legend was swapped out).
+- **A not-tournament-legal card never blocks adding or picking it either.** The source API marks a
+  handful of cards `"not-legal"` (`Card.tournamentLegal` — `#lib/cards/schema.ts`), today just one
+  promo stub with no cost/power/RAM/rules text yet. There is no reason to assume that state is
+  permanent, so the deckbuilder treats it exactly like a RAM mismatch: reported, never gated.
+- **RAM mismatches, an out-of-range deck size, Legend-name conflicts, and not-tournament-legal
+  cards all surface as entries in one persistent, non-blocking `DeckIssue` list** (`deckIssues()`
+  in `legality.ts`) — never silent, and never blocking. This is the authoritative legality signal;
+  nothing about it depends on _when_ a mismatch arose (cards added before Legends existed produce
+  the identical issue to cards that became illegal after a Legend was swapped out).
   - The read-only deck view (`/decks/[id]`) renders every issue, with specifics (e.g. "Deck has 39
     cards — the legal minimum is 40."), in one banner between the title bar and the Legend row.
   - The deckbuilder screen (§5.1) renders the same list **minus deck size** — a deck under
     construction is supposed to sit outside 40–50 most of the time (previous bullet), and this
     screen already has its own live size readout, so repeating it as an "issue" here would flag
-    the common case as an error. RAM and Legend-name conflicts are real mistakes regardless of how
-    far along the deck is, so both still show, directly below the Legend slots.
-- **Saving an illegal deck (wrong size, a RAM mismatch, or a Legend-name conflict) is allowed.** A
-  deck-in-progress is a reasonable thing to persist and resume later; version history makes this
-  lower-risk either way.
+    the common case as an error. RAM mismatches, Legend-name conflicts, and not-tournament-legal
+    cards are real mistakes regardless of how far along the deck is, so all three still show,
+    directly below the Legend slots.
+- **Saving an illegal deck (wrong size, a RAM mismatch, a Legend-name conflict, or a
+  not-tournament-legal card) is allowed.** A deck-in-progress is a reasonable thing to persist and
+  resume later; version history makes this lower-risk either way.
 
 ---
 
@@ -206,8 +218,9 @@ modal, not the card database's own filter panel repurposed: a permanent two-pane
   - **3 Legend slots** at the top, each showing the chosen Legend's art or an empty placeholder.
     Clicking a filled slot removes that Legend (equivalent to deselecting it in the Legends tab).
     The combined RAM budget (per Color) is shown beneath the slots.
-  - **Issues banner** (§4) — RAM and Legend-name conflicts, not deck size — shown only when
-    non-empty, directly below the Legend slots so it's visible regardless of which tab is active.
+  - **Issues banner** (§4) — RAM mismatches, Legend-name conflicts, and not-tournament-legal
+    cards, not deck size — shown only when non-empty, directly below the Legend slots so it's
+    visible regardless of which tab is active.
   - **Main Deck header**: live count against 40–50, tinted by status (on-track / over), plus a
     **List/Gallery toggle**. List view shows compact rows (quantity × name, remove button) with a
     **hover-preview** of the full card art; Gallery view shows a thumbnail grid with quantity

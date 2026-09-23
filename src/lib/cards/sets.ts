@@ -5,10 +5,17 @@
  * a slugified set *name*. So the mapping from API set to printed Set Identifier is curated
  * here, and ingest asserts that every API set code it sees has an entry (`assertions.ts`).
  *
- * Fifteen API sets collapse to **eleven** printed identifiers: the API models retail and beta
+ * Sixteen API sets collapse to **twelve** printed identifiers: the API models retail and beta
  * as separate sets, which is its own invention. On the cards they carry the identical printed
  * identifier and differ only by a `β` prefix on the Collector Number — see CONTEXT.md,
  * "Print Treatment".
+ *
+ * `prereleaseretail` looked like `prereleasebeta`'s retail twin by the same naming pattern, but
+ * isn't: unlike every real retail/beta pair, the two don't share collector numbers 1:1 (Royce is
+ * `002` in one and `003` in the other) and neither is prefixed with `β`. Checked against the
+ * actual card art rather than assumed — it's printed `PRR02 - WNC`, a second, distinct
+ * Prerelease Set, not a Print Treatment of `PRR01-WNC`. `unique-printing-keys`
+ * (`assertions.ts`) is what would have caught it here had it shipped mapped to `PRR01-WNC`.
  *
  * Neither component identifies a Set alone: `WNC` spans three categories and `PRM` spans
  * three sets. The pair is the identity, which is why `id` is `<Category>-<Set Code>`.
@@ -95,6 +102,14 @@ const CURATED: readonly CuratedSet[] = [
 		kind: 'derivative'
 	},
 	{
+		id: 'PRR02-WNC',
+		category: 'PRR02',
+		setCode: 'WNC',
+		cycle: null,
+		name: 'Prerelease II',
+		kind: 'derivative'
+	},
+	{
 		id: 'EOR01-WNC',
 		category: 'EOR01',
 		setCode: 'WNC',
@@ -153,6 +168,7 @@ export const API_SET_CODE_TO_SET_ID: Readonly<Record<string, string>> = {
 	boxtoppersretail: 'PRM-WNC',
 	boxtoppersbeta: 'PRM-WNC',
 	prereleasebeta: 'PRR01-WNC',
+	prereleaseretail: 'PRR02-WNC',
 	edgerunneropens1: 'EOR01-WNC',
 	PRM01: 'PRM01',
 	nightcitybrawls1: 'NCB01-WNC',

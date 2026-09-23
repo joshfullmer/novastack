@@ -71,19 +71,32 @@ export function legendNameConflicts(legends: readonly Card[]): readonly LegendNa
 		.map(([baseName, group]) => ({ baseName, legends: group }));
 }
 
-export type DeckIssue = { kind: 'size' | 'ram' | 'legend-names'; message: string };
+export type DeckIssue = { kind: 'size' | 'ram' | 'legend-names' | 'not-legal'; message: string };
 
 /**
- * Every persistent, non-blocking legality signal combined into one list — RAM, deck size, and
- * Legend-name conflicts today. None of these ever block editing (§4); this is what lets a single
- * "deck is invalid, and here's why" banner exist without each screen assembling its own wording,
- * and lets a future rule show up everywhere this is rendered just by pushing another `DeckIssue`.
+ * Legends and main-deck cards the source API itself marks `"not-legal"` (`Card.tournamentLegal`
+ * — `#lib/cards/schema.ts`), e.g. a promo stub with no cost/power/RAM/rules text yet. Reported the
+ * same way as a RAM mismatch: never blocks adding or saving, just shows up as a `DeckIssue`.
+ */
+export function notLegalCards(legends: readonly Card[], entries: readonly DeckEntry[]): Card[] {
+	return [...legends, ...entries.map((entry) => entry.card)].filter(
+		(card) => !card.tournamentLegal
+	);
+}
+
+/**
+ * Every persistent, non-blocking legality signal combined into one list — RAM, deck size,
+ * Legend-name conflicts, and not-tournament-legal cards today. None of these ever block editing
+ * (§4); this is what lets a single "deck is invalid, and here's why" banner exist without each
+ * screen assembling its own wording, and lets a future rule show up everywhere this is rendered
+ * just by pushing another `DeckIssue`.
  */
 export function deckIssues(args: {
 	totalCards: number;
 	sizeStatus: SizeStatus;
 	violations: readonly DeckEntry[];
 	nameConflicts: readonly LegendNameConflict[];
+	notLegal: readonly Card[];
 }): readonly DeckIssue[] {
 	const issues: DeckIssue[] = [];
 
@@ -108,6 +121,12 @@ export function deckIssues(args: {
 		issues.push({
 			kind: 'legend-names',
 			message: `Legends can't share a name: ${conflict.legends.map((legend) => legend.name).join(' and ')} are both "${conflict.baseName}".`
+		});
+
+	if (args.notLegal.length > 0)
+		issues.push({
+			kind: 'not-legal',
+			message: `${args.notLegal.length} ${args.notLegal.length === 1 ? "card isn't" : "cards aren't"} tournament legal: ${args.notLegal.map((card) => card.name).join(', ')}.`
 		});
 
 	return issues;

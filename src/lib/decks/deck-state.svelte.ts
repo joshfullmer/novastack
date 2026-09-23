@@ -15,6 +15,7 @@ import {
 	deckIssues,
 	deckSizeStatus,
 	legendNameConflicts,
+	notLegalCards,
 	ramViolations,
 	type DeckEntry
 } from './legality.js';
@@ -52,7 +53,10 @@ export function createDeckState(initial?: DeckVersionPayload) {
 	const sizeStatus = $derived(deckSizeStatus(totalCards));
 	const violations = $derived(ramViolations(entries, budget));
 	const nameConflicts = $derived(legendNameConflicts(legends));
-	const issues = $derived(deckIssues({ totalCards, sizeStatus, violations, nameConflicts }));
+	const notLegal = $derived(notLegalCards(legends, entries));
+	const issues = $derived(
+		deckIssues({ totalCards, sizeStatus, violations, nameConflicts, notLegal })
+	);
 
 	function quantityOf(card: Card): number {
 		return entries.find((entry) => entry.card.slug === card.slug)?.quantity ?? 0;

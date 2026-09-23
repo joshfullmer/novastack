@@ -12,6 +12,7 @@ import {
 	deckIssues,
 	deckSizeStatus,
 	legendNameConflicts,
+	notLegalCards,
 	ramViolations,
 	type DeckEntry
 } from './legality.js';
@@ -109,12 +110,34 @@ describe('legendNameConflicts', () => {
 	});
 });
 
+describe('notLegalCards', () => {
+	it('collects legends and main-deck cards the source API marks not-legal', () => {
+		const stubLegend = makeCard({ cardType: 'Legend', tournamentLegal: false });
+		const legalLegend = makeCard({ cardType: 'Legend' });
+		const stubEntry: DeckEntry = {
+			card: makeCard({ cardType: 'Unit', tournamentLegal: false }),
+			quantity: 1
+		};
+		const legalEntry: DeckEntry = { card: makeCard({ cardType: 'Unit' }), quantity: 1 };
+
+		expect(notLegalCards([stubLegend, legalLegend], [stubEntry, legalEntry])).toEqual([
+			stubLegend,
+			stubEntry.card
+		]);
+	});
+
+	it('is empty when every legend and entry is tournament legal', () => {
+		expect(notLegalCards([makeCard({ cardType: 'Legend' })], [])).toEqual([]);
+	});
+});
+
 describe('deckIssues', () => {
 	const legal = {
 		totalCards: MIN_DECK_SIZE,
 		sizeStatus: 'legal' as const,
 		violations: [],
-		nameConflicts: []
+		nameConflicts: [],
+		notLegal: []
 	};
 
 	it('is empty for a fully legal deck', () => {
@@ -161,6 +184,14 @@ describe('deckIssues', () => {
 		]);
 	});
 
+	it('reports not-legal legends and cards by name', () => {
+		const stub = makeCard({ name: 'Rebecca: Having a Moment', tournamentLegal: false });
+		const issues = deckIssues({ ...legal, notLegal: [stub] });
+		expect(issues).toEqual([
+			{ kind: 'not-legal', message: "1 card isn't tournament legal: Rebecca: Having a Moment." }
+		]);
+	});
+
 	it('combines every kind of issue at once', () => {
 		const overBudget: DeckEntry = {
 			card: makeCard({ name: 'Cyberdeck', cardType: 'Unit', ramRequired: 4 }),
@@ -168,12 +199,14 @@ describe('deckIssues', () => {
 		};
 		const v1 = legend('V', 'Streetkid');
 		const v2 = legend('V', 'Corporate Exile');
+		const stub = makeCard({ name: 'Rebecca: Having a Moment', tournamentLegal: false });
 		const issues = deckIssues({
 			totalCards: 39,
 			sizeStatus: 'under',
 			violations: [overBudget],
-			nameConflicts: legendNameConflicts([v1, v2])
+			nameConflicts: legendNameConflicts([v1, v2]),
+			notLegal: [stub]
 		});
-		expect(issues.map((issue) => issue.kind)).toEqual(['size', 'ram', 'legend-names']);
+		expect(issues.map((issue) => issue.kind)).toEqual(['size', 'ram', 'legend-names', 'not-legal']);
 	});
 });

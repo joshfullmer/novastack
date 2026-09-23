@@ -9,10 +9,16 @@
  * instead of the first, and each rule becomes independently testable — which is the point,
  * since an assertion nobody has seen fail is an assertion nobody has verified.
  *
- * The most important group is the always-empty fields. `keywords[]`, `flavor_text`, `finish`
- * and a constant `legality` are empty *today*; we derive substitutes for two of them. If one
- * starts carrying values, our derivation has become a competing source of truth and the
- * decision has to be revisited — silently preferring ours would be the wrong default.
+ * The most important group is the always-empty fields. `keywords[]`, `flavor_text`, and
+ * `finish` are empty *today*; we derive substitutes for both of the first two. If one starts
+ * carrying values, our derivation has become a competing source of truth and the decision has
+ * to be revisited — silently preferring ours would be the wrong default.
+ *
+ * `legality` was in that group too until 2026-09, when a promo stub (`rebecca-having-a-moment`)
+ * became the first card ever seen with a value other than `"legal"`. That is now modeled
+ * (`Card.tournamentLegal`) rather than asserted constant — see `schema.ts`'s `legality` picklist,
+ * which still fails the build on a *third* value, since that would be schema drift rather than
+ * an ordinary card gaining a legality.
  *
  * `subname` is not in that group: it *has* been observed carrying a value — first briefly
  * (2026-09, alongside netdeck.gg's own deckbuilder launch, rolled back within hours with an
@@ -125,13 +131,6 @@ export function checkRawInvariants(cards: readonly NetdeckCard[]): Violation[] {
 			'always-empty-flavor-text',
 			`${withFlavor.length} card(s) now populate flavor_text — we extract flavour out of ` +
 				`rules_text, so the split heuristic must be revisited`
-		);
-
-	const legalities = [...new Set(cards.map((card) => card.legality))];
-	if (legalities.length > 1 || (legalities.length === 1 && legalities[0] !== 'legal'))
-		add(
-			'constant-legality',
-			`legality now takes ${legalities.length} value(s): ${legalities.join(', ')}`
 		);
 
 	const withFinish = cards.flatMap((card) =>
