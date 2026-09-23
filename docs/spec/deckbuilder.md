@@ -326,6 +326,9 @@ the decision; its default _pages_ are not what ships.
 - **Row content**: deck name, the 3 Legend portraits, main-deck card count against 40–50, a
   visibility badge, last-saved date (the latest `deck_versions.savedAt`). No social/count columns
   — those belong to the Explore tab, not "my decks."
+- **Sorted by that same last-saved date, most recent first.** `decks` has no `updatedAt` of its
+  own; "recently updated" means the latest `deck_versions.savedAt`, the same value the row
+  already shows, not `decks.createdAt` (`listDecksForOwner` — `#lib/server/db/decks.ts`).
 
 ---
 

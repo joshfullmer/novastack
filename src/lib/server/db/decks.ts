@@ -88,15 +88,18 @@ export async function duplicateDeck(db: Db, deckId: string, ownerId: string) {
 	return copy;
 }
 
+/** Most-recently-updated first — "updated" means the latest `deck_versions.savedAt` (§3.2), not
+ * `decks.createdAt`, so a deck edited today outranks one merely created today. The version data
+ * isn't available until after the per-deck fetch below, so this sorts in JS rather than via the
+ * initial query's own `.orderBy()`. */
 export async function listDecksForOwner(db: Db, ownerId: string) {
-	const ownedDecks = await db
-		.select()
-		.from(decks)
-		.where(eq(decks.ownerId, ownerId))
-		.orderBy(desc(decks.createdAt));
+	const ownedDecks = await db.select().from(decks).where(eq(decks.ownerId, ownerId));
 
-	return Promise.all(
+	const withVersions = await Promise.all(
 		ownedDecks.map(async (deck) => ({ deck, version: await getLatestVersion(db, deck.id) }))
+	);
+	return withVersions.sort(
+		(a, b) => (b.version?.savedAt.getTime() ?? 0) - (a.version?.savedAt.getTime() ?? 0)
 	);
 }
 
