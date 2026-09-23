@@ -13,14 +13,26 @@ export const load: PageServerLoad = (event) => {
 };
 
 export const actions: Actions = {
-	signInUsername: async (event) => {
+	// One field, either a username or an email — people forget which they registered with. `@`
+	// is a sound, not just convenient, discriminator: Better Auth's username plugin enforces
+	// `/^[a-zA-Z0-9_.]+$/` on every path that can produce a username — signup, `/update-user`
+	// (`src/routes/account/+page.server.ts`), and `/sign-in/username` itself, which re-validates
+	// the *input* against that same regex before ever querying the database (checked directly
+	// against `node_modules/better-auth/dist/plugins/username/index.mjs`, and live: hand-editing
+	// a row's `username` to an email-shaped string in D1 still gets rejected on sign-in). So no
+	// stored username can ever contain `@`, regardless of how the row was created — including
+	// the handful of production rows backfilled by hand when this plugin was retrofitted
+	// (`docs/wayfinder/account-actions/tickets/02-username-migration-account-shell.md`).
+	signIn: async (event) => {
 		const { auth } = event.locals;
 		const formData = await event.request.formData();
-		const username = formData.get('username')?.toString() ?? '';
+		const identifier = formData.get('identifier')?.toString() ?? '';
 		const password = formData.get('password')?.toString() ?? '';
 
 		const failure = await attemptAuth(() =>
-			auth.api.signInUsername({ body: { username, password } })
+			identifier.includes('@')
+				? auth.api.signInEmail({ body: { email: identifier, password } })
+				: auth.api.signInUsername({ body: { username: identifier, password } })
 		);
 		if (failure) return failure;
 

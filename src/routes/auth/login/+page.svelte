@@ -36,11 +36,12 @@
 		<p class="mb-4 text-sm text-card-red">{discordError}</p>
 	{/if}
 
-	<form method="post" action="?/signInUsername" use:enhance class="flex flex-col gap-3">
+	<form method="post" action="?/signIn" use:enhance class="flex flex-col gap-3">
 		<label class="flex flex-col gap-1 text-sm text-body">
-			Username
+			Email/username
 			<input
-				name="username"
+				name="identifier"
+				autocomplete="username"
 				required
 				class="rounded-md border border-edge bg-surface px-3 py-2 text-sm text-body
 					focus:border-neon focus:outline-none"
