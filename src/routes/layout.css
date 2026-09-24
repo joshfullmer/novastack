@@ -65,6 +65,35 @@ dialog::backdrop {
 	opacity: 0.75;
 }
 
+/*
+ * Nav's signed-in branch, picked before first paint.
+ *
+ * Both halves are always in the markup and CSS hides one, because the pre-paint script in
+ * `app.html` can only reach `<html>` — it runs before `<body>` exists. That's the trade the
+ * density sync's comment rejects for image grids (the hidden branch's images get fetched
+ * regardless), but Nav's hidden branch is two text links, so it costs nothing and buys a
+ * flash-free header on every prerendered page.
+ *
+ * `data-signed-in` is set from the `signed-in` hint cookie. Pages that *do* know the real answer
+ * (`/auth`, `/decks`, `/account`) keep rendering from `page.data.user`, which stays authoritative.
+ */
+html:not([data-signed-in]) [data-when-signed-in] {
+	display: none;
+}
+
+html[data-signed-in] [data-when-signed-out] {
+	display: none;
+}
+
+/*
+ * "Manage collection" off — hides the ownership controls before first paint, from the
+ * `manage-collection` key read in `app.html`. The behavioural half (skipping the Collection fetch
+ * entirely) lives in `#lib/collection/manage-pref.svelte.ts`; this only kills the flash.
+ */
+html[data-manage-collection='off'] [data-collection-ui] {
+	display: none;
+}
+
 /* Focus is never invisible: half the controls here are chips and slots, not text inputs. */
 :focus-visible {
 	@apply outline-2 outline-offset-2 outline-neon;

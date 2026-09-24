@@ -25,9 +25,34 @@
 			stylesheet rule) — so for those, a cookie is the only fix that doesn't cost double the
 			bandwidth.
 		-->
+		<!--
+			Pre-paint sign-in sync — the same problem as the density sync above, for Nav's
+			"Account / Sign out" vs "Sign in" branch. Only `/auth`, `/decks` and `/account` supply
+			`page.data.user`; every other page is prerendered or edge-cached and so cannot carry
+			per-user data in its response at all. Without this, a signed-in visitor on `/cards` or
+			`/sets` sees "Sign in" until hydration corrects it.
+
+			Reads the `signed-in` hint cookie (`#lib/server/signed-in-hint.ts`) — one bit, no
+			identity, not an auth signal. The comment above notes a pre-paint script can only reach
+			`<html>`, so the branch has to happen in CSS with both halves rendered. That trade is
+			rejected for the image grids because the hidden branch's images get fetched anyway; here
+			the hidden branch is two text links, so it costs nothing. See `layout.css`.
+		-->
 		<script>
 			(function () {
 				var html = document.documentElement;
+				if (/(?:^|;\s*)signed-in=1(?:;|$)/.test(document.cookie)) {
+					html.dataset.signedIn = '';
+				}
+				try {
+					// "Manage collection" is on unless explicitly turned off — see
+					// `#lib/collection/manage-pref.svelte.ts`.
+					if (localStorage.getItem('manage-collection') === 'off') {
+						html.dataset.manageCollection = 'off';
+					}
+				} catch (e) {
+					/* blocked storage just means the default (on) */
+				}
 				function numVar(key, min, max, prop) {
 					var stored;
 					try {

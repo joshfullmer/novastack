@@ -2,6 +2,7 @@ import type { Handle } from '@sveltejs/kit/hooks';
 import { building } from '$app/env';
 import { createAuth } from '#lib/server/auth.js';
 import { getDb } from '#lib/server/db/index.js';
+import { syncSignedInHint } from '#lib/server/signed-in-hint.js';
 import { svelteKitHandler } from 'better-auth/svelte-kit';
 
 /**
@@ -9,8 +10,15 @@ import { svelteKitHandler } from 'better-auth/svelte-kit';
  * and prerendered (`docs/spec/deckbuilder.md` §1.4), and SvelteKit enforces that a prerenderable
  * route never touches `platform.env` at all, in any mode. Gating on the URL, not just skipping
  * silently on failure, keeps that boundary explicit rather than accidental.
+ *
+ * `/api` covers the whole namespace rather than listing endpoints one at a time: every `/api`
+ * route is dynamic by nature, and the failure mode of forgetting one is silent and confusing
+ * rather than loud. A route missing from this list still *resolves* — it just never gets
+ * `locals.db` or `locals.user`, so it behaves exactly as though nobody is ever signed in. That
+ * cost a debugging session on `/api/collection`, which 401'd for signed-in users because
+ * `/api/auth` didn't match it.
  */
-const DYNAMIC_PREFIXES = ['/decks', '/explore', '/auth', '/account', '/api/auth'];
+const DYNAMIC_PREFIXES = ['/decks', '/explore', '/auth', '/account', '/api'];
 
 /**
  * A Discord sign-up lands with no `username` (see
@@ -36,6 +44,11 @@ const handleBetterAuth: Handle = async ({ event, resolve }) => {
 
 	const { auth } = event.locals;
 	const session = await auth.api.getSession({ headers: event.request.headers });
+
+	// Let prerendered and edge-cached pages render the right Nav state without a request of their
+	// own. A UI hint, never an auth signal — see `#lib/server/signed-in-hint.ts`. Set here so any
+	// real action self-heals it, including a session simply expiring.
+	syncSignedInHint(event.cookies, session !== null);
 
 	if (session) {
 		event.locals.session = session.session;

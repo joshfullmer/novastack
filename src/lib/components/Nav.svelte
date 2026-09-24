@@ -47,6 +47,24 @@
 		);
 	});
 
+	/**
+	 * Which half of the sign-in branch shows is decided pre-paint by `app.html` reading the
+	 * `signed-in` hint cookie, because prerendered and edge-cached pages cannot carry per-user
+	 * data at all (`#lib/server/signed-in-hint.ts`).
+	 *
+	 * On the three subtrees that *do* know — `/auth`, `/decks`, `/account` — `page.data.user` is
+	 * authoritative and wins here. That matters for exactly one case: the hook corrects a stale
+	 * cookie via `Set-Cookie` on the same response whose pre-paint script already read the old
+	 * value, so without this the first render after a session expires would still say "Account".
+	 */
+	$effect(() => {
+		const known = page.data.user;
+		if (known === undefined) return;
+
+		if (known) document.documentElement.dataset.signedIn = '';
+		else delete document.documentElement.dataset.signedIn;
+	});
+
 	const LIVE = [{ href: '/cards', label: 'Cards' }];
 	const DECKS = [
 		{ href: '/decks', label: 'My Decks' },
@@ -69,7 +87,8 @@
 	const closeMobileMenu = () => (mobileMenuOpen = false);
 
 	$effect(() => {
-		page.url.pathname;
+		// `void` so the dependency-registering read isn't an unused expression (`pnpm lint`).
+		void page.url.pathname;
 		mobileMenuOpen = false;
 	});
 </script>
@@ -183,7 +202,9 @@
 				<DiscordIcon class="size-5" />
 			</a>
 
-			{#if page.data.user}
+			<!-- Both halves always render; CSS picks one before first paint from the `signed-in`
+			     hint cookie. See `layout.css` and `app.html`. -->
+			<div class="contents" data-when-signed-in>
 				<a
 					href="/account"
 					class="text-sm text-muted transition-colors hover:text-bright"
@@ -194,11 +215,12 @@
 						>Sign out</button
 					>
 				</form>
-			{:else}
+			</div>
+			<div class="contents" data-when-signed-out>
 				<a href="/auth/login" class="text-sm text-muted transition-colors hover:text-bright"
 					>Sign in</a
 				>
-			{/if}
+			</div>
 		</div>
 
 		<button
@@ -299,7 +321,7 @@
 					<DiscordIcon class="size-5" />
 				</a>
 
-				{#if page.data.user}
+				<div class="contents" data-when-signed-in>
 					<a
 						href="/account"
 						onclick={closeMobileMenu}
@@ -311,13 +333,14 @@
 							>Sign out</button
 						>
 					</form>
-				{:else}
+				</div>
+				<div class="contents" data-when-signed-out>
 					<a
 						href="/auth/login"
 						onclick={closeMobileMenu}
 						class="text-sm text-muted transition-colors hover:text-bright">Sign in</a
 					>
-				{/if}
+				</div>
 			</div>
 		</div>
 	{/if}
