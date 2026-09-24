@@ -28,6 +28,23 @@
 	import type { Color } from '#lib/cards/vocabulary.js';
 	import { COLOR_TINT } from './color.js';
 
+	/**
+	 * Every Printing whose art has finished loading at least once this session, shared by every
+	 * instance.
+	 *
+	 * A second `<img>` for the same Printing cannot avoid firing `load` asynchronously, so it would
+	 * otherwise paint its ThumbHash for a frame or two before the real pixels arrive — a blink on a
+	 * card that has been on screen for minutes. If we have loaded it once, the bytes are in the
+	 * browser's cache and the real image is a frame away, so it starts visible and the blur stays
+	 * behind it as a safety net rather than in front as a placeholder.
+	 *
+	 * Deliberately a plain `Set`, not `SvelteSet`: nothing reads it reactively. It is consulted once
+	 * per render to decide how to paint, and a card appearing elsewhere on screen must not
+	 * invalidate every other tile.
+	 */
+	// eslint-disable-next-line svelte/prefer-svelte-reactivity -- read once per render, never tracked
+	const loadedOnce = new Set<string>();
+
 	let {
 		printingId,
 		thumbhash,
@@ -92,6 +109,21 @@
 		instant: false,
 		startedAt: performance.now()
 	});
+
+	/**
+	 * Whether this Printing's art has loaded before, and so can be painted without waiting.
+	 *
+	 * Checked per render rather than reactively — see `loadedOnce`. Being known does three things:
+	 * the real image starts visible instead of at `opacity-0`, the ThumbHash starts hidden, and the
+	 * image is decoded **synchronously**, which is what lets the browser paint it on the very first
+	 * frame the element exists rather than one frame later. Without the sync decode there is still a
+	 * frame with nothing in it, and a frame is exactly long enough to read as a blink.
+	 *
+	 * If the cache has evicted the image since, that first frame shows the card's Colour tint —
+	 * stage one of the placeholder ladder — rather than the blur, until the fetch lands. A fair
+	 * trade: eviction is rare, and re-blurring a card you have been looking at is the visible bug.
+	 */
+	const known = $derived(loadedOnce.has(printingId));
 </script>
 
 <div class="relative card-frame overflow-hidden {COLOR_TINT[color]} {className}">
@@ -102,7 +134,7 @@
 		class="absolute inset-0 size-full scale-105 blur-md transition-opacity {paint.instant
 			? 'duration-0'
 			: 'duration-300'}"
-		class:opacity-0={paint.loaded}
+		class:opacity-0={paint.loaded || known}
 	/>
 	<img
 		bind:this={img}
@@ -114,14 +146,16 @@
 		height="1024"
 		loading={eager ? 'eager' : 'lazy'}
 		fetchpriority={eager ? 'high' : 'auto'}
-		decoding="async"
-		onload={() =>
-			(paint = {
+		decoding={known ? 'sync' : 'async'}
+		onload={() => {
+			loadedOnce.add(printingId);
+			paint = {
 				...paint,
 				loaded: true,
 				instant: performance.now() - paint.startedAt < CACHED_MS
-			})}
+			};
+		}}
 		class="relative size-full transition-opacity {paint.instant ? 'duration-0' : 'duration-500'}"
-		class:opacity-0={!paint.loaded}
+		class:opacity-0={!paint.loaded && !known}
 	/>
 </div>
