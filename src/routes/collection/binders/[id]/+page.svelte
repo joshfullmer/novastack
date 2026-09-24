@@ -93,6 +93,10 @@
 	 * images into a 320px-wide column. */
 	const RESULT_CAP = 72;
 
+	/** One source of truth for the Pocket image size: the Pockets themselves, and the drag ghost,
+	 * which requests this rather than its own width so a drop is always a cache hit. */
+	const POCKET_SIZES = '(min-width: 1024px) 240px, 30vw';
+
 	let source = $state('');
 	const parsed = $derived(parseQuery(source, dataset));
 
@@ -182,7 +186,7 @@
 	path="/collection/binders/{data.binder.id}"
 />
 
-<DragGhost {drag} />
+<DragGhost {drag} sizes={POCKET_SIZES} />
 
 <div class="mb-8 flex flex-wrap items-end justify-between gap-4">
 	<div class="min-w-0">
@@ -351,7 +355,7 @@
 										thumbhash={row.printing.thumbhash}
 										color={row.card.color}
 										alt={row.card.name}
-										sizes="(min-width: 1024px) 240px, 30vw"
+										sizes={POCKET_SIZES}
 										class="rounded-2xl"
 									/>
 									{#if data.isOwner}
@@ -428,12 +432,18 @@
 		     The panel scrolls inside itself so the spread can be scrolled past it. -->
 		<!-- Side by side from `lg`, not `xl`. Stacked, the panel sits below the spread and every
 		     placement becomes a scroll — and `/collection/add` already taught this lesson once, where
-		     an `xl` gate meant most windows never saw the preview at all. -->
+		     an `xl` gate meant most windows never saw the preview at all.
+
+		     The stuck offset is the nav's height *plus* a rem, not the nav's height: pinned flush to
+		     Nav, the panel reads as part of it. `max-h` gives that rem back at the bottom as well, so
+		     the panel keeps its own margin on both ends and can still scroll to its last result. -->
 		<aside
 			{...{ [REMOVE_ATTRIBUTE]: '' }}
 			class="relative w-full shrink-0 self-start rounded-xl border bg-shell transition-colors
-				lg:sticky lg:top-nav lg:max-h-[calc(100vh-var(--spacing-nav)-1rem)] lg:w-80
-				lg:overflow-y-auto xl:w-96 {drag.overRemove ? 'border-card-red bg-card-red/5' : 'border-edge'}"
+				lg:sticky lg:top-[calc(var(--spacing-nav)+1rem)] lg:max-h-[calc(100vh-var(--spacing-nav)-2rem)]
+				lg:w-80 lg:overflow-y-auto xl:w-96 {drag.overRemove
+				? 'border-card-red bg-card-red/5'
+				: 'border-edge'}"
 		>
 			{#if drag.payload?.kind === 'pocket'}
 				<!-- Only while a card that's *in* the Binder is in the air: dragging a search result back
