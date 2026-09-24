@@ -22,8 +22,9 @@
 	import { collectorNumberSortKey } from '#lib/cards/derive.js';
 	import { collection } from '#lib/collection/state.svelte.js';
 	import { currentUrl } from '#lib/filters/shallow.js';
-	import { test } from '#lib/filters/predicate.js';
+	import { test, type Predicate } from '#lib/filters/predicate.js';
 	import { PARAM, parseQueryState } from '#lib/filters/state.js';
+	import { withFacetEdit } from '#lib/filters/query-edit.js';
 	import QueryEditor from '#lib/components/filters/QueryEditor.svelte';
 	import {
 		DEFAULT_GOAL,
@@ -39,7 +40,6 @@
 
 	let { data } = $props();
 
-	let filter = $state<'all' | 'owned' | 'missing'>('all');
 	/** See `/sets/[id]`: phrased so the default state is an unchecked box. */
 	let showAll = $state(false);
 
@@ -67,19 +67,62 @@
 	 */
 	const queryState = $derived(parseQueryState(currentUrl().searchParams, dataset));
 
+	/**
+	 * The All/Owned/Missing control **is** the query, not a second filter layered over it — the
+	 * same contract chips have on `/cards` (spec §9): clicking writes the clause, and the pressed
+	 * state is read back out of the compiled predicate. So typing `owned:0` by hand lights
+	 * "Missing", and clicking "Missing" produces text you could have typed.
+	 *
+	 * `null` is a real fourth state: a query like `owned<4` is a genuine ownership filter that none
+	 * of these three buttons represents, so none of them claims it. Lighting "All" there would be a
+	 * lie, and lighting nothing is how the chip panel already handles clauses its controls can't
+	 * round-trip.
+	 */
+	const ownedFilter = $derived.by((): 'all' | 'owned' | 'missing' | null => {
+		const leaves = ownedLeaves(queryState.predicate);
+		if (leaves.length === 0) return 'all';
+		if (leaves.length > 1) return null;
+
+		const [leaf] = leaves;
+		if (leaf.min === 1 && leaf.max === null) return 'owned';
+		if (leaf.min === 0 && leaf.max === 0) return 'missing';
+		return null;
+	});
+
+	function ownedLeaves(predicate: Predicate): Extract<Predicate, { kind: 'numeric' }>[] {
+		switch (predicate.kind) {
+			case 'and':
+			case 'or':
+				return predicate.children.flatMap(ownedLeaves);
+			case 'not':
+				return ownedLeaves(predicate.child);
+			case 'numeric':
+				return predicate.field === 'owned' ? [predicate] : [];
+			default:
+				return [];
+		}
+	}
+
+	function setOwnedFilter(state: 'all' | 'owned' | 'missing') {
+		applyQuery(withFacetEdit(queryState.source, dataset, { facet: 'owned', state }));
+	}
+
+	/** Writes `?q=` immediately — a button press is one deliberate act, unlike typing. */
+	function applyQuery(next: string) {
+		clearTimeout(queryTimer);
+		const url = new URL(currentUrl().href);
+		if (next.trim() === '') url.searchParams.delete(PARAM.query);
+		else url.searchParams.set(PARAM.query, next.trim());
+		void goto(url, { shallow: true, replace: true });
+	}
+
 	let queryTimer: ReturnType<typeof setTimeout> | undefined;
 
 	function onSource(next: string) {
 		// Debounced and history-replacing, matching `/cards`: one entry per pause in typing rather
 		// than one per keystroke.
 		clearTimeout(queryTimer);
-		queryTimer = setTimeout(() => {
-			const url = new URL(currentUrl().href);
-			// An absent param, never an empty one — one canonical URL for "no query".
-			if (next.trim() === '') url.searchParams.delete(PARAM.query);
-			else url.searchParams.set(PARAM.query, next.trim());
-			void goto(url, { shallow: true, replace: true });
-		}, 200);
+		queryTimer = setTimeout(() => applyQuery(next), 200);
 	}
 
 	/**
@@ -99,12 +142,6 @@
 					// Card with a witness printing. This grid lists Printings, so a printing-level
 					// clause like `set:` or `rarity:` has to filter the rows themselves.
 					.filter((row) => test(queryState.predicate, dataset, row.card, row.printing, ownedOf))
-					.filter((row) => {
-						const count = collection.quantityOf(row.printing.id);
-						if (filter === 'owned') return count > 0;
-						if (filter === 'missing') return count === 0;
-						return true;
-					})
 					.sort((a, b) => {
 						const [aNumber, aText] = collectorNumberSortKey(a.printing.collectorNumber);
 						const [bNumber, bText] = collectorNumberSortKey(b.printing.collectorNumber);
@@ -228,9 +265,9 @@
 				{#each ['all', 'owned', 'missing'] as const as option (option)}
 					<button
 						type="button"
-						aria-pressed={filter === option}
-						onclick={() => (filter = option)}
-						class="px-4 py-2.5 text-sm capitalize {filter === option
+						aria-pressed={ownedFilter === option}
+						onclick={() => setOwnedFilter(option)}
+						class="px-4 py-2.5 text-sm capitalize {ownedFilter === option
 							? 'bg-raised text-bright'
 							: 'text-muted hover:text-body'}">{option}</button
 					>

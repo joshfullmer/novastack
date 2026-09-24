@@ -15,7 +15,7 @@ import { quoteQueryValue } from '#lib/cards/dataset.js';
 import type { CardType, Color, Keyword, Rarity } from '#lib/cards/vocabulary.js';
 import { budgetFromLegendColors } from './budget.js';
 import type { NumericRange } from './chips.js';
-import type { Predicate } from './predicate.js';
+import type { CountField, Predicate } from './predicate.js';
 import { compileNode, type CompileContext } from '#lib/query/compile.js';
 import { formatLegendsValue } from '#lib/query/legends-value.js';
 import { parse, type Node } from '#lib/query/parser.js';
@@ -30,6 +30,12 @@ export type FacetEdit =
 	| { facet: 'eddiable'; value: boolean | null }
 	| { facet: 'tournamentLegal'; value: boolean | null }
 	| { facet: 'cost' | 'power' | 'ram'; range: NumericRange }
+	/**
+	 * Ownership as the three states a segmented control offers, rather than a `NumericRange`:
+	 * `rangeClause` emits `field:has` for the unbounded case, and `owned` has no null bucket to
+	 * probe (`docs/spec/query-language.md` §3). `all` removes the clause entirely.
+	 */
+	| { facet: 'owned'; state: 'all' | 'owned' | 'missing' }
 	| { facet: 'legends'; colors: readonly Color[] };
 
 type FacetTarget =
@@ -45,7 +51,7 @@ type FacetTarget =
 				| 'tournamentLegal'
 				| 'ramBudget';
 	  }
-	| { kind: 'numeric'; field: 'cost' | 'power' | 'ram' };
+	| { kind: 'numeric'; field: CountField };
 
 function orGroup(field: string, values: readonly string[]): string | null {
 	if (values.length === 0) return null;
@@ -95,6 +101,11 @@ function clauseFor(edit: FacetEdit, dataset: Dataset): string | null {
 		case 'power':
 		case 'ram':
 			return rangeClause(edit.facet, edit.range);
+		case 'owned':
+			// `owned:yes` over `owned>=1` deliberately: it is what the control means, and it is the
+			// spelling the syntax page teaches.
+			if (edit.state === 'all') return null;
+			return edit.state === 'owned' ? 'owned:yes' : 'owned:0';
 		case 'legends': {
 			if (edit.colors.length === 0) return null;
 			const budget = budgetFromLegendColors(edit.colors, dataset.ramPerLegend);
@@ -126,6 +137,7 @@ function targetFor(facet: FacetEdit['facet']): FacetTarget {
 		case 'cost':
 		case 'power':
 		case 'ram':
+		case 'owned':
 			return { kind: 'numeric', field: facet };
 	}
 }
