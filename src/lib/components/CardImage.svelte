@@ -56,19 +56,42 @@
 	const src = $derived(cardImageUrl(printingId, 488));
 
 	/**
-	 * A **writable** `$derived`: it computes the answer, and `onload` overrides it.
+	 * A load that comes back this fast came from cache, so it should not be cross-faded.
 	 *
-	 * That covers two failure modes in one expression. A **cached** image finishes before
+	 * Generous on purpose: the point is to separate "already had these bytes" from "went to the
+	 * network", and even a cache hit is asynchronous.
+	 */
+	const CACHED_MS = 150;
+
+	/**
+	 * Paint state for the current `src`, as a **writable** `$derived`: it computes the answer, and
+	 * `onload` overrides it.
+	 *
+	 * `loaded` covers two failure modes in one expression. A **cached** image finishes before
 	 * hydration, so `load` never fires and the blur would stick forever — `img.complete` is the
 	 * fix, and this is the most common blur-up defect in the wild. A **changed** printing (the
 	 * detail page's chooser, or a tile swapping art under a Set filter) has to reset to false, or
 	 * the previous art stays visible under the new `src`; because this is derived from `src`, the
-	 * override is discarded automatically when the printing changes.
+	 * override is discarded automatically when the printing changes. Comparing against `src` rather
+	 * than just reading `complete` is what distinguishes "this image is ready" from "some earlier
+	 * image was ready".
 	 *
-	 * Comparing against `src` rather than just reading `complete` is what distinguishes "this
-	 * image is ready" from "some earlier image was ready".
+	 * `instant` exists because **a brand-new `<img>` element always fires `load` asynchronously,
+	 * even when the bytes are already in memory** — so anything that re-renders a card into a fresh
+	 * element made it blur up from its ThumbHash all over again. The binder's page turn does that
+	 * twice per turn (the turning leaf carries its own copy of two Pages, then the half underneath
+	 * re-renders), and the second fade was still running when the leaf lifted: a visible flash of a
+	 * card that had been on screen a moment earlier. If the load resolves within `CACHED_MS` of the
+	 * `src` first rendering, the image simply appears.
+	 *
+	 * `startedAt` is when that happened, and it resets with `src` for free, being part of the same
+	 * derived value.
 	 */
-	let loaded = $derived(img?.complete === true && img.src.endsWith(src));
+	let paint = $derived({
+		loaded: img?.complete === true && img.src.endsWith(src),
+		instant: false,
+		startedAt: performance.now()
+	});
 </script>
 
 <div class="relative card-frame overflow-hidden {COLOR_TINT[color]} {className}">
@@ -76,8 +99,10 @@
 		src={placeholder}
 		alt=""
 		aria-hidden="true"
-		class="absolute inset-0 size-full scale-105 blur-md transition-opacity duration-300"
-		class:opacity-0={loaded}
+		class="absolute inset-0 size-full scale-105 blur-md transition-opacity {paint.instant
+			? 'duration-0'
+			: 'duration-300'}"
+		class:opacity-0={paint.loaded}
 	/>
 	<img
 		bind:this={img}
@@ -90,8 +115,13 @@
 		loading={eager ? 'eager' : 'lazy'}
 		fetchpriority={eager ? 'high' : 'auto'}
 		decoding="async"
-		onload={() => (loaded = true)}
-		class="relative size-full transition-opacity duration-500"
-		class:opacity-0={!loaded}
+		onload={() =>
+			(paint = {
+				...paint,
+				loaded: true,
+				instant: performance.now() - paint.startedAt < CACHED_MS
+			})}
+		class="relative size-full transition-opacity {paint.instant ? 'duration-0' : 'duration-500'}"
+		class:opacity-0={!paint.loaded}
 	/>
 </div>
