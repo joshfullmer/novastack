@@ -43,7 +43,9 @@
 	);
 	const copyLabel = $derived(`${copies} ${copies === 1 ? 'copy' : 'copies'}`);
 
-	const onGoal = $derived(page.url.pathname === '/collection/goal');
+	const path = $derived(page.url.pathname);
+	const onGoal = $derived(path === '/collection/goal');
+	const onAdd = $derived(path === '/collection/add');
 </script>
 
 <div class="flex min-h-[calc(100vh-var(--spacing-nav))]">
@@ -67,6 +69,24 @@
 				<div class="h-full rounded-full bg-neon" style="width: {progress.percent}%"></div>
 			</div>
 			<p class="mt-2 text-xs text-muted tabular-nums">{percentLabel} complete · {copyLabel}</p>
+		</a>
+
+		<a
+			href="/collection/add"
+			aria-current={onAdd ? 'page' : undefined}
+			class="group/add flex items-center gap-2 rounded-lg border px-3 py-2.5 text-sm
+				transition-colors {onAdd
+				? 'border-neon bg-neon/5 text-neon'
+				: 'border-edge text-body hover:border-neon-dim hover:bg-surface'}"
+		>
+			<span class="font-medium">Add cards</span>
+			<span class="text-xs text-muted">rapid entry</span>
+			<span
+				class="ml-auto text-xs transition-transform {onAdd
+					? 'text-neon'
+					: 'text-muted/60 group-hover/add:translate-x-0.5 group-hover/add:text-neon'}"
+				aria-hidden="true">›</span
+			>
 		</a>
 
 		<div>
@@ -138,6 +158,16 @@
 				<span class="mt-0.5 block text-xs text-muted/60">
 					{collection.goalIsDefault ? 'Default — tap to choose' : 'Customised'}
 				</span>
+			</a>
+
+			<a
+				href="/api/collection/export"
+				download
+				class="mt-2 block rounded-lg px-3 py-2 text-xs text-muted transition-colors
+					hover:bg-surface hover:text-neon"
+			>
+				Export CSV
+				<span class="mt-0.5 block text-muted/50">Everything you own, re-importable</span>
 			</a>
 		</div>
 	</aside>

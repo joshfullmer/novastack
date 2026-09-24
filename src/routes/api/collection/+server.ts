@@ -106,7 +106,8 @@ export const POST: RequestHandler = async (event) => {
 	// Last write wins on a duplicated id, which is what a Map gives us for free.
 	const quantities = new Map<string, number>();
 	for (const item of body.items) {
-		if (!printingIds.has(item.printingId)) return error(400, `Unknown printing: ${item.printingId}`);
+		if (!printingIds.has(item.printingId))
+			return error(400, `Unknown printing: ${item.printingId}`);
 		quantities.set(item.printingId, item.quantity);
 	}
 

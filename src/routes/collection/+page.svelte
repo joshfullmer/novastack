@@ -146,6 +146,18 @@
 	);
 
 	const shown = $derived(groups.reduce((sum, group) => sum + group.rows.length, 0));
+
+	/**
+	 * "Add all missing" per Set, over **what is currently shown** rather than the whole Set — so it
+	 * composes with the query and the goal instead of quietly ignoring them. A button rather than a
+	 * link, unlike the filters: this one changes data, and a link that mutates on GET is the thing
+	 * you are not supposed to build.
+	 */
+	function addAllMissing(printingIds: readonly string[]) {
+		const missing = printingIds.filter((id) => collection.quantityOf(id) === 0);
+		if (missing.length === 0) return;
+		void collection.setMany(new Map(missing.map((id) => [id, 1])));
+	}
 </script>
 
 <Meta
@@ -215,6 +227,18 @@
 				<span class="ml-auto font-mono text-xs text-muted tabular-nums"
 					>{setStats.owned}/{setStats.total}</span
 				>
+			{/if}
+
+			{#if collection.editable}
+				{@const missing = group.rows.filter((row) => collection.quantityOf(row.printing.id) === 0)}
+				{#if missing.length > 0}
+					<button
+						type="button"
+						onclick={() => addAllMissing(group.rows.map((row) => row.printing.id))}
+						class="rounded-full border border-edge px-2.5 py-0.5 text-xs text-muted
+							transition-colors hover:border-neon-dim hover:text-neon">Add {missing.length} missing (1×)</button
+					>
+				{/if}
 			{/if}
 		</div>
 
