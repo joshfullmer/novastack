@@ -20,6 +20,19 @@ import { browser } from '$app/env';
 /** Holding the `+` key shouldn't fire six requests; one settles per Printing per burst. */
 const WRITE_DEBOUNCE_MS = 400;
 
+/**
+ * A 401 here is the one place the app learns, client-side, that a session has ended — the
+ * `signed-in` hint cookie (`#lib/server/signed-in-hint.ts`) outlives it, and on a prerendered or
+ * edge-cached page there is no `page.data.user` to correct from.
+ *
+ * Left alone, the symptom is nasty and hard to diagnose: the header still offers "Account / Sign
+ * out" while every ownership control is dead. Clearing the hint makes Nav tell the truth on the
+ * next render, which is also the only visible cue that signing in again is what's needed.
+ */
+function clearSignedInHint(): void {
+	document.cookie = 'signed-in=; path=/; max-age=0; samesite=lax';
+}
+
 type Status = 'idle' | 'loading' | 'ready' | 'signed-out' | 'error';
 
 function createCollection() {
@@ -64,6 +77,7 @@ function createCollection() {
 			// steppers render disabled and the page still works.
 			if (response.status === 401) {
 				status = 'signed-out';
+				clearSignedInHint();
 				return;
 			}
 			if (!response.ok) throw new Error(`Collection request failed (${response.status})`);
@@ -102,6 +116,15 @@ function createCollection() {
 				headers: { 'content-type': 'application/json' },
 				body: JSON.stringify({ printingId, quantity })
 			});
+			if (response.status === 401) {
+				// The session ended between loading and writing. Roll back, and stop claiming
+				// otherwise, rather than leaving a number on screen that was never saved.
+				status = 'signed-out';
+				clearSignedInHint();
+				rollback(printingId);
+				errorMessage = 'Your session ended — sign in again to keep tracking.';
+				return;
+			}
 			if (!response.ok) throw new Error(`Save failed (${response.status})`);
 
 			const body = (await response.json()) as { quantity: number };

@@ -71,6 +71,15 @@
 		expanded = false
 	}: { printingId: string; label: string; expanded?: boolean } = $props();
 
+	/**
+	 * Loads the Collection itself rather than trusting the host page to have done it. `load` is a
+	 * one-shot no-op after the first call, so a page that already asks for it pays nothing, and
+	 * mounting a stepper can no longer produce a permanently disabled control just because a new
+	 * surface forgot the effect. The failure mode this prevents is silent: the badge renders, reads
+	 * `—` for everything, and refuses every click.
+	 */
+	$effect(() => void collection.load());
+
 	const count = $derived(collection.quantityOf(printingId));
 	const disabled = $derived(!collection.editable);
 
