@@ -114,6 +114,7 @@ Origin: [Scryfall's grammar in detail](../../.scratch/query-language/issues/01-s
 | tournamentLegal                  | `legal:`                      | `:` `=`*        | `true`/`false`                                  | never null                                                 | no            |
 | set                              | `set:` `s:`                   | `:` `=`*        | quoted or slug string                           | never null                                                 | no            |
 | rarity                           | `rarity:` `r:`                | `: = < <= > >=` | Rarity enum                                     | never null                                                 | yes           |
+| owned                            | `owned:` `have:`              | `: = < <= > >=` | integer, or `yes`/`no`                          | never null — zero is a real answer                         | yes           |
 | text (bare / `name:` / `rules:`) | _(none)_ / `name:` / `rules:` | `:` `=`*        | word, quoted phrase, `/regex/`, or `none`/`has` | rules-haystack-empty (`empty`); `name:none` always dropped | no            |
 | ramBudget                        | `legends:`                    | `:` `=`*        | tally/digit color value (§3.3)                  | n/a                                                        | no            |
 
@@ -129,6 +130,39 @@ value characters. `cost:` has no short alias, deliberately, so `c:` stays color'
 source API started marking individual cards `"not-legal"` (`Card.tournamentLegal` —
 `#lib/cards/schema.ts`). Same shape as Eddiable in every respect — boolean, never null, no
 `none`/`has` — so it's added as a sibling row rather than a new section.
+
+`owned` (keyword `owned:`, alias `have:`) was added with the collection tracker
+(`docs/adr/0003-the-collection-is-flat-and-binders-are-showcases.md`). Three things make it
+unlike the other numerics, all of them deliberate:
+
+- **Rolled up to the Card**, summing every printing — the same rule `CONTEXT.md` gives for
+  `Missing`, and for the same reason: a Printing is cosmetic, so any copy is as good as any other.
+  Printing-scoped is the tempting reading, since Owned Count _is_ per Printing, and it does not
+  work: §4 matches a Card when **some** printing satisfies the tree, so "a printing I own zero of"
+  is true of nearly every Card — measured against the real dataset, `owned:0` returned 151 of 151.
+  Negation doesn't rescue it either, since `-owned:yes` is still existential rather than universal.
+  Rolled up, `owned:0` is "Cards I don't have" and `owned<4` is "Cards I'm short of a playset of".
+  Per-printing ownership stays reachable on the `/sets/[id]` checklist, which has a control per
+  printing. Composing with a printing-level field therefore reads as
+  `owned>=1 set:MS01-WNC` = "a card I own that has a printing in that set".
+- **Never null**, so no `none`/`has`. Zero is a real answer: a Printing is never "unknown", only
+  owned zero times. `owned:none` and `owned:has` parse and drop as inapplicable, the same
+  treatment `name:none` gets (§3.4).
+- **Negated by logical complement**, not by operator inversion. §3.6 inverts operators so a
+  negated bound can't leak the null bucket; with no null bucket, `-owned>=4` genuinely _is_
+  `not (owned >= 4)`, and routing it through the plain `not` also lets the `yes`/`no` sugar negate
+  instead of the inverted path trying to read an integer out of "yes".
+
+`owned:yes` / `owned:no` desugar to `owned>=1` / `owned:0` at parse time — the phrasing other
+trackers in this genre already use, and worth accepting because "do I have this at all" is the
+commonest question and shouldn't require thinking in bounds. The sugar takes `:`/`=` only;
+`owned>yes` asks nothing and is malformed.
+
+Values come from the viewer's own Collection, so the field is **per-user**: `evaluate` takes an
+`OwnedLookup` rather than reading a `Dataset` field, because a `Dataset` is the shared snapshot
+and folding a per-request value into it would make it look cacheable. Signed out, the lookup
+answers zero for everything, so `owned>=1` matches nothing and `owned:0` matches everything —
+truthful, and not an error a reader deserves for typing a word off this page.
 
 Origin: [Keyword vocabulary](../../.scratch/query-language/issues/02-keyword-vocabulary.md).
 

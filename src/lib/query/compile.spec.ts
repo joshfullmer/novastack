@@ -183,6 +183,137 @@ describe('numeric fields', () => {
 	});
 });
 
+describe("owned — the viewer's collection", () => {
+	/**
+	 * A dataset of its own, because the interesting case is a card with more than one printing:
+	 * `two-printings` is owned only in its `SD01-HEI` printing, which is what proves the count
+	 * **rolls up to the Card** rather than being read off whichever printing `evaluate` happens to
+	 * be testing.
+	 */
+	const ownedDataset = createDataset(
+		makeSnapshot([
+			makeCard({
+				slug: 'playset',
+				name: 'Playset Card',
+				printings: [makePrinting({ id: 'p-playset', setId: 'MS01-WNC' })]
+			}),
+			makeCard({
+				slug: 'single',
+				name: 'Single Card',
+				printings: [makePrinting({ id: 'p-single', setId: 'MS01-WNC' })]
+			}),
+			makeCard({
+				slug: 'unowned',
+				name: 'Unowned Card',
+				printings: [makePrinting({ id: 'p-unowned', setId: 'MS01-WNC' })]
+			}),
+			makeCard({
+				slug: 'two-printings',
+				name: 'Two Printings Card',
+				printings: [
+					makePrinting({ id: 'p-retail', setId: 'MS01-WNC' }),
+					makePrinting({ id: 'p-beta', setId: 'SD01-HEI' })
+				]
+			})
+		])
+	);
+
+	const OWNED: Record<string, number> = { 'p-playset': 4, 'p-single': 1, 'p-beta': 2 };
+	const ownedOf = (printingId: string) => OWNED[printingId] ?? 0;
+
+	function runOwned(source: string): {
+		slugs: string[];
+		predicate: Predicate;
+		warnings: unknown[];
+	} {
+		const { node, warnings: parseWarnings } = parse(source);
+		const { predicate, warnings: compileWarnings } = compileQuery(node, { dataset: ownedDataset });
+		return {
+			slugs: evaluate(ownedDataset, predicate, ownedOf).map((match) => match.card.slug),
+			predicate,
+			warnings: [...parseWarnings, ...compileWarnings]
+		};
+	}
+
+	it('bounds the count like any other numeric field', () => {
+		expect(runOwned('owned>=4').slugs).toEqual(['playset']);
+		expect(runOwned('owned:1').slugs).toEqual(['single']);
+		expect(runOwned('owned<4').slugs).toEqual(['single', 'unowned', 'two-printings']);
+	});
+
+	it('treats zero as a real answer rather than a null bucket', () => {
+		// The whole reason `nullable` is false: unlike `cost>=0`, this must include the unowned.
+		expect(runOwned('owned:0').slugs).toEqual(['unowned']);
+		expect(runOwned('owned>=0').slugs).toEqual(['playset', 'single', 'unowned', 'two-printings']);
+	});
+
+	it('rolls up to the Card, summing every printing', () => {
+		// `two-printings` holds 2 copies, all of them in its SD01-HEI printing. Read per-printing
+		// instead, it would match `owned:0` through its unowned MS01-WNC printing — which is what
+		// made an earlier printing-scoped version return every card in the dataset for `owned:0`.
+		expect(runOwned('owned:2').slugs).toEqual(['two-printings']);
+		expect(runOwned('owned:0').slugs).not.toContain('two-printings');
+	});
+
+	it('reads the chained-interval sugar', () => {
+		expect(runOwned('1<=owned<=2').slugs).toEqual(['single', 'two-printings']);
+	});
+
+	it('accepts yes/no as sugar for >=1 and :0', () => {
+		expect(runOwned('owned:yes').predicate).toEqual({
+			kind: 'numeric',
+			field: 'owned',
+			min: 1,
+			max: null,
+			includeNull: false
+		});
+		expect(runOwned('owned:no').predicate).toEqual({
+			kind: 'numeric',
+			field: 'owned',
+			min: 0,
+			max: 0,
+			includeNull: false
+		});
+		expect(runOwned('owned:yes').slugs).toEqual(['playset', 'single', 'two-printings']);
+		expect(runOwned('owned:no').slugs).toEqual(['unowned']);
+	});
+
+	it('rejects the sugar under an ordered operator, which asks nothing', () => {
+		expect(runOwned('owned>yes').warnings.length).toBeGreaterThan(0);
+	});
+
+	it('drops none/has as inapplicable — there is no null to probe', () => {
+		expect(runOwned('owned:none').warnings.length).toBeGreaterThan(0);
+		expect(runOwned('owned:has').warnings.length).toBeGreaterThan(0);
+	});
+
+	it('negates by logical complement, since there is no null bucket to protect', () => {
+		// Contrast `cost`, where negation inverts the operator so the null bucket stays excluded
+		// (spec §3.6). Here the plain complement is already exact.
+		expect(runOwned('-owned:yes').slugs).toEqual(['unowned']);
+		expect(runOwned('-owned>=4').slugs).toEqual(['single', 'unowned', 'two-printings']);
+	});
+
+	it('composes with set: as "cards I own that are printed in this set"', () => {
+		// Card-level count, printing-level set — so this reads "I own a copy of a card that has a
+		// printing in SD01-HEI", not "I own the SD01-HEI printing specifically". Per-printing
+		// questions belong on the set checklist, which has a control per printing.
+		expect(runOwned('owned>=1 set:SD01-HEI').slugs).toEqual(['two-printings']);
+		expect(runOwned('owned>=1 set:MS01-WNC').slugs).toEqual(['playset', 'single', 'two-printings']);
+	});
+
+	it('owns nothing when no lookup is supplied, rather than throwing', () => {
+		// Signed out is the default, and the default has to be truthful.
+		const { node } = parse('owned>=1');
+		const { predicate } = compileQuery(node, { dataset: ownedDataset });
+		expect(evaluate(ownedDataset, predicate).map((m) => m.card.slug)).toEqual([]);
+	});
+
+	it('is reachable by its alias', () => {
+		expect(runOwned('have>=4').slugs).toEqual(['playset']);
+	});
+});
+
 describe('rarity — ordered comparisons', () => {
 	it('reads a >= comparison as an enumerated slice', () => {
 		// Both cards are Epic-or-above in the curated order: red-legend is Epic, blue-program is

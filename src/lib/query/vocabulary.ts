@@ -20,6 +20,7 @@ export const FIELD_KINDS = [
 	'tournamentLegal',
 	'set',
 	'rarity',
+	'owned',
 	'name',
 	'rules',
 	'text',
@@ -137,6 +138,25 @@ export const FIELDS: readonly FieldSpec[] = [
 		comparisons: true,
 		nullable: false,
 		enum: RARITY_ORDER
+	},
+	{
+		/**
+		 * Owned Count — how many copies of a Printing the viewer holds (`CONTEXT.md`).
+		 *
+		 * Numeric rather than boolean, so the question a collection tracker exists to answer —
+		 * "where am I short of a playset?" — is expressible as `owned<4`. `owned:yes`/`owned:no`
+		 * are parser-level sugar for `owned>=1` / `owned:0`, matching the syntax people already
+		 * type on other trackers.
+		 *
+		 * `nullable: false`: zero is a real answer, so there is no null bucket and no
+		 * `none`/`has`. Unlike Cost, a Printing is never "unknown", only owned zero times.
+		 */
+		kind: 'owned',
+		canonical: 'owned',
+		aliases: ['have'],
+		value: 'numeric',
+		comparisons: true,
+		nullable: false
 	},
 	{
 		// `name:none`/`name:has` parse but always drop as inapplicable (spec §3.4) — no card

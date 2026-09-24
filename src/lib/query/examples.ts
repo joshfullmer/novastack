@@ -18,6 +18,8 @@ export const EXAMPLES: readonly Example[] = [
 	{ query: 'tag:none', description: 'Array emptiness — cards with no tags.' },
 	{ query: 'tag:"Tyger Claws"', description: 'A multi-word value, quoted.' },
 	{ query: 'rarity>=epic', description: 'Rarity comparisons use the curated order.' },
+	{ query: 'owned:0', description: 'Cards missing from your collection.' },
+	{ query: 'owned<4 set:MS01-WNC', description: 'Where you are short of a playset.' },
 	{ query: 'legends:rryyyy', description: 'The colored RAM budget — Red 2, Yellow 4.' },
 	{ query: 'legends:r2y4', description: 'The same budget, digit spelling.' },
 	{ query: 'name:v', description: 'Scoped to the card name only.' },

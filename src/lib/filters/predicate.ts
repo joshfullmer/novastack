@@ -28,6 +28,29 @@ import { admits, type ColorBudget } from './budget.js';
 /** The nullable numeric facets. Note RAM means *required*: a Legend requires none. */
 export type NumericField = 'cost' | 'power' | 'ram';
 
+/**
+ * Everything the `numeric` leaf can bound: the three card facets above, plus **Owned Count**.
+ *
+ * Deliberately a wider type rather than a second leaf kind. Ownership needs exactly what those
+ * three already have — inclusive bounds, chained intervals, and operator inversion under
+ * negation — and `compileNumeric` / `compileInvertedNumericBound` implement all of it. A parallel
+ * `owned` leaf would have meant a second copy of that desugaring to keep in step.
+ *
+ * `NumericField` stays narrow on purpose: the chip controls and `Dataset.domains` are about card
+ * facets with a known range, and Owned Count is neither.
+ */
+export type CountField = NumericField | 'owned';
+
+/**
+ * How many copies of a Printing the viewer owns. A function rather than a map so the engine never
+ * depends on how the collection is stored, and so `evaluate` costs no conversion per keystroke —
+ * the client store already answers this in O(1).
+ */
+export type OwnedLookup = (printingId: string) => number;
+
+/** Signed out, or wherever ownership is irrelevant: everything is owned zero times. */
+export const NOTHING_OWNED: OwnedLookup = () => 0;
+
 export type Predicate =
 	| { kind: 'all' }
 	| { kind: 'and'; children: readonly Predicate[] }
@@ -52,7 +75,7 @@ export type Predicate =
 	| { kind: 'tournamentLegal'; value: boolean }
 	| {
 			kind: 'numeric';
-			field: NumericField;
+			field: CountField;
 			/** `null` means unbounded. A bound **never** admits null. */
 			min: number | null;
 			max: number | null;
@@ -75,7 +98,30 @@ export type Predicate =
 
 export type Match = { card: Card; printing: Printing };
 
-function numericValue(card: Card, field: NumericField): number | null {
+/**
+ * `owned` **rolls up to the Card**, summing every printing — the same rule `CONTEXT.md` gives for
+ * `Missing`, and for the same reason: a Printing is cosmetic, so any copy of a Card is as good as
+ * any other.
+ *
+ * It is tempting to make it printing-scoped instead, since Owned Count *is* per Printing, and an
+ * earlier version did. That is unusable. `evaluate` matches a Card when **some** printing
+ * satisfies the tree, so "a printing I own zero of" is true of nearly every Card — a Card with
+ * fourteen printings and one owned copy still matches `owned:0`. Measured against the real
+ * dataset it returned 151 of 151. Negation doesn't rescue it either: `-owned:yes` is still
+ * existential, not universal.
+ *
+ * Rolled up, the questions people actually ask work: `owned:0` is "Cards I don't have" and
+ * `owned<4` is "Cards I'm short of a playset of". Printing-level ownership stays reachable where
+ * it belongs — the per-printing checklist on `/sets/[id]`.
+ *
+ * Never null: zero is a real answer, so no bound has to reason about a null bucket the way Cost
+ * and Power do.
+ */
+function numericValue(
+	card: Card,
+	field: CountField,
+	ownedOf: OwnedLookup
+): number | null {
 	switch (field) {
 		case 'cost':
 			return card.cost;
@@ -83,11 +129,17 @@ function numericValue(card: Card, field: NumericField): number | null {
 			return card.power;
 		case 'ram':
 			return card.ramRequired;
+		case 'owned':
+			return card.printings.reduce((total, printing) => total + ownedOf(printing.id), 0);
 	}
 }
 
-function testNumeric(card: Card, predicate: Extract<Predicate, { kind: 'numeric' }>): boolean {
-	const value = numericValue(card, predicate.field);
+function testNumeric(
+	card: Card,
+	predicate: Extract<Predicate, { kind: 'numeric' }>,
+	ownedOf: OwnedLookup
+): boolean {
+	const value = numericValue(card, predicate.field, ownedOf);
 
 	// A null is a distinct bucket and never zero, so no bound can reach it. Without this,
 	// `power ≥ 0` would silently drop 43 cards while looking like it selected everything.
@@ -154,17 +206,19 @@ export function test(
 	predicate: Predicate,
 	dataset: Dataset,
 	card: Card,
-	printing: Printing
+	printing: Printing,
+	/** Defaulted so every existing caller and test keeps working unchanged. */
+	ownedOf: OwnedLookup = NOTHING_OWNED
 ): boolean {
 	switch (predicate.kind) {
 		case 'all':
 			return true;
 		case 'and':
-			return predicate.children.every((child) => test(child, dataset, card, printing));
+			return predicate.children.every((child) => test(child, dataset, card, printing, ownedOf));
 		case 'or':
-			return predicate.children.some((child) => test(child, dataset, card, printing));
+			return predicate.children.some((child) => test(child, dataset, card, printing, ownedOf));
 		case 'not':
-			return !test(predicate.child, dataset, card, printing);
+			return !test(predicate.child, dataset, card, printing, ownedOf);
 		case 'color':
 			return predicate.values.includes(card.color);
 		case 'cardType':
@@ -182,7 +236,7 @@ export function test(
 		case 'tournamentLegal':
 			return card.tournamentLegal === predicate.value;
 		case 'numeric':
-			return testNumeric(card, predicate);
+			return testNumeric(card, predicate, ownedOf);
 		case 'text':
 			return testText(dataset, card, predicate);
 		case 'ramBudget':
@@ -201,19 +255,49 @@ export function test(
  * appears once, showing *that* printing's art. Witness selection is "prefer the Default
  * Printing if it qualifies, else the first that does", which is exactly the first qualifying
  * printing, since the Default Printing is `printings[0]`.
+ *
+ * `ownedOf` is a parameter rather than a `Dataset` field because a `Dataset` is the runtime view
+ * of the *snapshot* — global, shared, and identical for every visitor — whereas ownership is
+ * per-user. Folding one into the other would make a per-request value look cacheable.
  */
-export function evaluate(dataset: Dataset, tree: Predicate): Match[] {
+export function evaluate(
+	dataset: Dataset,
+	tree: Predicate,
+	ownedOf: OwnedLookup = NOTHING_OWNED
+): Match[] {
 	const matches: Match[] = [];
 
 	for (const card of dataset.cards) {
 		for (const printing of card.printings) {
-			if (!test(tree, dataset, card, printing)) continue;
+			if (!test(tree, dataset, card, printing, ownedOf)) continue;
 			matches.push({ card, printing });
 			break;
 		}
 	}
 
 	return matches;
+}
+
+/**
+ * Does this tree bound Owned Count anywhere?
+ *
+ * Lets a page decide whether it needs the viewer's Collection at all — and lets a query asking
+ * about ownership count as opting into the ownership UI, which is a clearer statement of intent
+ * than a toggle. Walks the compiled tree rather than the raw source so the word appearing inside
+ * a quoted phrase or a regex can't trigger it.
+ */
+export function mentionsOwned(predicate: Predicate): boolean {
+	switch (predicate.kind) {
+		case 'and':
+		case 'or':
+			return predicate.children.some(mentionsOwned);
+		case 'not':
+			return mentionsOwned(predicate.child);
+		case 'numeric':
+			return predicate.field === 'owned';
+		default:
+			return false;
+	}
 }
 
 /** Flattens a conjunction, dropping the `all` predicates that represent an inactive control. */

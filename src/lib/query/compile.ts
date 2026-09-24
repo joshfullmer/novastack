@@ -28,7 +28,12 @@ import {
 } from '#lib/cards/vocabulary.js';
 import { slugLookup, type Dataset } from '#lib/cards/dataset.js';
 import * as v from 'valibot';
-import { and, type NumericField, type Predicate } from '#lib/filters/predicate.js';
+import {
+	and,
+	type CountField,
+	type NumericField,
+	type Predicate
+} from '#lib/filters/predicate.js';
 import { parseLegendsValue } from './legends-value.ts';
 import { compileSafeRegex } from './regex-safety.ts';
 import type {
@@ -233,6 +238,12 @@ function compileNegation(
 
 function isInvertibleBound(node: FieldNode): boolean {
 	if (!COMPARABLE_FIELDS.includes(node.field)) return false;
+	// `owned` is comparable but deliberately not inverted by operator. Operator inversion exists
+	// because a logical `not` over a nullable numeric would also admit the null bucket — spec §3.6
+	// — and Owned Count has no null bucket, so `-owned>=4` genuinely *is* `not (owned >= 4)`.
+	// Routing it through the plain `not` wrapper also means the `yes`/`no` sugar negates correctly
+	// instead of the inverted path trying to read an integer out of "yes".
+	if (node.field === 'owned') return false;
 	return !isReservedWord(node.value, 'none') && !isReservedWord(node.value, 'has');
 }
 
@@ -260,6 +271,8 @@ export function compileField(
 		case 'power':
 		case 'ram':
 			return compileNumeric(node, warnings, node.field);
+		case 'owned':
+			return compileOwned(node, warnings);
 		case 'rarity':
 			return compileRarity(node, warnings);
 		case 'name':
@@ -472,7 +485,7 @@ function boundFromOperator(
 function compileNumeric(
 	node: FieldNode,
 	warnings: ParseWarning[],
-	field: NumericField
+	field: CountField
 ): Predicate | null {
 	if (isReservedWord(node.value, 'none')) {
 		if (node.chain !== undefined) return malformed(node, warnings);
@@ -503,6 +516,37 @@ function compileNumeric(
 		includeNull: false
 	};
 }
+
+/**
+ * Owned Count. Bounds, chained intervals and integer parsing all come from `compileNumeric`; the
+ * only thing this adds is the `yes`/`no` sugar and the refusal of `none`/`has`.
+ *
+ * `owned:yes` is `owned>=1` and `owned:no` is `owned:0` — the phrasing other trackers use, and
+ * worth accepting because "do I have this at all" is the commonest question and nobody should
+ * have to think in bounds to ask it. Only `:` and `=` take the sugar: `owned>yes` is not a
+ * question, so it is malformed rather than silently reinterpreted.
+ */
+function compileOwned(node: FieldNode, warnings: ParseWarning[]): Predicate | null {
+	// No null bucket to probe — zero is a real answer, so these are inapplicable rather than
+	// malformed, the same treatment `name:none` gets.
+	if (isReservedWord(node.value, 'none') || isReservedWord(node.value, 'has')) {
+		return droppedInapplicable(node, warnings);
+	}
+
+	const sugar = OWNED_SUGAR[valueText(node.value).toLowerCase()];
+	if (sugar !== undefined) {
+		if (node.chain !== undefined) return malformed(node, warnings);
+		if (node.operator !== ':' && node.operator !== '=') return malformed(node, warnings);
+		return { kind: 'numeric', field: 'owned', ...sugar, includeNull: false };
+	}
+
+	return compileNumeric(node, warnings, 'owned');
+}
+
+const OWNED_SUGAR: Record<string, { min: number | null; max: number | null }> = {
+	yes: { min: 1, max: null },
+	no: { min: 0, max: 0 }
+};
 
 /** Spec §3.6: `-(cost>=3)` ≡ `cost<3`; `-(cost=3)` ≡ `cost<3 or cost>3`; a negated chained range
  * decomposes to an `or` of the two inverted half-bounds. Never flips `includeNull`. */

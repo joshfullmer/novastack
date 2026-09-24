@@ -28,6 +28,7 @@
 		tournamentLegal: 'Tournament Legal',
 		set: 'Set',
 		rarity: 'Rarity',
+		owned: 'Owned Count',
 		name: 'Name',
 		rules: 'Rules text',
 		text: 'Bare word',

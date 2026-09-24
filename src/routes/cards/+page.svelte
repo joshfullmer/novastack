@@ -42,7 +42,7 @@
 	import Meta from '#lib/components/Meta.svelte';
 	import { budgetFromLegendColors, EMPTY_BUDGET } from '#lib/filters/budget.js';
 	import { readChipView } from '#lib/filters/chips.js';
-	import { evaluate } from '#lib/filters/predicate.js';
+	import { evaluate, mentionsOwned } from '#lib/filters/predicate.js';
 	import { withFacetEdit, type FacetEdit } from '#lib/filters/query-edit.js';
 	import { sortMatches } from '#lib/filters/sort.js';
 	import type { Sort } from '#lib/filters/sort.js';
@@ -84,7 +84,11 @@
 			: EMPTY_BUDGET
 	);
 	const results = $derived(
-		sortMatches(dataset, evaluate(dataset, queryState.predicate), queryState.sort)
+		sortMatches(
+			dataset,
+			evaluate(dataset, queryState.predicate, (printingId) => collection.quantityOf(printingId)),
+			queryState.sort
+		)
 	);
 	const filtered = $derived(isFiltered(queryState.source));
 
@@ -154,11 +158,24 @@
 	 */
 	const COLLECTION_PARAM = 'collection';
 
-	const trackingCollection = $derived(browser && currentUrl().searchParams.has(COLLECTION_PARAM));
+	/**
+	 * A query that mentions ownership counts as opting in, on top of the explicit toggle. Typing
+	 * `owned:0` is a clearer statement of intent than the toggle is, and without this the grid
+	 * would answer an ownership question while showing no ownership — and answer it wrongly, since
+	 * a signed-out lookup reports zero for everything.
+	 *
+	 * Read off the compiled predicate rather than by matching the raw source, so it can't be
+	 * fooled by the word appearing inside a quoted phrase or a regex.
+	 */
+	const queryMentionsOwned = $derived(mentionsOwned(queryState.predicate));
+
+	const trackingCollection = $derived(
+		browser && (currentUrl().searchParams.has(COLLECTION_PARAM) || queryMentionsOwned)
+	);
 
 	function toggleCollection() {
 		const next = new URL(currentUrl().href);
-		if (trackingCollection) next.searchParams.delete(COLLECTION_PARAM);
+		if (next.searchParams.has(COLLECTION_PARAM)) next.searchParams.delete(COLLECTION_PARAM);
 		else next.searchParams.set(COLLECTION_PARAM, '1');
 		void goto(next, { shallow: true, replace: true });
 	}
@@ -275,9 +292,11 @@
 						type="button"
 						aria-pressed={trackingCollection}
 						onclick={toggleCollection}
-						title={trackingCollection
-							? 'Hide collection controls'
-							: 'Show how many copies of each card you own'}
+						title={queryMentionsOwned
+							? 'Your query asks about ownership, so the controls stay on'
+							: trackingCollection
+								? 'Hide collection controls'
+								: 'Show how many copies of each card you own'}
 						class="rounded-md border px-2 py-0.5 tracking-wide uppercase transition-colors
 							{trackingCollection ? 'border-neon bg-neon text-void' : 'border-edge text-body hover:bg-raised'}"
 					>

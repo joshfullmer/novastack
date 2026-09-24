@@ -11,7 +11,7 @@
 import type { Dataset } from '#lib/cards/dataset.js';
 import type { CardType, Color, Keyword, Rarity } from '#lib/cards/vocabulary.js';
 import { isEmptyBudget, type ColorBudget } from './budget.js';
-import type { Predicate } from './predicate.js';
+import type { CountField, Predicate } from './predicate.js';
 
 export type NumericRange = { min: number | null; max: number | null; includeNull: boolean };
 export const UNFILTERED_RANGE: NumericRange = { min: null, max: null, includeNull: true };
@@ -40,8 +40,12 @@ function topLevelChildren(predicate: Predicate): readonly Predicate[] {
 }
 
 /** `numeric` alone isn't a specific facet — cost/power/ram all share that `kind` — so blocking
- * has to track them separately, unlike every other leaf kind which names exactly one facet. */
-type FacetKey = Predicate['kind'] | `numeric:cost` | `numeric:power` | `numeric:ram`;
+ * has to track them separately, unlike every other leaf kind which names exactly one facet.
+ *
+ * Templated over `CountField` so a new bounded field can't be added to the predicate without
+ * appearing here. `numeric:owned` is the one member with no chip control behind it — ownership is
+ * query-only — so it can enter the blocked set but nothing ever looks it up. */
+type FacetKey = Predicate['kind'] | `numeric:${CountField}`;
 
 function leafKey(predicate: Predicate): FacetKey {
 	return predicate.kind === 'numeric' ? `numeric:${predicate.field}` : predicate.kind;
