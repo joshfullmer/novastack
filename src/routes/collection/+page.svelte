@@ -30,6 +30,7 @@
 	import Meta from '#lib/components/Meta.svelte';
 	import QuantityStepper from '#lib/components/QuantityStepper.svelte';
 	import QueryEditor from '#lib/components/filters/QueryEditor.svelte';
+	import CardDetailOverlay from '#lib/components/CardDetailOverlay.svelte';
 
 	let { data } = $props();
 
@@ -40,10 +41,53 @@
 	 */
 	const ALL_PARAM = 'all';
 
+	/**
+	 * The open card's Printing id, in the URL.
+	 *
+	 * In the URL because a card is a thing you link to and a thing Back should close, and **pushed
+	 * shallowly** because opening one changes nothing the server knows: a real navigation here would
+	 * re-run the layout's session check and this page's two wantlist queries to show a card the
+	 * browser already has. `currentUrl()` is how you read a URL under shallow routing — see
+	 * `#lib/filters/shallow.js` for the trap it exists to avoid.
+	 */
+	const CARD_PARAM = 'card';
+
 	const goal = $derived(collection.goal);
 	const ownedOf = (printingId: string) => collection.quantityOf(printingId);
 
 	const showAll = $derived(currentUrl().searchParams.has(ALL_PARAM));
+	const openCard = $derived(currentUrl().searchParams.get(CARD_PARAM));
+
+	/**
+	 * Opens a card, or swaps which one is open.
+	 *
+	 * **Opening pushes; swapping replaces.** One history entry per *visit* to the overlay, so Back
+	 * always closes it — an entry per printing meant Back walked backwards through the printings you
+	 * had looked at before it would let you out.
+	 */
+	function openDetail(printingId: string) {
+		const url = new URL(currentUrl().href);
+		const swapping = url.searchParams.has(CARD_PARAM);
+		url.searchParams.set(CARD_PARAM, printingId);
+		void goto(`${url.pathname}${url.search}`, { shallow: true, replace: swapping });
+	}
+
+	/**
+	 * Closes by **replacing** the URL rather than going back.
+	 *
+	 * `history.back()` looked tidier and was wrong: Esc and the backdrop can fire when the entry we
+	 * pushed is no longer the current one, and then Back steps somewhere else entirely — it left
+	 * `?card=` in the address bar pointing at a card that was no longer open. Replacing states the
+	 * outcome we want instead of navigating towards it, and Back still closes an open card, because
+	 * the entry behind is the one without the param.
+	 */
+	function closeDetail() {
+		const url = new URL(currentUrl().href);
+		if (!url.searchParams.has(CARD_PARAM)) return;
+
+		url.searchParams.delete(CARD_PARAM);
+		void goto(`${url.pathname}${url.search}`, { shallow: true, replace: true });
+	}
 
 	/**
 	 * The same query pipeline `/cards` uses — `QueryEditor` for highlighting and autocomplete,
@@ -58,6 +102,8 @@
 	/** A URL with some params changed and everything else — including `?q=` — left alone. */
 	function urlWith(changes: { q?: string; all?: boolean }): string {
 		const url = new URL(currentUrl().href);
+		// Never carried along: the open card belongs to the moment, not to the filter you just set.
+		url.searchParams.delete(CARD_PARAM);
 
 		if (changes.q !== undefined) {
 			// An absent param, never an empty one: one canonical URL for "no query".
@@ -117,7 +163,7 @@
 		// Debounced and history-replacing, matching `/cards`: one entry per pause in typing rather
 		// than one per keystroke. The pills push instead, so Back undoes a filter.
 		clearTimeout(queryTimer);
-		queryTimer = setTimeout(() => void goto(urlWith({ q: next }), { replaceState: true }), 200);
+		queryTimer = setTimeout(() => void goto(urlWith({ q: next }), { replace: true }), 200);
 	}
 
 	/**
@@ -343,9 +389,22 @@
 		<ul class="grid grid-cols-3 gap-3 sm:grid-cols-5 md:grid-cols-6 lg:grid-cols-7 xl:grid-cols-9">
 			{#each group.rows as row (row.printing.id)}
 				{@const count = collection.quantityOf(row.printing.id)}
-				<li class="group/tile relative">
-					<!-- Veiled rather than dimmed when you own none: see `card-veil` in `layout.css`. -->
-					<div class="overflow-hidden rounded-lg" class:card-veil={count === 0}>
+				<li class="group/tile relative" data-printing-tile={row.printing.id}>
+					<!--
+						A real `<button>` around the art, so the card opens on click, on Enter, and shows up
+						in the tab order — the grid's 332 tiles were previously inert, which `TODO.md` had
+						recorded as the gap this closes. The stepper and the want button sit above it as
+						siblings, so their clicks never reach this.
+
+						Veiled rather than dimmed when you own none: see `card-veil` in `layout.css`.
+					-->
+					<button
+						type="button"
+						onclick={() => openDetail(row.printing.id)}
+						aria-label="{row.card.name} — {row.printing.collectorNumber} details"
+						class="block w-full overflow-hidden rounded-lg"
+						class:card-veil={count === 0}
+					>
 						<CardImage
 							printingId={row.printing.id}
 							thumbhash={row.printing.thumbhash}
@@ -354,7 +413,7 @@
 							sizes="170px"
 							class="rounded-lg"
 						/>
-					</div>
+					</button>
 					<span
 						class="pointer-events-none absolute top-1.5 right-1.5 rounded bg-void/90 px-1.5 py-0.5
 							font-mono text-[0.6rem] text-muted tabular-nums">{row.printing.collectorNumber}</span
@@ -417,3 +476,17 @@
 		</ul>
 	</section>
 {/each}
+
+<!--
+	One overlay for the whole grid, driven by the URL rather than by per-tile state: 332 tiles
+	should not each carry a dialog, and the card that's open is a property of the page's address.
+-->
+<CardDetailOverlay
+	printingId={openCard}
+	{ownedOf}
+	wanted={openCard ? wanted.has(openCard) : false}
+	wantlistName={data.wantlist?.name ?? null}
+	onWant={(printingId) => void want([printingId])}
+	onClose={closeDetail}
+	onShowPrinting={openDetail}
+/>

@@ -99,6 +99,25 @@ html[data-manage-collection='off'] [data-collection-ui] {
 	@apply outline-2 outline-offset-2 outline-neon;
 }
 
+/* The card detail overlay's two supporting animations. The card itself is animated in JS — a FLIP
+   from the clicked tile needs measurements — but the scrim and the panel are fixed movements, and
+   they deliberately run on their own, shorter clocks: the scrim lands first, the panel next, the
+   card last, which is what makes the card read as the thing opening rather than a dialog
+   appearing. Timings measured off cyberdecktools, see
+   `docs/research/collection-recon/cyberdecktools-card-detail.md`. */
+@keyframes scrim-in {
+	from {
+		opacity: 0;
+	}
+}
+
+@keyframes detail-panel-in {
+	from {
+		opacity: 0;
+		transform: translateY(0.75rem);
+	}
+}
+
 @utility card-frame {
 	aspect-ratio: var(--aspect-card);
 }
