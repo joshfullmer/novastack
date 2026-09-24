@@ -197,8 +197,15 @@
 	 */
 	const visibleRight = $derived(turn ? turn.target * 2 : rightPage);
 
-	/** The Pages in the current spread, for the strip to mark as current. */
-	const currentPages = $derived(new Set([leftPage, rightPage]));
+	/**
+	 * Which spread the strip marks — the destination from the moment a turn begins, not when it
+	 * lands. The outline used to wait for the animation to finish and then snap; now it crosses over
+	 * while the page is in the air, which is when you're looking at it.
+	 */
+	const activeSpread = $derived(turn ? turn.target : spread);
+
+	/** The Pages in the spread being shown or turned to, for the strip to mark as current. */
+	const currentPages = $derived(new Set([activeSpread * 2 - 1, activeSpread * 2]));
 
 	let hoverTurnTimer: ReturnType<typeof setTimeout> | undefined;
 
@@ -629,7 +636,15 @@
 			>
 
 			<div class="min-w-0 flex-1">
-				<div class="grid grid-cols-2 gap-3 sm:gap-4">
+				<!--
+					**No gap between the halves**, and that is load-bearing rather than taste. The leaf
+					rotates about the spine — the right half's left edge — so at 180° it lands mirrored
+					across that edge. A column gap put it exactly one gap-width right of the left page, so
+					the instant the turn committed and the real left page took over, the whole page jumped
+					sideways by those 16px. With the halves touching, the mirror is exact by construction,
+					and the two sheets' own borders read as the binder's gutter.
+				-->
+				<div class="grid grid-cols-2">
 					<div>{@render half(leftPage)}</div>
 					<div class="relative">
 						{@render half(visibleRight)}
@@ -703,21 +718,20 @@
 							aria-current={current ? 'page' : undefined}
 							title="Page {index + 1}"
 							class="flex flex-col items-center gap-1 rounded-lg border px-2 py-1.5
-								transition-colors {current ? 'border-neon bg-neon/5' : 'border-edge hover:border-neon-dim'}"
+								transition-colors duration-500 ease-[cubic-bezier(0.35,0,0.25,1)]
+								{current ? 'border-neon bg-neon/5' : 'border-edge hover:border-neon-dim'}"
 						>
 							<span class="grid grid-cols-3 gap-0.5" aria-hidden="true">
 								{#each pockets as printingId, pocket (pocket)}
 									<span
-										class="size-1.5 rounded-[1px] {printingId
-											? current
-												? 'bg-neon'
-												: 'bg-neon-dim'
-											: 'bg-edge'}"
+										class="size-1.5 rounded-[1px] transition-colors duration-500
+											ease-[cubic-bezier(0.35,0,0.25,1)] {printingId ? (current ? 'bg-neon' : 'bg-neon-dim') : 'bg-edge'}"
 									></span>
 								{/each}
 							</span>
 							<span
-								class="font-mono text-[0.65rem] tabular-nums {current ? 'text-neon' : 'text-muted'}"
+								class="font-mono text-[0.65rem] tabular-nums transition-colors duration-500
+									ease-[cubic-bezier(0.35,0,0.25,1)] {current ? 'text-neon' : 'text-muted'}"
 								>{String(index + 1).padStart(2, '0')}</span
 							>
 						</button>
