@@ -1,17 +1,19 @@
 <script lang="ts">
 	/**
 	 * The owner's Binders. A **Binder** is a showcase: what is in it means "I want to display
-	 * this", never "I own this" (`CONTEXT.md`). Nothing on this page reads the Collection.
+	 * this", never "I own this" (`CONTEXT.md`) — which is why the Collection appears here only as a
+	 * veil over cards with an Owned Count of zero, and never as a count or a control.
 	 *
-	 * Rendered as covers rather than rows, because a Binder is an object you made rather than a
-	 * record — the prototype's shelf, kept. A Binder's cover is its first filled Pocket, which is
-	 * why a new one looks empty until you put something in it.
+	 * Rendered as sheets rather than rows, because a Binder is an object you made rather than a
+	 * record — the prototype's shelf, kept. Each preview is the Binder's whole first Page, gaps
+	 * included: a Binder *is* an arrangement, and one cover card says nothing about it.
 	 */
 	import { enhance } from '$app/forms';
 	import CardImage from '#lib/components/CardImage.svelte';
 	import Meta from '#lib/components/Meta.svelte';
 	import { dataset } from '#lib/cards/index.js';
 	import { POCKETS_PER_PAGE } from '#lib/collection/binders.js';
+	import { collection } from '#lib/collection/state.svelte.js';
 
 	let { data, form } = $props();
 
@@ -107,14 +109,16 @@
 						{#each binder.firstPage as printingId, pocket (pocket)}
 							{@const row = printingId ? printingById.get(printingId) : undefined}
 							{#if row}
-								<CardImage
-									printingId={row.printing.id}
-									thumbhash={row.printing.thumbhash}
-									color={row.card.color}
-									alt=""
-									sizes="80px"
-									class="rounded"
-								/>
+								<div class="rounded" class:card-veil={collection.quantityOf(row.printing.id) === 0}>
+									<CardImage
+										printingId={row.printing.id}
+										thumbhash={row.printing.thumbhash}
+										color={row.card.color}
+										alt=""
+										sizes="80px"
+										class="rounded"
+									/>
+								</div>
 							{:else}
 								<div class="card-frame rounded border border-dashed border-edge/70"></div>
 							{/if}

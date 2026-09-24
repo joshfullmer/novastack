@@ -32,9 +32,10 @@
 	import {
 		PocketDrag,
 		POCKET_ATTRIBUTE,
+		REMOVE_ATTRIBUTE,
 		pocketKey,
 		type DragPayload,
-		type DropTarget
+		type DropZone
 	} from '#lib/collection/pocket-drag.svelte.js';
 	import {
 		PRINTING_ROWS_IN_SET_ORDER,
@@ -122,20 +123,26 @@
 	 * the documented manual path instead: `fetch` the action, `deserialize` the result, invalidate.
 	 * Validation stays server-side, so a hand-crafted drop is no more trusted than a click.
 	 */
-	async function commitDrop(payload: DragPayload, target: DropTarget): Promise<void> {
+	async function commitDrop(payload: DragPayload, zone: DropZone): Promise<void> {
 		const body = new FormData();
-		let action: 'move' | 'place';
+		let action: 'move' | 'place' | 'clear';
 
-		if (payload.kind === 'pocket') {
+		if (zone.kind === 'remove') {
+			// Only a Pocket can be removed from; the engine won't offer this zone for a search card.
+			if (payload.kind !== 'pocket') return;
+			action = 'clear';
+			body.set('page', String(payload.page));
+			body.set('pocket', String(payload.pocket));
+		} else if (payload.kind === 'pocket') {
 			action = 'move';
 			body.set('page', String(payload.page));
 			body.set('pocket', String(payload.pocket));
-			body.set('toPage', String(target.page));
-			body.set('toPocket', String(target.pocket));
+			body.set('toPage', String(zone.page));
+			body.set('toPocket', String(zone.pocket));
 		} else {
 			action = 'place';
-			body.set('page', String(target.page));
-			body.set('pocket', String(target.pocket));
+			body.set('page', String(zone.page));
+			body.set('pocket', String(zone.pocket));
 			body.set('printingId', payload.printingId);
 		}
 
@@ -313,8 +320,14 @@
 									`ondragstart` is cancelled because the card art is an `<img>`, and the
 									browser's own image drag would otherwise fight the real one for the gesture.
 								-->
+								<!--
+									Veiled when the owner owns no copies (`card-veil` in `layout.css`), and only for
+									the owner: a Binder says nothing about ownership, so veiling a stranger's view
+									by *their* collection would read as a claim about the owner's.
+								-->
 								<div
-									class="group/pocket relative transition-opacity select-none
+									class="group/pocket relative select-none
+										{data.isOwner && ownedOf(row.printing.id) === 0 ? 'card-veil' : ''}
 										{data.isOwner ? 'cursor-grab' : ''}"
 									role="group"
 									aria-label="{row.card.name}, pocket {pocket + 1} on page {page + 1}"
@@ -414,9 +427,23 @@
 		     placement becomes a scroll — and `/collection/add` already taught this lesson once, where
 		     an `xl` gate meant most windows never saw the preview at all. -->
 		<aside
-			class="w-full shrink-0 self-start rounded-xl border border-edge bg-shell lg:sticky lg:top-nav
-				lg:max-h-[calc(100vh-var(--spacing-nav)-1rem)] lg:w-80 lg:overflow-y-auto xl:w-96"
+			{...{ [REMOVE_ATTRIBUTE]: '' }}
+			class="relative w-full shrink-0 self-start rounded-xl border bg-shell transition-colors
+				lg:sticky lg:top-nav lg:max-h-[calc(100vh-var(--spacing-nav)-1rem)] lg:w-80
+				lg:overflow-y-auto xl:w-96 {drag.overRemove ? 'border-card-red bg-card-red/5' : 'border-edge'}"
 		>
+			{#if drag.payload?.kind === 'pocket'}
+				<!-- Only while a card that's *in* the Binder is in the air: dragging a search result back
+				     here does nothing, so promising otherwise would be a lie. -->
+				<p
+					class="sticky top-0 z-20 -mb-px border-b px-4 py-2 text-center text-xs transition-colors
+						{drag.overRemove
+						? 'border-card-red bg-card-red/15 text-bright'
+						: 'border-edge bg-shell text-muted'}"
+				>
+					{drag.overRemove ? 'Release to take it out of the binder' : 'Drop here to remove'}
+				</p>
+			{/if}
 			<div class="sticky top-0 z-10 space-y-3 border-b border-edge bg-shell p-4">
 				<div class="flex items-baseline justify-between gap-2">
 					<p class="text-xs font-medium tracking-widest text-muted uppercase">Add cards</p>
@@ -499,8 +526,8 @@
 									.collectorNumber}{row.printing.locale !== DEFAULT_LOCALE
 									? ` · ${row.printing.locale.toUpperCase()}`
 									: ''}"
-								class="relative block w-full cursor-grab rounded transition-transform
-									select-none hover:-translate-y-0.5 {held?.printing.id === row.printing.id
+								class="relative block w-full cursor-grab rounded transition-transform select-none
+									hover:-translate-y-0.5 {owned === 0 ? 'card-veil' : ''} {held?.printing.id === row.printing.id
 									? 'ring-2 ring-neon'
 									: ''}"
 							>

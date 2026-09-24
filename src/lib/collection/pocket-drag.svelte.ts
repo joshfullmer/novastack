@@ -30,7 +30,14 @@ export type DragPayload =
 	/** A card from the search panel, on its way in for the first time. */
 	| { kind: 'search'; printingId: string };
 
-export type DropTarget = { page: number; pocket: number };
+/**
+ * Where a drag can land.
+ *
+ * `remove` is the search panel: dragging a card out of the Binder and back to where cards come
+ * from is the natural inverse of dragging one in, and it beats hunting for the small ✕ that
+ * appears on hover.
+ */
+export type DropZone = { kind: 'pocket'; page: number; pocket: number } | { kind: 'remove' };
 
 /** Movement before a press becomes a drag rather than a click. */
 const MOUSE_SLOP = 4;
@@ -52,6 +59,7 @@ const MAX_TILT = 16;
 const TILT_EASE = 0.2;
 const LIFT_SCALE = 1.06;
 const SCALE_EASE = 0.18;
+const FADE_EASE = 0.16;
 
 /** Close enough, slow enough: the drop is over and the ghost can come down. */
 const SETTLE_DISTANCE = 1.5;
@@ -63,8 +71,10 @@ const MAX_SETTLE_MS = 900;
 const EDGE_BAND = 96;
 const EDGE_SPEED = 20;
 
-/** Set by the Pocket markup, and the only thing hit-testing looks for. */
+/** Set by the Pocket markup; hit-testing looks for this and `REMOVE_ATTRIBUTE`, nothing else. */
 export const POCKET_ATTRIBUTE = 'data-pocket';
+/** Set by whatever region means "drop here to take this out of the Binder". */
+export const REMOVE_ATTRIBUTE = 'data-drop-remove';
 
 export function pocketKey(page: number, pocket: number): string {
 	return `${page},${pocket}`;
@@ -83,14 +93,14 @@ export type PocketDragOptions = {
 	 * Commits the drop. Awaited, and the ghost stays up until it resolves — it sits over the
 	 * destination Pocket, so the round trip reads as the card landing rather than as a flicker.
 	 */
-	onDrop: (payload: DragPayload, target: DropTarget) => Promise<void>;
+	onDrop: (payload: DragPayload, zone: DropZone) => Promise<void>;
 };
 
 export class PocketDrag {
 	/** What is in the air, or `null`. Also the "is a drag happening" flag. */
 	payload = $state<DragPayload | null>(null);
-	/** The Pocket under the pointer, if any. */
-	over = $state<DropTarget | null>(null);
+	/** What is under the pointer, if it's something this card can be dropped on. */
+	over = $state<DropZone | null>(null);
 
 	/** Ghost geometry, in viewport pixels — read straight into the ghost's `style`. */
 	x = $state(0);
@@ -99,6 +109,8 @@ export class PocketDrag {
 	height = $state(0);
 	rotation = $state(0);
 	scale = $state(1);
+	/** Only ever leaves 1 on the way out: a removed card shrinks and fades where you dropped it. */
+	opacity = $state(1);
 
 	/** True from pointerup until the ghost has settled and the drop has been committed. */
 	landing = $state(false);
@@ -132,6 +144,7 @@ export class PocketDrag {
 	#ghostVelocityX = 0;
 	#ghostVelocityY = 0;
 	#targetScale = 1;
+	#targetOpacity = 1;
 
 	#origin: { x: number; y: number } | null = null;
 
@@ -171,8 +184,14 @@ export class PocketDrag {
 		return payload?.kind === 'pocket' ? pocketKey(payload.page, payload.pocket) : null;
 	}
 
+	/** The Pocket under the pointer, for the markup to ring. `null` over anything else. */
 	get overKey(): string | null {
-		return this.over ? pocketKey(this.over.page, this.over.pocket) : null;
+		return this.over?.kind === 'pocket' ? pocketKey(this.over.page, this.over.pocket) : null;
+	}
+
+	/** True while releasing would take the card out of the Binder. */
+	get overRemove(): boolean {
+		return this.over?.kind === 'remove';
 	}
 
 	/**
@@ -304,7 +323,9 @@ export class PocketDrag {
 		this.y = rect.top;
 		this.rotation = 0;
 		this.scale = 1;
+		this.opacity = 1;
 		this.#targetScale = this.#reduced ? 1 : LIFT_SCALE;
+		this.#targetOpacity = 1;
 
 		this.#grabX = clientX - rect.left;
 		this.#grabY = clientY - rect.top;
@@ -353,13 +374,25 @@ export class PocketDrag {
 		this.#pointerY = clientY;
 	}
 
-	/** The Pocket under a point, by hit-testing the DOM — the ghost is `pointer-events: none`. */
-	#targetAt(clientX: number, clientY: number): DropTarget | null {
-		const element = document
-			.elementFromPoint(clientX, clientY)
-			?.closest(`[${POCKET_ATTRIBUTE}]`) as HTMLElement | null;
+	/** What's under a point, by hit-testing the DOM — the ghost is `pointer-events: none`. */
+	#targetAt(clientX: number, clientY: number): DropZone | null {
+		const under = document.elementFromPoint(clientX, clientY);
+		if (!under) return null;
 
-		const raw = element?.getAttribute(POCKET_ATTRIBUTE);
+		const pocket = under.closest(`[${POCKET_ATTRIBUTE}]`);
+		if (pocket) return this.#pocketZone(pocket.getAttribute(POCKET_ATTRIBUTE));
+
+		// Only a card that's *in* the Binder can be taken out of it. Dragging a search result back
+		// onto the search panel is a no-op, so the panel isn't a target for it and the card flies
+		// home instead of implying something happened.
+		if (this.payload?.kind === 'pocket' && under.closest(`[${REMOVE_ATTRIBUTE}]`)) {
+			return { kind: 'remove' };
+		}
+
+		return null;
+	}
+
+	#pocketZone(raw: string | null): DropZone | null {
 		if (!raw) return null;
 
 		const [page, pocket] = raw.split(',').map(Number);
@@ -372,22 +405,28 @@ export class PocketDrag {
 			return null;
 		}
 
-		return { page, pocket };
+		return { kind: 'pocket', page, pocket };
 	}
 
-	async #release(target: DropTarget | null): Promise<void> {
+	async #release(zone: DropZone | null): Promise<void> {
 		const payload = this.payload;
 		if (!payload || this.landing) return;
 
 		this.landing = true;
 		this.#releasedAt = performance.now();
 
-		if (target) {
+		if (zone?.kind === 'remove') {
+			// Nowhere to land: the card is leaving. It shrinks and fades where it was let go, which
+			// reads as "gone" without pretending it flew into the panel — the panel is a whole column,
+			// and animating to the middle of it would look like a misfire.
+			this.#targetScale = 0.6;
+			this.#targetOpacity = 0;
+		} else if (zone) {
 			// The destination's own rect, so the ghost lands exactly where the card will be — and
 			// scales to it, which matters most dragging out of the search panel, where the card
 			// being dragged is smaller than a Pocket.
 			const element = document.querySelector<HTMLElement>(
-				`[${POCKET_ATTRIBUTE}="${pocketKey(target.page, target.pocket)}"]`
+				`[${POCKET_ATTRIBUTE}="${pocketKey(zone.page, zone.pocket)}"]`
 			);
 			const rect = element?.getBoundingClientRect();
 			if (rect) {
@@ -412,8 +451,8 @@ export class PocketDrag {
 
 		// Commit and settle run together on purpose: the request is in flight while the card flies,
 		// so the two costs overlap instead of queueing.
-		const committed = target
-			? this.#options.onDrop(payload, target).catch(() => undefined)
+		const committed = zone
+			? this.#options.onDrop(payload, zone).catch(() => undefined)
 			: Promise.resolve();
 
 		await Promise.all([committed, this.#settled()]);
@@ -500,13 +539,19 @@ export class PocketDrag {
 			: clamp(this.#ghostVelocityX * TILT_PER_VELOCITY, -MAX_TILT, MAX_TILT);
 		this.rotation += (wanted - this.rotation) * TILT_EASE;
 		this.scale += (this.#targetScale - this.scale) * SCALE_EASE;
+		this.opacity += (this.#targetOpacity - this.opacity) * FADE_EASE;
 	}
 
 	#hasSettled(now: number): boolean {
+		if (now - this.#releasedAt > MAX_SETTLE_MS) return true;
+
+		// A card being removed isn't going anywhere, so proximity would call it settled on the first
+		// frame. It's done when it's invisible.
+		if (this.#targetOpacity === 0) return this.opacity < 0.04;
+
 		const distance = Math.hypot(this.#anchorX - this.x, this.#anchorY - this.y);
 		const speed = Math.hypot(this.#ghostVelocityX, this.#ghostVelocityY);
-		if (distance < SETTLE_DISTANCE && speed < SETTLE_SPEED) return true;
-		return now - this.#releasedAt > MAX_SETTLE_MS;
+		return distance < SETTLE_DISTANCE && speed < SETTLE_SPEED;
 	}
 
 	/** Scrolls the window when the pointer is held near an edge, so page 3 is reachable. */

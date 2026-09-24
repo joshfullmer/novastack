@@ -246,7 +246,8 @@
 			{#each group.rows as row (row.printing.id)}
 				{@const count = collection.quantityOf(row.printing.id)}
 				<li class="group/tile relative">
-					<div class="overflow-hidden rounded-lg transition-opacity" class:opacity-35={count === 0}>
+					<!-- Veiled rather than dimmed when you own none: see `card-veil` in `layout.css`. -->
+					<div class="overflow-hidden rounded-lg" class:card-veil={count === 0}>
 						<CardImage
 							printingId={row.printing.id}
 							thumbhash={row.printing.thumbhash}

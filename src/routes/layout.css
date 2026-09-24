@@ -103,6 +103,33 @@ html[data-manage-collection='off'] [data-collection-ui] {
 	aspect-ratio: var(--aspect-card);
 }
 
+/* A card the viewer owns no copies of — still readable, plainly not theirs.
+
+   A translucent sheet over a slight blur, rather than `grayscale` or a flat `opacity`. Colour is
+   how you identify a Cyberpunk card at a glance (the four Colour identities are the one place this
+   theme spends saturation at all), so draining it costs the grid its scannability; and a low
+   `opacity` dims the art against the page background, which reads as "loading" rather than as "not
+   yours". A veil leaves hue and value alone and puts something visibly *in front of* the card.
+
+   `border-radius: inherit` so the veil follows whatever rounding the caller gave the card, and
+   `position: relative` lives here so no caller has to remember it. The blur is deliberately small:
+   at 2px the art is unmistakably out of focus while the name and collector number stay legible,
+   which matters because this treatment covers most of a new collector's screen. */
+@utility card-veil {
+	position: relative;
+
+	&::after {
+		content: '';
+		position: absolute;
+		inset: 0;
+		border-radius: inherit;
+		/* Never eats a click: a veiled card is still draggable, still has a stepper on it. */
+		pointer-events: none;
+		background-color: --alpha(var(--color-edge) / 55%);
+		backdrop-filter: blur(2px);
+	}
+}
+
 /* A solid pennant, notched on the left, with its top-right corner sliced off at a true 45° —
    the printed card frame's own Card Type banner shape. The 45° cut has to be a fixed pixel
    amount, not a percentage, because a percentage cut's angle would depend on the badge's

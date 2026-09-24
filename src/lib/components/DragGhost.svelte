@@ -29,7 +29,7 @@
 		use:portal
 		aria-hidden="true"
 		class="pointer-events-none fixed top-0 left-0 z-50 will-change-transform"
-		style="width: {drag.width}px; transform: translate3d({drag.x}px, {drag.y}px, 0)
+		style="width: {drag.width}px; opacity: {drag.opacity}; transform: translate3d({drag.x}px, {drag.y}px, 0)
 			rotate({drag.rotation}deg) scale({drag.scale});"
 	>
 		<CardImage
