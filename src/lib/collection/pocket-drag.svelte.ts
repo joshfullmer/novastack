@@ -10,6 +10,11 @@
  *
  * **Two phases, two different models**, because they want different things.
  *
+ * *On pickup*, the ghost grows to the size a Pocket will hold it at — a card dragged out of the
+ * search panel starts at thumbnail size and more than doubles. The card in your hand is the thing
+ * you are about to place, so it should already be that size; resizing it at the moment of the drop
+ * instead made the landing the loudest part of the gesture.
+ *
  * *While dragging*, the ghost is a mass on a spring anchored to the pointer. It is never set equal
  * to the pointer, which is what makes it lag and swing; its horizontal velocity drives the tilt, so
  * the banking comes out of the same state rather than being a separate animation. Fixed-step
@@ -70,6 +75,7 @@ const DAMPING = 0.68;
 const TILT_PER_VELOCITY = 0.7;
 const MAX_TILT = 10;
 const TILT_EASE = 0.12;
+/** The pickup's lift, applied *on top of* growing to Pocket size. */
 const LIFT_SCALE = 1.04;
 const SCALE_EASE = 0.14;
 
@@ -356,7 +362,10 @@ export class PocketDrag {
 		this.rotation = 0;
 		this.scale = 1;
 		this.opacity = 1;
-		this.#targetScale = this.#reduced ? 1 : LIFT_SCALE;
+		// Picked up at its own size, then grown to Pocket size on the way: what you're carrying is
+		// the thing you're about to place, so it should be that size in your hand rather than
+		// resizing at the last instant. For a card already in a Pocket this is just the lift.
+		this.#targetScale = this.#reduced ? 1 : this.#pocketRatio(rect.width) * LIFT_SCALE;
 		this.#targetOpacity = 1;
 
 		this.#grabX = clientX - rect.left;
@@ -383,6 +392,22 @@ export class PocketDrag {
 		document.body.style.cursor = 'grabbing';
 
 		this.#startLoop();
+	}
+
+	/**
+	 * How much bigger a Pocket is than the element being dragged.
+	 *
+	 * Measured off the first Pocket on the page rather than the drop target, because at pickup there
+	 * isn't one yet — and every Pocket is the same width, so any of them answers the question. Falls
+	 * back to 1 (no growth) if there are no Pockets to measure, which shouldn't happen but shouldn't
+	 * be a crash either.
+	 */
+	#pocketRatio(sourceWidth: number): number {
+		if (sourceWidth === 0) return 1;
+
+		const pocket = document.querySelector(`[${POCKET_ATTRIBUTE}]`);
+		const width = pocket?.getBoundingClientRect().width ?? 0;
+		return width === 0 ? 1 : width / sourceWidth;
 	}
 
 	/**
@@ -579,8 +604,14 @@ export class PocketDrag {
 		}
 
 		this.#autoScroll(elapsed);
-		this.#anchorX = this.#pointerX - this.#grabX;
-		this.#anchorY = this.#pointerY - this.#grabY;
+
+		// The anchor keeps the point you grabbed under the cursor *as the card grows*, which needs
+		// the current scale: the ghost scales about its centre, so an unscaled offset `g` from the
+		// left edge ends up at `width/2 + (g - width/2) * scale`. Anchoring at `pointer - g` is only
+		// right at scale 1 — a thumbnail grabbed near its corner slid out from under the pointer as
+		// it more than doubled in size.
+		this.#anchorX = this.#pointerX - this.width / 2 - (this.#grabX - this.width / 2) * this.scale;
+		this.#anchorY = this.#pointerY - this.height / 2 - (this.#grabY - this.height / 2) * this.scale;
 
 		if (this.#reduced) {
 			this.x = this.#anchorX;
