@@ -50,176 +50,181 @@
 </script>
 
 <div class="flex min-h-[calc(100vh-var(--spacing-nav))]">
-	<aside
-		class="sticky top-nav hidden h-[calc(100vh-var(--spacing-nav))] w-72 shrink-0 flex-col gap-7
+	<!-- No rail for a stranger following a shared Binder link: every figure in it is about a
+	     Collection they don't have. They still get this layout, so the page inside it doesn't have to
+	     know whether it's being read by its owner. -->
+	{#if data.user}
+		<aside
+			class="sticky top-nav hidden h-[calc(100vh-var(--spacing-nav))] w-72 shrink-0 flex-col gap-7
 			self-start overflow-y-auto border-r border-edge bg-shell px-5 py-7 lg:flex"
-	>
-		<!-- Pinned, and deliberately not styled as a list entry. A link rather than plain text so
+		>
+			<!-- Pinned, and deliberately not styled as a list entry. A link rather than plain text so
 		     it's the way back from any other pane. -->
-		<a
-			href="/collection"
-			class="block rounded-xl border p-4 transition-colors {onGoal
-				? 'border-edge hover:border-neon-dim'
-				: 'border-neon bg-neon/5'}"
-		>
-			<p class="text-xs font-medium tracking-widest text-neon-dim uppercase">Collection</p>
-			<p class="mt-2 font-mono text-2xl text-bright tabular-nums">
-				{progress.owned}<span class="text-base text-muted">/{progress.total}</span>
-			</p>
-			<div class="mt-2 h-1.5 overflow-hidden rounded-full bg-surface">
-				<div class="h-full rounded-full bg-neon" style="width: {progress.percent}%"></div>
-			</div>
-			<p class="mt-2 text-xs text-muted tabular-nums">{percentLabel} complete · {copyLabel}</p>
-		</a>
-
-		<a
-			href="/collection/add"
-			aria-current={onAdd ? 'page' : undefined}
-			class="group/add flex items-center gap-2 rounded-lg border px-3 py-2.5 text-sm
-				transition-colors {onAdd
-				? 'border-neon bg-neon/5 text-neon'
-				: 'border-edge text-body hover:border-neon-dim hover:bg-surface'}"
-		>
-			<span class="font-medium">Add cards</span>
-			<span class="text-xs text-muted">rapid entry</span>
-			<span
-				class="ml-auto text-xs transition-transform {onAdd
-					? 'text-neon'
-					: 'text-muted/60 group-hover/add:translate-x-0.5 group-hover/add:text-neon'}"
-				aria-hidden="true">›</span
+			<a
+				href="/collection"
+				class="block rounded-xl border p-4 transition-colors {onGoal
+					? 'border-edge hover:border-neon-dim'
+					: 'border-neon bg-neon/5'}"
 			>
-		</a>
-
-		<div>
-			<p class="mb-2 text-xs font-medium tracking-widest text-muted uppercase">By rarity</p>
-			<ul class="space-y-2.5">
-				{#each rarities as row (row.rarity)}
-					<li>
-						<div class="mb-1 flex items-baseline justify-between gap-2 text-sm">
-							<span class="min-w-0 truncate text-body">{row.rarity}</span>
-							<span class="shrink-0 font-mono text-xs text-muted tabular-nums"
-								>{row.owned}/{row.total}</span
-							>
-						</div>
-						<div class="h-1 overflow-hidden rounded-full bg-surface">
-							<div class="h-full rounded-full bg-neon-dim" style="width: {row.percent}%"></div>
-						</div>
-					</li>
-				{/each}
-			</ul>
-		</div>
-
-		<div class="space-y-4 border-t border-edge pt-5">
-			<div>
-				<p class="mb-2 flex items-baseline gap-2">
-					<a
-						href="/collection/binders"
-						aria-current={onBinders ? 'page' : undefined}
-						class="text-xs font-medium tracking-widest uppercase transition-colors {onBinders
-							? 'text-neon'
-							: 'text-muted hover:text-body'}">Binders</a
-					>
-					<span class="ml-auto font-mono text-xs text-muted/50 tabular-nums"
-						>{data.binders.length}</span
-					>
+				<p class="text-xs font-medium tracking-widest text-neon-dim uppercase">Collection</p>
+				<p class="mt-2 font-mono text-2xl text-bright tabular-nums">
+					{progress.owned}<span class="text-base text-muted">/{progress.total}</span>
 				</p>
+				<div class="mt-2 h-1.5 overflow-hidden rounded-full bg-surface">
+					<div class="h-full rounded-full bg-neon" style="width: {progress.percent}%"></div>
+				</div>
+				<p class="mt-2 text-xs text-muted tabular-nums">{percentLabel} complete · {copyLabel}</p>
+			</a>
 
-				{#if data.binders.length === 0}
-					<p class="text-xs text-muted/50">Showcases of the cards you want to display</p>
-				{:else}
-					<ul class="space-y-0.5">
-						<!-- Capped, with the overflow behind the section link: the rail is a way in, not an
-						     index, and a user with thirty binders would push the goal off the screen. -->
-						{#each data.binders.slice(0, 5) as binder (binder.id)}
-							<li>
-								<!-- No `aria-current`: the rail only renders under `/collection`, so a Binder's
-								     own page never shows it and there is no current entry to mark. -->
-								<a
-									href="/binders/{binder.id}"
-									class="flex items-baseline gap-2 rounded px-2 py-1 text-sm text-body
-										transition-colors hover:bg-surface hover:text-neon"
+			<a
+				href="/collection/add"
+				aria-current={onAdd ? 'page' : undefined}
+				class="group/add flex items-center gap-2 rounded-lg border px-3 py-2.5 text-sm
+				transition-colors {onAdd
+					? 'border-neon bg-neon/5 text-neon'
+					: 'border-edge text-body hover:border-neon-dim hover:bg-surface'}"
+			>
+				<span class="font-medium">Add cards</span>
+				<span class="text-xs text-muted">rapid entry</span>
+				<span
+					class="ml-auto text-xs transition-transform {onAdd
+						? 'text-neon'
+						: 'text-muted/60 group-hover/add:translate-x-0.5 group-hover/add:text-neon'}"
+					aria-hidden="true">›</span
+				>
+			</a>
+
+			<div>
+				<p class="mb-2 text-xs font-medium tracking-widest text-muted uppercase">By rarity</p>
+				<ul class="space-y-2.5">
+					{#each rarities as row (row.rarity)}
+						<li>
+							<div class="mb-1 flex items-baseline justify-between gap-2 text-sm">
+								<span class="min-w-0 truncate text-body">{row.rarity}</span>
+								<span class="shrink-0 font-mono text-xs text-muted tabular-nums"
+									>{row.owned}/{row.total}</span
 								>
-									<span class="min-w-0 truncate">{binder.name}</span>
-									{#if binder.visibility === 'shared'}
-										<span class="shrink-0 text-[0.6rem] text-muted/60">shared</span>
-									{/if}
-									<span class="ml-auto shrink-0 font-mono text-xs text-muted/60 tabular-nums"
-										>{binder.filled}</span
-									>
-								</a>
-							</li>
-						{/each}
-					</ul>
-					{#if data.binders.length > 5}
+							</div>
+							<div class="h-1 overflow-hidden rounded-full bg-surface">
+								<div class="h-full rounded-full bg-neon-dim" style="width: {row.percent}%"></div>
+							</div>
+						</li>
+					{/each}
+				</ul>
+			</div>
+
+			<div class="space-y-4 border-t border-edge pt-5">
+				<div>
+					<p class="mb-2 flex items-baseline gap-2">
 						<a
 							href="/collection/binders"
-							class="mt-1 block px-2 text-xs text-muted hover:text-neon"
-							>{data.binders.length - 5} more…</a
+							aria-current={onBinders ? 'page' : undefined}
+							class="text-xs font-medium tracking-widest uppercase transition-colors {onBinders
+								? 'text-neon'
+								: 'text-muted hover:text-body'}">Binders</a
 						>
+						<span class="ml-auto font-mono text-xs text-muted/50 tabular-nums"
+							>{data.binders.length}</span
+						>
+					</p>
+
+					{#if data.binders.length === 0}
+						<p class="text-xs text-muted/50">Showcases of the cards you want to display</p>
+					{:else}
+						<ul class="space-y-0.5">
+							<!-- Capped, with the overflow behind the section link: the rail is a way in, not an
+						     index, and a user with thirty binders would push the goal off the screen. -->
+							{#each data.binders.slice(0, 5) as binder (binder.id)}
+								<li>
+									<!-- No `aria-current`: the rail only renders under `/collection`, so a Binder's
+								     own page never shows it and there is no current entry to mark. -->
+									<a
+										href="/collection/binders/{binder.id}"
+										class="flex items-baseline gap-2 rounded px-2 py-1 text-sm text-body
+										transition-colors hover:bg-surface hover:text-neon"
+									>
+										<span class="min-w-0 truncate">{binder.name}</span>
+										{#if binder.visibility === 'shared'}
+											<span class="shrink-0 text-[0.6rem] text-muted/60">shared</span>
+										{/if}
+										<span class="ml-auto shrink-0 font-mono text-xs text-muted/60 tabular-nums"
+											>{binder.filled}</span
+										>
+									</a>
+								</li>
+							{/each}
+						</ul>
+						{#if data.binders.length > 5}
+							<a
+								href="/collection/binders"
+								class="mt-1 block px-2 text-xs text-muted hover:text-neon"
+								>{data.binders.length - 5} more…</a
+							>
+						{/if}
 					{/if}
-				{/if}
-			</div>
+				</div>
 
-			<!-- Still a dimmed placeholder rather than a link that 404s — the treatment Nav used for
+				<!-- Still a dimmed placeholder rather than a link that 404s — the treatment Nav used for
 			     Decks before the deckbuilder shipped. -->
-			<div>
-				<p
-					class="flex items-center gap-2 text-xs font-medium tracking-widest text-muted/50 uppercase"
-				>
-					Wantlists
-					<span class="rounded bg-surface px-1.5 py-0.5 text-[0.6rem] tracking-normal normal-case"
-						>soon</span
+				<div>
+					<p
+						class="flex items-center gap-2 text-xs font-medium tracking-widest text-muted/50 uppercase"
 					>
-				</p>
-				<p class="mt-1 text-xs text-muted/40">What you are still looking for</p>
+						Wantlists
+						<span class="rounded bg-surface px-1.5 py-0.5 text-[0.6rem] tracking-normal normal-case"
+							>soon</span
+						>
+					</p>
+					<p class="mt-1 text-xs text-muted/40">What you are still looking for</p>
+				</div>
 			</div>
-		</div>
 
-		<div class="mt-auto border-t border-edge pt-5">
-			<!-- Given a bordered surface and a chevron rather than left as bare text: it sits where a
+			<div class="mt-auto border-t border-edge pt-5">
+				<!-- Given a bordered surface and a chevron rather than left as bare text: it sits where a
 			     static label used to, so without an affordance it reads as a caption rather than the
 			     entry point to a pane. -->
-			<a
-				href="/collection/goal"
-				aria-current={onGoal ? 'page' : undefined}
-				class="group/goal block rounded-lg border px-3 py-2.5 transition-colors {onGoal
-					? 'border-neon bg-neon/5'
-					: 'border-edge hover:border-neon-dim hover:bg-surface'}"
-			>
-				<span class="flex items-center gap-2">
-					<span
-						class="text-xs font-medium tracking-widest uppercase transition-colors {onGoal
-							? 'text-neon'
-							: 'text-muted group-hover/goal:text-body'}">Collecting goal</span
-					>
-					<span
-						class="ml-auto text-xs transition-transform {onGoal
-							? 'text-neon'
-							: 'text-muted/60 group-hover/goal:translate-x-0.5 group-hover/goal:text-neon'}"
-						aria-hidden="true">›</span
-					>
-				</span>
-				<span
-					class="mt-1 block font-mono text-xs tabular-nums {onGoal ? 'text-body' : 'text-muted'}"
+				<a
+					href="/collection/goal"
+					aria-current={onGoal ? 'page' : undefined}
+					class="group/goal block rounded-lg border px-3 py-2.5 transition-colors {onGoal
+						? 'border-neon bg-neon/5'
+						: 'border-edge hover:border-neon-dim hover:bg-surface'}"
 				>
-					{progress.total} of {dataset.stats.printings} printings counted
-				</span>
-				<span class="mt-0.5 block text-xs text-muted/60">
-					{collection.goalIsDefault ? 'Default — tap to choose' : 'Customised'}
-				</span>
-			</a>
+					<span class="flex items-center gap-2">
+						<span
+							class="text-xs font-medium tracking-widest uppercase transition-colors {onGoal
+								? 'text-neon'
+								: 'text-muted group-hover/goal:text-body'}">Collecting goal</span
+						>
+						<span
+							class="ml-auto text-xs transition-transform {onGoal
+								? 'text-neon'
+								: 'text-muted/60 group-hover/goal:translate-x-0.5 group-hover/goal:text-neon'}"
+							aria-hidden="true">›</span
+						>
+					</span>
+					<span
+						class="mt-1 block font-mono text-xs tabular-nums {onGoal ? 'text-body' : 'text-muted'}"
+					>
+						{progress.total} of {dataset.stats.printings} printings counted
+					</span>
+					<span class="mt-0.5 block text-xs text-muted/60">
+						{collection.goalIsDefault ? 'Default — tap to choose' : 'Customised'}
+					</span>
+				</a>
 
-			<a
-				href="/api/collection/export"
-				download
-				class="mt-2 block rounded-lg px-3 py-2 text-xs text-muted transition-colors
+				<a
+					href="/api/collection/export"
+					download
+					class="mt-2 block rounded-lg px-3 py-2 text-xs text-muted transition-colors
 					hover:bg-surface hover:text-neon"
-			>
-				Export CSV
-				<span class="mt-0.5 block text-muted/50">Everything you own, re-importable</span>
-			</a>
-		</div>
-	</aside>
+				>
+					Export CSV
+					<span class="mt-0.5 block text-muted/50">Everything you own, re-importable</span>
+				</a>
+			</div>
+		</aside>
+	{/if}
 
 	<div class="min-w-0 flex-1 p-6 sm:p-9">{@render children()}</div>
 </div>

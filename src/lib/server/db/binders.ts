@@ -32,10 +32,10 @@ export async function listBinders(db: Db, ownerId: string): Promise<BinderSummar
 
 	if (lists.length === 0) return [];
 
-	// One extra query rather than N, and computed in JS rather than in SQL: the cover is "the
-	// first filled Pocket in reading order", which is an ordered-first-row-per-group problem that
-	// SQLite can only express with a window function or a correlated subquery. A user's pockets
-	// number in the hundreds at most, so fetching them is cheaper than either.
+	// One extra query rather than N, and bucketed in JS rather than in SQL: the list screen shows
+	// each Binder's whole first Page, which in SQL is a filter plus a per-list pivot into nine
+	// columns. A user's pockets number in the hundreds at most, so fetching them all and grouping
+	// here is both cheaper and far easier to read.
 	const pockets = await db
 		.select({
 			listId: binderPockets.listId,
@@ -56,12 +56,17 @@ export async function listBinders(db: Db, ownerId: string): Promise<BinderSummar
 			.filter((row) => row.listId === list.id)
 			.sort((a, b) => a.page - b.page || a.pocket - b.pocket);
 
+		const firstPage: (string | null)[] = Array.from({ length: POCKETS_PER_PAGE }, () => null);
+		for (const row of own) {
+			if (row.page === 0 && row.pocket < POCKETS_PER_PAGE) firstPage[row.pocket] = row.printingId;
+		}
+
 		return {
 			...list,
 			filled: own.length,
 			// An empty Binder is one empty Page, not zero pages.
 			pageCount: own.length === 0 ? 1 : own[own.length - 1].page + 1,
-			coverPrintingId: own[0]?.printingId ?? null
+			firstPage
 		};
 	});
 }

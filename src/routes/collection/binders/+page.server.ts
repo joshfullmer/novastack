@@ -1,6 +1,7 @@
 /**
  * The owner's list of Binders. Auth comes from `../+layout.server.ts`, which guards the whole
- * `/collection` subtree — so unlike `/binders/[id]`, nothing here has to cope with a stranger.
+ * `/collection` subtree — so unlike `/collection/binders/[id]`, which is deliberately exempt from
+ * that guard, nothing here has to cope with a stranger.
  *
  * Mutations are form actions rather than an API endpoint: they are deliberate, one-at-a-time acts
  * that want to work without JavaScript, which is the same reasoning `/decks` uses for renaming and
@@ -53,7 +54,7 @@ export const actions: Actions = {
 
 		const binder = await createBinder(event.locals.db, event.locals.user.id, name.trim());
 		// Straight into the new Binder: you made it to put cards in it.
-		return redirect(303, `/binders/${binder.id}`);
+		return redirect(303, `/collection/binders/${binder.id}`);
 	},
 
 	rename: async (event) => {

@@ -12,7 +12,7 @@
  */
 import { dataset } from '#lib/cards/index.js';
 import { normalizeForSearch } from '#lib/cards/dataset.js';
-import { printTreatment } from '#lib/cards/derive.js';
+import { collectorNumberSortKey, printTreatment } from '#lib/cards/derive.js';
 import { DEFAULT_LOCALE } from '#lib/cards/vocabulary.js';
 import type { Card, Printing } from '#lib/cards/schema.js';
 
@@ -24,6 +24,24 @@ export const PRINTING_ROWS: readonly PrintingRow[] = dataset.cards.flatMap((card
 );
 
 const SET_ORDER = dataset.sets.map((set) => set.id);
+
+/**
+ * The same rows in the order a physical collection is in: by Set, then by printed Collector Number.
+ *
+ * `PRINTING_ROWS` is in dataset order, which groups a Card's printings together across Sets —
+ * right for matching, wrong for browsing. Anything that shows a *list* of printings to pick from
+ * wants this one.
+ */
+export const PRINTING_ROWS_IN_SET_ORDER: readonly PrintingRow[] = [...PRINTING_ROWS].sort(
+	(a, b) => {
+		const bySet = SET_ORDER.indexOf(a.printing.setId) - SET_ORDER.indexOf(b.printing.setId);
+		if (bySet !== 0) return bySet;
+
+		const [aNumber, aText] = collectorNumberSortKey(a.printing.collectorNumber);
+		const [bNumber, bText] = collectorNumberSortKey(b.printing.collectorNumber);
+		return aNumber - bNumber || aText.localeCompare(bText);
+	}
+);
 
 /** Retail before beta. Not `localeCompare`, which sorts "beta" first — backwards, since retail is
  * the common case and the default everywhere else. */

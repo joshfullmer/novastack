@@ -19,7 +19,9 @@
 	let renaming = $state<string | null>(null);
 
 	const printingById = new Map(
-		dataset.cards.flatMap((card) => card.printings.map((printing) => [printing.id, { card, printing }]))
+		dataset.cards.flatMap((card) =>
+			card.printings.map((printing) => [printing.id, { card, printing }])
+		)
 	);
 </script>
 
@@ -35,8 +37,8 @@
 		<p class="text-xs font-medium tracking-widest text-neon-dim uppercase">Binders</p>
 		<h1 class="mt-1 text-4xl font-bold tracking-tight text-bright">Show it off</h1>
 		<p class="mt-2 max-w-xl text-sm text-muted">
-			Arrange the cards you're proud of into pages. Share a binder by link — your collection
-			itself stays private.
+			Arrange the cards you're proud of into pages. Share a binder by link — your collection itself
+			stays private.
 		</p>
 	</div>
 
@@ -92,36 +94,39 @@
 		</p>
 	</div>
 {:else}
-	<ul class="flex flex-wrap gap-5">
+	<ul class="flex flex-wrap gap-6">
 		{#each data.binders as binder (binder.id)}
-			{@const cover = binder.coverPrintingId ? printingById.get(binder.coverPrintingId) : undefined}
-			<li class="w-44">
-				<a href="/binders/{binder.id}" class="group/cover block">
+			<li class="w-64">
+				<a href="/collection/binders/{binder.id}" class="group/cover block">
+					<!-- The whole first Page, as a 3×3 sheet: a Binder *is* an arrangement, so the preview
+					     is the arrangement. Empty pockets included — the gaps are part of it. -->
 					<div
-						class="card-frame relative overflow-hidden rounded-lg border-2 border-edge
+						class="grid grid-cols-3 gap-1.5 rounded-lg border-2 border-edge bg-shell p-2
 							transition-transform group-hover/cover:-translate-y-1 group-hover/cover:border-neon-dim"
 					>
-						{#if cover}
-							<CardImage
-								printingId={cover.printing.id}
-								thumbhash={cover.printing.thumbhash}
-								color={cover.card.color}
-								alt=""
-								sizes="180px"
-							/>
-						{:else}
-							<span class="absolute inset-0 grid place-items-center text-xs text-muted/50"
-								>empty binder</span
-							>
-						{/if}
-						<div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-void to-transparent p-3">
-							<p class="truncate text-sm font-medium text-bright">{binder.name}</p>
-							<p class="font-mono text-[0.65rem] text-muted tabular-nums">
-								{binder.filled}/{binder.pageCount * POCKETS_PER_PAGE} pockets
-								{#if binder.visibility === 'shared'}· shared{/if}
-							</p>
-						</div>
+						{#each binder.firstPage as printingId, pocket (pocket)}
+							{@const row = printingId ? printingById.get(printingId) : undefined}
+							{#if row}
+								<CardImage
+									printingId={row.printing.id}
+									thumbhash={row.printing.thumbhash}
+									color={row.card.color}
+									alt=""
+									sizes="80px"
+									class="rounded"
+								/>
+							{:else}
+								<div class="card-frame rounded border border-dashed border-edge/70"></div>
+							{/if}
+						{/each}
 					</div>
+
+					<p class="mt-2 truncate text-sm font-medium text-bright">{binder.name}</p>
+					<p class="font-mono text-[0.65rem] text-muted tabular-nums">
+						{binder.filled}/{binder.pageCount * POCKETS_PER_PAGE} pockets · {binder.pageCount}
+						{binder.pageCount === 1 ? 'page' : 'pages'}
+						{#if binder.visibility === 'shared'}· shared{/if}
+					</p>
 				</a>
 
 				<div class="mt-2 flex items-center gap-2 text-xs">

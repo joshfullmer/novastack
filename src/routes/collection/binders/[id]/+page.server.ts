@@ -93,7 +93,13 @@ export const actions: Actions = {
 			return fail(400, { message: 'Unknown printing' });
 		}
 
-		await setPocket(event.locals.db, binderId, position.output.page, position.output.pocket, printingId);
+		await setPocket(
+			event.locals.db,
+			binderId,
+			position.output.page,
+			position.output.pocket,
+			printingId
+		);
 	},
 
 	clear: async (event) => {

@@ -11,7 +11,7 @@
  */
 export const POCKETS_PER_PAGE = 9;
 
-/** A Binder as the list screen needs it: identity, plus enough to render a cover and a count. */
+/** A Binder as the list screen needs it: identity, a count, and its first Page to show. */
 export type BinderSummary = {
 	id: string;
 	name: string;
@@ -20,6 +20,13 @@ export type BinderSummary = {
 	filled: number;
 	/** Always at least 1 — an empty Binder is one empty Page, not zero pages. */
 	pageCount: number;
-	/** The first filled Pocket in reading order, used as the cover. `null` for an empty Binder. */
-	coverPrintingId: string | null;
+	/**
+	 * Page 1 in full — `POCKETS_PER_PAGE` entries, `null` where a Pocket is empty.
+	 *
+	 * The whole page rather than one cover card: what a Binder *is* is an arrangement, and a single
+	 * card says nothing about it. Two binders whose first card matches look identical under a cover;
+	 * under a page they don't. Gaps are shown for the same reason they're kept everywhere else —
+	 * a held space is part of the arrangement.
+	 */
+	firstPage: (string | null)[];
 };
