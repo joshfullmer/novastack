@@ -34,6 +34,9 @@
 	import { goto } from '$app/navigation';
 	import { currentUrl } from '#lib/filters/shallow.js';
 	import CardImage from '#lib/components/CardImage.svelte';
+	import QuantityStepper from '#lib/components/QuantityStepper.svelte';
+	import { collection } from '#lib/collection/state.svelte.js';
+	import { manageCollection } from '#lib/collection/manage-pref.svelte.js';
 	import CardMetaBadges from '#lib/components/CardMetaBadges.svelte';
 	import CardStats from '#lib/components/CardStats.svelte';
 	import FaqText from '#lib/components/FaqText.svelte';
@@ -61,6 +64,13 @@
 	 * `currentUrl()` is what makes clicking a printing update the art instantly instead of not at
 	 * all. Both branches resolve the same param the same way; they just run at different times.
 	 */
+	// Client-side, not in `load`: this page is edge-cached with `s-maxage`, so per-user data in
+	// the response would be served to every visitor. Gated on the toggle so turning the controls
+	// off also stops the request. See `routes/api/collection/+server.ts`.
+	$effect(() => {
+		if (manageCollection.enabled) void collection.load();
+	});
+
 	const printing = $derived.by(() => {
 		if (!browser) return data.printing;
 		const key = currentUrl().searchParams.get(PRINTING_PARAM);
@@ -258,6 +268,18 @@
 							</div>
 						</dl>
 					</button>
+					{#if manageCollection.enabled && collection.status !== 'idle' && collection.status !== 'loading'}
+						<!-- Outside the chooser `<button>` on purpose: a stepper nested in a button is
+						     invalid markup, and its clicks would also select the printing. -->
+						<div data-collection-ui class="mt-2 flex items-center gap-2">
+							<span class="text-xs text-muted">In collection</span>
+							<QuantityStepper
+								printingId={entry.id}
+								label="{card.name} {entry.collectorNumber}"
+								expanded
+							/>
+						</div>
+					{/if}
 				</li>
 			{/each}
 		</ul>

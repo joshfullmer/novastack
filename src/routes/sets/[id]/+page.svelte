@@ -40,6 +40,9 @@
 	} from '#lib/cards/derive.js';
 	import CardTile from '#lib/components/CardTile.svelte';
 	import Meta from '#lib/components/Meta.svelte';
+	import QuantityStepper from '#lib/components/QuantityStepper.svelte';
+	import { collection } from '#lib/collection/state.svelte.js';
+	import { manageCollection } from '#lib/collection/manage-pref.svelte.js';
 	import wncLogo from '#lib/assets/wnc-logo.png';
 	import { cardImageUrl } from '#lib/cards/schema.js';
 	import { DEFAULT_LOCALE, type Locale } from '#lib/cards/vocabulary.js';
@@ -110,6 +113,28 @@
 	const results = $derived(collapsed ? collapseToUniqueCards(localeFiltered) : localeFiltered);
 	const shownCardCount = $derived(new Set(results.map((match) => match.card.slug)).size);
 
+	// Client-side, not in `load`: this page is edge-cached with `s-maxage`, so per-user data in
+	// the response would be served to every visitor. See `routes/api/collection/+server.ts`.
+	// Gated on the toggle, so turning the controls off also stops the request rather than just
+	// hiding what it fetched.
+	$effect(() => {
+		if (manageCollection.enabled) void collection.load();
+	});
+
+	/** How much of the *currently shown* checklist is owned — so it tracks the treatment, locale
+	 * and collapse tabs rather than reporting against the whole set regardless of the view. */
+	const ownedHere = $derived(results.filter((match) => collection.has(match.printing.id)).length);
+
+	/** "Add all missing at 1x" — one bulk write rather than a request per card. */
+	function addAllMissing() {
+		const missing = new Map(
+			results
+				.filter((match) => !collection.has(match.printing.id))
+				.map((match) => [match.printing.id, 1] as const)
+		);
+		void collection.setMany(missing);
+	}
+
 	function chooseTreatment(treatment: PrintTreatment) {
 		const next = new URL(currentUrl().href);
 		// Retail is the absent state, matching the printing chooser's "Default Printing is the
@@ -170,6 +195,11 @@
 			<div class="mt-4 flex flex-wrap items-center gap-x-6 gap-y-2 text-lg text-muted">
 				<span class="font-mono">{set.printed}</span>
 				<span class="tabular-nums">{shownCardCount} cards · {results.length} printings</span>
+				{#if collection.editable && manageCollection.enabled}
+					<span data-collection-ui class="text-neon tabular-nums"
+						>{ownedHere}/{results.length} collected</span
+					>
+				{/if}
 				{#if set.kind === 'derivative' && baseSet}
 					<span>
 						Supplements
@@ -179,57 +209,81 @@
 				<a href="/cards?q=set:{set.id}" class="text-neon hover:text-neon-dim">Browse in Cards →</a>
 			</div>
 
-			{#if hasBothTreatments || hasMultipleLocales || canCollapse}
-				<div class="mt-5 flex flex-wrap items-center gap-4">
-					{#if hasBothTreatments}
-						<div class="inline-flex overflow-hidden rounded-md border border-edge text-sm">
-							{#each ['retail', 'beta'] as const as treatment (treatment)}
-								<button
-									type="button"
-									aria-pressed={activeTreatment === treatment}
-									onclick={() => chooseTreatment(treatment)}
-									class="px-3 py-1 capitalize transition-colors {activeTreatment === treatment
-										? 'bg-neon text-void'
-										: 'text-body hover:bg-raised'}">{treatment}</button
-								>
-							{/each}
-						</div>
-					{/if}
+			<div class="mt-5 flex flex-wrap items-center gap-4">
+				{#if hasBothTreatments}
+					<div class="inline-flex overflow-hidden rounded-md border border-edge text-sm">
+						{#each ['retail', 'beta'] as const as treatment (treatment)}
+							<button
+								type="button"
+								aria-pressed={activeTreatment === treatment}
+								onclick={() => chooseTreatment(treatment)}
+								class="px-3 py-1 capitalize transition-colors {activeTreatment === treatment
+									? 'bg-neon text-void'
+									: 'text-body hover:bg-raised'}">{treatment}</button
+							>
+						{/each}
+					</div>
+				{/if}
 
-					{#if hasMultipleLocales}
-						<div class="inline-flex overflow-hidden rounded-md border border-edge text-sm">
-							{#each localesPresent as locale (locale)}
-								<button
-									type="button"
-									aria-pressed={activeLocale === locale}
-									onclick={() => chooseLocale(locale)}
-									class="px-3 py-1 uppercase transition-colors {activeLocale === locale
-										? 'bg-neon text-void'
-										: 'text-body hover:bg-raised'}">{locale}</button
-								>
-							{/each}
-						</div>
-					{/if}
+				{#if hasMultipleLocales}
+					<div class="inline-flex overflow-hidden rounded-md border border-edge text-sm">
+						{#each localesPresent as locale (locale)}
+							<button
+								type="button"
+								aria-pressed={activeLocale === locale}
+								onclick={() => chooseLocale(locale)}
+								class="px-3 py-1 uppercase transition-colors {activeLocale === locale
+									? 'bg-neon text-void'
+									: 'text-body hover:bg-raised'}">{locale}</button
+							>
+						{/each}
+					</div>
+				{/if}
 
-					{#if canCollapse}
-						<button
-							type="button"
-							aria-pressed={collapsed}
-							onclick={toggleCollapsed}
-							class="rounded-full border px-3 py-1 text-sm transition-colors {collapsed
-								? 'border-neon bg-neon text-void'
-								: 'border-edge text-body hover:border-muted'}"
-						>
-							Hide duplicates
-						</button>
-					{/if}
-				</div>
-			{/if}
+				<!-- Always rendered so the toggle itself never disappears; it is not
+					     `data-collection-ui`, or turning the controls off would hide the only way
+					     back on. -->
+				<button
+					type="button"
+					aria-pressed={manageCollection.enabled}
+					onclick={() => manageCollection.toggle()}
+					class="rounded-full border px-3 py-1 text-sm transition-colors {manageCollection.enabled
+						? 'border-neon bg-neon text-void'
+						: 'border-edge text-body hover:border-muted'}"
+				>
+					Manage collection
+				</button>
+
+				{#if collection.editable && manageCollection.enabled && ownedHere < results.length}
+					<button
+						data-collection-ui
+						type="button"
+						onclick={addAllMissing}
+						class="rounded-full border border-edge px-3 py-1 text-sm text-body transition-colors
+								hover:border-neon-dim hover:text-neon"
+					>
+						Add all missing (1×)
+					</button>
+				{/if}
+
+				{#if canCollapse}
+					<button
+						type="button"
+						aria-pressed={collapsed}
+						onclick={toggleCollapsed}
+						class="rounded-full border px-3 py-1 text-sm transition-colors {collapsed
+							? 'border-neon bg-neon text-void'
+							: 'border-edge text-body hover:border-muted'}"
+					>
+						Hide duplicates
+					</button>
+				{/if}
+			</div>
 		</div>
 
 		<ul class="grid grid-cols-3 gap-2 sm:grid-cols-4 sm:gap-3 md:grid-cols-6">
 			{#each results as match, index (collapsed ? match.card.slug : match.printing.id)}
-				<li>
+				<li class="group/tile relative">
 					<CardTile
 						card={match.card}
 						printing={match.printing}
@@ -237,6 +291,11 @@
 						eager={index < 6}
 						onSelect={() => false}
 					/>
+					{#if manageCollection.enabled && collection.status !== 'idle' && collection.status !== 'loading'}
+						<div data-collection-ui class="pointer-events-none absolute bottom-1 left-1">
+							<QuantityStepper printingId={match.printing.id} label={match.card.name} />
+						</div>
+					{/if}
 				</li>
 			{/each}
 		</ul>

@@ -36,6 +36,8 @@
 	import { setExclusiveSlugs } from '#lib/cards/derive.js';
 	import CardPane from '#lib/components/CardPane.svelte';
 	import CardTile from '#lib/components/CardTile.svelte';
+	import QuantityStepper from '#lib/components/QuantityStepper.svelte';
+	import { collection } from '#lib/collection/state.svelte.js';
 	import FilterBar from '#lib/components/filters/FilterBar.svelte';
 	import Meta from '#lib/components/Meta.svelte';
 	import { budgetFromLegendColors, EMPTY_BUDGET } from '#lib/filters/budget.js';
@@ -126,12 +128,49 @@
 		document.documentElement.style.setProperty('--cards-columns', String(columns));
 	});
 
+	// This page is prerendered, so ownership can only arrive client-side — and only at all once
+	// you've opted in, so the default visit costs no request.
+	// See `routes/api/collection/+server.ts`.
+	$effect(() => {
+		if (trackingCollection) void collection.load();
+	});
+
 	/** Measured so `CardPane`'s sticky offset sits flush under FilterBar's sticky query row —
 	 * the chip panel isn't sticky, so it doesn't factor into this. */
 	let filterBarHeight = $state(0);
 
 	/** Tiles stretch to fill, so the browser picks a tier from roughly this width. */
 	const tileSizes = $derived(`calc(100vw / ${columns})`);
+
+	/**
+	 * Collection controls are **opt-in here**, unlike `/sets/[id]`, where the checklist *is* the
+	 * point. `/cards` is a search surface: ownership is incidental to most visits, and 151 badges
+	 * over the art is a cost you should choose to pay.
+	 *
+	 * State lives in the URL rather than in a persisted preference, because that is this page's
+	 * whole model — query, sort and selection are all URL-derived and read through `currentUrl()`.
+	 * The absent state means off, matching the same convention the printing chooser and the set
+	 * page's treatment tabs use, so opt-in falls out for free and the mode is shareable.
+	 */
+	const COLLECTION_PARAM = 'collection';
+
+	const trackingCollection = $derived(browser && currentUrl().searchParams.has(COLLECTION_PARAM));
+
+	function toggleCollection() {
+		const next = new URL(currentUrl().href);
+		if (trackingCollection) next.searchParams.delete(COLLECTION_PARAM);
+		else next.searchParams.set(COLLECTION_PARAM, '1');
+		void goto(next, { shallow: true, replace: true });
+	}
+
+	/** How many of the *currently matching* cards are owned — in any printing, since the grid
+	 * lists Cards and a Card's printings are interchangeable in play. */
+	const ownedInResults = $derived(
+		trackingCollection
+			? results.filter((match) => match.card.printings.some((entry) => collection.has(entry.id)))
+					.length
+			: 0
+	);
 
 	let selectedSlug = $state<string | null>(null);
 
@@ -228,9 +267,29 @@
 							class="px-2 py-0.5 text-body hover:bg-raised disabled:opacity-30">+</button
 						>
 					</div>
+
+					<!-- Sits in the view-controls cluster beside density, because that is what it is: a
+					     choice about how this grid is displayed, not a filter over what it contains.
+					     Filters live in `FilterBar` and change the result set; this changes neither. -->
+					<button
+						type="button"
+						aria-pressed={trackingCollection}
+						onclick={toggleCollection}
+						title={trackingCollection
+							? 'Hide collection controls'
+							: 'Show how many copies of each card you own'}
+						class="rounded-md border px-2 py-0.5 tracking-wide uppercase transition-colors
+							{trackingCollection ? 'border-neon bg-neon text-void' : 'border-edge text-body hover:bg-raised'}"
+					>
+						Collection
+					</button>
 				</div>
 
-				<p aria-live="polite" class="shrink-0 tabular-nums">{results.length} of {dataset.stats.cards}</p>
+				<p aria-live="polite" class="shrink-0 tabular-nums">
+					{results.length} of {dataset.stats.cards}{#if trackingCollection && collection.editable}
+						<span class="text-neon">&nbsp;· {ownedInResults} owned</span>
+					{/if}
+				</p>
 			</div>
 
 			{#if results.length === 0}
@@ -252,7 +311,7 @@
 			{:else}
 				<ul data-columns-grid="cards" class="grid gap-2 sm:gap-3">
 					{#each results as match, index (match.card.slug)}
-						<li>
+						<li class="group/tile relative">
 							<CardTile
 								card={match.card}
 								printing={match.printing}
@@ -270,6 +329,11 @@
 									return true;
 								}}
 							/>
+							{#if trackingCollection && collection.status !== 'idle' && collection.status !== 'loading'}
+								<div data-collection-ui class="pointer-events-none absolute bottom-1 left-1">
+									<QuantityStepper printingId={match.printing.id} label={match.card.name} />
+								</div>
+							{/if}
 						</li>
 					{/each}
 				</ul>
