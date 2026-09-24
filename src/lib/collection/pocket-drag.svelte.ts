@@ -75,8 +75,6 @@ const DAMPING = 0.68;
 const TILT_PER_VELOCITY = 0.7;
 const MAX_TILT = 10;
 const TILT_EASE = 0.12;
-/** The pickup's lift, applied *on top of* growing to Pocket size. */
-const LIFT_SCALE = 1.04;
 const SCALE_EASE = 0.14;
 
 /**
@@ -146,6 +144,14 @@ export class PocketDrag {
 	scale = $state(1);
 	/** Only ever leaves 1 on the way out: a removed card shrinks and fades where you dropped it. */
 	opacity = $state(1);
+	/**
+	 * A Pocket's corner radius in CSS pixels, measured at pickup.
+	 *
+	 * The ghost has to divide this by its own `scale` to get the radius it should set, because a
+	 * transform scales corners along with everything else: at pocket size a card out of the search
+	 * panel is scaled ~1.3×, which turned a 16px radius into a visibly rounder 21px one.
+	 */
+	pocketRadius = $state(0);
 
 	/** True from pointerup until the ghost has settled and the drop has been committed. */
 	landing = $state(false);
@@ -362,10 +368,15 @@ export class PocketDrag {
 		this.rotation = 0;
 		this.scale = 1;
 		this.opacity = 1;
-		// Picked up at its own size, then grown to Pocket size on the way: what you're carrying is
+
+		// Picked up at its own size, then grown to *exactly* Pocket size: what you're carrying is
 		// the thing you're about to place, so it should be that size in your hand rather than
-		// resizing at the last instant. For a card already in a Pocket this is just the lift.
-		this.#targetScale = this.#reduced ? 1 : this.#pocketRatio(rect.width) * LIFT_SCALE;
+		// resizing at the last instant. No extra lift on top — a card 4% larger than the Pocket it
+		// was heading for read as "slightly wrong size", and the ring and shadow already say it's in
+		// hand. For a card already in a Pocket the ratio is 1, so nothing changes.
+		const pocket = this.#measurePocket(rect.width);
+		this.#targetScale = this.#reduced ? 1 : pocket.ratio;
+		this.pocketRadius = pocket.radius;
 		this.#targetOpacity = 1;
 
 		this.#grabX = clientX - rect.left;
@@ -395,19 +406,22 @@ export class PocketDrag {
 	}
 
 	/**
-	 * How much bigger a Pocket is than the element being dragged.
+	 * A Pocket's size relative to the element being dragged, and its corner radius.
 	 *
 	 * Measured off the first Pocket on the page rather than the drop target, because at pickup there
-	 * isn't one yet — and every Pocket is the same width, so any of them answers the question. Falls
-	 * back to 1 (no growth) if there are no Pockets to measure, which shouldn't happen but shouldn't
-	 * be a crash either.
+	 * isn't one yet — and every Pocket on a page is identical, so any of them answers both
+	 * questions. Falls back to "no growth" if there is nothing to measure: no Pockets means no drop
+	 * is possible anyway, so the only thing at stake is how the ghost looks on its way home.
 	 */
-	#pocketRatio(sourceWidth: number): number {
-		if (sourceWidth === 0) return 1;
-
+	#measurePocket(sourceWidth: number): { ratio: number; radius: number } {
 		const pocket = document.querySelector(`[${POCKET_ATTRIBUTE}]`);
-		const width = pocket?.getBoundingClientRect().width ?? 0;
-		return width === 0 ? 1 : width / sourceWidth;
+		if (!pocket || sourceWidth === 0) return { ratio: 1, radius: 0 };
+
+		const width = pocket.getBoundingClientRect().width;
+		return {
+			ratio: width === 0 ? 1 : width / sourceWidth,
+			radius: Number.parseFloat(getComputedStyle(pocket).borderTopLeftRadius) || 0
+		};
 	}
 
 	/**

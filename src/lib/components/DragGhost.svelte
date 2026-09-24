@@ -35,6 +35,16 @@
 	}: { drag: PocketDrag; sizes: string } = $props();
 
 	const row = $derived(draggedRow(drag));
+
+	/**
+	 * The radius to *set*, so the radius that lands on screen matches a Pocket's.
+	 *
+	 * A transform scales corners along with everything else, so a card grown to Pocket size needs
+	 * its radius divided by that growth to come out the same as the Pockets it's flying between.
+	 * Set inline on a wrapper rather than as a class on `CardImage`, because the number is only
+	 * knowable at runtime — and clipping here means the art underneath can stay square-cornered.
+	 */
+	const radius = $derived(drag.scale === 0 ? drag.pocketRadius : drag.pocketRadius / drag.scale);
 </script>
 
 {#if row}
@@ -49,21 +59,23 @@
 			The ring goes the moment the card is released.
 
 			It marks "this is in your hand", so it has no job once the card is landing — and it looked
-			wrong doing it: a ring is drawn *outside* the border radius, and the ghost lands by
-			scaling, so both its width and its corner radius scale with it. A card dragged out of the
-			search panel more than doubles in size on the way down, which stretched a 2px ring into a
-			thick band whose curve no longer matched the Pocket it was settling into. Faded rather than
-			cut, so its disappearance isn't a second event competing with the landing.
+			wrong doing it: a ring is drawn *outside* the border radius, so it stretched with the
+			scale into a band whose curve no longer matched the Pocket it was settling into. Faded
+			rather than cut, so its disappearance isn't a second event competing with the landing.
 		-->
-		<CardImage
-			printingId={row.printing.id}
-			thumbhash={row.printing.thumbhash}
-			color={row.card.color}
-			alt=""
-			{sizes}
-			eager
-			class="rounded-2xl shadow-2xl shadow-void transition-shadow duration-150
+		<div
+			class="overflow-hidden shadow-2xl shadow-void transition-shadow duration-150
 				{drag.landing ? '' : 'ring-2 ring-neon/50'}"
-		/>
+			style="border-radius: {radius}px;"
+		>
+			<CardImage
+				printingId={row.printing.id}
+				thumbhash={row.printing.thumbhash}
+				color={row.card.color}
+				alt=""
+				{sizes}
+				eager
+			/>
+		</div>
 	</div>
 {/if}
