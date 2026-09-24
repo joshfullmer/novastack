@@ -109,18 +109,21 @@
 						{#each binder.firstPage as printingId, pocket (pocket)}
 							{@const row = printingId ? printingById.get(printingId) : undefined}
 							{#if row}
-								<div class="rounded" class:card-veil={collection.quantityOf(row.printing.id) === 0}>
+								<div
+									class="rounded-md"
+									class:card-veil={collection.quantityOf(row.printing.id) === 0}
+								>
 									<CardImage
 										printingId={row.printing.id}
 										thumbhash={row.printing.thumbhash}
 										color={row.card.color}
 										alt=""
 										sizes="80px"
-										class="rounded"
+										class="rounded-md"
 									/>
 								</div>
 							{:else}
-								<div class="card-frame rounded border border-dashed border-edge/70"></div>
+								<div class="card-frame rounded-md border border-dashed border-edge/70"></div>
 							{/if}
 						{/each}
 					</div>

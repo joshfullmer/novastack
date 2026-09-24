@@ -39,7 +39,7 @@
 			alt=""
 			sizes="260px"
 			eager
-			class="rounded-lg shadow-2xl ring-2 shadow-void ring-neon/50"
+			class="rounded-2xl shadow-2xl ring-2 shadow-void ring-neon/50"
 		/>
 	</div>
 {/if}

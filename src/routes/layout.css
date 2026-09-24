@@ -111,10 +111,13 @@ html[data-manage-collection='off'] [data-collection-ui] {
    `opacity` dims the art against the page background, which reads as "loading" rather than as "not
    yours". A veil leaves hue and value alone and puts something visibly *in front of* the card.
 
-   `border-radius: inherit` so the veil follows whatever rounding the caller gave the card, and
-   `position: relative` lives here so no caller has to remember it. The blur is deliberately small:
-   at 2px the art is unmistakably out of focus while the name and collector number stay legible,
-   which matters because this treatment covers most of a new collector's screen. */
+   `border-radius: inherit` so the veil follows whatever rounding the caller gave the card — which
+   means the veiled element has to carry the same radius as the art inside it — and
+   `position: relative` lives here so no caller has to remember it.
+
+   Mostly darkness, barely any blur: 1px is enough to read as "out of focus" without smearing the
+   name and collector number, and the darkening is what actually separates owned from unowned at a
+   glance. A heavier blur made a screen full of unowned cards look like a rendering fault. */
 @utility card-veil {
 	position: relative;
 
@@ -125,8 +128,8 @@ html[data-manage-collection='off'] [data-collection-ui] {
 		border-radius: inherit;
 		/* Never eats a click: a veiled card is still draggable, still has a stepper on it. */
 		pointer-events: none;
-		background-color: --alpha(var(--color-edge) / 55%);
-		backdrop-filter: blur(2px);
+		background-color: --alpha(var(--color-surface) / 68%);
+		backdrop-filter: blur(1px);
 	}
 }
 

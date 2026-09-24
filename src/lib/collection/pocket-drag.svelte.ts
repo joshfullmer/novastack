@@ -49,17 +49,32 @@ const MOUSE_SLOP = 4;
 const TOUCH_HOLD_MS = 180;
 const TOUCH_SLOP = 10;
 
-/** Physics, in fixed steps. Tuned by feel; see the file comment for why the step is fixed. */
+/**
+ * Physics, in fixed steps. Tuned by feel; see the file comment for why the step is fixed.
+ *
+ * These were all livelier on the first pass and it read as jitter rather than as weight. `DAMPING`
+ * multiplies velocity each step, so **lower means more friction** — it and `STIFFNESS` came down
+ * together, which kills the ringing around the settle point without making the card feel floaty.
+ * The tilt is gentler and eased more slowly, because tilt is driven by velocity and velocity is
+ * the noisiest thing here: at the old numbers a twitch of the mouse rocked the card visibly.
+ */
 const STEP_MS = 1000 / 120;
-const STIFFNESS = 0.26;
-const RELEASE_STIFFNESS = 0.34;
-const DAMPING = 0.76;
-const TILT_PER_VELOCITY = 1.05;
-const MAX_TILT = 16;
-const TILT_EASE = 0.2;
-const LIFT_SCALE = 1.06;
-const SCALE_EASE = 0.18;
+const STIFFNESS = 0.2;
+const RELEASE_STIFFNESS = 0.28;
+const DAMPING = 0.68;
+const TILT_PER_VELOCITY = 0.7;
+const MAX_TILT = 10;
+const TILT_EASE = 0.12;
+const LIFT_SCALE = 1.04;
+const SCALE_EASE = 0.14;
 const FADE_EASE = 0.16;
+/**
+ * How much of the pointer's own speed carries into the release.
+ *
+ * At 1 a fast flick shot well past the pocket and swung back twice before settling — the arc is
+ * meant to be felt, not watched.
+ */
+const FLICK_CARRY = 0.55;
 
 /** Close enough, slow enough: the drop is over and the ghost can come down. */
 const SETTLE_DISTANCE = 1.5;
@@ -367,8 +382,9 @@ export class PocketDrag {
 
 		// Exponential smoothing: raw per-event deltas are far too noisy to tilt a card by, and a
 		// single stuttery frame at the moment of release would otherwise fling it across the screen.
-		this.#velocityX = this.#velocityX * 0.7 + instantX * 0.3;
-		this.#velocityY = this.#velocityY * 0.7 + instantY * 0.3;
+		// Weighted well towards history — at an even split, the tilt twitched with the mouse.
+		this.#velocityX = this.#velocityX * 0.85 + instantX * 0.15;
+		this.#velocityY = this.#velocityY * 0.85 + instantY * 0.15;
 
 		this.#pointerX = clientX;
 		this.#pointerY = clientY;
@@ -445,8 +461,8 @@ export class PocketDrag {
 
 		// The flick carries through the release rather than stopping dead at it.
 		if (!this.#reduced) {
-			this.#ghostVelocityX += this.#velocityX * STEP_MS;
-			this.#ghostVelocityY += this.#velocityY * STEP_MS;
+			this.#ghostVelocityX += this.#velocityX * STEP_MS * FLICK_CARRY;
+			this.#ghostVelocityY += this.#velocityY * STEP_MS * FLICK_CARRY;
 		}
 
 		// Commit and settle run together on purpose: the request is in flight while the card flies,

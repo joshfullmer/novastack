@@ -306,7 +306,7 @@
 						-->
 						<li
 							{...{ [POCKET_ATTRIBUTE]: key }}
-							class="relative rounded-lg transition-shadow {isTarget
+							class="relative rounded-2xl transition-shadow {isTarget
 								? 'ring-2 ring-neon ring-offset-2 ring-offset-shell'
 								: ''}"
 						>
@@ -325,8 +325,11 @@
 									the owner: a Binder says nothing about ownership, so veiling a stranger's view
 									by *their* collection would read as a claim about the owner's.
 								-->
+								<!-- The radius is repeated on this wrapper, not only on the art: `card-veil`'s
+								     sheet inherits its `border-radius`, so a square wrapper would put square
+								     corners over a rounded card. -->
 								<div
-									class="group/pocket relative select-none
+									class="group/pocket relative rounded-2xl select-none
 										{data.isOwner && ownedOf(row.printing.id) === 0 ? 'card-veil' : ''}
 										{data.isOwner ? 'cursor-grab' : ''}"
 									role="group"
@@ -349,7 +352,7 @@
 										color={row.card.color}
 										alt={row.card.name}
 										sizes="(min-width: 1024px) 240px, 30vw"
-										class="rounded-lg"
+										class="rounded-2xl"
 									/>
 									{#if data.isOwner}
 										<form
@@ -389,7 +392,7 @@
 										title={held
 											? `Put ${held.card.name} here`
 											: 'Pick a card first, or drag one in'}
-										class="card-frame w-full rounded-lg border-2 border-dashed transition-colors
+										class="card-frame w-full rounded-2xl border-2 border-dashed transition-colors
 											disabled:pointer-events-none {held
 											? 'border-neon-dim/60 text-neon hover:border-neon hover:bg-neon/5'
 											: 'border-edge text-transparent'}"
@@ -400,7 +403,7 @@
 								</form>
 							{:else}
 								<div
-									class="card-frame rounded-lg border-2 border-dashed border-edge/60"
+									class="card-frame rounded-2xl border-2 border-dashed border-edge/60"
 									aria-label="Empty pocket"
 								></div>
 							{/if}
@@ -526,7 +529,7 @@
 									.collectorNumber}{row.printing.locale !== DEFAULT_LOCALE
 									? ` · ${row.printing.locale.toUpperCase()}`
 									: ''}"
-								class="relative block w-full cursor-grab rounded transition-transform select-none
+								class="relative block w-full cursor-grab rounded-lg transition-transform select-none
 									hover:-translate-y-0.5 {owned === 0 ? 'card-veil' : ''} {held?.printing.id === row.printing.id
 									? 'ring-2 ring-neon'
 									: ''}"
@@ -537,11 +540,11 @@
 									color={row.card.color}
 									alt={row.card.name}
 									sizes="110px"
-									class="rounded"
+									class="rounded-lg"
 								/>
 								<span
 									class="pointer-events-none absolute inset-x-0 bottom-0 flex items-center gap-1
-										rounded-b bg-void/85 px-1 py-0.5 font-mono text-[0.55rem] text-muted tabular-nums"
+										rounded-b-lg bg-void/85 px-1 py-0.5 font-mono text-[0.55rem] text-muted tabular-nums"
 								>
 									<span class="truncate">{row.printing.collectorNumber}</span>
 									{#if owned > 0}<span class="ml-auto text-neon-dim">×{owned}</span>{/if}
