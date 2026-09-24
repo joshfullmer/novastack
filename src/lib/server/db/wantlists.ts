@@ -12,6 +12,7 @@
  * they are a separate table.
  */
 import { and, asc, desc, eq, inArray, sql } from 'drizzle-orm';
+import type { WantlistSummary } from '#lib/collection/wantlists.js';
 import type { getDb } from './index.js';
 import { printingLists, user, wantlistEntries } from './schema.js';
 
@@ -25,17 +26,6 @@ export type WantlistEntry = {
 	printingId: string;
 	quantity: number;
 	note: string | null;
-};
-
-/** A Wantlist as the list screen needs it: identity, plus how much is on it. */
-export type WantlistSummary = {
-	id: string;
-	name: string;
-	visibility: Visibility;
-	/** Distinct Printings wanted. */
-	entries: number;
-	/** Copies wanted across them, which is the number that tells you the size of the ask. */
-	copies: number;
 };
 
 export async function listWantlists(db: Db, ownerId: string): Promise<WantlistSummary[]> {

@@ -31,6 +31,9 @@
 
 	let { data } = $props();
 
+	/** Missing figures only exist for someone signed in; `null` everywhere means signed out. */
+	const signedIn = $derived(data.decks.some((deck) => deck.missing !== null));
+
 	// Shared with /decks — "how I like browsing a list of decks" is one preference, not two.
 	// Server-rendered from a cookie (`data.deckView`, read in `+page.server.ts`) rather than
 	// `localStorage`: this page isn't prerendered, so the server can pick the right branch on
@@ -43,11 +46,14 @@
 	// up a different height.
 	const legendSlots = Array.from({ length: LEGEND_SLOTS }, (_, index) => index);
 
-	const SORTS = [
+	const SORTS = $derived([
 		{ value: 'hot', label: 'Hot' },
 		{ value: 'newest', label: 'Newest' },
-		{ value: 'most-liked', label: 'Most-liked' }
-	] as const;
+		{ value: 'most-liked', label: 'Most-liked' },
+		// Only offered to someone who has a Collection to compare against: signed out, every deck
+		// reports the same nothing and the tab would sort by nothing.
+		...(signedIn ? [{ value: 'buildable', label: 'Buildable' }] : [])
+	] as const);
 
 	function withParam(key: string, value: string | null) {
 		const url = new URL(page.url.href);
@@ -70,6 +76,32 @@
 		</svg>
 		{likeCount}
 	</span>
+{/snippet}
+
+<!--
+	How far the viewer is from building the deck. Absent for a signed-out visitor, who has no
+	Collection to be short against — nothing rather than zero, because "you're missing none of it"
+	and "we don't know" are different claims.
+
+	Copies, not distinct cards: three of one card is a smaller errand than one each of three, and
+	copies is what the Buildable tab sorts on.
+-->
+{#snippet missingBadge(missing: { cards: number; copies: number } | null)}
+	{#if missing}
+		{#if missing.copies === 0}
+			<span class="flex items-center gap-1 text-neon-dim" title="You own every card in this deck">
+				<span aria-hidden="true">✓</span>
+				<span class="hidden sm:inline">buildable</span>
+			</span>
+		{:else}
+			<span
+				class="tabular-nums"
+				title="You're missing {missing.cards} {missing.cards === 1
+					? 'card'
+					: 'cards'}, {missing.copies} copies">−{missing.copies}</span
+			>
+		{/if}
+	{/if}
 {/snippet}
 
 {#snippet starterBadge(deck: { isStarterDeck: boolean })}
@@ -197,11 +229,14 @@
 										>
 										cards · {deck.createdAt.toLocaleDateString()}
 									</p>
-									<div class="mt-2 flex items-center justify-between text-xs text-muted">
-										<a href="/explore?owner={deck.ownerId}" class="hover:text-neon"
+									<div class="mt-2 flex items-center justify-between gap-2 text-xs text-muted">
+										<a href="/explore?owner={deck.ownerId}" class="min-w-0 truncate hover:text-neon"
 											>by {deck.ownerName}</a
 										>
-										{@render likeBadge(deck.likeCount)}
+										<span class="flex shrink-0 items-center gap-2">
+											{@render missingBadge(deck.missing)}
+											{@render likeBadge(deck.likeCount)}
+										</span>
 									</div>
 								</div>
 							</li>
@@ -257,6 +292,7 @@
 									<a href="/explore?owner={deck.ownerId}" class="hover:text-neon"
 										>by {deck.ownerName}</a
 									>
+									{@render missingBadge(deck.missing)}
 									{@render likeBadge(deck.likeCount)}
 								</div>
 							</li>

@@ -23,6 +23,7 @@
 	import { dataset } from '#lib/cards/index.js';
 	import { splitCardName } from '#lib/cards/derive.js';
 	import Meta from '#lib/components/Meta.svelte';
+	import MissingPanel from '#lib/components/MissingPanel.svelte';
 	import type { Card } from '#lib/cards/schema.js';
 	import { COLORS } from '#lib/cards/vocabulary.js';
 	import { LEGEND_SLOTS, MAX_DECK_SIZE, MIN_DECK_SIZE } from '#lib/decks/legality.js';
@@ -580,6 +581,18 @@
 						</ul>
 					</div>
 				{/if}
+
+				<!-- Beside legality on purpose: "is this deck legal" and "can I actually build it" are
+				     the two questions you ask before playing a list, and the second one is the only
+				     thing on this page that depends on who's reading it. Renders nothing for a
+				     signed-out visitor — see `MissingPanel`. The Legends count too: they're cards you
+				     need copies of like any other. -->
+				<MissingPanel
+					entries={[
+						...deck.legends.map((legend) => ({ card: legend, quantity: 1 })),
+						...deck.entries
+					]}
+				/>
 
 				<div class="mb-4 flex flex-wrap items-center gap-4">
 					<div class="flex items-center gap-3">
