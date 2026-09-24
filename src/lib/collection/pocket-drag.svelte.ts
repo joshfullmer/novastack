@@ -211,7 +211,6 @@ export class PocketDrag {
 	#pending: {
 		payload: DragPayload;
 		element: HTMLElement;
-		pointerId: number;
 		startX: number;
 		startY: number;
 		touch: boolean;
@@ -258,7 +257,6 @@ export class PocketDrag {
 		this.#pending = {
 			payload,
 			element,
-			pointerId: event.pointerId,
 			startX: event.clientX,
 			startY: event.clientY,
 			touch,
@@ -390,12 +388,14 @@ export class PocketDrag {
 		this.#ghostVelocityX = 0;
 		this.#ghostVelocityY = 0;
 
-		// The pointer is captured so a fast drag that outruns the element keeps sending events.
-		try {
-			pending.element.setPointerCapture(pending.pointerId);
-		} catch {
-			// Safari throws if the pointer has already been released; the window listeners cover it.
-		}
+		// Deliberately **no** `setPointerCapture`.
+		//
+		// Capture retargets every pointer event to the captured element, which also means
+		// `pointerenter`/`pointerleave` stop firing anywhere else — and that silently broke
+		// hovering a page in the pagination strip to turn to it while holding a card. Capture
+		// bought nothing here anyway: the listeners live on `window`, so a drag that outruns its
+		// source element, or whose source element unmounts mid-flight (which happens every time,
+		// since the Pocket renders empty while its card is in the air), keeps being tracked.
 
 		// A drag across a page of cards would otherwise select every caption it crossed, and the
 		// cursor would keep claiming the card is clickable while it's already in the air.
