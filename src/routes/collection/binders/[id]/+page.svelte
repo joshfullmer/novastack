@@ -33,7 +33,7 @@
 	 */
 	import { applyAction, deserialize, enhance } from '$app/forms';
 	import { invalidateAll } from '$app/navigation';
-	import { onDestroy } from 'svelte';
+	import { onDestroy, tick } from 'svelte';
 	import { dataset } from '#lib/cards/index.js';
 	import { DEFAULT_LOCALE } from '#lib/cards/vocabulary.js';
 	import { POCKETS_PER_PAGE } from '#lib/collection/binders.js';
@@ -66,7 +66,7 @@
 	 * which requests this rather than its own width so a drop is always a cache hit. */
 	const POCKET_SIZES = '(min-width: 1024px) 150px, 16vw';
 
-	/** How long a page turn takes. Must match the leaf's `duration-500`. */
+	/** How long a page turn takes. The only place it's stated, now that `animate` drives it. */
 	const TURN_MS = 500;
 	/** How long a held card must hover a page in the strip before the binder turns to it. */
 	const HOVER_TURN_MS = 400;
@@ -129,13 +129,23 @@
 	 * One leaf covers both directions — forward swings it from 0° to -180° about the spine, back
 	 * swings it from -180° to 0° — because either way it is the same physical sheet.
 	 */
-	let turn = $state<{ front: number; back: number; target: number; angle: number } | null>(null);
+	let turn = $state<{ front: number; back: number; target: number; from: number } | null>(null);
+	let leafEl = $state<HTMLElement>();
 
 	function reduceMotion(): boolean {
 		return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 	}
 
-	function goTo(target: number) {
+	/**
+	 * Turns to a spread, animating the leaf between here and there.
+	 *
+	 * Driven by `element.animate` rather than a CSS transition on a reactive style. A transition
+	 * needs the browser to have painted the start angle before the end angle is set, and Svelte's
+	 * DOM update lands in a microtask — so the two angles could arrive in the same frame and the
+	 * transition would never run. `animate` states both keyframes outright, and `finished` is a
+	 * promise, which replaces the timer that used to guess when the turn was over.
+	 */
+	async function goTo(target: number) {
 		if (turn || target === spread || target < 0 || target >= spreadCount) return;
 
 		if (reduceMotion()) {
@@ -144,25 +154,41 @@
 		}
 
 		const forward = target > spread;
+		const from = forward ? 0 : -180;
+		const to = forward ? -180 : 0;
+
 		turn = {
 			front: forward ? rightPage : target * 2,
 			back: forward ? target * 2 - 1 : leftPage,
 			target,
-			angle: forward ? 0 : -180
+			from
 		};
 
-		// Next frame, so the browser has a start angle to transition *from*.
-		requestAnimationFrame(() => {
-			if (turn) turn = { ...turn, angle: forward ? -180 : 0 };
-		});
+		await tick();
 
-		// A timer rather than `transitionend`, which doesn't fire if the leaf is removed mid-turn —
-		// an invalidation re-render, say — and a leaf left behind covers half the binder.
-		setTimeout(() => {
-			if (!turn) return;
-			spread = turn.target;
-			turn = null;
-		}, TURN_MS);
+		if (leafEl) {
+			const animation = leafEl.animate(
+				[{ transform: leafTransform(from) }, { transform: leafTransform(to) }],
+				{ duration: TURN_MS, easing: 'cubic-bezier(0.35, 0, 0.25, 1)', fill: 'forwards' }
+			);
+			// Rejects if the leaf unmounts mid-turn; either way the spread still has to commit.
+			await animation.finished.catch(() => undefined);
+		}
+
+		spread = target;
+		turn = null;
+	}
+
+	/**
+	 * `perspective()` lives **in the leaf's own transform**, not on an ancestor.
+	 *
+	 * The `perspective` property only applies to an element's *direct children*, and the leaf is a
+	 * grandchild of the spread — so with the property on the spread the rotation was projected
+	 * orthographically: the page squashed horizontally into a sliver instead of swinging, which read
+	 * as nothing happening at all. As a transform function it always applies to the element it's on.
+	 */
+	function leafTransform(angle: number): string {
+		return `perspective(2200px) rotateY(${angle}deg)`;
 	}
 
 	/**
@@ -179,9 +205,13 @@
 	/** A card can only be dropped on a visible Page, so holding one over a page in the strip turns
 	 * there. Delayed, or dragging *across* the strip would flip through the whole binder. */
 	function hoverTurn(index: number) {
+		hoverTurnSpread(Math.floor((index + 1) / 2));
+	}
+
+	function hoverTurnSpread(target: number) {
 		if (!drag.payload) return;
 		clearTimeout(hoverTurnTimer);
-		hoverTurnTimer = setTimeout(() => goTo(Math.floor((index + 1) / 2)), HOVER_TURN_MS);
+		hoverTurnTimer = setTimeout(() => void goTo(target), HOVER_TURN_MS);
 	}
 
 	function cancelHoverTurn() {
@@ -433,36 +463,64 @@
 	</ul>
 {/snippet}
 
-{#snippet insideCover()}
-	<!-- Not a Page: the left of the first spread is the inside front cover, which is why Page 1
-	     opens on the right exactly as it does in the real thing. -->
+{#snippet pageStrut()}
+	<!--
+		An invisible Page, purely as a strut.
+
+		A cover has no content of its own to give it height, and mid-turn *both* static halves can be
+		covers — turning between the first spread and the second, the left is the inside front cover
+		and the right is the inside back cover. The row then collapsed to nothing while the leaf,
+		absolutely positioned to that row, rendered a real Page inside a box a fraction of its height
+		and spilled out the bottom. Matching a Page's own padding, gaps and border keeps the strut
+		exactly a Page tall.
+	-->
 	<div
-		class="flex h-full flex-col justify-center rounded-xl border border-edge bg-gradient-to-br
-			from-shell to-void p-6 text-center"
+		aria-hidden="true"
+		class="invisible grid grid-cols-3 gap-2 border border-transparent p-2 sm:gap-3 sm:p-3"
 	>
-		<p class="text-xs font-medium tracking-widest text-neon-dim uppercase">Binder</p>
-		<p class="mt-2 text-2xl font-bold tracking-tight text-balance text-bright">
-			{data.binder.name}
-		</p>
-		<p class="mt-2 font-mono text-xs text-muted tabular-nums">
-			{filled}
-			{filled === 1 ? 'card' : 'cards'} · {pageCount}
-			{pageCount === 1 ? 'page' : 'pages'}
-		</p>
-		{#if !data.isOwner}
-			<p class="mt-1 text-xs text-muted/70">arranged by {data.binder.ownerName}</p>
-		{/if}
+		{#each Array.from({ length: POCKETS_PER_PAGE }, (_, pocket) => pocket) as pocket (pocket)}
+			<div class="card-frame"></div>
+		{/each}
+	</div>
+{/snippet}
+
+{#snippet cover(inside: 'front' | 'back')}
+	<!-- Not a Page: the left of the first spread is the inside front cover, which is why Page 1
+	     opens on the right exactly as it does in the real thing, and past the last Page you reach
+	     the inside back one. -->
+	<div class="relative">
+		{@render pageStrut()}
+		<div
+			class="absolute inset-0 flex flex-col justify-center rounded-xl border p-6 text-center
+				{inside === 'front'
+				? 'border-edge bg-gradient-to-br from-shell to-void'
+				: 'border-dashed border-edge/50'}"
+		>
+			{#if inside === 'front'}
+				<p class="text-xs font-medium tracking-widest text-neon-dim uppercase">Binder</p>
+				<p class="mt-2 text-2xl font-bold tracking-tight text-balance text-bright">
+					{data.binder.name}
+				</p>
+				<p class="mt-2 font-mono text-xs text-muted tabular-nums">
+					{filled}
+					{filled === 1 ? 'card' : 'cards'} · {pageCount}
+					{pageCount === 1 ? 'page' : 'pages'}
+				</p>
+				{#if !data.isOwner}
+					<p class="mt-1 text-xs text-muted/70">arranged by {data.binder.ownerName}</p>
+				{/if}
+			{/if}
+		</div>
 	</div>
 {/snippet}
 
 {#snippet half(index: number)}
 	{#if index < 0}
-		{@render insideCover()}
+		{@render cover('front')}
 	{:else if pageAt(index)}
 		{@render sheet(index, pages[index])}
 	{:else}
-		<!-- Past the last Page: the inside back cover. -->
-		<div class="h-full rounded-xl border border-dashed border-edge/50"></div>
+		{@render cover('back')}
 	{/if}
 {/snippet}
 
@@ -549,40 +607,72 @@
 <div class="flex flex-col gap-8 lg:flex-row">
 	<div class="min-w-0 flex-1">
 		<!--
-			The spread. `perspective` sits here rather than on the leaf, so both halves share one
-			vanishing point and the turning sheet is seen from the same angle as the pages it lands
-			between. Nothing in this subtree may clip: the leaf swings out of the right half and across
-			the left one, and an `overflow-hidden` anywhere above it would cut the turn in half.
+			The spread, flanked by its own arrows. Nothing in this subtree may clip: the leaf swings out
+			of the right half and across the left one, and an `overflow-hidden` anywhere above it would
+			cut the turn in half.
 		-->
-		<div class="[perspective:2200px]">
-			<div class="grid grid-cols-2 gap-3 sm:gap-4">
-				<div>{@render half(leftPage)}</div>
-				<div class="relative">
-					{@render half(visibleRight)}
+		<div class="flex items-stretch gap-1 sm:gap-2">
+			<!-- Full-height arrows either side of the pages, where your hands already are. Hidden below
+			     `sm`, where the strip's arrows are the better target and the width is wanted for the
+			     cards. They turn pages mid-drag too, like the strip's thumbnails. -->
+			<button
+				type="button"
+				onclick={() => goTo(spread - 1)}
+				onpointerenter={() => hoverTurnSpread(spread - 1)}
+				onpointerleave={cancelHoverTurn}
+				disabled={spread === 0}
+				aria-label="Previous pages"
+				class="hidden w-7 shrink-0 items-center justify-center rounded-lg border border-edge
+					text-lg text-muted transition-colors hover:border-neon-dim hover:bg-surface
+					hover:text-neon disabled:opacity-25 disabled:hover:border-edge
+					disabled:hover:bg-transparent disabled:hover:text-muted sm:flex">‹</button
+			>
 
-					{#if turn}
-						<!--
-							One sheet, two faces. `transform-origin` is the spine, so it swings about the
-							binder's centre; `backface-visibility: hidden` on both faces is what makes the
-							back appear only once the sheet has passed 90°.
-						-->
-						<div
-							class="pointer-events-none absolute inset-0 origin-left transition-transform
-								duration-500 ease-in-out [transform-style:preserve-3d]"
-							style="transform: rotateY({turn.angle}deg);"
-						>
-							<div class="absolute inset-0 [backface-visibility:hidden]">
-								{@render half(turn.front)}
-							</div>
+			<div class="min-w-0 flex-1">
+				<div class="grid grid-cols-2 gap-3 sm:gap-4">
+					<div>{@render half(leftPage)}</div>
+					<div class="relative">
+						{@render half(visibleRight)}
+
+						{#if turn}
+							<!--
+								One sheet, two faces. `transform-origin` is the spine, so it swings about the
+								binder's centre; `backface-visibility: hidden` on both faces is what makes the
+								back appear only once the sheet has passed 90°. The start angle is inline so there
+								is no unrotated frame before `animate` takes over.
+							-->
 							<div
-								class="absolute inset-0 [transform:rotateY(180deg)] [backface-visibility:hidden]"
+								bind:this={leafEl}
+								class="pointer-events-none absolute inset-0 origin-left shadow-2xl shadow-void
+									[transform-style:preserve-3d]"
+								style="transform: {leafTransform(turn.from)};"
 							>
-								{@render half(turn.back)}
+								<div class="absolute inset-0 [backface-visibility:hidden]">
+									{@render half(turn.front)}
+								</div>
+								<div
+									class="absolute inset-0 [transform:rotateY(180deg)] [backface-visibility:hidden]"
+								>
+									{@render half(turn.back)}
+								</div>
 							</div>
-						</div>
-					{/if}
+						{/if}
+					</div>
 				</div>
 			</div>
+
+			<button
+				type="button"
+				onclick={() => goTo(spread + 1)}
+				onpointerenter={() => hoverTurnSpread(spread + 1)}
+				onpointerleave={cancelHoverTurn}
+				disabled={spread >= spreadCount - 1}
+				aria-label="Next pages"
+				class="hidden w-7 shrink-0 items-center justify-center rounded-lg border border-edge
+					text-lg text-muted transition-colors hover:border-neon-dim hover:bg-surface
+					hover:text-neon disabled:opacity-25 disabled:hover:border-edge
+					disabled:hover:bg-transparent disabled:hover:text-muted sm:flex">›</button
+			>
 		</div>
 
 		<!--
@@ -595,7 +685,7 @@
 				type="button"
 				onclick={() => goTo(spread - 1)}
 				disabled={spread === 0}
-				aria-label="Previous pages"
+				aria-label="Previous pages (strip)"
 				class="rounded-lg border border-edge px-3 text-muted transition-colors
 					hover:border-neon-dim hover:text-neon disabled:opacity-30 disabled:hover:border-edge
 					disabled:hover:text-muted">←</button
@@ -639,7 +729,7 @@
 				type="button"
 				onclick={() => goTo(spread + 1)}
 				disabled={spread >= spreadCount - 1}
-				aria-label="Next pages"
+				aria-label="Next pages (strip)"
 				class="rounded-lg border border-edge px-3 text-muted transition-colors
 					hover:border-neon-dim hover:text-neon disabled:opacity-30 disabled:hover:border-edge
 					disabled:hover:text-muted">→</button
