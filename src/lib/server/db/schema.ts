@@ -151,6 +151,68 @@ export const collectingGoals = sqliteTable('collecting_goals', {
 	updatedAt: integer('updated_at', { mode: 'timestamp_ms' }).notNull().default(now)
 });
 
+/**
+ * The shared parent for a user's **named** lists of Printings — Binders and Wantlists
+ * (`CONTEXT.md`, and `docs/adr/0003-the-collection-is-flat-and-binders-are-showcases.md`).
+ *
+ * One table because naming, visibility, ownership checks and share links are identical for both.
+ * Their *entries* are not, and so are not shared: a Binder's are positional and carry no
+ * quantity, a Wantlist's are unordered and carry a target quantity. An earlier design put both in
+ * one entries table; that only worked while both were "a name plus a quantity per Printing".
+ *
+ * Named `printing_lists` rather than `binders` so neither child has to live under a table whose
+ * name describes the other. The Collection is deliberately **not** here: it is unnamed, singular
+ * and unshareable, so it has nothing this table offers.
+ */
+export const printingLists = sqliteTable(
+	'printing_lists',
+	{
+		id: text('id')
+			.primaryKey()
+			.$defaultFn(() => crypto.randomUUID()),
+		ownerId: text('owner_id')
+			.notNull()
+			.references(() => user.id, { onDelete: 'cascade' }),
+		kind: text('kind', { enum: ['binder', 'wantlist'] }).notNull(),
+		name: text('name').notNull(),
+		/** `shared`, not `unlisted`: there is no public tier to be unlisted from. */
+		visibility: text('visibility', { enum: ['private', 'shared'] })
+			.notNull()
+			.default('private'),
+		createdAt: integer('created_at', { mode: 'timestamp_ms' }).notNull().default(now)
+	},
+	(table) => [index('printing_lists_owner_kind_idx').on(table.ownerId, table.kind)]
+);
+
+/**
+ * One **Pocket** — a slot on a Binder Page holding at most one Printing (`CONTEXT.md`).
+ *
+ * **No quantity column, deliberately.** A Pocket displays a card; "showing off three copies" is
+ * not a thing, and the absence is what makes it impossible to express the contradiction
+ * cyberdecktools allows, where a binder claims more copies than the collection holds.
+ *
+ * `(list_id, page, pocket)` is the key, so a Pocket is addressable and a Page can have deliberate
+ * gaps — an empty Pocket is simply a row that does not exist, which is the one place absence is
+ * the right encoding: there is nothing to say about a held space beyond where it is.
+ *
+ * `printing_id` has no foreign key, matching `collection_items`: printings live in a build-time
+ * artifact, not a table.
+ */
+export const binderPockets = sqliteTable(
+	'binder_pockets',
+	{
+		listId: text('list_id')
+			.notNull()
+			.references(() => printingLists.id, { onDelete: 'cascade' }),
+		/** Zero-based, contiguous. A Binder always has at least page 0. */
+		page: integer('page').notNull(),
+		/** Zero-based position within the page — nine per page today. */
+		pocket: integer('pocket').notNull(),
+		printingId: text('printing_id').notNull()
+	},
+	(table) => [primaryKey({ columns: [table.listId, table.page, table.pocket] })]
+);
+
 /** One row per (deck, user) — enforced by the primary key, not just an application check. */
 export const deckLikes = sqliteTable(
 	'deck_likes',

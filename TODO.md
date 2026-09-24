@@ -14,6 +14,8 @@ Current state, for whoever picks this up:
 - `/sets/[id]` — `CardTile` is a real `<a href>`, so a click navigates to `/cards/[slug]`.
 - `/collection` — **tiles have no link at all**, so a click does nothing. Fix this whichever way
   the overlay lands; it renders `CardImage` directly rather than `CardTile`.
+- `/binders/[id]` — a filled Pocket is a drag handle with a clear button; clicking the art itself
+  does nothing. Whatever the overlay becomes must not eat the drag gesture.
 
 Pieces that already exist and should feed it rather than being rebuilt: `CardHoverPreview.svelte`,
 `CardPane.svelte`, `/cards/[slug]`'s printing chooser, and the `?printing=` param convention

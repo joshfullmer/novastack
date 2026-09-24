@@ -21,7 +21,7 @@
 	import { collection } from '#lib/collection/state.svelte.js';
 	import { completion, rarityProgress, totalCopies } from '#lib/collection/goal.js';
 
-	let { children } = $props();
+	let { children, data } = $props();
 
 	/**
 	 * Loaded here rather than per-pane: every pane's figures depend on it, and the rail's own do
@@ -46,6 +46,7 @@
 	const path = $derived(page.url.pathname);
 	const onGoal = $derived(path === '/collection/goal');
 	const onAdd = $derived(path === '/collection/add');
+	const onBinders = $derived(path === '/collection/binders');
 </script>
 
 <div class="flex min-h-[calc(100vh-var(--spacing-nav))]">
@@ -108,22 +109,70 @@
 			</ul>
 		</div>
 
-		<!-- Dimmed placeholders rather than links that 404 — the treatment Nav used for Decks
-		     before the deckbuilder shipped. -->
 		<div class="space-y-4 border-t border-edge pt-5">
-			{#each [{ label: 'Binders', note: 'Showcases of the cards you want to display' }, { label: 'Wantlists', note: 'What you are still looking for' }] as section (section.label)}
-				<div>
-					<p
-						class="flex items-center gap-2 text-xs font-medium tracking-widest text-muted/50 uppercase"
+			<div>
+				<p class="mb-2 flex items-baseline gap-2">
+					<a
+						href="/collection/binders"
+						aria-current={onBinders ? 'page' : undefined}
+						class="text-xs font-medium tracking-widest uppercase transition-colors {onBinders
+							? 'text-neon'
+							: 'text-muted hover:text-body'}">Binders</a
 					>
-						{section.label}
-						<span class="rounded bg-surface px-1.5 py-0.5 text-[0.6rem] tracking-normal normal-case"
-							>soon</span
+					<span class="ml-auto font-mono text-xs text-muted/50 tabular-nums"
+						>{data.binders.length}</span
+					>
+				</p>
+
+				{#if data.binders.length === 0}
+					<p class="text-xs text-muted/50">Showcases of the cards you want to display</p>
+				{:else}
+					<ul class="space-y-0.5">
+						<!-- Capped, with the overflow behind the section link: the rail is a way in, not an
+						     index, and a user with thirty binders would push the goal off the screen. -->
+						{#each data.binders.slice(0, 5) as binder (binder.id)}
+							<li>
+								<!-- No `aria-current`: the rail only renders under `/collection`, so a Binder's
+								     own page never shows it and there is no current entry to mark. -->
+								<a
+									href="/binders/{binder.id}"
+									class="flex items-baseline gap-2 rounded px-2 py-1 text-sm text-body
+										transition-colors hover:bg-surface hover:text-neon"
+								>
+									<span class="min-w-0 truncate">{binder.name}</span>
+									{#if binder.visibility === 'shared'}
+										<span class="shrink-0 text-[0.6rem] text-muted/60">shared</span>
+									{/if}
+									<span class="ml-auto shrink-0 font-mono text-xs text-muted/60 tabular-nums"
+										>{binder.filled}</span
+									>
+								</a>
+							</li>
+						{/each}
+					</ul>
+					{#if data.binders.length > 5}
+						<a
+							href="/collection/binders"
+							class="mt-1 block px-2 text-xs text-muted hover:text-neon"
+							>{data.binders.length - 5} more…</a
 						>
-					</p>
-					<p class="mt-1 text-xs text-muted/40">{section.note}</p>
-				</div>
-			{/each}
+					{/if}
+				{/if}
+			</div>
+
+			<!-- Still a dimmed placeholder rather than a link that 404s — the treatment Nav used for
+			     Decks before the deckbuilder shipped. -->
+			<div>
+				<p
+					class="flex items-center gap-2 text-xs font-medium tracking-widest text-muted/50 uppercase"
+				>
+					Wantlists
+					<span class="rounded bg-surface px-1.5 py-0.5 text-[0.6rem] tracking-normal normal-case"
+						>soon</span
+					>
+				</p>
+				<p class="mt-1 text-xs text-muted/40">What you are still looking for</p>
+			</div>
 		</div>
 
 		<div class="mt-auto border-t border-edge pt-5">

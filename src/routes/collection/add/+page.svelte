@@ -16,23 +16,17 @@
 	 */
 	import CardImage from '#lib/components/CardImage.svelte';
 	import Meta from '#lib/components/Meta.svelte';
-	import { dataset } from '#lib/cards/index.js';
-	import { normalizeForSearch } from '#lib/cards/dataset.js';
 	import { printTreatment } from '#lib/cards/derive.js';
 	import { DEFAULT_LOCALE } from '#lib/cards/vocabulary.js';
 	import { collection } from '#lib/collection/state.svelte.js';
 	import { inGoal } from '#lib/collection/goal.js';
-	import type { Card, Printing } from '#lib/cards/schema.js';
+	import {
+		searchPrintings,
+		setLabel,
+		type PrintingRow as Row
+	} from '#lib/collection/printing-search.js';
 
 	let { data } = $props();
-
-	type Row = { card: Card; printing: Printing };
-
-	const rows: readonly Row[] = dataset.cards.flatMap((card) =>
-		card.printings.map((printing) => ({ card, printing }))
-	);
-
-	const setOrder = dataset.sets.map((set) => set.id);
 
 	let raw = $state('');
 	let field = $state<HTMLInputElement>();
@@ -51,66 +45,9 @@
 
 	const parsed = $derived(parse(raw));
 
-	const treatmentRank = (printing: Printing) => (printTreatment(printing) === 'retail' ? 0 : 1);
-
-	/** A collector number without its Print Treatment marker — `β001` and `001` are the same
-	 * position in the sequence, printed on two different copies of the same card. */
-	function bareNumber(value: string): string {
-		return value.replace(/^β/i, '');
-	}
-
-	/**
-	 * Exact collector number, then **containing** it, then name. Within a tier, rows are ordered by
-	 * Set, then retail before beta, then default locale first.
-	 *
-	 * Ordering by Set rather than by "what you're collecting" is deliberate, and a correction: an
-	 * In-Goal-first order sounds helpful and hides the answer. Roughly seventeen printings share the
-	 * number `001`, about twelve of them English retail — so putting those first filled the result
-	 * cap and made every beta `001` unreachable, which is precisely the case this page exists for.
-	 * By Set, a Set's retail and beta rows sit next to each other, and the Set is printed on the
-	 * card in your hand.
-	 *
-	 * Two things make beta printings reachable, and both are needed:
-	 *
-	 * - **`β` is stripped before the exact comparison.** It is a Print Treatment marker, not part of
-	 *   the number sequence (`CONTEXT.md`), and it is not on anyone's keyboard — so typing `001`
-	 *   counts as an exact hit on `β001` too. Without this, beta lands in the containment tier and
-	 *   is then cut by the result cap, because a number like `001` has an exact match in nearly
-	 *   every Set.
-	 * - **Containment rather than prefix** for the remaining tier, so a partial like `5a` still
-	 *   finds `005a` and `β005a`.
-	 */
-	const matches = $derived.by(() => {
-		const term = parsed.term;
-		if (term.length === 0) return [];
-
-		const lower = term.toLowerCase();
-		const needle = normalizeForSearch(term);
-
-		const exact: Row[] = [];
-		const contains: Row[] = [];
-		const byName: Row[] = [];
-
-		for (const row of rows) {
-			const number = row.printing.collectorNumber.toLowerCase();
-			if (bareNumber(number) === bareNumber(lower)) exact.push(row);
-			else if (number.includes(lower)) contains.push(row);
-			else if (needle && normalizeForSearch(row.card.name).includes(needle)) byName.push(row);
-		}
-
-		const bySet = (tier: Row[]) =>
-			[...tier].sort(
-				(a, b) =>
-					setOrder.indexOf(a.printing.setId) - setOrder.indexOf(b.printing.setId) ||
-					// Not `localeCompare`: that puts "beta" before "retail" alphabetically, which is
-					// backwards — retail is the common case and the default everywhere else.
-					treatmentRank(a.printing) - treatmentRank(b.printing) ||
-					Number(a.printing.locale !== DEFAULT_LOCALE) -
-						Number(b.printing.locale !== DEFAULT_LOCALE)
-			);
-
-		return [...bySet(exact), ...bySet(contains), ...bySet(byName)].slice(0, 12);
-	});
+	/** Tiering, ordering and the result cap all live in `#lib/collection/printing-search.js`,
+	 * shared with the Binder editor. */
+	const matches = $derived(searchPrintings(parsed.term));
 
 	function commit(row: Row | undefined = matches[highlight]) {
 		if (!row || !collection.editable) return;
@@ -170,10 +107,6 @@
 	const preview = $derived(matches[highlight] ?? null);
 
 	const sessionCopies = $derived(log.reduce((sum, entry) => sum + entry.quantity, 0));
-
-	function setLabel(setId: string): string {
-		return dataset.sets.find((set) => set.id === setId)?.printed ?? setId;
-	}
 </script>
 
 <Meta

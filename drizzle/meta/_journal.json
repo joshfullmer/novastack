@@ -50,6 +50,13 @@
       "when": 1790240252469,
       "tag": "0006_organic_sunset_bain",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "6",
+      "when": 1790242640387,
+      "tag": "0007_friendly_magneto",
+      "breakpoints": true
     }
   ]
 }
