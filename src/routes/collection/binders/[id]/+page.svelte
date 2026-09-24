@@ -123,13 +123,38 @@
 	}
 
 	/**
-	 * The turning leaf: one sheet with the outgoing right-hand Page on its front and the incoming
-	 * left-hand Page on its back.
+	 * The turning leaf: one sheet, with a Page on each face, plus what the two static halves behind
+	 * it should show at each stage of the turn.
 	 *
 	 * One leaf covers both directions — forward swings it from 0° to -180° about the spine, back
 	 * swings it from -180° to 0° — because either way it is the same physical sheet.
+	 *
+	 * **The halves change content mid-turn, and they have to.** Take a forward turn. The leaf starts
+	 * covering the right half, so the right can switch to its destination Page immediately: the leaf
+	 * hides it now and lifting off *reveals* it, which is exactly what turning a page looks like.
+	 * The left half is the opposite — it's in plain view at the start, so it has to keep showing
+	 * where you came from until the leaf swings over and covers it. Only then can it switch to the
+	 * destination, behind the leaf, which is also what makes the hand-off invisible: the moment the
+	 * leaf is removed, the page underneath is already the right one, already decoded.
+	 *
+	 * Get this wrong and you see the flash this replaced — the old Page still on the left for a beat
+	 * after the turn, or the new one blurring up from its ThumbHash because its images had only just
+	 * been created.
 	 */
-	let turn = $state<{ front: number; back: number; target: number; from: number } | null>(null);
+	type Turn = {
+		/** Page index on the leaf's front (right-hand) face. */
+		front: number;
+		/** Page index on the leaf's back (left-hand) face. */
+		back: number;
+		target: number;
+		from: number;
+		/** What the static halves show before and after the leaf passes the spine. */
+		early: { left: number; right: number };
+		late: { left: number; right: number };
+		covered: boolean;
+	};
+
+	let turn = $state<Turn | null>(null);
 	let leafEl = $state<HTMLElement>();
 
 	function reduceMotion(): boolean {
@@ -157,12 +182,27 @@
 		const from = forward ? 0 : -180;
 		const to = forward ? -180 : 0;
 
+		const destination = { left: target * 2 - 1, right: target * 2 };
+		const origin = { left: leftPage, right: rightPage };
+
 		turn = {
-			front: forward ? rightPage : target * 2,
-			back: forward ? target * 2 - 1 : leftPage,
+			front: forward ? origin.right : destination.right,
+			back: forward ? destination.left : origin.left,
 			target,
-			from
+			from,
+			// The half the leaf starts on can show the destination at once — the leaf is hiding it.
+			// The half it ends on keeps the origin until the leaf gets there.
+			early: forward
+				? { left: origin.left, right: destination.right }
+				: { left: destination.left, right: origin.right },
+			late: destination,
+			covered: false
 		};
+
+		// Just past the halfway point, so the leaf is certainly over the half about to change.
+		const coverAt = setTimeout(() => {
+			if (turn) turn = { ...turn, covered: true };
+		}, TURN_MS * 0.55);
 
 		await tick();
 
@@ -175,6 +215,7 @@
 			await animation.finished.catch(() => undefined);
 		}
 
+		clearTimeout(coverAt);
 		spread = target;
 		turn = null;
 	}
@@ -191,11 +232,10 @@
 		return `perspective(2200px) rotateY(${angle}deg)`;
 	}
 
-	/**
-	 * Mid-turn the static halves show where you came from on the left and where you're going on the
-	 * right; the leaf covers the difference, so nothing ever jumps when it lands.
-	 */
-	const visibleRight = $derived(turn ? turn.target * 2 : rightPage);
+	/** What each static half shows right now: see `Turn` for why it changes mid-turn. */
+	const visible = $derived(
+		turn ? (turn.covered ? turn.late : turn.early) : { left: leftPage, right: rightPage }
+	);
 
 	/**
 	 * Which spread the strip marks — the destination from the moment a turn begins, not when it
@@ -645,9 +685,9 @@
 					and the two sheets' own borders read as the binder's gutter.
 				-->
 				<div class="grid grid-cols-2">
-					<div>{@render half(leftPage)}</div>
+					<div>{@render half(visible.left)}</div>
 					<div class="relative">
-						{@render half(visibleRight)}
+						{@render half(visible.right)}
 
 						{#if turn}
 							<!--
