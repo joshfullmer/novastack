@@ -18,7 +18,7 @@ import { svelteKitHandler } from 'better-auth/svelte-kit';
  * cost a debugging session on `/api/collection`, which 401'd for signed-in users because
  * `/api/auth` didn't match it.
  */
-const DYNAMIC_PREFIXES = ['/decks', '/explore', '/auth', '/account', '/api'];
+const DYNAMIC_PREFIXES = ['/collection', '/decks', '/explore', '/auth', '/account', '/api'];
 
 /**
  * A Discord sign-up lands with no `username` (see

@@ -149,6 +149,16 @@
 
 			<li>
 				<a
+					href="/collection"
+					class="transition-colors hover:text-bright"
+					class:text-bright={isCurrent('/collection')}
+					class:text-muted={!isCurrent('/collection')}
+					aria-current={isCurrent('/collection') ? 'page' : undefined}>Collection</a
+				>
+			</li>
+
+			<li>
+				<a
 					href="/sets"
 					class="transition-colors hover:text-bright"
 					class:text-bright={isCurrent('/sets')}
@@ -281,6 +291,17 @@
 						>
 					</li>
 				{/each}
+				<li>
+					<a
+						href="/collection"
+						onclick={closeMobileMenu}
+						class="block rounded-md px-2 py-2 transition-colors hover:bg-raised"
+						class:text-bright={isCurrent('/collection')}
+						class:text-muted={!isCurrent('/collection')}
+						aria-current={isCurrent('/collection') ? 'page' : undefined}>Collection</a
+					>
+				</li>
+
 				<li>
 					<a
 						href="/sets"
