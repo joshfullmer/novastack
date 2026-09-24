@@ -376,6 +376,13 @@
 							wanted — the same restraint the stepper learned: a control on every one of 332
 							tiles has to earn its ink. Once on the list the marker stays visible, because
 							that's a fact about the card rather than an action you might take.
+
+							Built as the stepper's badge is — same border, fill, radius and padding around a
+							`size-5` glyph — so the two read as one family sitting in opposite corners rather
+							than two unrelated controls. An **SVG star, not `★`/`☆`**: a glyph's ink sits
+							inside a line box that isn't centred on it, which is the exact thing that made
+							the stepper's `+`/`−` look off-centre until they became strokes. Filled versus
+							outlined says which state it's in without relying on colour alone.
 						-->
 						<button
 							type="button"
@@ -385,12 +392,25 @@
 								? `${row.card.name} is on your wantlist`
 								: `Add ${row.card.name} to your wantlist`}
 							title={onList ? 'On your wantlist' : 'Add to wantlist'}
-							class="absolute right-1 bottom-1 grid size-5 place-items-center rounded border
-								text-[0.6rem] transition-opacity {onList
-								? 'border-neon/60 bg-void/90 text-neon opacity-100'
-								: 'border-edge bg-void/90 text-muted opacity-0 group-hover/tile:opacity-100 hover:border-neon-dim hover:text-neon focus-visible:opacity-100'}"
-							>{onList ? '★' : '☆'}</button
+							class="absolute right-1 bottom-1 grid place-items-center rounded-md border
+								bg-void/95 px-1.5 py-1 shadow-sm backdrop-blur-sm transition-opacity {onList
+								? 'border-neon/60 text-neon opacity-100'
+								: 'border-edge text-muted opacity-0 group-hover/tile:opacity-100 hover:border-neon-dim hover:text-neon focus-visible:opacity-100'}"
 						>
+							<svg
+								viewBox="0 0 20 20"
+								class="size-5"
+								aria-hidden="true"
+								fill={onList ? 'currentColor' : 'none'}
+								stroke="currentColor"
+								stroke-width="1.4"
+								stroke-linejoin="round"
+							>
+								<path
+									d="M10 2.75 12.35 7.6l5.15.72-3.75 3.6.9 5.08L10 14.6l-4.65 2.4.9-5.08-3.75-3.6 5.15-.72z"
+								/>
+							</svg>
+						</button>
 					{/if}
 				</li>
 			{/each}
