@@ -126,6 +126,31 @@ export const collectionItems = sqliteTable(
 	(table) => [primaryKey({ columns: [table.userId, table.printingId] })]
 );
 
+/**
+ * A user's **Collecting Goal** — which Printing Runs they are trying to collect, and therefore
+ * what "Complete" means for them (`CONTEXT.md`).
+ *
+ * One row per user, and **JSON rather than a row per Run**. This is the `deck_versions` precedent
+ * rather than the `collection_items` one, and the deciding factor is the access pattern: a Goal is
+ * read whole on every collection view, written whole when the editor is saved, and never queried
+ * by element. There are at most seventeen Runs today, so the blob is a few hundred bytes.
+ *
+ * Absence is meaningful: **no row means the default Goal** (English retail, every Set — see
+ * `DEFAULT_GOAL` in `#lib/collection/goal.ts`). So a user who never opens the editor costs no
+ * write, and the default can be changed later without a data migration.
+ *
+ * Validated at the application boundary like `deck_versions.entries` — never trusted as typed
+ * straight off a read, because a stale Run key can outlive a re-ingest.
+ */
+export const collectingGoals = sqliteTable('collecting_goals', {
+	userId: text('user_id')
+		.primaryKey()
+		.references(() => user.id, { onDelete: 'cascade' }),
+	/** Printing Run keys — `<setId>|<treatment>|<locale>`. See `runKey` in `#lib/collection/goal.ts`. */
+	runs: text('runs', { mode: 'json' }).notNull().$type<string[]>(),
+	updatedAt: integer('updated_at', { mode: 'timestamp_ms' }).notNull().default(now)
+});
+
 /** One row per (deck, user) — enforced by the primary key, not just an application check. */
 export const deckLikes = sqliteTable(
 	'deck_likes',

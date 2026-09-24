@@ -17,6 +17,7 @@ import { error, json } from '@sveltejs/kit';
 import * as v from 'valibot';
 import { dataset } from '#lib/cards/index.js';
 import { getCollection, setQuantities, setQuantity } from '#lib/server/db/collection.js';
+import { getGoalRuns } from '#lib/server/db/collecting-goal.js';
 import type { RequestHandler } from './$types';
 
 // Overrides the root layout's `prerender = true` — per-request session and DB state.
@@ -64,11 +65,25 @@ const BodySchema = v.union([
 /** `private, no-store` on every response here — see the module comment. */
 const NO_STORE = { 'cache-control': 'private, no-store' };
 
+/**
+ * The Collecting Goal rides along here rather than having its own GET: it is part of the same
+ * "my collection state" read, every consumer of one wants the other (a completion figure needs
+ * both), and a second round trip on every page would buy nothing. Writes are separate — see
+ * `goal/+server.ts` — because they are a different action with a different shape.
+ *
+ * `runs: null` means the user has never saved a Goal, which is **not** the same as saving an
+ * empty one. The client resolves null to `DEFAULT_GOAL`; an empty array genuinely means "I am
+ * collecting nothing", and the two must not collapse.
+ */
 export const GET: RequestHandler = async (event) => {
 	if (!event.locals.user) return error(401, 'Not signed in');
 
-	const collection = await getCollection(event.locals.db, event.locals.user.id);
-	return json({ collection }, { headers: NO_STORE });
+	const [collection, runs] = await Promise.all([
+		getCollection(event.locals.db, event.locals.user.id),
+		getGoalRuns(event.locals.db, event.locals.user.id)
+	]);
+
+	return json({ collection, goal: { runs } }, { headers: NO_STORE });
 };
 
 export const POST: RequestHandler = async (event) => {

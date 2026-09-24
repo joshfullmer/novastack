@@ -16,6 +16,8 @@
  * last server-confirmed value and surface an error, so the UI never quietly disagrees with the DB.
  */
 import { browser } from '$app/env';
+import { SvelteSet } from 'svelte/reactivity';
+import { DEFAULT_GOAL, type CollectingGoal } from './goal.js';
 
 /** Holding the `+` key shouldn't fire six requests; one settles per Printing per burst. */
 const WRITE_DEBOUNCE_MS = 400;
@@ -45,6 +47,16 @@ function createCollection() {
 
 	let status = $state<Status>('idle');
 	let errorMessage = $state<string | null>(null);
+
+	/**
+	 * The viewer's Collecting Goal, or `null` when they have never saved one.
+	 *
+	 * `null` and "an empty Goal" are different facts and must not collapse: absent means "hasn't
+	 * chosen", so the default applies; empty means "collecting nothing", which is a legitimate
+	 * choice and a real 0/0. Resolution to `DEFAULT_GOAL` happens in the `goal` getter, so every
+	 * consumer gets the same answer without repeating the decision.
+	 */
+	let savedRuns = $state<SvelteSet<string> | null>(null);
 
 	// Debounce handles — plain Map, never read by the UI.
 	// eslint-disable-next-line svelte/prefer-svelte-reactivity
@@ -82,8 +94,13 @@ function createCollection() {
 			}
 			if (!response.ok) throw new Error(`Collection request failed (${response.status})`);
 
-			const body = (await response.json()) as { collection: Record<string, number> };
+			const body = (await response.json()) as {
+				collection: Record<string, number>;
+				goal?: { runs: string[] | null };
+			};
 			quantities = body.collection;
+			const runs = body.goal?.runs ?? null;
+			savedRuns = runs === null ? null : new SvelteSet(runs);
 			confirmed.clear();
 			for (const [printingId, quantity] of Object.entries(body.collection)) {
 				confirmed.set(printingId, quantity);
@@ -195,6 +212,36 @@ function createCollection() {
 		}
 	}
 
+	/**
+	 * Replaces the Goal. Optimistic like every other write here, and rolled back on failure, so the
+	 * completion figures can't sit on a number the server rejected.
+	 *
+	 * `null` clears it, returning the user to the default — a `DELETE` rather than a `PUT` of
+	 * nothing, because saving an empty Goal is a different, legitimate choice.
+	 */
+	async function saveGoal(runs: CollectingGoal | null): Promise<void> {
+		if (status === 'signed-out') return;
+
+		const previous = savedRuns;
+		savedRuns = runs === null ? null : new SvelteSet(runs);
+
+		inFlight += 1;
+		try {
+			const response = await fetch('/api/collection/goal', {
+				method: runs === null ? 'DELETE' : 'PUT',
+				headers: { 'content-type': 'application/json' },
+				body: runs === null ? undefined : JSON.stringify({ runs: [...runs] })
+			});
+			if (!response.ok) throw new Error(`Could not save your collecting goal (${response.status})`);
+			errorMessage = null;
+		} catch (cause) {
+			savedRuns = previous;
+			errorMessage = cause instanceof Error ? cause.message : 'Could not save';
+		} finally {
+			inFlight -= 1;
+		}
+	}
+
 	/** Explicit re-fetch after a failure — the only way past `load`'s one-shot guard. */
 	async function retry(): Promise<void> {
 		started = false;
@@ -207,6 +254,15 @@ function createCollection() {
 		set,
 		adjust,
 		setMany,
+		saveGoal,
+		/** The Goal in force — the saved one, or the default when nothing is saved. */
+		get goal(): CollectingGoal {
+			return savedRuns ?? DEFAULT_GOAL;
+		},
+		/** Whether this user has chosen a Goal at all, which the editor shows as "default". */
+		get goalIsDefault() {
+			return savedRuns === null;
+		},
 		/** Owned Count — a single lookup, never a sum across containers. */
 		quantityOf: (printingId: string) => quantities[printingId] ?? 0,
 		has: (printingId: string) => (quantities[printingId] ?? 0) > 0,
