@@ -115,21 +115,25 @@
 
 			<div class="space-y-4 border-t border-edge pt-5">
 				<div>
-					<p class="mb-2 flex items-baseline gap-2">
-						<a
-							href="/collection/binders"
-							aria-current={onBinders ? 'page' : undefined}
-							class="text-xs font-medium tracking-widest uppercase transition-colors {onBinders
-								? 'text-neon'
-								: 'text-muted hover:text-body'}">Binders</a
-						>
-						<span class="ml-auto font-mono text-xs text-muted/50 tabular-nums"
+					<!-- The link *is* the header row, count included, rather than wrapping the word alone:
+					     a section heading that's only clickable across eight characters is a target you
+					     have to aim at. -->
+					<a
+						href="/collection/binders"
+						aria-current={onBinders ? 'page' : undefined}
+						class="mb-2 flex items-baseline gap-2 rounded px-2 py-1 text-xs font-medium
+							tracking-widest uppercase transition-colors {onBinders
+							? 'text-neon'
+							: 'text-muted hover:bg-surface hover:text-body'}"
+					>
+						<span>Binders</span>
+						<span class="ml-auto font-mono tracking-normal text-muted/50 normal-case tabular-nums"
 							>{data.binders.length}</span
 						>
-					</p>
+					</a>
 
 					{#if data.binders.length === 0}
-						<p class="text-xs text-muted/50">Showcases of the cards you want to display</p>
+						<p class="px-2 text-xs text-muted/50">Showcases of the cards you want to display</p>
 					{:else}
 						<ul class="space-y-0.5">
 							<!-- Capped, with the overflow behind the section link: the rail is a way in, not an
@@ -168,14 +172,15 @@
 			     Decks before the deckbuilder shipped. -->
 				<div>
 					<p
-						class="flex items-center gap-2 text-xs font-medium tracking-widest text-muted/50 uppercase"
+						class="flex items-center gap-2 px-2 text-xs font-medium tracking-widest text-muted/50
+							uppercase"
 					>
 						Wantlists
 						<span class="rounded bg-surface px-1.5 py-0.5 text-[0.6rem] tracking-normal normal-case"
 							>soon</span
 						>
 					</p>
-					<p class="mt-1 text-xs text-muted/40">What you are still looking for</p>
+					<p class="mt-1 px-2 text-xs text-muted/40">What you are still looking for</p>
 				</div>
 			</div>
 
