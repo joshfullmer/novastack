@@ -179,6 +179,18 @@ export const printingLists = sqliteTable(
 		visibility: text('visibility', { enum: ['private', 'shared'] })
 			.notNull()
 			.default('private'),
+		/**
+		 * The one list of this kind that other surfaces add to without asking — the Wantlist the
+		 * collection view fills, today.
+		 *
+		 * A column rather than a client preference, because "which list am I filling" is a fact
+		 * about the user, not about the browser they happen to be sitting at; and a flag on the row
+		 * rather than a pointer on `user`, because that way it is impossible to designate a list
+		 * that doesn't exist or belongs to someone else. At most one per (owner, kind) is an
+		 * application invariant, enforced by `setDefaultList` clearing the others in the same batch
+		 * — SQLite can't express "at most one true per group" as a constraint.
+		 */
+		isDefault: integer('is_default', { mode: 'boolean' }).notNull().default(false),
 		createdAt: integer('created_at', { mode: 'timestamp_ms' }).notNull().default(now)
 	},
 	(table) => [index('printing_lists_owner_kind_idx').on(table.ownerId, table.kind)]

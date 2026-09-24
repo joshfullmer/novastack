@@ -122,6 +122,16 @@
 						{wantlist.copies === 1 ? 'copy' : 'copies'}
 					</span>
 
+					{#if wantlist.isDefault}
+						<!-- What "default" buys you: the collection view's "want this" adds here without
+						     asking. Stated on the badge because otherwise it's a word with no consequence. -->
+						<span
+							class="shrink-0 rounded bg-neon/10 px-1.5 py-0.5 text-[0.6rem] text-neon"
+							title="Cards you mark as wanted from your collection are added to this list"
+							>default</span
+						>
+					{/if}
+
 					{#if wantlist.visibility === 'shared'}
 						<span class="shrink-0 rounded bg-surface px-1.5 py-0.5 text-[0.6rem] text-muted"
 							>shared</span
@@ -146,6 +156,13 @@
 								{wantlist.visibility === 'shared' ? 'Make private' : 'Share'}
 							</button>
 						</form>
+
+						{#if !wantlist.isDefault}
+							<form method="POST" action="?/makeDefault" use:enhance>
+								<input type="hidden" name="wantlistId" value={wantlist.id} />
+								<button type="submit" class="text-muted hover:text-neon">Make default</button>
+							</form>
+						{/if}
 
 						<form method="POST" action="?/delete" use:enhance>
 							<input type="hidden" name="wantlistId" value={wantlist.id} />

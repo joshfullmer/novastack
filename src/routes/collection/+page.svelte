@@ -25,6 +25,7 @@
 	import { PARAM, parseQueryState } from '#lib/filters/state.js';
 	import { withFacetEdit } from '#lib/filters/query-edit.js';
 	import { inGoal, setProgress } from '#lib/collection/goal.js';
+	import { SvelteSet } from 'svelte/reactivity';
 	import CardImage from '#lib/components/CardImage.svelte';
 	import Meta from '#lib/components/Meta.svelte';
 	import QuantityStepper from '#lib/components/QuantityStepper.svelte';
@@ -158,6 +159,62 @@
 		if (missing.length === 0) return;
 		void collection.setMany(new Map(missing.map((id) => [id, 1])));
 	}
+
+	// ---------------------------------------------------------------------------------------------
+	// Wanting
+
+	/**
+	 * What's already on the Wantlist: the server's list, plus anything added since.
+	 *
+	 * The two are kept separate and merged rather than seeding one set from `data`, so a later
+	 * invalidation can't drop this session's additions — and the derived union means no stale
+	 * snapshot of `data` either. Local rather than re-invalidating per click: a want is a small,
+	 * certain write, and re-running the load would re-render a 332-tile grid to learn one thing it
+	 * was just told.
+	 */
+	const addedToWantlist = new SvelteSet<string>();
+	const wanted = $derived(new SvelteSet([...data.wanted, ...addedToWantlist]));
+	let wantFailed = $state(false);
+
+	/**
+	 * Adds copies to the default Wantlist, or fails visibly.
+	 *
+	 * Optimistic, and **not** rolled back on failure: an error here means the list may or may not
+	 * have the card, and quietly un-marking it would claim more than we know. The message says to
+	 * reload, which is the one action that can tell the truth.
+	 */
+	async function want(printingIds: readonly string[]) {
+		const wantlist = data.wantlist;
+		if (!wantlist) return;
+
+		const items = printingIds
+			.filter((id) => !wanted.has(id))
+			.map((printingId) => ({ printingId, quantity: 1 }));
+		if (items.length === 0) return;
+
+		for (const item of items) addedToWantlist.add(item.printingId);
+		wantFailed = false;
+
+		try {
+			const response = await fetch('/api/collection/wantlists', {
+				method: 'POST',
+				headers: { 'content-type': 'application/json' },
+				body: JSON.stringify({ wantlistId: wantlist.id, items })
+			});
+			if (!response.ok) throw new Error(`HTTP ${response.status}`);
+		} catch {
+			wantFailed = true;
+		}
+	}
+
+	/** Missing *and* not already wanted, among what the current query shows. */
+	const wantableShown = $derived(
+		groups.flatMap((group) =>
+			group.rows
+				.map((row) => row.printing.id)
+				.filter((id) => collection.quantityOf(id) === 0 && !wanted.has(id))
+		)
+	);
 </script>
 
 <Meta
@@ -210,6 +267,47 @@
 			: 'border-edge text-muted hover:border-neon-dim hover:text-body'}">Show all</a
 	>
 </div>
+
+<!--
+	Where "want" goes, said once at the top rather than implied by every tile's button. A collector
+	filtering to `owned:0 rarity>=epic` and then wanting the lot needs to know which list they're
+	filling, and the bulk action is right next to the query that defines "the lot".
+-->
+{#if collection.editable}
+	<div class="-mt-4 mb-6 flex flex-wrap items-center gap-x-3 gap-y-2 text-xs text-muted">
+		{#if data.wantlist}
+			<span>
+				Wants go to
+				<a href="/collection/wantlists/{data.wantlist.id}" class="text-body hover:text-neon"
+					>{data.wantlist.name}</a
+				>
+			</span>
+
+			{#if wantableShown.length > 0}
+				<button
+					type="button"
+					onclick={() => void want(wantableShown)}
+					class="rounded-full border border-edge px-2.5 py-0.5 transition-colors
+						hover:border-neon-dim hover:text-neon">Want {wantableShown.length} missing shown</button
+				>
+			{/if}
+
+			<a href="/collection/wantlists" class="text-muted/70 hover:text-neon">Change</a>
+		{:else}
+			<span>
+				<a href="/collection/wantlists" class="text-body hover:text-neon">Start a wantlist</a>
+				to mark cards you're hunting for from here.
+			</span>
+		{/if}
+
+		{#if wantFailed}
+			<!-- Deliberately not self-clearing, and not rolled back: after a failed write the list may
+			     or may not have the card, and only a reload can say. -->
+			<span class="text-card-red">Couldn't reach the wantlist — reload to see where it got to.</span
+			>
+		{/if}
+	</div>
+{/if}
 
 {#if groups.length === 0}
 	<p class="mt-16 text-center text-muted">Nothing matches those filters.</p>
@@ -270,6 +368,30 @@
 					<div class="pointer-events-none absolute bottom-1 left-1">
 						<QuantityStepper printingId={row.printing.id} label={row.card.name} />
 					</div>
+
+					{#if collection.editable && data.wantlist}
+						{@const onList = wanted.has(row.printing.id)}
+						<!--
+							Bottom-right, opposite the stepper, and hidden until hover unless it's already
+							wanted — the same restraint the stepper learned: a control on every one of 332
+							tiles has to earn its ink. Once on the list the marker stays visible, because
+							that's a fact about the card rather than an action you might take.
+						-->
+						<button
+							type="button"
+							onclick={() => void want([row.printing.id])}
+							disabled={onList}
+							aria-label={onList
+								? `${row.card.name} is on your wantlist`
+								: `Add ${row.card.name} to your wantlist`}
+							title={onList ? 'On your wantlist' : 'Add to wantlist'}
+							class="absolute right-1 bottom-1 grid size-5 place-items-center rounded border
+								text-[0.6rem] transition-opacity {onList
+								? 'border-neon/60 bg-void/90 text-neon opacity-100'
+								: 'border-edge bg-void/90 text-muted opacity-0 group-hover/tile:opacity-100 hover:border-neon-dim hover:text-neon focus-visible:opacity-100'}"
+							>{onList ? '★' : '☆'}</button
+						>
+					{/if}
 				</li>
 			{/each}
 		</ul>

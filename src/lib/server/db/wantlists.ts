@@ -33,11 +33,13 @@ export async function listWantlists(db: Db, ownerId: string): Promise<WantlistSu
 		.select({
 			id: printingLists.id,
 			name: printingLists.name,
-			visibility: printingLists.visibility
+			visibility: printingLists.visibility,
+			isDefault: printingLists.isDefault
 		})
 		.from(printingLists)
 		.where(and(eq(printingLists.ownerId, ownerId), eq(printingLists.kind, 'wantlist')))
-		.orderBy(asc(printingLists.createdAt));
+		// Default first: it is the one every other surface means when it says "the wantlist".
+		.orderBy(desc(printingLists.isDefault), asc(printingLists.createdAt));
 
 	if (lists.length === 0) return [];
 
@@ -60,7 +62,13 @@ export async function listWantlists(db: Db, ownerId: string): Promise<WantlistSu
 
 	return lists.map((list) => {
 		const total = totals.find((row) => row.listId === list.id);
-		return { ...list, entries: total?.entries ?? 0, copies: total?.copies ?? 0 };
+		return {
+			...list,
+			entries: total?.entries ?? 0,
+			copies: total?.copies ?? 0,
+			// A lone list is the default in effect, whatever the column says — see `defaultWantlist`.
+			isDefault: list.isDefault || lists.length === 1
+		};
 	});
 }
 
@@ -96,11 +104,64 @@ export async function getWantlistEntries(db: Db, listId: string): Promise<Wantli
 }
 
 export async function createWantlist(db: Db, ownerId: string, name: string) {
+	// The first Wantlist becomes the default, because a lone list is unambiguously the one meant —
+	// and it means the collection view's "want this" works without a separate setup step.
+	const [existing] = await db
+		.select({ id: printingLists.id })
+		.from(printingLists)
+		.where(and(eq(printingLists.ownerId, ownerId), eq(printingLists.kind, 'wantlist')))
+		.limit(1);
+
 	const [wantlist] = await db
 		.insert(printingLists)
-		.values({ ownerId, kind: 'wantlist', name })
+		.values({ ownerId, kind: 'wantlist', name, isDefault: existing === undefined })
 		.returning();
 	return wantlist;
+}
+
+/**
+ * Designates the list that other surfaces add to, clearing whatever held the title before.
+ *
+ * Both statements in one batch, which D1 runs in a transaction: "at most one default per owner and
+ * kind" is an application invariant SQLite can't express as a constraint, so the only way to keep
+ * it true is to never leave the intermediate state visible.
+ *
+ * Takes `ownerId` as well as the id so the clear is scoped to that owner — a caller that has
+ * already checked ownership still shouldn't be able to reach across users by mistake.
+ */
+export async function setDefaultWantlist(db: Db, ownerId: string, id: string): Promise<void> {
+	await db.batch([
+		db
+			.update(printingLists)
+			.set({ isDefault: false })
+			.where(and(eq(printingLists.ownerId, ownerId), eq(printingLists.kind, 'wantlist'))),
+		db
+			.update(printingLists)
+			.set({ isDefault: true })
+			.where(and(eq(printingLists.id, id), eq(printingLists.ownerId, ownerId)))
+	]);
+}
+
+/**
+ * The list to add to when nobody named one — the default, or the only one, or nothing.
+ *
+ * "The only one" is deliberate: a user with a single Wantlist has already answered the question,
+ * and making them mark it explicitly would be bureaucracy. Returns `null` rather than creating
+ * anything, so a caller decides whether to prompt.
+ */
+export async function defaultWantlist(
+	db: Db,
+	ownerId: string
+): Promise<{ id: string; name: string } | null> {
+	const lists = await db
+		.select({ id: printingLists.id, name: printingLists.name, isDefault: printingLists.isDefault })
+		.from(printingLists)
+		.where(and(eq(printingLists.ownerId, ownerId), eq(printingLists.kind, 'wantlist')))
+		.orderBy(desc(printingLists.isDefault), asc(printingLists.createdAt));
+
+	if (lists.length === 0) return null;
+	const chosen = lists.find((list) => list.isDefault) ?? (lists.length === 1 ? lists[0] : null);
+	return chosen ? { id: chosen.id, name: chosen.name } : null;
 }
 
 /**

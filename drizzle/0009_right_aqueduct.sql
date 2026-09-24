@@ -1,0 +1,1 @@
+ALTER TABLE `printing_lists` ADD `is_default` integer DEFAULT false NOT NULL;

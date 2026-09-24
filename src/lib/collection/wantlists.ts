@@ -16,4 +16,12 @@ export type WantlistSummary = {
 	entries: number;
 	/** Copies wanted across them, which is the number that tells you the size of the ask. */
 	copies: number;
+	/**
+	 * The list other surfaces add to without asking — at most one per user.
+	 *
+	 * The collection view's "want this" button needs a destination it doesn't have to ask about
+	 * every time, and picking silently (the newest? the biggest?) would put cards somewhere the
+	 * owner didn't choose. So the choice is theirs, once, and stored (`printing_lists.is_default`).
+	 */
+	isDefault: boolean;
 };

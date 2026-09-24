@@ -18,6 +18,7 @@ import {
 	deleteWantlist,
 	getWantlist,
 	renameWantlist,
+	setDefaultWantlist,
 	setWantlistVisibility
 } from '#lib/server/db/wantlists.js';
 import type { Actions } from './$types';
@@ -72,6 +73,18 @@ export const actions: Actions = {
 		const parsed = v.safeParse(VisibilitySchema, formData.get('visibility'));
 		if (!parsed.success) return fail(400, { message: 'Invalid visibility' });
 		await setWantlistVisibility(event.locals.db, wantlistId, parsed.output);
+	},
+
+	/**
+	 * Designates the list that `/collection`'s "want this" adds to.
+	 *
+	 * Named `makeDefault`, not `default`: SvelteKit reserves that for a form's unnamed action, and
+	 * `?/default` 500s.
+	 */
+	makeDefault: async (event) => {
+		const { wantlistId } = await requireOwnedWantlist(event);
+		if (!event.locals.user) return redirect(302, '/auth/login');
+		await setDefaultWantlist(event.locals.db, event.locals.user.id, wantlistId);
 	},
 
 	delete: async (event) => {
