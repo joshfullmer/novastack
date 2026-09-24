@@ -5,22 +5,28 @@
  * browser-drawn drag image you cannot animate, no velocity, no tilt, and no control over the drop
  * transition — and it is a dead end on touch. An arrangement is the whole point of a Binder, so
  * the act of arranging should feel physical: the card trails the cursor, banks into a turn, and
- * either settles into the pocket or is flung back where it came from. That needs pointer events
- * and a frame loop.
+ * then glides into the pocket — or back where it came from. That needs pointer events and a frame
+ * loop.
  *
- * **The model.** The ghost is a mass on a spring anchored to the pointer. It is never set equal to
- * the pointer, which is what makes it lag, overshoot and swing; its horizontal velocity drives the
- * tilt, so the banking comes out of the same state rather than being a separate animation. On
- * release the anchor jumps to either the target Pocket or the card's origin, and the pointer's own
- * velocity is injected into the ghost — so a fast flick arcs past and swings back in, and a gentle
- * release just eases home.
+ * **Two phases, two different models**, because they want different things.
  *
- * Fixed-step integration with an accumulator, not per-frame `dt` scaling: a spring integrated with
- * a variable step changes its own stiffness with the frame rate, so the same flick would feel
- * different on a 60Hz and a 144Hz display, and a long frame can make it explode.
+ * *While dragging*, the ghost is a mass on a spring anchored to the pointer. It is never set equal
+ * to the pointer, which is what makes it lag and swing; its horizontal velocity drives the tilt, so
+ * the banking comes out of the same state rather than being a separate animation. Fixed-step
+ * integration with an accumulator, not per-frame `dt` scaling: a spring integrated with a variable
+ * step changes its own stiffness with the frame rate, so the same flick would feel different on a
+ * 60Hz and a 144Hz display, and a long frame can make it explode.
  *
- * Under `prefers-reduced-motion` the ghost tracks the pointer exactly, with no tilt, no overshoot
- * and no settle animation. Dragging still works; it just stops being a performance.
+ * *Once released*, it is a **tween**, and the spring is switched off entirely. A spring landing
+ * jiggled: carried velocity meant the card arrived, overshot the Pocket, came back, and rocked as
+ * its tilt unwound — three things happening at the settle point, which reads as a wobble rather
+ * than as weight. A tween over a fixed duration with an ease-out curve is monotonic by
+ * construction, so the card cannot overshoot and every property (position, tilt, scale, fade)
+ * finishes together on one clock. The trade is that the flick's momentum doesn't carry into the
+ * drop; ease-out starts fast, which covers the handover.
+ *
+ * Under `prefers-reduced-motion` the ghost tracks the pointer exactly, with no tilt and no landing
+ * animation. Dragging still works; it just stops being a performance.
  */
 import { printingRow } from './printing-search.js';
 
@@ -60,27 +66,25 @@ const TOUCH_SLOP = 10;
  */
 const STEP_MS = 1000 / 120;
 const STIFFNESS = 0.2;
-const RELEASE_STIFFNESS = 0.28;
 const DAMPING = 0.68;
 const TILT_PER_VELOCITY = 0.7;
 const MAX_TILT = 10;
 const TILT_EASE = 0.12;
 const LIFT_SCALE = 1.04;
 const SCALE_EASE = 0.14;
-const FADE_EASE = 0.16;
-/**
- * How much of the pointer's own speed carries into the release.
- *
- * At 1 a fast flick shot well past the pocket and swung back twice before settling — the arc is
- * meant to be felt, not watched.
- */
-const FLICK_CARRY = 0.55;
 
-/** Close enough, slow enough: the drop is over and the ghost can come down. */
-const SETTLE_DISTANCE = 1.5;
-const SETTLE_SPEED = 0.25;
-/** A hard stop, so a drop can never leave a ghost stuck on screen. */
-const MAX_SETTLE_MS = 900;
+/**
+ * The landing tween's length: a floor, plus a little per pixel travelled, capped.
+ *
+ * Distance-scaled rather than fixed, because a nudge into the next Pocket and a throw across three
+ * pages are the same gesture at very different sizes, and one duration makes one of them wrong —
+ * the short move crawls or the long one teleports.
+ */
+const LANDING_MIN_MS = 190;
+const LANDING_MAX_MS = 340;
+const LANDING_MS_PER_PX = 0.35;
+/** A card leaving the Binder doesn't travel, so its fade gets a fixed length instead. */
+const REMOVAL_MS = 190;
 
 /** Auto-scroll band at the top and bottom of the viewport, for dragging to a page off-screen. */
 const EDGE_BAND = 96;
@@ -97,6 +101,16 @@ export function pocketKey(page: number, pocket: number): string {
 
 function clamp(value: number, min: number, max: number): number {
 	return Math.min(max, Math.max(min, value));
+}
+
+/**
+ * Ease-out cubic.
+ *
+ * Fastest at the start, so the tween picks up roughly where the drag left off, and monotonic, so
+ * the card approaches the Pocket without ever passing it.
+ */
+function easeOut(t: number): number {
+	return 1 - (1 - t) ** 3;
 }
 
 function prefersReducedMotion(): boolean {
@@ -144,10 +158,6 @@ export class PocketDrag {
 	// from it. Making it reactive would mean up to 120 invalidations a second for no redraw.
 	#pointerX = 0;
 	#pointerY = 0;
-	/** Smoothed pointer velocity, px per millisecond. */
-	#velocityX = 0;
-	#velocityY = 0;
-	#lastSampleAt = 0;
 
 	/** Where the pointer sits within the card, so the card doesn't jump on pickup. */
 	#grabX = 0;
@@ -162,6 +172,13 @@ export class PocketDrag {
 	#targetOpacity = 1;
 
 	#origin: { x: number; y: number } | null = null;
+
+	/** The landing tween, set on release and read every frame until it finishes. */
+	#land: {
+		from: { x: number; y: number; rotation: number; scale: number; opacity: number };
+		to: { x: number; y: number; rotation: number; scale: number; opacity: number };
+		duration: number;
+	} | null = null;
 
 	/**
 	 * Whether the window listeners are attached.
@@ -352,9 +369,6 @@ export class PocketDrag {
 		this.#anchorY = rect.top;
 		this.#ghostVelocityX = 0;
 		this.#ghostVelocityY = 0;
-		this.#velocityX = 0;
-		this.#velocityY = 0;
-		this.#lastSampleAt = performance.now();
 
 		// The pointer is captured so a fast drag that outruns the element keeps sending events.
 		try {
@@ -371,21 +385,14 @@ export class PocketDrag {
 		this.#startLoop();
 	}
 
-	/** One pointer position, and the velocity that release will inherit. */
+	/**
+	 * The latest pointer position, which is all the spring needs.
+	 *
+	 * Pointer *velocity* used to be smoothed and tracked here to carry the flick through the
+	 * release. The landing is a tween now, so nothing consumes it — and the tilt never did: it
+	 * reads the ghost's own velocity, which is already smooth because a spring cannot jump.
+	 */
 	#sample(clientX: number, clientY: number): void {
-		const now = performance.now();
-		const elapsed = Math.max(now - this.#lastSampleAt, 1);
-		this.#lastSampleAt = now;
-
-		const instantX = (clientX - this.#pointerX) / elapsed;
-		const instantY = (clientY - this.#pointerY) / elapsed;
-
-		// Exponential smoothing: raw per-event deltas are far too noisy to tilt a card by, and a
-		// single stuttery frame at the moment of release would otherwise fling it across the screen.
-		// Weighted well towards history — at an even split, the tilt twitched with the mouse.
-		this.#velocityX = this.#velocityX * 0.85 + instantX * 0.15;
-		this.#velocityY = this.#velocityY * 0.85 + instantY * 0.15;
-
 		this.#pointerX = clientX;
 		this.#pointerY = clientY;
 	}
@@ -459,11 +466,7 @@ export class PocketDrag {
 			this.#targetScale = 1;
 		}
 
-		// The flick carries through the release rather than stopping dead at it.
-		if (!this.#reduced) {
-			this.#ghostVelocityX += this.#velocityX * STEP_MS * FLICK_CARRY;
-			this.#ghostVelocityY += this.#velocityY * STEP_MS * FLICK_CARRY;
-		}
+		this.#beginLanding(zone?.kind === 'remove');
 
 		// Commit and settle run together on purpose: the request is in flight while the card flies,
 		// so the two costs overlap instead of queueing.
@@ -473,6 +476,55 @@ export class PocketDrag {
 
 		await Promise.all([committed, this.#settled()]);
 		this.#clear();
+	}
+
+	/**
+	 * Freezes where the card is and where it's going, and picks how long it should take.
+	 *
+	 * Snapshotting `from` is what makes the landing immune to the spring: whatever velocity the
+	 * ghost was carrying is simply dropped here, so there is nothing left to oscillate.
+	 */
+	#beginLanding(removing: boolean): void {
+		const distance = Math.hypot(this.#anchorX - this.x, this.#anchorY - this.y);
+
+		this.#land = {
+			from: {
+				x: this.x,
+				y: this.y,
+				rotation: this.rotation,
+				scale: this.scale,
+				opacity: this.opacity
+			},
+			to: {
+				x: this.#anchorX,
+				y: this.#anchorY,
+				// Straight by the time it's down: a card sitting in a Pocket at an angle is a bug.
+				rotation: 0,
+				scale: this.#targetScale,
+				opacity: this.#targetOpacity
+			},
+			duration: removing
+				? REMOVAL_MS
+				: clamp(LANDING_MIN_MS + distance * LANDING_MS_PER_PX, LANDING_MIN_MS, LANDING_MAX_MS)
+		};
+	}
+
+	/** Advances the landing tween. True once it has finished. */
+	#advanceLanding(now: number): boolean {
+		const land = this.#land;
+		if (!land) return true;
+
+		const progress = clamp((now - this.#releasedAt) / land.duration, 0, 1);
+		const eased = easeOut(progress);
+		const mix = (from: number, to: number) => from + (to - from) * eased;
+
+		this.x = mix(land.from.x, land.to.x);
+		this.y = mix(land.from.y, land.to.y);
+		this.rotation = mix(land.from.rotation, land.to.rotation);
+		this.scale = mix(land.from.scale, land.to.scale);
+		this.opacity = mix(land.from.opacity, land.to.opacity);
+
+		return progress === 1;
 	}
 
 	#settled(): Promise<void> {
@@ -493,6 +545,7 @@ export class PocketDrag {
 		this.over = null;
 		this.landing = false;
 		this.#origin = null;
+		this.#land = null;
 		this.#onSettled = null;
 	}
 
@@ -512,11 +565,22 @@ export class PocketDrag {
 		const elapsed = Math.min(now - this.#lastFrameAt, 64);
 		this.#lastFrameAt = now;
 
-		if (!this.landing) {
-			this.#autoScroll(elapsed);
-			this.#anchorX = this.#pointerX - this.#grabX;
-			this.#anchorY = this.#pointerY - this.#grabY;
+		// The two phases share only the loop. Released, the spring is out of the picture entirely:
+		// one tween drives every property to its destination and finishes on a known frame.
+		if (this.landing) {
+			if (this.#advanceLanding(now)) {
+				this.#onSettled?.();
+				this.#onSettled = null;
+				return;
+			}
+
+			this.#frameId = requestAnimationFrame(this.#frame);
+			return;
 		}
+
+		this.#autoScroll(elapsed);
+		this.#anchorX = this.#pointerX - this.#grabX;
+		this.#anchorY = this.#pointerY - this.#grabY;
 
 		if (this.#reduced) {
 			this.x = this.#anchorX;
@@ -529,45 +593,21 @@ export class PocketDrag {
 			}
 		}
 
-		if (this.landing && this.#hasSettled(now)) {
-			this.x = this.#anchorX;
-			this.y = this.#anchorY;
-			this.#onSettled?.();
-			this.#onSettled = null;
-			return;
-		}
-
 		this.#frameId = requestAnimationFrame(this.#frame);
 	};
 
+	/** The spring, which only runs while the card is in hand — the landing is a tween. */
 	#integrate(): void {
-		const stiffness = this.landing ? RELEASE_STIFFNESS : STIFFNESS;
-
-		this.#ghostVelocityX = (this.#ghostVelocityX + (this.#anchorX - this.x) * stiffness) * DAMPING;
-		this.#ghostVelocityY = (this.#ghostVelocityY + (this.#anchorY - this.y) * stiffness) * DAMPING;
+		this.#ghostVelocityX = (this.#ghostVelocityX + (this.#anchorX - this.x) * STIFFNESS) * DAMPING;
+		this.#ghostVelocityY = (this.#ghostVelocityY + (this.#anchorY - this.y) * STIFFNESS) * DAMPING;
 		this.x += this.#ghostVelocityX;
 		this.y += this.#ghostVelocityY;
 
 		// Banking out of the card's own motion, not a separate animation — so it leans into a turn
-		// and straightens as it settles, for free.
-		const wanted = this.landing
-			? 0
-			: clamp(this.#ghostVelocityX * TILT_PER_VELOCITY, -MAX_TILT, MAX_TILT);
+		// and straightens as it slows, for free.
+		const wanted = clamp(this.#ghostVelocityX * TILT_PER_VELOCITY, -MAX_TILT, MAX_TILT);
 		this.rotation += (wanted - this.rotation) * TILT_EASE;
 		this.scale += (this.#targetScale - this.scale) * SCALE_EASE;
-		this.opacity += (this.#targetOpacity - this.opacity) * FADE_EASE;
-	}
-
-	#hasSettled(now: number): boolean {
-		if (now - this.#releasedAt > MAX_SETTLE_MS) return true;
-
-		// A card being removed isn't going anywhere, so proximity would call it settled on the first
-		// frame. It's done when it's invisible.
-		if (this.#targetOpacity === 0) return this.opacity < 0.04;
-
-		const distance = Math.hypot(this.#anchorX - this.x, this.#anchorY - this.y);
-		const speed = Math.hypot(this.#ghostVelocityX, this.#ghostVelocityY);
-		return distance < SETTLE_DISTANCE && speed < SETTLE_SPEED;
 	}
 
 	/** Scrolls the window when the pointer is held near an edge, so page 3 is reachable. */
