@@ -4,6 +4,7 @@
  */
 import { redirect } from '@sveltejs/kit';
 import { listBinders } from '#lib/server/db/binders.js';
+import { listWantlists } from '#lib/server/db/wantlists.js';
 import type { LayoutServerLoad } from './$types';
 
 // Overrides the root layout's `prerender = true` for this subtree — request-scoped session state.
@@ -14,12 +15,12 @@ export const prerender = false;
  * the pathname: `event.route.id` is the route itself, so this can't be fooled by a path that
  * merely looks like one, and it fails loudly if the route is ever moved again.
  *
- * A Binder is shareable by link (`docs/adr/0003-the-collection-is-flat-and-binders-are-showcases.md`),
- * and a link only its author can open is not a share. This does not decide *whether* a given
- * Binder is visible — the page still 404s a private one for a non-owner. It only lets the request
- * get that far.
+ * A Binder and a Wantlist are both shareable by link
+ * (`docs/adr/0003-the-collection-is-flat-and-binders-are-showcases.md`), and a link only its author
+ * can open is not a share. This does not decide *whether* a given list is visible — the page still
+ * 404s a private one for a non-owner. It only lets the request get that far.
  */
-const PUBLIC_ROUTES = new Set(['/collection/binders/[id]']);
+const PUBLIC_ROUTES = new Set(['/collection/binders/[id]', '/collection/wantlists/[id]']);
 
 /**
  * Deliberately **no `cache-control`**, unlike `/sets/[id]` and `/cards/[slug]`. Those are public
@@ -34,10 +35,16 @@ export const load: LayoutServerLoad = async (event) => {
 		if (!PUBLIC_ROUTES.has(event.route.id ?? '')) return redirect(302, '/auth/login');
 		// The rail is suppressed for a stranger — every figure in it describes a Collection they
 		// haven't got — so there is nothing to load for them.
-		return { user: null, binders: [] };
+		return { user: null, binders: [], wantlists: [] };
 	}
 
-	// Binders load here rather than per-pane because the rail lists them on every pane. Two small
-	// queries, and `/collection/binders` reuses this rather than loading its own copy.
-	return { user, binders: await listBinders(event.locals.db, user.id) };
+	// Both lists load here rather than per-pane because the rail shows them on every pane, and the
+	// list screens inherit these rather than loading their own copies. In parallel: neither query
+	// depends on the other, and this runs on every navigation inside the subtree.
+	const [binders, wantlists] = await Promise.all([
+		listBinders(event.locals.db, user.id),
+		listWantlists(event.locals.db, user.id)
+	]);
+
+	return { user, binders, wantlists };
 };

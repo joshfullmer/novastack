@@ -57,6 +57,13 @@
       "when": 1790242640387,
       "tag": "0007_friendly_magneto",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "6",
+      "when": 1790256177894,
+      "tag": "0008_natural_grim_reaper",
+      "breakpoints": true
     }
   ]
 }

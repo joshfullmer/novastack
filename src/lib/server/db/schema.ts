@@ -213,6 +213,34 @@ export const binderPockets = sqliteTable(
 	(table) => [primaryKey({ columns: [table.listId, table.page, table.pocket] })]
 );
 
+/**
+ * One entry on a **Wantlist** — a Printing the owner is looking for, and how many (`CONTEXT.md`).
+ *
+ * The deliberate opposite of a Pocket. A Wantlist is unordered, so there is no position column and
+ * `(list_id, printing_id)` is the key; and it carries a **target quantity**, because "I need three
+ * of these" is the whole point of asking. Absence means not wanted — a zero-quantity entry is
+ * deleted rather than stored, the same rule `collection_items` follows.
+ *
+ * `printing_id` has no foreign key, matching `collection_items` and `binder_pockets`: printings
+ * live in a build-time artifact, not a table.
+ */
+export const wantlistEntries = sqliteTable(
+	'wantlist_entries',
+	{
+		listId: text('list_id')
+			.notNull()
+			.references(() => printingLists.id, { onDelete: 'cascade' }),
+		printingId: text('printing_id').notNull(),
+		/** How many copies the owner is after. At least 1 — zero deletes the row. */
+		quantity: integer('quantity').notNull(),
+		/** Free text, for the one thing a Wantlist needs that a Collection doesn't: why. */
+		note: text('note'),
+		updatedAt: integer('updated_at', { mode: 'timestamp_ms' }).notNull().default(now)
+	},
+	// Primary key only: it already indexes `list_id` leftmost, which is what every query filters on.
+	(table) => [primaryKey({ columns: [table.listId, table.printingId] })]
+);
+
 /** One row per (deck, user) — enforced by the primary key, not just an application check. */
 export const deckLikes = sqliteTable(
 	'deck_likes',

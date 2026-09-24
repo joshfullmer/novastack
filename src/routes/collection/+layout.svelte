@@ -47,10 +47,11 @@
 	const onGoal = $derived(path === '/collection/goal');
 	const onAdd = $derived(path === '/collection/add');
 	const onBinders = $derived(path === '/collection/binders');
+	const onWantlists = $derived(path === '/collection/wantlists');
 </script>
 
 <div class="flex min-h-[calc(100vh-var(--spacing-nav))]">
-	<!-- No rail for a stranger following a shared Binder link: every figure in it is about a
+	<!-- No rail for a stranger following a shared Binder or Wantlist link: every figure in it is about a
 	     Collection they don't have. They still get this layout, so the page inside it doesn't have to
 	     know whether it's being read by its owner. -->
 	{#if data.user}
@@ -168,19 +169,54 @@
 					{/if}
 				</div>
 
-				<!-- Still a dimmed placeholder rather than a link that 404s — the treatment Nav used for
-			     Decks before the deckbuilder shipped. -->
 				<div>
-					<p
-						class="flex items-center gap-2 px-2 text-xs font-medium tracking-widest text-muted/50
-							uppercase"
+					<a
+						href="/collection/wantlists"
+						aria-current={onWantlists ? 'page' : undefined}
+						class="mb-2 flex items-baseline gap-2 rounded px-2 py-1 text-xs font-medium
+							tracking-widest uppercase transition-colors {onWantlists
+							? 'text-neon'
+							: 'text-muted hover:bg-surface hover:text-body'}"
 					>
-						Wantlists
-						<span class="rounded bg-surface px-1.5 py-0.5 text-[0.6rem] tracking-normal normal-case"
-							>soon</span
+						<span>Wantlists</span>
+						<span class="ml-auto font-mono tracking-normal text-muted/50 normal-case tabular-nums"
+							>{data.wantlists.length}</span
 						>
-					</p>
-					<p class="mt-1 px-2 text-xs text-muted/40">What you are still looking for</p>
+					</a>
+
+					{#if data.wantlists.length === 0}
+						<p class="px-2 text-xs text-muted/50">What you are still looking for</p>
+					{:else}
+						<ul class="space-y-0.5">
+							<!-- Capped like the Binders above, for the same reason. -->
+							{#each data.wantlists.slice(0, 5) as wantlist (wantlist.id)}
+								<li>
+									<a
+										href="/collection/wantlists/{wantlist.id}"
+										class="flex items-baseline gap-2 rounded px-2 py-1 text-sm text-body
+											transition-colors hover:bg-surface hover:text-neon"
+									>
+										<span class="min-w-0 truncate">{wantlist.name}</span>
+										{#if wantlist.visibility === 'shared'}
+											<span class="shrink-0 text-[0.6rem] text-muted/60">shared</span>
+										{/if}
+										<!-- Copies, not distinct cards: on a Wantlist the number that matters is how
+										     many you're asking for. -->
+										<span class="ml-auto shrink-0 font-mono text-xs text-muted/60 tabular-nums"
+											>{wantlist.copies}</span
+										>
+									</a>
+								</li>
+							{/each}
+						</ul>
+						{#if data.wantlists.length > 5}
+							<a
+								href="/collection/wantlists"
+								class="mt-1 block px-2 text-xs text-muted hover:text-neon"
+								>{data.wantlists.length - 5} more…</a
+							>
+						{/if}
+					{/if}
 				</div>
 			</div>
 
