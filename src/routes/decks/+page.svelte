@@ -335,7 +335,7 @@
 	</div>
 {/snippet}
 
-{#snippet folderRow(folder: { id: string; name: string; visibility: 'private' | 'unlisted' })}
+{#snippet folderRow(folder: { id: string; name: string; visibility: 'private' | 'shared' })}
 	<li
 		role="group"
 		aria-label="{folder.name} folder"
@@ -366,7 +366,7 @@
 				>
 			</button>
 		{/if}
-		{#if folder.visibility === 'unlisted'}
+		{#if folder.visibility === 'shared'}
 			<span class="rounded-full border border-edge px-3 py-1 text-xs text-muted capitalize"
 				>Unlisted</span
 			>
@@ -375,7 +375,7 @@
 	</li>
 {/snippet}
 
-{#snippet folderTile(folder: { id: string; name: string; visibility: 'private' | 'unlisted' })}
+{#snippet folderTile(folder: { id: string; name: string; visibility: 'private' | 'shared' })}
 	<li class="group relative list-none">
 		<div
 			role="button"
@@ -399,7 +399,7 @@
 				<span class="truncate text-sm font-medium text-bright">{folder.name}</span>
 			{/if}
 			<span class="text-xs text-muted tabular-nums">{decksInFolder(folder.id).length} decks</span>
-			{#if folder.visibility === 'unlisted'}
+			{#if folder.visibility === 'shared'}
 				<span class="rounded-full border border-edge px-2 py-0.5 text-xs text-muted capitalize"
 					>Unlisted</span
 				>
@@ -489,10 +489,10 @@
 						class="ml-2 rounded border border-edge bg-void px-1 py-0.5 text-xs text-muted"
 					>
 						<option value="private">Private</option>
-						<option value="unlisted">Unlisted</option>
+						<option value="shared">Shared</option>
 					</select>
 				</form>
-				{#if currentFolder.visibility === 'unlisted'}
+				{#if currentFolder.visibility === 'shared'}
 					<button
 						type="button"
 						title="Copy share link"

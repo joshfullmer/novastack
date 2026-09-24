@@ -9,7 +9,7 @@ export const prerender = false;
 
 /**
  * The read-only, shareable view of one folder — `.scratch/decklist-folders/issues/01-data-model-
- * and-sharing-semantics.md`. Owner always sees it; a non-owner only if `unlisted`, and even then
+ * and-sharing-semantics.md`. Owner always sees it; a non-owner only if `shared`, and even then
  * only the folder's non-private decks — folder sharing never overrides a deck's own privacy. A
  * private folder 404s for a non-owner rather than 403ing, so a guessed id doesn't confirm the
  * folder exists.

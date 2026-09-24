@@ -24,7 +24,7 @@ import type { Actions, PageServerLoad } from './$types';
 export const prerender = false;
 
 const VisibilitySchema = v.picklist(['public', 'unlisted', 'private']);
-const FolderVisibilitySchema = v.picklist(['private', 'unlisted']);
+const FolderVisibilitySchema = v.picklist(['private', 'shared']);
 
 /** Every row action targets a deck by id from form data — verified owned here so a crafted
  * request can't rename/delete/duplicate someone else's deck. */

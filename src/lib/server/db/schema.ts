@@ -25,7 +25,7 @@ const now = sql`(cast(unixepoch('subsecond') * 1000 as integer))`;
  * deck visibility. `parentFolderId` is an unused seam for real nesting later: v1 UI never sets
  * it to non-null, but the column exists so upgrading to nesting is a UI/validation change, not
  * a migration. No `public` visibility tier — folders are never discoverable/browsable, only
- * shareable via a direct `unlisted` link. */
+ * shareable via a direct `shared` link. */
 export const deckFolders = sqliteTable(
 	'deck_folders',
 	{
@@ -36,7 +36,9 @@ export const deckFolders = sqliteTable(
 			.notNull()
 			.references(() => user.id, { onDelete: 'cascade' }),
 		name: text('name').notNull(),
-		visibility: text('visibility', { enum: ['private', 'unlisted'] })
+		/** `shared`, not `unlisted`: "unlisted" only means something by contrast with a public tier,
+		 * and folders have none — see `CONTEXT.md`'s Unlisted vs Shared entries. */
+		visibility: text('visibility', { enum: ['private', 'shared'] })
 			.notNull()
 			.default('private'),
 		parentFolderId: text('parent_folder_id').references(
@@ -92,6 +94,36 @@ export const deckVersions = sqliteTable(
 		savedAt: integer('saved_at', { mode: 'timestamp_ms' }).notNull().default(now)
 	},
 	(table) => [index('deck_versions_deck_saved_idx').on(table.deckId, table.savedAt)]
+);
+
+/**
+ * A user's **Collection** — what they own, one quantity per Printing
+ * (`docs/adr/0003-the-collection-is-flat-and-binders-are-showcases.md`).
+ *
+ * Flat and singular: there is no `collections` table, because a Collection is exactly one per user,
+ * unnamed, never created or deleted, and never shared. Binders do **not** partition this — a
+ * Printing is never in a Binder instead of here, and an Owned Count is a single column read rather
+ * than a sum across containers.
+ *
+ * Keyed on `printingId` (the UUID) rather than a collector number, per ADR 0001's reasoning:
+ * collector numbers are only unique within a Set and are renumbered on reprint.
+ *
+ * A quantity of zero is not stored. Owning none of a Printing is the absence of a row, so the
+ * table only ever holds facts — see `setQuantity` in `collection.ts`, which deletes at zero.
+ */
+export const collectionItems = sqliteTable(
+	'collection_items',
+	{
+		userId: text('user_id')
+			.notNull()
+			.references(() => user.id, { onDelete: 'cascade' }),
+		printingId: text('printing_id').notNull(),
+		quantity: integer('quantity').notNull(),
+		updatedAt: integer('updated_at', { mode: 'timestamp_ms' }).notNull().default(now)
+	},
+	// Primary key only, no separate owner index: SQLite's composite PK already indexes
+	// `user_id` leftmost, which is what every query here filters on. Same shape as `deck_likes`.
+	(table) => [primaryKey({ columns: [table.userId, table.printingId] })]
 );
 
 /** One row per (deck, user) — enforced by the primary key, not just an application check. */
