@@ -55,7 +55,8 @@ export const load: PageServerLoad = async (event) => {
 	const version = await getLatestVersion(event.locals.db, deck.id);
 	const payload = v.parse(DeckVersionPayloadSchema, {
 		entries: version?.entries ?? [],
-		legends: version?.legends ?? []
+		legends: version?.legends ?? [],
+		sideboard: version?.sideboard ?? []
 	});
 
 	// Liking is a non-owner action (§9) — the toggle only ever renders for someone else's deck,
@@ -69,12 +70,17 @@ export const load: PageServerLoad = async (event) => {
 	// Change History (deck view page) — every version, each diffed against the one before it.
 	const versionRows = await listVersions(event.locals.db, deck.id);
 	const parsedVersions = versionRows.map((row) =>
-		v.parse(DeckVersionPayloadSchema, { entries: row.entries, legends: row.legends })
+		v.parse(DeckVersionPayloadSchema, {
+			entries: row.entries,
+			legends: row.legends,
+			sideboard: row.sideboard
+		})
 	);
 	const history = parsedVersions.map((version, index) => ({
 		savedAt: versionRows[index].savedAt.toISOString(),
 		entries: version.entries,
 		legends: version.legends,
+		sideboard: version.sideboard,
 		diff: diffVersions(index === 0 ? null : parsedVersions[index - 1], version)
 	}));
 

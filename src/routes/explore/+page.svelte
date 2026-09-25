@@ -227,7 +227,11 @@
 											class={SIZE_STATUS_TONE[deckSizeStatus(deck.cardCount)]}
 											title="{MIN_DECK_SIZE}–{MAX_DECK_SIZE} cards">{deck.cardCount}</span
 										>
-										cards · {deck.createdAt.toLocaleDateString()}
+										cards{#if deck.sideboardCards > 0}<span
+												title="{deck.sideboardCards}-card sideboard"
+												>&nbsp;+{deck.sideboardCards}</span
+											>{/if}
+										· {deck.createdAt.toLocaleDateString()}
 									</p>
 									<div class="mt-2 flex items-center justify-between gap-2 text-xs text-muted">
 										<a href="/explore?owner={deck.ownerId}" class="min-w-0 truncate hover:text-neon"
@@ -285,7 +289,11 @@
 											class={SIZE_STATUS_TONE[deckSizeStatus(deck.cardCount)]}
 											title="{MIN_DECK_SIZE}–{MAX_DECK_SIZE} cards">{deck.cardCount}</span
 										>
-										cards · {deck.createdAt.toLocaleDateString()}
+										cards{#if deck.sideboardCards > 0}<span
+												title="{deck.sideboardCards}-card sideboard"
+												>&nbsp;+{deck.sideboardCards}</span
+											>{/if}
+										· {deck.createdAt.toLocaleDateString()}
 									</p>
 								</a>
 								<div class="flex items-center gap-3 text-sm text-muted sm:shrink-0">

@@ -99,7 +99,9 @@
 									class={SIZE_STATUS_TONE[deckSizeStatus(deck.cardCount)]}
 									title="{MIN_DECK_SIZE}–{MAX_DECK_SIZE} cards">{deck.cardCount}</span
 								>
-								cards
+								cards{#if deck.sideboardCards > 0}<span title="{deck.sideboardCards}-card sideboard"
+										>&nbsp;+{deck.sideboardCards}</span
+									>{/if}
 							</p>
 						</div>
 					</li>
@@ -142,7 +144,9 @@
 									class={SIZE_STATUS_TONE[deckSizeStatus(deck.cardCount)]}
 									title="{MIN_DECK_SIZE}–{MAX_DECK_SIZE} cards">{deck.cardCount}</span
 								>
-								cards
+								cards{#if deck.sideboardCards > 0}<span title="{deck.sideboardCards}-card sideboard"
+										>&nbsp;+{deck.sideboardCards}</span
+									>{/if}
 							</p>
 						</a>
 					</li>

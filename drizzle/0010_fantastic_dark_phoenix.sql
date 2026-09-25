@@ -1,0 +1,1 @@
+ALTER TABLE `deck_versions` ADD `sideboard` text DEFAULT '[]' NOT NULL;

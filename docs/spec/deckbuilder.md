@@ -48,8 +48,20 @@ Inherited from `docs/spec/card-database.md`, unchanged for the card database its
 Stated directly by the person who knows the game; not derived, not inferred from the source API.
 
 - Deck size: **minimum 40, maximum 50** main-deck cards. Legends do not count toward this.
-- **Up to 3 copies** of a given Card in the main deck.
+- **Up to 3 copies** of a given Card, counted across **the main deck and the sideboard together**.
 - **Exactly 3 Legends**, chosen separately from the main deck.
+- **A sideboard of exactly 7 cards** — `SIDEBOARD_SIZE`. Added when the official tournament rules
+  released (2026-09-25); the full reading of them, the one ambiguity they leave, and what
+  netdeck.gg already shipped are in `docs/research/sideboards.md`. What the rules settle outright:
+  - **No Legends in the sideboard** — §3.4.4, "Players may not sideboard Legend cards." The
+    sideboard's card pool is therefore exactly the main deck's.
+  - **The RAM budget and tournament legality cover the 7 too** — §D.1 binds every card in a
+    constructed deck to the Comprehensive Rules "including but not limited to RAM values", and
+    sideboard cards get swapped into the main deck mid-match anyway.
+  - **An empty sideboard is legal, not unfinished** — §C.2.2's "quick" best-of-1 is played with "a
+    constructed format legal best-of-1 deck with no sideboard". This is why 0 is silent while 1–6
+    is reported (§4), and why every deck saved before this feature existed stays exactly as legal
+    as it was.
 - **No two Legends may share a base name.** Comprehensive rules, "Card Data > Name": a Legend's
   printed name is one string, `"<Name> — <Subtitle>"` (e.g. `"V — Streetkid"`), and two Legends
   whose `<Name>` matches can't both be in the same deck — "V — Streetkid" and "V — Corporate
@@ -101,9 +113,18 @@ type DeckEntry = {
 type DeckVersion = {
 	entries: DeckEntry[];
 	legends: [string, string, string] | string[]; // up to 3 Legend card slugs
+	sideboard: DeckEntry[]; // the 7; `[]` on every row written before the column existed
 	savedAt: string; // ISO timestamp
 };
 ```
+
+**The sideboard is a third array, not a `zone` field on `DeckEntry`.** A discriminator would have
+left every existing consumer of `entries` — deck size, the cost curve, the color/rarity
+breakdowns, the export, the deck image, Missing — type-correct while making each one silently
+wrong, each needing a filter nobody is forced to remember. A separate array turns all of them into
+compile-time decisions instead, which is exactly how the change was actually carried out. It also
+matches how the rules think of the two: §4.1 has judges verify each section "independently of the
+other".
 
 ### 3.2 Storage — D1 via Drizzle
 
@@ -111,9 +132,12 @@ Two tables, snapshot-versioned, not edit-by-edit:
 
 ```
 decks           id, ownerId, name, visibility ('public' | 'unlisted' | 'private'), createdAt
-deck_versions   id, deckId, entries (JSON), legends (JSON), savedAt
+deck_versions   id, deckId, entries (JSON), legends (JSON), sideboard (JSON), savedAt
 deck_likes      deckId, userId, likedAt          — unique on (deckId, userId)
 ```
+
+`sideboard` was added by `drizzle/0010_*.sql` as `text DEFAULT '[]' NOT NULL` — additive, no
+backfill, because `[]` is the correct value for every row that predates it (§2).
 
 - A deck's **current state is its latest `deck_versions` row** by `savedAt`. `decks` holds no
   denormalized copy of the current entries/legends.
@@ -152,7 +176,14 @@ prototype, revising an earlier draft of this spec that assumed Legends were alwa
 any card could be added.
 
 - **≤3 copies of a card: blocks on add.** Checkable the instant a card is added, and there is no
-  "fix it later" workflow for a 4th copy — it's noise, not a state worth representing.
+  "fix it later" workflow for a 4th copy — it's noise, not a state worth representing. Counted
+  across both piles (`copiesOf`), so a card already at 3 in the main deck can't also be
+  sideboarded.
+- **An 8th sideboard card: blocks on add**, for exactly the same reason as the 4th copy. This is
+  the only other add-time block in the deckbuilder.
+- **Sideboard size otherwise: reported, never blocking** — 0 is silent (it's a legal deck, §2),
+  1–6 raises a `DeckIssue`, and an oversized sideboard is reported too even though the editor
+  can't produce one, since a hand-edited payload can.
 - **RAM budget: does not block adding at all.** A card can be added to the main deck with zero
   Legends chosen. Once at least one Legend is chosen, the deckbuilder's card browser narrows to
   what the current budget supports (§5) — but this is a display filter, not an add-time gate; the
@@ -166,9 +197,9 @@ any card could be added.
   handful of cards `"not-legal"` (`Card.tournamentLegal` — `#lib/cards/schema.ts`), today just one
   promo stub with no cost/power/RAM/rules text yet. There is no reason to assume that state is
   permanent, so the deckbuilder treats it exactly like a RAM mismatch: reported, never gated.
-- **RAM mismatches, an out-of-range deck size, Legend-name conflicts, and not-tournament-legal
-  cards all surface as entries in one persistent, non-blocking `DeckIssue` list** (`deckIssues()`
-  in `legality.ts`) — never silent, and never blocking. This is the authoritative legality signal;
+- **RAM mismatches, an out-of-range deck size, an incomplete sideboard, Legends found in the
+  sideboard, Legend-name conflicts, and not-tournament-legal cards all surface as entries in one
+  persistent, non-blocking `DeckIssue` list** (`deckIssues()` in `legality.ts`) — never silent, and never blocking. This is the authoritative legality signal;
   nothing about it depends on _when_ a mismatch arose (cards added before Legends existed produce
   the identical issue to cards that became illegal after a Legend was swapped out).
   - The read-only deck view (`/decks/[id]`) renders every issue, with specifics (e.g. "Deck has 39
@@ -194,7 +225,12 @@ modal, not the card database's own filter panel repurposed: a permanent two-pane
 ### 5.1 Layout
 
 - **Left panel — card browser.** Two tabs, **Legends** and **Main Deck**, each with its own search
-  box. **Both search boxes run through the real query language** (`#lib/query/index.js`, the same
+  box. **There is no third tab for the sideboard** — Legends can't be sideboarded (§2), so its
+  pool is identical to the Main Deck tab's, and a third tab would have been a duplicate of the
+  second one with a different destination. Instead the Main Deck tab carries a
+  **`Deck` | `Sideboard n/7` target toggle** beside its search box, and a tile click fills
+  whichever is active. Same conclusion netdeck reached independently
+  (`docs/research/sideboards.md` §3). **Both search boxes run through the real query language** (`#lib/query/index.js`, the same
   parser `/cards` uses), intersected with the tab's own intrinsic filter:
   - **Legends tab**: `card.cardType === 'Legend'`, further narrowed to colors already present in
     the deck once the deck is non-empty (an empty deck imposes no color filter — nothing to be
@@ -225,6 +261,19 @@ modal, not the card database's own filter panel repurposed: a permanent two-pane
     **List/Gallery toggle**. List view shows compact rows (quantity × name, remove button) with a
     **hover-preview** of the full card art; Gallery view shows a thumbnail grid with quantity
     badges, click-to-remove-one.
+  - **Sideboard section**, below the main-deck list and above the toolbar, with its own `n/7`
+    readout. **It follows the List/Gallery toggle on both screens**, same as the main deck — one
+    preference for "how I like reading a deck's cards", not one per pile. List gives rows
+    (quantity × name, remove button, hover preview) matching the main deck's exactly; Gallery
+    gives a thumbnail grid, click-to-remove-one. On the read-only view the List rows use the same
+    column track as the main deck's table (qty / name / cost / power / RAM) with no type-group
+    headers — at 7 cards they'd outnumber the rows they label. Empty is a legal state, so the
+    empty case says so rather than reading as an error.
+  - What distinguishes it from the main deck is **the framing, not the rendering**: a heavier rule
+    and a darker ground in the editor; a frame, a tint and a neon accent on the view. A plain
+    labelled strip of same-size art directly below the deck read as the deck's last row. In the
+    view's Gallery the grid is also tighter than the main deck's own (7 columns against 5), which
+    makes a complete sideboard exactly one row wide.
   - **Bottom toolbar**: Export (§6) and Save deck (§3.2 — creates one new `deck_versions` row).
 
 ### 5.2 A layout detail worth stating explicitly
@@ -277,9 +326,16 @@ grid's own inner scroll and then discovering an outer page scroll was also neede
   checked fact about today's data, not a documented contract, worth re-verifying if a future
   export mismatch is reported.
 
+  **The Sim format deliberately omits the sideboard.** Its shape was verified against the sim on
+  2026-09-23, before sideboards existed in the game's rules at all, so the working assumption is
+  that the sim has no notion of one yet. Guessing a `# Sideboard` header is the dangerous
+  direction: if the sim keeps appending to the last section it recognized, the import silently
+  builds a 57-card main deck. To settle it, export a 7-card sideboard from the sim and copy
+  whatever header it emits, verbatim (`docs/research/sideboards.md` §6.2).
+
   **JSON** — a standardized alternative for anything that wants structure instead of a line
   format, using the same bare import code; it was never claimed to match the sim and isn't meant
-  to.
+  to, so it carries a `sideboard` key unconditionally, `[]` included.
 
 - **Image export, client-side canvas, no new backend surface.** Composited entirely in the
   browser from the deck's already-mirrored, same-origin static card art (`drawImage()` into a
@@ -287,6 +343,23 @@ grid's own inner scroll and then discovering an outer page scroll was also neede
   matches swudb.com's own "Deck image" feature, verified live: a header (deck name + owner), a
   Legends strip standing in for its Leader+Base pair, the Main Deck as a thumbnail grid with
   quantity badges, and a small novastack URL/QR-code watermark for attribution.
+
+  **A deck with a sideboard splits into two columns instead**: the main deck keeps 6 columns on
+  the left, and the 7 run down a 2-column rail on the right — a darkened band bled to the right
+  edge, with a rule down its left side, holding the `SIDEBOARD` label and the cards. The band is
+  **sized to that content and stops**, rather than running to the bottom edge: it marks the
+  sideboard, so it ends where the sideboard does, and a full-height version both read as a page
+  region that happened to contain the 7 and left a long empty tail under a two-row rail. The
+  watermark sits below it, outside the band. Both grids share one cell size, so 6 + 2 adds back up
+  to the 8 columns the
+  full-width case uses and a deck's cards don't shrink just because it gained a sideboard; what
+  changes is the main deck's row count, which is the cheap axis (a 40–50 card deck is 15–20
+  _distinct_ entries). A sideboard-less deck exports exactly the image it always did.
+
+  The band is what makes it work. A single `edge`-colored rule was tried first and was almost
+  invisible — the backdrop is a gradient tinted from the deck's own Legend colors, so a thin line
+  has nothing reliable to contrast against, while a band darkens whatever is behind it. Same
+  reasoning as the tinted panel the deck view uses (§5.1), so the two read as one idea.
 
   **Server-rendered images at a stable, hotlinkable URL were considered and rejected.** The
   `satori` + `resvg-wasm` pattern (the standard Workers-compatible stack for this) would add real
@@ -383,11 +456,12 @@ Things a reader will reasonably ask that this spec does not answer.
 
 ## Provenance
 
-| document                                          | holds                                                                       |
-| ------------------------------------------------- | --------------------------------------------------------------------------- |
-| `CONTEXT.md`                                      | the domain glossary — Legend, RAM Required/Provided, Deck Entry             |
-| `docs/spec/card-database.md`                      | stage 1; this spec's own conventions and the card data this stage builds on |
-| `.scratch/deckbuilder/map.md`                     | the wayfinder map — destination, notes, all six resolved tickets            |
-| `.scratch/deckbuilder/issues/01-…` through `06-…` | the individual decisions, with full reasoning and rejected alternatives     |
-| `src/routes/prototype/deckbuilder/`               | working prototype code for §5's screen layout, plus `NOTES.md`              |
-| `src/lib/filters/budget.ts`                       | `admits(budget, card)`, reused unchanged for deck legality                  |
+| document                                          | holds                                                                        |
+| ------------------------------------------------- | ---------------------------------------------------------------------------- |
+| `CONTEXT.md`                                      | the domain glossary — Legend, RAM Required/Provided, Deck Entry              |
+| `docs/spec/card-database.md`                      | stage 1; this spec's own conventions and the card data this stage builds on  |
+| `.scratch/deckbuilder/map.md`                     | the wayfinder map — destination, notes, all six resolved tickets             |
+| `.scratch/deckbuilder/issues/01-…` through `06-…` | the individual decisions, with full reasoning and rejected alternatives      |
+| `src/routes/prototype/deckbuilder/`               | working prototype code for §5's screen layout, plus `NOTES.md`               |
+| `src/lib/filters/budget.ts`                       | `admits(budget, card)`, reused unchanged for deck legality                   |
+| `docs/research/sideboards.md`                     | the tournament rules on sideboards, quoted, and this feature's own decisions |

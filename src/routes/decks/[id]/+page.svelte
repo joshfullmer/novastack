@@ -26,7 +26,12 @@
 	import MissingPanel from '#lib/components/MissingPanel.svelte';
 	import type { Card } from '#lib/cards/schema.js';
 	import { COLORS } from '#lib/cards/vocabulary.js';
-	import { LEGEND_SLOTS, MAX_DECK_SIZE, MIN_DECK_SIZE } from '#lib/decks/legality.js';
+	import {
+		LEGEND_SLOTS,
+		MAX_DECK_SIZE,
+		MIN_DECK_SIZE,
+		SIDEBOARD_SIZE
+	} from '#lib/decks/legality.js';
 	import { createDeckState } from '#lib/decks/deck-state.svelte.js';
 	import { composeDeckImage } from '#lib/decks/deck-image.js';
 	import { deckToJson, deckToSimFormat } from '#lib/decks/export.js';
@@ -76,6 +81,9 @@
 	function versionHasChanges(version: (typeof data.history)[number]) {
 		return (
 			version.diff.entries.length > 0 ||
+			// A sideboard-only save is a real change — tuning the 7 is most of what a finished list
+			// gets edited for — so it must not fall through as a no-op and get filtered out below.
+			version.diff.sideboard.length > 0 ||
 			version.diff.legendsAdded.length > 0 ||
 			version.diff.legendsRemoved.length > 0
 		);
@@ -218,10 +226,14 @@
 		downloadExport(deckToSimFormat(data.deckName, deck.legends, mainGroups), 'text/plain', 'txt');
 	}
 	function copyJson() {
-		copyExport(deckToJson(data.deckName, deck.legends, mainGroups));
+		copyExport(deckToJson(data.deckName, deck.legends, mainGroups, deck.sideboard));
 	}
 	function downloadJson() {
-		downloadExport(deckToJson(data.deckName, deck.legends, mainGroups), 'application/json', 'json');
+		downloadExport(
+			deckToJson(data.deckName, deck.legends, mainGroups, deck.sideboard),
+			'application/json',
+			'json'
+		);
 	}
 
 	async function openImageDialog() {
@@ -230,6 +242,7 @@
 			ownerName: data.ownerName,
 			legends: deck.legends,
 			mainGroups,
+			sideboard: deck.sideboard,
 			shareUrl: window.location.href
 		});
 		if (!blob) return;
@@ -586,11 +599,14 @@
 				     the two questions you ask before playing a list, and the second one is the only
 				     thing on this page that depends on who's reading it. Renders nothing for a
 				     signed-out visitor — see `MissingPanel`. The Legends count too: they're cards you
-				     need copies of like any other. -->
+				     need copies of like any other — and so does the sideboard, since tournament rules
+				     §D.1 requires all 7 in hand, so a list missing them isn't one you can field.
+				     Concatenated, not merged: `missingForDeck` sums entries naming the same card. -->
 				<MissingPanel
 					entries={[
 						...deck.legends.map((legend) => ({ card: legend, quantity: 1 })),
-						...deck.entries
+						...deck.entries,
+						...deck.sideboard
 					]}
 				/>
 
@@ -668,6 +684,14 @@
 						>
 							<span class="font-medium {sizeTone}">{deck.totalCards}</span> cards
 						</span>
+						{#if deck.sideboardCards > 0}
+							<span
+								class="text-sm text-muted tabular-nums"
+								title="A constructed sideboard is exactly {SIDEBOARD_SIZE} cards"
+							>
+								<span class="font-medium">{deck.sideboardCards}/{SIDEBOARD_SIZE}</span> sideboard
+							</span>
+						{/if}
 						<div class="flex overflow-hidden rounded-md border border-edge text-xs">
 							<button
 								type="button"
@@ -736,6 +760,37 @@
 							{/if}
 						</div>
 					{/snippet}
+					<!-- One labelled before/after pair, used by both the Main Deck and the Sideboard
+					     sections — the two diffs are the same shape, and the sideboard's exists
+					     because moving a card between the piles is invisible in a merged diff (the
+					     combined quantity doesn't change). Renders nothing when that section didn't
+					     change, so an unchanged sideboard costs no vertical space. -->
+					{#snippet entryDiffSection(label: string, cols: EntryDiffColumns)}
+						{#if cols.changed.length > 0 || cols.removed.length > 0 || cols.added.length > 0}
+							<p class="mb-1 text-xs font-medium tracking-wide text-muted uppercase">{label}</p>
+							<div
+								class="mb-3 grid grid-cols-2 overflow-hidden rounded-md border border-edge/50
+									last:mb-0"
+							>
+								<div class="flex flex-wrap gap-2 border-r border-edge/50 p-2">
+									{#each cols.changed as row (row.left.slug)}
+										{@render historyThumb(row.left.slug, row.left.quantity, 'neutral')}
+									{/each}
+									{#each cols.removed as item (item.slug)}
+										{@render historyThumb(item.slug, item.quantity, 'red')}
+									{/each}
+								</div>
+								<div class="flex flex-wrap gap-2 p-2">
+									{#each cols.changed as row (row.right.slug)}
+										{@render historyThumb(row.right.slug, row.right.quantity, 'neutral')}
+									{/each}
+									{#each cols.added as item (item.slug)}
+										{@render historyThumb(item.slug, item.quantity, 'green')}
+									{/each}
+								</div>
+							</div>
+						{/if}
+					{/snippet}
 					<ul class="flex flex-col gap-2">
 						{#each visibleHistory as version (version.savedAt)}
 							{@const legendRows = legendDiffRows(
@@ -743,6 +798,7 @@
 								version.diff.legendsAdded
 							)}
 							{@const cols = entryDiffColumns(version.diff.entries)}
+							{@const sideCols = entryDiffColumns(version.diff.sideboard)}
 							<li class="rounded-md border border-edge">
 								<button
 									type="button"
@@ -781,31 +837,8 @@
 												</div>
 											</div>
 										{/if}
-										{#if cols.changed.length > 0 || cols.removed.length > 0 || cols.added.length > 0}
-											<p class="mb-1 text-xs font-medium tracking-wide text-muted uppercase">
-												Main Deck
-											</p>
-											<div
-												class="grid grid-cols-2 overflow-hidden rounded-md border border-edge/50"
-											>
-												<div class="flex flex-wrap gap-2 border-r border-edge/50 p-2">
-													{#each cols.changed as row (row.left.slug)}
-														{@render historyThumb(row.left.slug, row.left.quantity, 'neutral')}
-													{/each}
-													{#each cols.removed as item (item.slug)}
-														{@render historyThumb(item.slug, item.quantity, 'red')}
-													{/each}
-												</div>
-												<div class="flex flex-wrap gap-2 p-2">
-													{#each cols.changed as row (row.right.slug)}
-														{@render historyThumb(row.right.slug, row.right.quantity, 'neutral')}
-													{/each}
-													{#each cols.added as item (item.slug)}
-														{@render historyThumb(item.slug, item.quantity, 'green')}
-													{/each}
-												</div>
-											</div>
-										{/if}
+										{@render entryDiffSection('Main Deck', cols)}
+										{@render entryDiffSection('Sideboard', sideCols)}
 									</div>
 								{/if}
 							</li>
@@ -911,6 +944,115 @@
 						{:else}
 							<p class="p-4 text-sm text-muted">No cards yet.</p>
 						{/each}
+					</div>
+				{/if}
+
+				<!-- Hidden entirely when empty, because an empty sideboard is a legal deck (tournament
+				     rules §C.2.2) — an empty section here would invent a hole to point at. Deck tab
+				     only; the History tab diffs the sideboard separately. -->
+				{#if mainTab === 'deck' && deck.sideboard.length > 0}
+					<!-- Follows the List/Gallery toggle, same as the main deck — the 7 are part of the
+					     decklist, so a reader who asked for a list gets a list of the whole thing.
+					     What distinguishes it from the main deck is the frame, the tint and the accent,
+					     not a different rendering: a plain labelled strip of same-size art directly
+					     below the deck read as the deck's last row. In Gallery the grid is also
+					     tighter than the main deck's own (7 across vs 5), which makes a complete
+					     sideboard exactly one row wide — "is this the 7" without reading the count. -->
+					<div class="mt-6 rounded-lg border border-edge bg-void/50 p-3">
+						<div
+							class="mb-2.5 flex items-center justify-between gap-2 border-b border-edge/60 pb-2"
+						>
+							<p
+								class="flex items-center gap-2 text-xs font-medium tracking-wide text-bright
+									uppercase"
+							>
+								<span class="inline-block h-3.5 w-1 rounded-full bg-neon"></span>
+								Sideboard
+							</p>
+							<span
+								class="text-xs tabular-nums {deck.sideboardStatus === 'legal'
+									? 'text-neon'
+									: 'text-muted'}"
+								title="A constructed sideboard is exactly {SIDEBOARD_SIZE} cards"
+							>
+								{deck.sideboardCards}/{SIDEBOARD_SIZE}
+							</span>
+						</div>
+						{#if deckView.value === 'list'}
+							<!-- Same column track as the main deck's table, so the two line up as one
+							     decklist read top to bottom. No type-group headers: at 7 cards they'd
+							     outnumber the rows they label. -->
+							{@const columns = 'grid-cols-[2rem_6fr_1fr_1fr_1fr]'}
+							<ul class="overflow-hidden rounded-md border border-edge/60">
+								<li
+									class="grid {columns} items-center gap-2 border-b border-edge/60 px-4 py-1
+										text-[0.65rem] font-medium tracking-wide text-muted uppercase"
+								>
+									<span></span>
+									<span>Name</span>
+									<span class="text-right">Cost</span>
+									<span class="text-right">Pwr</span>
+									<span class="text-right">RAM</span>
+								</li>
+								{#each deck.sideboard as entry (entry.card.slug)}
+									<li class="border-b border-edge/40 last:border-b-0">
+										<a
+											href={resolve('/cards/[slug]', { slug: entry.card.slug })}
+											class="grid {columns} items-center gap-2 px-4 py-1.5 hover:bg-raised"
+											onmouseenter={() => (focused = entry.card)}
+										>
+											<span class="text-muted tabular-nums">{entry.quantity}×</span>
+											<span class="min-w-0 truncate text-sm {COLOR_TEXT[entry.card.color]}"
+												>{entry.card.name}</span
+											>
+											<span class="text-right text-xs text-muted tabular-nums"
+												>{entry.card.cost ?? '—'}</span
+											>
+											<span class="text-right text-xs text-muted tabular-nums"
+												>{entry.card.power ?? '—'}</span
+											>
+											<span class="text-right text-xs tabular-nums {COLOR_TEXT[entry.card.color]}"
+												>{entry.card.ramRequired ?? '—'}</span
+											>
+										</a>
+									</li>
+								{/each}
+							</ul>
+						{:else}
+							<ul class="grid grid-cols-7 gap-2">
+								{#each deck.sideboard as entry (entry.card.slug)}
+									<li class="relative overflow-hidden rounded-md">
+										<a
+											href={resolve('/cards/[slug]', { slug: entry.card.slug })}
+											class="block"
+											onmouseenter={() => (focused = entry.card)}
+										>
+											<CardImage
+												printingId={entry.card.printings[0].id}
+												thumbhash={entry.card.printings[0].thumbhash}
+												color={entry.card.color}
+												alt={entry.card.name}
+												sizes="110px"
+											/>
+										</a>
+										{#if entry.quantity > 1}
+											<!-- Same two-layer chamfered badge as the main-deck gallery above, but
+											     only past one copy — see the editor's own sideboard for why. -->
+											<span
+												class="pointer-events-none absolute bottom-1 left-1/2 isolate inline-flex
+												size-6 -translate-x-1/2 items-center justify-center"
+											>
+												<span class="absolute inset-0 bg-bright eddie-badge"></span>
+												<span class="absolute inset-[2px] bg-void eddie-badge-inset"></span>
+												<span class="relative z-10 text-sm font-black text-bright tabular-nums">
+													×{entry.quantity}
+												</span>
+											</span>
+										{/if}
+									</li>
+								{/each}
+							</ul>
+						{/if}
 					</div>
 				{/if}
 			</div>

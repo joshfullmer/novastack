@@ -5,7 +5,8 @@
  * `satori` + `resvg-wasm` rendering pipeline for a capability client-side canvas already covers).
  *
  * Composition: a header (deck name + owner, novastack wordmark), a Legends strip, the Main Deck
- * as a thumbnail grid with quantity badges, and a stacked QR code + URL watermark, over a
+ * as a thumbnail grid with quantity badges, a labelled Sideboard strip when the deck has one, and
+ * a stacked QR code + URL watermark, over a
  * gradient background tinted from the deck's own Legend colors. The QR code is rendered
  * dark-on-light regardless of the site's own dark theme — scannability, not palette match, is
  * what matters for a code meant to be pointed a phone camera at.
@@ -15,15 +16,32 @@ import { cardImageUrl } from '#lib/cards/schema.js';
 import type { Card } from '#lib/cards/schema.js';
 import type { Color } from '#lib/cards/vocabulary.js';
 import type { DeckEntryGroup } from './grouping.js';
+import type { DeckEntry } from './legality.js';
 
 const CANVAS_WIDTH = 1200;
 const PADDING = 32;
 const GAP = 16;
+/** Full-width columns, used when the deck has no sideboard and so no rail. */
 const GRID_COLUMNS = 8;
+/**
+ * With a sideboard, the layout splits: the main deck keeps 6 columns on the left and the 7 run
+ * down a 2-column rail on the right, behind a vertical rule.
+ *
+ * Both grids share one cell size (see `composeDeckImage`), which is what makes 6 + 2 add back up
+ * to the 8 columns the full-width case uses — cards come out the same size either way (126px vs
+ * 128px), so a deck's cards don't visibly shrink just because it gained a sideboard. What changes
+ * is the main deck's row count, which is the cheap axis: a 40–50 card deck is 15–20 *distinct*
+ * entries, so 6 columns is 3–4 rows.
+ */
+const MAIN_COLUMNS_WITH_RAIL = 6;
+const RAIL_COLUMNS = 2;
+/** Space between the main column and the rail; the rule is drawn down the middle of it. */
+const RAIL_GUTTER = 32;
 /** Every mirrored card image is this exact ratio — see `#lib/cards/vocabulary.js`. */
 const CARD_ASPECT = 1024 / 733;
 const LEGEND_WIDTH = 140;
 const QR_SIZE = 84;
+const RAIL_LABEL_HEIGHT = 24;
 
 const COLOR_VAR: Record<Color, string> = {
 	Red: 'card-red',
@@ -82,7 +100,13 @@ function roundedRectClip(
  * Eddiable badge shape (`eddie-badge` in `layout.css`), reused here for the quantity badge so
  * the deck image matches the website's chip rather than reading as a generic rounded square.
  */
-function chamferedSquarePath(ctx: CanvasRenderingContext2D, x: number, y: number, size: number, chop: number) {
+function chamferedSquarePath(
+	ctx: CanvasRenderingContext2D,
+	x: number,
+	y: number,
+	size: number,
+	chop: number
+) {
 	ctx.beginPath();
 	ctx.moveTo(x, y);
 	ctx.lineTo(x + size - chop, y);
@@ -186,75 +210,45 @@ function drawWordmark(ctx: CanvasRenderingContext2D, rightEdge: number, centerY:
 	ctx.textAlign = 'left';
 }
 
-export async function composeDeckImage(options: {
-	deckName: string;
-	ownerName: string;
-	legends: readonly Card[];
-	mainGroups: readonly DeckEntryGroup[];
-	shareUrl: string;
-}): Promise<Blob | null> {
-	const { deckName, ownerName, legends, mainGroups, shareUrl } = options;
-	const entries = mainGroups.flatMap((group) => group.entries);
-	const totalCards = entries.reduce((sum, entry) => sum + entry.quantity, 0);
+type GridLayout = {
+	originX: number;
+	originY: number;
+	columns: number;
+	cellWidth: number;
+	cellHeight: number;
+};
 
-	const legendHeight = LEGEND_WIDTH * CARD_ASPECT;
-	const legendStripHeight = legends.length > 0 ? legendHeight + GAP : 0;
+/** Rows a grid of `count` cells occupies — the one place the wrap arithmetic lives, so the
+ * height reserved for a grid and the height it actually draws into can't disagree. */
+function gridHeightOf(count: number, layout: { columns: number; cellHeight: number }): number {
+	const rows = Math.ceil(count / layout.columns);
+	return rows > 0 ? rows * layout.cellHeight + (rows - 1) * GAP : 0;
+}
 
-	const cellWidth = (CANVAS_WIDTH - PADDING * 2 - GAP * (GRID_COLUMNS - 1)) / GRID_COLUMNS;
-	const cellHeight = cellWidth * CARD_ASPECT;
-	const rows = Math.ceil(entries.length / GRID_COLUMNS);
-	const gridHeight = rows > 0 ? rows * cellHeight + (rows - 1) * GAP : 0;
-
-	const headerHeight = 64;
-	const watermarkHeight = QR_SIZE + 8 + 20;
-	const canvasHeight =
-		PADDING * 2 + headerHeight + GAP + legendStripHeight + gridHeight + GAP + watermarkHeight;
-
-	const canvas = document.createElement('canvas');
-	canvas.width = CANVAS_WIDTH;
-	canvas.height = canvasHeight;
-	const ctx = canvas.getContext('2d');
-	if (!ctx) return null;
-
-	paintBackground(ctx, canvas.width, canvas.height, legends);
-
-	let y = PADDING;
-
-	ctx.fillStyle = themeColor('bright');
-	ctx.font = 'bold 28px sans-serif';
-	ctx.fillText(deckName, PADDING, y + 26);
-	ctx.fillStyle = themeColor('muted');
-	ctx.font = '16px sans-serif';
-	ctx.fillText(`by ${ownerName} · ${totalCards} cards`, PADDING, y + 50);
-	drawWordmark(ctx, CANVAS_WIDTH - PADDING, y + headerHeight / 2);
-	y += headerHeight + GAP;
-
-	if (legends.length > 0) {
-		const legendImages = await Promise.all(
-			legends.map((legend) => loadImage(cardImageUrl(legend.printings[0].id, 244)))
-		);
-		for (const [index, img] of legendImages.entries()) {
-			const x = PADDING + index * (LEGEND_WIDTH + GAP);
-			ctx.save();
-			roundedRectClip(ctx, x, y, LEGEND_WIDTH, legendHeight, 8);
-			ctx.drawImage(img, x, y, LEGEND_WIDTH, legendHeight);
-			ctx.restore();
-		}
-		y += legendStripHeight;
-	}
-
-	const cardImages = await Promise.all(
+/**
+ * One row-major grid of card thumbnails with quantity badges — the main deck and the sideboard
+ * rail are the same drawing at different origins and column counts, so they share this rather
+ * than each keeping their own copy of the badge geometry.
+ */
+async function drawEntryGrid(
+	ctx: CanvasRenderingContext2D,
+	entries: readonly DeckEntry[],
+	layout: GridLayout
+) {
+	const { originX, originY, columns, cellWidth, cellHeight } = layout;
+	const images = await Promise.all(
 		entries.map((entry) => loadImage(cardImageUrl(entry.card.printings[0].id, 244)))
 	);
+
 	for (const [index, entry] of entries.entries()) {
-		const col = index % GRID_COLUMNS;
-		const row = Math.floor(index / GRID_COLUMNS);
-		const x = PADDING + col * (cellWidth + GAP);
-		const cardY = y + row * (cellHeight + GAP);
+		const col = index % columns;
+		const row = Math.floor(index / columns);
+		const x = originX + col * (cellWidth + GAP);
+		const cardY = originY + row * (cellHeight + GAP);
 
 		ctx.save();
 		roundedRectClip(ctx, x, cardY, cellWidth, cellHeight, 6);
-		ctx.drawImage(cardImages[index], x, cardY, cellWidth, cellHeight);
+		ctx.drawImage(images[index], x, cardY, cellWidth, cellHeight);
 		ctx.restore();
 
 		if (entry.quantity > 1) {
@@ -284,7 +278,159 @@ export async function composeDeckImage(options: {
 			ctx.textBaseline = 'alphabetic';
 		}
 	}
-	y += gridHeight + GAP;
+}
+
+export async function composeDeckImage(options: {
+	deckName: string;
+	ownerName: string;
+	legends: readonly Card[];
+	mainGroups: readonly DeckEntryGroup[];
+	sideboard: readonly DeckEntry[];
+	shareUrl: string;
+}): Promise<Blob | null> {
+	const { deckName, ownerName, legends, mainGroups, sideboard, shareUrl } = options;
+	const entries = mainGroups.flatMap((group) => group.entries);
+	const totalCards = entries.reduce((sum, entry) => sum + entry.quantity, 0);
+	const sideboardCards = sideboard.reduce((sum, entry) => sum + entry.quantity, 0);
+
+	const legendHeight = LEGEND_WIDTH * CARD_ASPECT;
+	const legendStripHeight = legends.length > 0 ? legendHeight + GAP : 0;
+
+	/**
+	 * Two layouts, one geometry. With a sideboard the body splits into a main column and a rail;
+	 * without one the main column takes the full width and nothing else changes — a sideboard-less
+	 * deck exports exactly the image it always did.
+	 */
+	const hasRail = sideboard.length > 0;
+	const innerWidth = CANVAS_WIDTH - PADDING * 2;
+	const mainColumns = hasRail ? MAIN_COLUMNS_WITH_RAIL : GRID_COLUMNS;
+	// Solved so the main columns and the rail columns share one cell width: for the rail case,
+	// `innerWidth = 8·cell + 6·GAP + RAIL_GUTTER`.
+	const cellWidth = hasRail
+		? (innerWidth - GAP * (mainColumns - 1 + RAIL_COLUMNS - 1) - RAIL_GUTTER) /
+			(mainColumns + RAIL_COLUMNS)
+		: (innerWidth - GAP * (GRID_COLUMNS - 1)) / GRID_COLUMNS;
+	const cellHeight = cellWidth * CARD_ASPECT;
+
+	const mainWidth = mainColumns * cellWidth + (mainColumns - 1) * GAP;
+	const railX = PADDING + mainWidth + RAIL_GUTTER;
+	const ruleX = PADDING + mainWidth + RAIL_GUTTER / 2;
+
+	const gridHeight = gridHeightOf(entries.length, { columns: mainColumns, cellHeight });
+	const railGridHeight = gridHeightOf(sideboard.length, { columns: RAIL_COLUMNS, cellHeight });
+
+	const headerHeight = 64;
+	const watermarkHeight = QR_SIZE + 8 + 20;
+	/**
+	 * The band wraps the rail's own content and stops — `GAP` of padding above the label and below
+	 * the last card row, rather than bleeding to the bottom edge. It marks the sideboard, so it
+	 * ends where the sideboard does; running it to the bottom made it read as a page region that
+	 * happened to contain the 7, and left a long empty tail under a two-row rail.
+	 */
+	const railBandHeight = hasRail ? GAP + RAIL_LABEL_HEIGHT + railGridHeight + GAP : 0;
+	const mainColumnHeight = legendStripHeight + gridHeight;
+	// The watermark sits below both columns, so whichever is taller sets the height.
+	const railColumnHeight = hasRail ? RAIL_LABEL_HEIGHT + railGridHeight + GAP : 0;
+	const bodyHeight = Math.max(mainColumnHeight, railColumnHeight) + GAP + watermarkHeight;
+	const canvasHeight = PADDING * 2 + headerHeight + GAP + bodyHeight;
+
+	const canvas = document.createElement('canvas');
+	canvas.width = CANVAS_WIDTH;
+	canvas.height = canvasHeight;
+	const ctx = canvas.getContext('2d');
+	if (!ctx) return null;
+
+	paintBackground(ctx, canvas.width, canvas.height, legends);
+
+	let y = PADDING;
+
+	ctx.fillStyle = themeColor('bright');
+	ctx.font = 'bold 28px sans-serif';
+	ctx.fillText(deckName, PADDING, y + 26);
+	ctx.fillStyle = themeColor('muted');
+	ctx.font = '16px sans-serif';
+	const subtitle =
+		sideboardCards > 0
+			? `by ${ownerName} · ${totalCards} cards · ${sideboardCards} sideboard`
+			: `by ${ownerName} · ${totalCards} cards`;
+	ctx.fillText(subtitle, PADDING, y + 50);
+	drawWordmark(ctx, CANVAS_WIDTH - PADDING, y + headerHeight / 2);
+	y += headerHeight + GAP;
+	/** Where both columns start — the rail is positioned absolutely from here, not from `y`,
+	 * since it doesn't follow the main column's flow. */
+	const bodyTop = y;
+
+	if (legends.length > 0) {
+		const legendImages = await Promise.all(
+			legends.map((legend) => loadImage(cardImageUrl(legend.printings[0].id, 244)))
+		);
+		for (const [index, img] of legendImages.entries()) {
+			const x = PADDING + index * (LEGEND_WIDTH + GAP);
+			ctx.save();
+			roundedRectClip(ctx, x, y, LEGEND_WIDTH, legendHeight, 8);
+			ctx.drawImage(img, x, y, LEGEND_WIDTH, legendHeight);
+			ctx.restore();
+		}
+		y += legendStripHeight;
+	}
+
+	await drawEntryGrid(ctx, entries, {
+		originX: PADDING,
+		originY: y,
+		columns: mainColumns,
+		cellWidth,
+		cellHeight
+	});
+
+	if (hasRail) {
+		/**
+		 * A darkened band around the rail's content, bled to the right edge, with a rule down its
+		 * left side. Height comes from `railBandHeight` — it ends with the cards, not with the
+		 * page.
+		 *
+		 * A 1px rule alone was tried first and was almost invisible: the background is a gradient
+		 * tinted from the Legends' own colors, so a single `edge`-colored line has nothing
+		 * reliable to contrast against. The band doesn't depend on the backdrop at all — it
+		 * darkens whatever is behind it — which is the same reasoning behind the tinted panel the
+		 * deck view uses for its own sideboard, so the two read as the same idea.
+		 */
+		const bandTop = bodyTop - GAP;
+		ctx.save();
+		ctx.globalAlpha = 0.35;
+		ctx.fillStyle = themeColor('void');
+		ctx.fillRect(ruleX, bandTop, CANVAS_WIDTH - ruleX, railBandHeight);
+		ctx.restore();
+
+		ctx.strokeStyle = themeColor('edge');
+		ctx.lineWidth = 2;
+		ctx.beginPath();
+		ctx.moveTo(ruleX + 1, bandTop);
+		ctx.lineTo(ruleX + 1, bandTop + railBandHeight);
+		ctx.stroke();
+
+		ctx.fillStyle = themeColor('muted');
+		ctx.font = 'bold 13px sans-serif';
+		ctx.fillText('SIDEBOARD', railX, bodyTop + 13);
+		ctx.fillStyle = themeColor('neon');
+		ctx.fillText(
+			String(sideboardCards),
+			railX + ctx.measureText('SIDEBOARD').width + 8,
+			bodyTop + 13
+		);
+
+		await drawEntryGrid(ctx, sideboard, {
+			originX: railX,
+			originY: bodyTop + RAIL_LABEL_HEIGHT,
+			columns: RAIL_COLUMNS,
+			cellWidth,
+			cellHeight
+		});
+	}
+
+	// Bottom-right in both layouts, which is inside the rail's own column when there is one.
+	// Derived from the bottom edge rather than from `y`, since with a rail the tallest column
+	// isn't necessarily the one `y` has been tracking.
+	y = canvasHeight - PADDING - watermarkHeight;
 
 	const qrCanvas = document.createElement('canvas');
 	await QRCode.toCanvas(qrCanvas, shareUrl, {

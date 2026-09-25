@@ -18,6 +18,14 @@ export type DeckEntryPayload = v.InferOutput<typeof DeckEntrySchema>;
 export const DeckVersionPayloadSchema = v.object({
 	entries: v.array(DeckEntrySchema),
 	/** Up to 3 Legend card slugs. */
-	legends: v.pipe(v.array(v.pipe(v.string(), v.nonEmpty())), v.maxLength(LEGEND_SLOTS))
+	legends: v.pipe(v.array(v.pipe(v.string(), v.nonEmpty())), v.maxLength(LEGEND_SLOTS)),
+	/**
+	 * The 7 (tournament rules §D.1 — `SIDEBOARD_SIZE`). Optional with an empty default, which
+	 * collapses two things that should be one value: a row written before the `sideboard` column
+	 * existed, and a deck deliberately built without one (legal — see `sideboardStatus`). Not
+	 * capped at 7 here for the same reason `entries` isn't capped at 50 — an out-of-range pile is a
+	 * reported `DeckIssue`, not a value too malformed to load.
+	 */
+	sideboard: v.optional(v.array(DeckEntrySchema), [])
 });
 export type DeckVersionPayload = v.InferOutput<typeof DeckVersionPayloadSchema>;

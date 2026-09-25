@@ -66,14 +66,20 @@ export const load: PageServerLoad = async (event) => {
 			ownerName,
 			createdAt: deck.createdAt,
 			cardCount: version?.entries.reduce((sum, entry) => sum + entry.quantity, 0) ?? 0,
+			/** Separate from `cardCount` — 40–50 is the main deck's range, not the deck's total. */
+			sideboardCards: version?.sideboard.reduce((sum, entry) => sum + entry.quantity, 0) ?? 0,
 			legendSlugs: version?.legends ?? [],
 			likeCount,
 			hotCount,
 			isStarterDeck: deck.isStarterDeck,
-			// Legends are cards you need copies of like any other, so they count too.
+			// Legends are cards you need copies of like any other, so they count too — and so does
+			// the sideboard, since tournament rules §D.1 requires all 7 present to field the list.
+			// `missingForDeck` sums duplicate slugs itself, so the two piles can be concatenated
+			// rather than merged first.
 			missing: missingFor([
 				...(version?.legends ?? []).map((slug) => ({ cardSlug: slug, quantity: 1 })),
-				...(version?.entries ?? [])
+				...(version?.entries ?? []),
+				...(version?.sideboard ?? [])
 			])
 		}))
 		.sort((a, b) => {

@@ -138,7 +138,12 @@
 	</form>
 {/snippet}
 
-{#snippet actionsMenu(deck: { id: string; name: string; visibility: string; folderId: string | null })}
+{#snippet actionsMenu(deck: {
+	id: string;
+	name: string;
+	visibility: string;
+	folderId: string | null;
+})}
 	<div class="relative shrink-0">
 		<button
 			type="button"
@@ -567,7 +572,10 @@
 									class={SIZE_STATUS_TONE[deckSizeStatus(deck.cardCount)]}
 									title="{MIN_DECK_SIZE}–{MAX_DECK_SIZE} cards">{deck.cardCount}</span
 								>
-								cards {#if deck.savedAt}· updated {deck.savedAt.toLocaleDateString()}{/if}
+								cards{#if deck.sideboardCards > 0}<span title="{deck.sideboardCards}-card sideboard"
+										>&nbsp;+{deck.sideboardCards}</span
+									>{/if}
+								{#if deck.savedAt}· updated {deck.savedAt.toLocaleDateString()}{/if}
 							</p>
 							<div class="mt-2 flex items-center justify-between text-xs text-muted">
 								<span class="rounded-full border border-edge px-2 py-0.5 capitalize"
@@ -673,7 +681,11 @@
 										class={SIZE_STATUS_TONE[deckSizeStatus(deck.cardCount)]}
 										title="{MIN_DECK_SIZE}–{MAX_DECK_SIZE} cards">{deck.cardCount}</span
 									>
-									cards {#if deck.savedAt}· updated {deck.savedAt.toLocaleDateString()}{/if}
+									cards{#if deck.sideboardCards > 0}<span
+											title="{deck.sideboardCards}-card sideboard"
+											>&nbsp;+{deck.sideboardCards}</span
+										>{/if}
+									{#if deck.savedAt}· updated {deck.savedAt.toLocaleDateString()}{/if}
 								</p>
 							</a>
 						{/if}

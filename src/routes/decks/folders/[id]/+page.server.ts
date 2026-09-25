@@ -30,6 +30,8 @@ export const load: PageServerLoad = async (event) => {
 			id: deck.id,
 			name: deck.name,
 			cardCount: version?.entries.reduce((sum, entry) => sum + entry.quantity, 0) ?? 0,
+			/** Separate from `cardCount` — 40–50 is the main deck's range, not the deck's total. */
+			sideboardCards: version?.sideboard.reduce((sum, entry) => sum + entry.quantity, 0) ?? 0,
 			legendSlugs: version?.legends ?? []
 		})),
 		// Shared with /decks and /explore — "how I like browsing a list of decks" is one

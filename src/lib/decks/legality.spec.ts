@@ -8,12 +8,16 @@ import { EMPTY_BUDGET } from '#lib/filters/budget.js';
 import {
 	MAX_DECK_SIZE,
 	MIN_DECK_SIZE,
+	SIDEBOARD_SIZE,
 	budgetFromLegends,
+	combinedEntries,
+	copiesOf,
 	deckIssues,
 	deckSizeStatus,
 	legendNameConflicts,
 	notLegalCards,
 	ramViolations,
+	sideboardStatus,
 	type DeckEntry
 } from './legality.js';
 
@@ -48,6 +52,66 @@ describe('deckSizeStatus', () => {
 		expect(deckSizeStatus(MIN_DECK_SIZE)).toBe('legal');
 		expect(deckSizeStatus(MAX_DECK_SIZE)).toBe('legal');
 		expect(deckSizeStatus(MAX_DECK_SIZE + 1)).toBe('over');
+	});
+});
+
+describe('sideboardStatus', () => {
+	it('treats an empty sideboard as legal, not unfinished — tournament rules §C.2.2', () => {
+		expect(sideboardStatus(0)).toBe('empty');
+	});
+
+	it('is "incomplete" between 1 and 6, "legal" at exactly 7, "over" above it', () => {
+		expect(sideboardStatus(1)).toBe('incomplete');
+		expect(sideboardStatus(SIDEBOARD_SIZE - 1)).toBe('incomplete');
+		expect(sideboardStatus(SIDEBOARD_SIZE)).toBe('legal');
+		expect(sideboardStatus(SIDEBOARD_SIZE + 1)).toBe('over');
+	});
+});
+
+describe('combinedEntries', () => {
+	it('sums quantities per card across both piles', () => {
+		const shared = makeCard({ slug: 'chrome-fang', cardType: 'Unit' });
+		const mainOnly = makeCard({ slug: 'militech', cardType: 'Gear' });
+
+		expect(
+			combinedEntries(
+				[
+					{ card: shared, quantity: 2 },
+					{ card: mainOnly, quantity: 1 }
+				],
+				[{ card: shared, quantity: 1 }]
+			)
+		).toEqual([
+			{ card: shared, quantity: 3 },
+			{ card: mainOnly, quantity: 1 }
+		]);
+	});
+
+	it('drops printingId — no merged entry can honestly carry one', () => {
+		const card = makeCard({ slug: 'chrome-fang', cardType: 'Unit' });
+		const merged = combinedEntries(
+			[{ card, quantity: 1, printingId: 'A' }],
+			[{ card, quantity: 1, printingId: 'B' }]
+		);
+		expect(merged).toEqual([{ card, quantity: 2 }]);
+	});
+
+	it('leaves each pile alone — no mutation of the inputs', () => {
+		const card = makeCard({ slug: 'chrome-fang', cardType: 'Unit' });
+		const entries: DeckEntry[] = [{ card, quantity: 2 }];
+		combinedEntries(entries, [{ card, quantity: 1 }]);
+		expect(entries).toEqual([{ card, quantity: 2 }]);
+	});
+});
+
+describe('copiesOf', () => {
+	it('counts the main deck and the sideboard together — see the doc comment for why', () => {
+		const card = makeCard({ slug: 'chrome-fang', cardType: 'Unit' });
+		const other = makeCard({ slug: 'militech', cardType: 'Gear' });
+
+		expect(copiesOf(card, [{ card, quantity: 2 }], [{ card, quantity: 1 }])).toBe(3);
+		expect(copiesOf(card, [{ card: other, quantity: 3 }], [])).toBe(0);
+		expect(copiesOf(card, [], [])).toBe(0);
 	});
 });
 
@@ -135,6 +199,9 @@ describe('deckIssues', () => {
 	const legal = {
 		totalCards: MIN_DECK_SIZE,
 		sizeStatus: 'legal' as const,
+		sideboardCards: SIDEBOARD_SIZE,
+		sideboardStatus: 'legal' as const,
+		sideboardLegends: [],
 		violations: [],
 		nameConflicts: [],
 		notLegal: []
@@ -155,6 +222,38 @@ describe('deckIssues', () => {
 		const issues = deckIssues({ ...legal, totalCards: 51, sizeStatus: 'over' });
 		expect(issues).toEqual([
 			{ kind: 'size', message: `Deck has 51 cards — the legal maximum is ${MAX_DECK_SIZE}.` }
+		]);
+	});
+
+	it('says nothing about an empty sideboard — a legal deck without one', () => {
+		expect(deckIssues({ ...legal, sideboardCards: 0, sideboardStatus: 'empty' })).toEqual([]);
+	});
+
+	it('reports a part-built sideboard with its count and the required size', () => {
+		const issues = deckIssues({ ...legal, sideboardCards: 4, sideboardStatus: 'incomplete' });
+		expect(issues).toEqual([
+			{
+				kind: 'sideboard',
+				message: `Sideboard has 4 cards — a constructed sideboard is exactly ${SIDEBOARD_SIZE}.`
+			}
+		]);
+	});
+
+	it('reports an oversized sideboard — only reachable via a hand-edited payload', () => {
+		const issues = deckIssues({ ...legal, sideboardCards: 8, sideboardStatus: 'over' });
+		expect(issues).toEqual([
+			{ kind: 'sideboard', message: `Sideboard has 8 cards — the maximum is ${SIDEBOARD_SIZE}.` }
+		]);
+	});
+
+	it('reports Legends found in the sideboard by name', () => {
+		const smasher = makeCard({ name: 'Adam Smasher: Full Chrome', cardType: 'Legend' });
+		const issues = deckIssues({ ...legal, sideboardLegends: [smasher] });
+		expect(issues).toEqual([
+			{
+				kind: 'sideboard',
+				message: "Legends can't go in the sideboard: Adam Smasher: Full Chrome."
+			}
 		]);
 	});
 
@@ -203,10 +302,19 @@ describe('deckIssues', () => {
 		const issues = deckIssues({
 			totalCards: 39,
 			sizeStatus: 'under',
+			sideboardCards: 4,
+			sideboardStatus: 'incomplete',
+			sideboardLegends: [],
 			violations: [overBudget],
 			nameConflicts: legendNameConflicts([v1, v2]),
 			notLegal: [stub]
 		});
-		expect(issues.map((issue) => issue.kind)).toEqual(['size', 'ram', 'legend-names', 'not-legal']);
+		expect(issues.map((issue) => issue.kind)).toEqual([
+			'size',
+			'sideboard',
+			'ram',
+			'legend-names',
+			'not-legal'
+		]);
 	});
 });

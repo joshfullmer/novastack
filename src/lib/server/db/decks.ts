@@ -17,7 +17,9 @@ type Db = ReturnType<typeof getDb>;
 
 export async function createDeck(db: Db, ownerId: string, name: string) {
 	const [deck] = await db.insert(decks).values({ ownerId, name }).returning();
-	await db.insert(deckVersions).values({ deckId: deck.id, entries: [], legends: [] });
+	await db
+		.insert(deckVersions)
+		.values({ deckId: deck.id, entries: [], legends: [], sideboard: [] });
 	return deck;
 }
 
@@ -54,9 +56,12 @@ export async function listVersions(db: Db, deckId: string) {
 
 /** Every save is a new row — changeset-granularity version history, never an in-place update. */
 export async function saveDeckVersion(db: Db, deckId: string, payload: DeckVersionPayload) {
-	await db
-		.insert(deckVersions)
-		.values({ deckId, entries: payload.entries, legends: payload.legends });
+	await db.insert(deckVersions).values({
+		deckId,
+		entries: payload.entries,
+		legends: payload.legends,
+		sideboard: payload.sideboard
+	});
 }
 
 export async function renameDeck(db: Db, deckId: string, name: string) {
@@ -82,9 +87,12 @@ export async function duplicateDeck(db: Db, deckId: string, ownerId: string) {
 		.insert(decks)
 		.values({ ownerId, name: `${original.name} (copy)` })
 		.returning();
-	await db
-		.insert(deckVersions)
-		.values({ deckId: copy.id, entries: version?.entries ?? [], legends: version?.legends ?? [] });
+	await db.insert(deckVersions).values({
+		deckId: copy.id,
+		entries: version?.entries ?? [],
+		legends: version?.legends ?? [],
+		sideboard: version?.sideboard ?? []
+	});
 	return copy;
 }
 

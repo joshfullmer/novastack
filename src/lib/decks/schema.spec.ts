@@ -32,18 +32,44 @@ describe('DeckVersionPayloadSchema', () => {
 	it('parses a full payload', () => {
 		const payload = {
 			entries: [{ cardSlug: 'v-streetkid', quantity: 1 }],
-			legends: ['adam-smasher', 'alt-cunningham']
+			legends: ['adam-smasher', 'alt-cunningham'],
+			sideboard: [{ cardSlug: 'chrome-fang', quantity: 2 }]
 		};
 		expect(v.parse(DeckVersionPayloadSchema, payload)).toEqual(payload);
 	});
 
 	it('parses zero entries and zero legends — a brand-new draft deck', () => {
 		const payload = { entries: [], legends: [] };
-		expect(v.parse(DeckVersionPayloadSchema, payload)).toEqual(payload);
+		expect(v.parse(DeckVersionPayloadSchema, payload)).toEqual({ ...payload, sideboard: [] });
+	});
+
+	it('defaults an absent sideboard to empty — a row written before the column existed', () => {
+		const parsed = v.parse(DeckVersionPayloadSchema, {
+			entries: [{ cardSlug: 'v-streetkid', quantity: 1 }],
+			legends: []
+		});
+		expect(parsed.sideboard).toEqual([]);
+	});
+
+	it('does not cap the sideboard at 7 — an oversized pile is a reported issue, not a load failure', () => {
+		const sideboard = Array.from({ length: 4 }, (_, index) => ({
+			cardSlug: `card-${index}`,
+			quantity: 3
+		}));
+		expect(v.parse(DeckVersionPayloadSchema, { entries: [], legends: [], sideboard })).toEqual({
+			entries: [],
+			legends: [],
+			sideboard
+		});
 	});
 
 	it('rejects more than 3 legends', () => {
 		const payload = { entries: [], legends: ['a', 'b', 'c', 'd'] };
+		expect(() => v.parse(DeckVersionPayloadSchema, payload)).toThrow();
+	});
+
+	it('holds the sideboard to the same per-entry rules as the main deck', () => {
+		const payload = { entries: [], legends: [], sideboard: [{ cardSlug: 'x', quantity: 4 }] };
 		expect(() => v.parse(DeckVersionPayloadSchema, payload)).toThrow();
 	});
 });

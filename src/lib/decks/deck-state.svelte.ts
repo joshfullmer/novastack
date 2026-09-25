@@ -11,12 +11,16 @@ import { dataset } from '#lib/cards/index.js';
 import type { Card } from '#lib/cards/schema.js';
 import {
 	MAX_COPIES,
+	SIDEBOARD_SIZE,
 	budgetFromLegends,
+	combinedEntries,
+	copiesOf,
 	deckIssues,
 	deckSizeStatus,
 	legendNameConflicts,
 	notLegalCards,
 	ramViolations,
+	sideboardStatus,
 	type DeckEntry
 } from './legality.js';
 import type { DeckVersionPayload } from './schema.js';
@@ -28,45 +32,91 @@ export function cardBySlug(slug: string): Card | undefined {
 	return dataset.cards.find((card) => card.slug === slug);
 }
 
+/** Payload entries → `DeckEntry`s, dropping any slug that has left the dataset. */
+function hydrate(payloadEntries: DeckVersionPayload['entries']): DeckEntry[] {
+	return payloadEntries
+		.map((entry): DeckEntry | null => {
+			const card = cardBySlug(entry.cardSlug);
+			if (!card) return null;
+			// Built rather than spread, so an absent `printingId` stays absent — not present
+			// with value `undefined`, which `DeckEntry`'s optional field doesn't consider equal.
+			const deckEntry: DeckEntry = { card, quantity: entry.quantity };
+			if (entry.printingId !== undefined) deckEntry.printingId = entry.printingId;
+			return deckEntry;
+		})
+		.filter((entry): entry is DeckEntry => entry !== null);
+}
+
+const toPayloadEntries = (entries: readonly DeckEntry[]) =>
+	entries.map((entry) => ({
+		cardSlug: entry.card.slug,
+		quantity: entry.quantity,
+		printingId: entry.printingId
+	}));
+
 export function createDeckState(initial?: DeckVersionPayload) {
 	let legends = $state<Card[]>(
 		(initial?.legends ?? [])
 			.map((slug) => cardBySlug(slug))
 			.filter((card): card is Card => card !== undefined)
 	);
-	const entries = $state<DeckEntry[]>(
-		(initial?.entries ?? [])
-			.map((entry): DeckEntry | null => {
-				const card = cardBySlug(entry.cardSlug);
-				if (!card) return null;
-				// Built rather than spread, so an absent `printingId` stays absent — not present
-				// with value `undefined`, which `DeckEntry`'s optional field doesn't consider equal.
-				const deckEntry: DeckEntry = { card, quantity: entry.quantity };
-				if (entry.printingId !== undefined) deckEntry.printingId = entry.printingId;
-				return deckEntry;
-			})
-			.filter((entry): entry is DeckEntry => entry !== null)
-	);
+	const entries = $state<DeckEntry[]>(hydrate(initial?.entries ?? []));
+	const sideboard = $state<DeckEntry[]>(hydrate(initial?.sideboard ?? []));
 
 	const budget = $derived(budgetFromLegends(legends));
 	const totalCards = $derived(entries.reduce((sum, entry) => sum + entry.quantity, 0));
 	const sizeStatus = $derived(deckSizeStatus(totalCards));
-	const violations = $derived(ramViolations(entries, budget));
+	const sideboardCards = $derived(sideboard.reduce((sum, entry) => sum + entry.quantity, 0));
+	const sideboardState = $derived(sideboardStatus(sideboardCards));
+	/** The deck-wide rules run over both piles at once — see `combinedEntries`. */
+	const combined = $derived(combinedEntries(entries, sideboard));
+	const violations = $derived(ramViolations(combined, budget));
 	const nameConflicts = $derived(legendNameConflicts(legends));
-	const notLegal = $derived(notLegalCards(legends, entries));
+	const notLegal = $derived(notLegalCards(legends, combined));
+	const sideboardLegends = $derived(
+		sideboard.filter((entry) => entry.card.cardType === 'Legend').map((entry) => entry.card)
+	);
 	const issues = $derived(
-		deckIssues({ totalCards, sizeStatus, violations, nameConflicts, notLegal })
+		deckIssues({
+			totalCards,
+			sizeStatus,
+			sideboardCards,
+			sideboardStatus: sideboardState,
+			sideboardLegends,
+			violations,
+			nameConflicts,
+			notLegal
+		})
 	);
 
 	function quantityOf(card: Card): number {
 		return entries.find((entry) => entry.card.slug === card.slug)?.quantity ?? 0;
 	}
 
-	/** Only the copy limit blocks — see `legality.ts`'s own doc comment for why. */
-	function canAddCopy(card: Card): boolean {
-		return quantityOf(card) < MAX_COPIES;
+	function sideboardQuantityOf(card: Card): number {
+		return sideboard.find((entry) => entry.card.slug === card.slug)?.quantity ?? 0;
 	}
 
+	/** Only the copy limit blocks — see `legality.ts`'s own doc comment for why. Counted across
+	 * both piles (`copiesOf`), so a card at 3 in the main deck can't also be sideboarded. */
+	function canAddCopy(card: Card): boolean {
+		return copiesOf(card, entries, sideboard) < MAX_COPIES;
+	}
+
+	/**
+	 * The copy cap, plus the two rules specific to the 7: it's full at `SIDEBOARD_SIZE` (blocked
+	 * for the same reason a 4th copy is — an 8th card is noise, not a state worth representing),
+	 * and Legends may never go there (tournament rules §3.4.4).
+	 */
+	function canAddToSideboard(card: Card): boolean {
+		if (card.cardType === 'Legend') return false;
+		if (sideboardCards >= SIDEBOARD_SIZE) return false;
+		return canAddCopy(card);
+	}
+
+	/** One `add`/`remove` pair per pile rather than a `target` parameter — which pile a click
+	 * fills is the editor's own view state (it has a visible toggle for it), not something this
+	 * model should hold a second copy of. */
 	function addCard(card: Card) {
 		if (!canAddCopy(card)) return;
 		const existing = entries.find((entry) => entry.card.slug === card.slug);
@@ -81,6 +131,20 @@ export function createDeckState(initial?: DeckVersionPayload) {
 		if (entries[index].quantity <= 0) entries.splice(index, 1);
 	}
 
+	function addToSideboard(card: Card) {
+		if (!canAddToSideboard(card)) return;
+		const existing = sideboard.find((entry) => entry.card.slug === card.slug);
+		if (existing) existing.quantity += 1;
+		else sideboard.push({ card, quantity: 1 });
+	}
+
+	function removeFromSideboard(card: Card) {
+		const index = sideboard.findIndex((entry) => entry.card.slug === card.slug);
+		if (index === -1) return;
+		sideboard[index].quantity -= 1;
+		if (sideboard[index].quantity <= 0) sideboard.splice(index, 1);
+	}
+
 	function setLegend(slot: number, card: Card | null) {
 		const next = [...legends];
 		if (card === null) next.splice(slot, 1);
@@ -90,12 +154,9 @@ export function createDeckState(initial?: DeckVersionPayload) {
 
 	function toPayload(): DeckVersionPayload {
 		return {
-			entries: entries.map((entry) => ({
-				cardSlug: entry.card.slug,
-				quantity: entry.quantity,
-				printingId: entry.printingId
-			})),
-			legends: legends.map((legend) => legend.slug)
+			entries: toPayloadEntries(entries),
+			legends: legends.map((legend) => legend.slug),
+			sideboard: toPayloadEntries(sideboard)
 		};
 	}
 
@@ -106,6 +167,9 @@ export function createDeckState(initial?: DeckVersionPayload) {
 		get entries() {
 			return entries;
 		},
+		get sideboard() {
+			return sideboard;
+		},
 		get budget() {
 			return budget;
 		},
@@ -114,6 +178,12 @@ export function createDeckState(initial?: DeckVersionPayload) {
 		},
 		get sizeStatus() {
 			return sizeStatus;
+		},
+		get sideboardCards() {
+			return sideboardCards;
+		},
+		get sideboardStatus() {
+			return sideboardState;
 		},
 		get ramViolations() {
 			return violations;
@@ -128,9 +198,13 @@ export function createDeckState(initial?: DeckVersionPayload) {
 			return issues;
 		},
 		quantityOf,
+		sideboardQuantityOf,
 		canAddCopy,
+		canAddToSideboard,
 		addCard,
 		removeCard,
+		addToSideboard,
+		removeFromSideboard,
 		setLegend,
 		toPayload
 	};

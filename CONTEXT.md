@@ -169,6 +169,16 @@ A Card plus a quantity, plus optionally a chosen Printing. The Card carries iden
 legality; the Printing is cosmetic and may be left unset to fall back to the Default Printing.
 _Avoid_: deck card, deck slot, deck item
 
+**Main Deck**:
+The 40–50 Deck Entries played from, as distinct from the Legends and the Sideboard. Say "main
+deck" whenever a count could otherwise be read as including either.
+
+**Sideboard**:
+The 7 Deck Entries held aside and swapped into the Main Deck between games. Never contains
+Legends, and is bound by the same RAM and copy limits as the Main Deck — the ≤3-copy limit counts
+the two together. Exactly 7 for constructed play; zero is also legal (a deck simply without one).
+_Avoid_: side deck, sideboard deck, extra deck
+
 ### Visibility
 
 **Unlisted**:

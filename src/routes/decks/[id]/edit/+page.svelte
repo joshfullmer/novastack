@@ -19,7 +19,13 @@
 	import { evaluate, type Match, type Predicate } from '#lib/filters/predicate.js';
 	import { parseQuery } from '#lib/query/index.js';
 	import { DEFAULT_SORT, sortMatches } from '#lib/filters/sort.js';
-	import { LEGEND_SLOTS, MAX_DECK_SIZE, MIN_DECK_SIZE } from '#lib/decks/legality.js';
+	import {
+		LEGEND_SLOTS,
+		MAX_COPIES,
+		MAX_DECK_SIZE,
+		MIN_DECK_SIZE,
+		SIDEBOARD_SIZE
+	} from '#lib/decks/legality.js';
 	import { createDeckState } from '#lib/decks/deck-state.svelte.js';
 	import { groupDeckEntries, groupMatchesByType } from '#lib/decks/grouping.js';
 	import { SIZE_STATUS_TONE } from '#lib/decks/status-tone.js';
@@ -86,6 +92,16 @@
 	let tab = $state<'legends' | 'main'>(deck.legends.length === LEGEND_SLOTS ? 'main' : 'legends');
 	let searchLegends = $state('');
 	let searchMain = $state('');
+
+	/**
+	 * Which pile the next click fills. View state, not deck state — the Main Deck tab's card pool
+	 * *is* the sideboard's pool (Legends may never be sideboarded, tournament rules §3.4.4), so a
+	 * third tab would have been a duplicate of the second one with a different destination. A
+	 * toggle says the same thing without the duplication, which is also what the official site's
+	 * own builder settled on (`docs/research/sideboards.md` §3).
+	 */
+	let addTarget = $state<'deck' | 'sideboard'>('deck');
+	const targetingSideboard = $derived(tab === 'main' && addTarget === 'sideboard');
 	// Shared with the read-only view (`/decks/[id]`) — "how I like browsing a deck's cards" is
 	// one preference, not two. Server-rendered from a cookie (`data.deckView`, read in
 	// `+page.server.ts`) rather than `localStorage`: this page isn't prerendered, so the server
@@ -203,6 +219,11 @@
 		hovered = null;
 		deck.removeCard(card);
 	}
+
+	function removeFromSideboard(card: Card) {
+		hovered = null;
+		deck.removeFromSideboard(card);
+	}
 </script>
 
 <svelte:head>
@@ -222,7 +243,7 @@
 				use:enhance={() => {
 					renaming = false;
 				}}
-				class="mr-2 min-w-0 max-w-[40%]"
+				class="mr-2 max-w-[40%] min-w-0"
 			>
 				<!-- svelte-ignore a11y_autofocus -->
 				<input
@@ -270,7 +291,7 @@
 		</button>
 	</div>
 
-	<div class="p-4">
+	<div class="flex items-center gap-2 p-4">
 		<input
 			type="search"
 			value={tab === 'legends' ? searchLegends : searchMain}
@@ -282,9 +303,42 @@
 			placeholder={tab === 'legends'
 				? 'Search legends… (color:red type:legend …)'
 				: 'Search cards… (cost<=3 tag:corpo …)'}
-			class="w-full rounded-md border border-edge bg-surface px-3 py-2 text-sm text-body
+			class="min-w-0 flex-1 rounded-md border border-edge bg-surface px-3 py-2 text-sm text-body
 				placeholder:text-muted focus:border-neon focus:outline-none"
 		/>
+		<!-- Beside the search box rather than above the grid: it changes what a click *does*, so it
+		     belongs with the other controls that shape the grid, not buried in the deck panel where
+		     the clicks don't happen. -->
+		{#if tab === 'main'}
+			<div
+				class="flex shrink-0 overflow-hidden rounded-md border border-edge text-xs"
+				role="group"
+				aria-label="Where added cards go"
+			>
+				<button
+					type="button"
+					onclick={() => (addTarget = 'deck')}
+					aria-pressed={addTarget === 'deck'}
+					class="px-2.5 py-1.5 transition-colors hover:bg-raised/60 hover:text-bright"
+					class:bg-raised={addTarget === 'deck'}
+					class:text-bright={addTarget === 'deck'}
+					class:text-muted={addTarget !== 'deck'}>Deck</button
+				>
+				<button
+					type="button"
+					onclick={() => (addTarget = 'sideboard')}
+					aria-pressed={addTarget === 'sideboard'}
+					title="Add cards to the sideboard"
+					class="border-l border-edge px-2.5 py-1.5 whitespace-nowrap transition-colors
+						hover:bg-raised/60 hover:text-bright"
+					class:bg-raised={addTarget === 'sideboard'}
+					class:text-bright={addTarget === 'sideboard'}
+					class:text-muted={addTarget !== 'sideboard'}
+				>
+					Sideboard <span class="tabular-nums">{deck.sideboardCards}/{SIDEBOARD_SIZE}</span>
+				</button>
+			</div>
+		{/if}
 	</div>
 
 	<div class="min-h-0 flex-1 overflow-y-auto px-4 pt-1 pb-4">
@@ -347,14 +401,31 @@
 {/snippet}
 
 {#snippet cardTile(match: Match)}
-	{@const inDeck = deck.quantityOf(match.card)}
+	<!-- The badge counts the pile you're currently filling, so it always answers "how many more of
+	     these can I put where I'm putting them". -->
+	{@const inDeck = targetingSideboard
+		? deck.sideboardQuantityOf(match.card)
+		: deck.quantityOf(match.card)}
 	{@const chosen = tab === 'legends' && isChosenLegend(match.card)}
-	{@const maxedOut = tab === 'main' && !deck.canAddCopy(match.card)}
+	{@const sideboardFull = deck.sideboardCards >= SIDEBOARD_SIZE}
+	{@const maxedOut =
+		tab === 'main' &&
+		!(targetingSideboard ? deck.canAddToSideboard(match.card) : deck.canAddCopy(match.card))}
 	<li class="relative">
 		<button
 			type="button"
 			disabled={maxedOut}
-			onclick={() => (tab === 'legends' ? toggleLegend(match.card) : deck.addCard(match.card))}
+			title={maxedOut
+				? targetingSideboard && sideboardFull
+					? `The sideboard is full at ${SIDEBOARD_SIZE} cards.`
+					: `All ${MAX_COPIES} copies are already here (main deck and sideboard combined).`
+				: undefined}
+			onclick={() =>
+				tab === 'legends'
+					? toggleLegend(match.card)
+					: targetingSideboard
+						? deck.addToSideboard(match.card)
+						: deck.addCard(match.card)}
 			class="group relative block w-full overflow-hidden rounded-md transition-transform
 				hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-40
 				disabled:hover:-translate-y-0"
@@ -371,9 +442,11 @@
 			{#if inDeck > 0}
 				<!-- Same chamfered-corner clip as the Eddiable "€$" badge (`CardStats.svelte`) — see
 					the deck view's own quantity badge for the two-layer rationale. -->
-				<span class="absolute bottom-1 left-1/2 -translate-x-1/2 isolate inline-flex size-6 items-center justify-center">
-					<span class="absolute inset-0 eddie-badge bg-bright"></span>
-					<span class="absolute inset-[2px] eddie-badge-inset bg-void"></span>
+				<span
+					class="absolute bottom-1 left-1/2 isolate inline-flex size-6 -translate-x-1/2 items-center justify-center"
+				>
+					<span class="absolute inset-0 bg-bright eddie-badge"></span>
+					<span class="absolute inset-[2px] bg-void eddie-badge-inset"></span>
 					<span class="relative z-10 text-sm font-black text-bright tabular-nums">×{inDeck}</span>
 				</span>
 			{/if}
@@ -479,8 +552,7 @@
 						onmouseenter={(event) => onRowEnter(entry.card, event)}
 					>
 						<span class="min-w-0 flex-1 truncate text-sm {COLOR_TEXT[entry.card.color]}">
-							<span class="mr-1.5 text-muted tabular-nums">{entry.quantity}×</span>{entry.card
-								.name}
+							<span class="mr-1.5 text-muted tabular-nums">{entry.quantity}×</span>{entry.card.name}
 						</span>
 						<button
 							type="button"
@@ -523,9 +595,11 @@
 								/>
 								<!-- Same chamfered-corner clip as the Eddiable "€$" badge (`CardStats.svelte`)
 									— see the deck view's own quantity badge for the two-layer rationale. -->
-								<span class="absolute bottom-1 left-1/2 -translate-x-1/2 isolate inline-flex size-6 items-center justify-center">
-									<span class="absolute inset-0 eddie-badge bg-bright"></span>
-									<span class="absolute inset-[2px] eddie-badge-inset bg-void"></span>
+								<span
+									class="absolute bottom-1 left-1/2 isolate inline-flex size-6 -translate-x-1/2 items-center justify-center"
+								>
+									<span class="absolute inset-0 bg-bright eddie-badge"></span>
+									<span class="absolute inset-[2px] bg-void eddie-badge-inset"></span>
 									<span class="relative z-10 text-sm font-black text-bright tabular-nums">
 										×{entry.quantity}
 									</span>
@@ -539,6 +613,98 @@
 			{/each}
 		</div>
 	{/if}
+
+	<!-- Its own section rather than a fourth type group inside the list above: the rules treat the 7
+	     as a separate section of the decklist (§4.1 has judges verify each "independently of the
+	     other"). It renders in whichever mode the List/Gallery toggle is set to, same as the main
+	     deck. `shrink-0` so the main-deck list gives up the space instead — the sideboard is short
+	     and fixed, that isn't. -->
+	<div
+		class="shrink-0 border-t-2 border-edge bg-void/40"
+		onmouseleave={() => (hovered = null)}
+		role="group"
+	>
+		<div class="flex items-center justify-between px-4 py-2.5">
+			<span class="text-sm font-medium text-bright">Sideboard</span>
+			<span
+				class="text-sm font-medium tabular-nums {deck.sideboardStatus === 'legal'
+					? 'text-neon'
+					: 'text-muted'}"
+				title="A constructed sideboard is exactly {SIDEBOARD_SIZE} cards"
+			>
+				{deck.sideboardCards}/{SIDEBOARD_SIZE}
+			</span>
+		</div>
+		{#if deck.sideboard.length === 0}
+			<p class="border-t border-edge/50 px-4 py-2.5 text-xs text-muted">
+				Empty — legal, but you'll want {SIDEBOARD_SIZE} to play constructed. Switch the toggle above the
+				grid to <span class="text-body">Sideboard</span> to add them.
+			</p>
+		{:else if deckView.value === 'list'}
+			<!-- Follows the same List/Gallery toggle the main deck above uses — one preference for
+			     "how I like reading a deck's cards", not one per pile. Rows match the main deck's
+			     exactly, including the hover preview and the `−` button. -->
+			<ul class="border-t border-edge/50" role="list">
+				{#each deck.sideboard as entry (entry.card.slug)}
+					<li
+						class="flex items-center justify-between gap-2 border-b border-edge/50 px-4 py-1.5
+							last:border-b-0"
+						onmouseenter={(event) => onRowEnter(entry.card, event)}
+					>
+						<span class="min-w-0 flex-1 truncate text-sm {COLOR_TEXT[entry.card.color]}">
+							<span class="mr-1.5 text-muted tabular-nums">{entry.quantity}×</span>{entry.card.name}
+						</span>
+						<button
+							type="button"
+							onclick={() => removeFromSideboard(entry.card)}
+							aria-label="Remove one {entry.card.name} from the sideboard"
+							class="shrink-0 rounded-md border border-edge px-1.5 text-muted transition-colors
+								hover:border-card-red hover:text-card-red">−</button
+						>
+					</li>
+				{/each}
+			</ul>
+		{:else}
+			<!-- Click removes one, same gesture as the main deck's own Gallery mode. -->
+			<ul class="grid grid-cols-4 gap-2 border-t border-edge/50 p-3" role="list">
+				{#each deck.sideboard as entry (entry.card.slug)}
+					<li class="relative">
+						<button
+							type="button"
+							onclick={() => removeFromSideboard(entry.card)}
+							onmouseenter={(event) => onRowEnter(entry.card, event)}
+							aria-label="Remove one {entry.card.name} from the sideboard"
+							class="block w-full overflow-hidden rounded-md"
+						>
+							<CardImage
+								printingId={entry.card.printings[0].id}
+								thumbhash={entry.card.printings[0].thumbhash}
+								color={entry.card.color}
+								alt={entry.card.name}
+								sizes="80px"
+							/>
+							{#if entry.quantity > 1}
+								<!-- Same chamfered badge as the main-deck gallery above, but only past one
+								     copy. That gallery does badge `×1`; repeating it on five of seven tiles
+								     here would bury the one number that carries information — a 2× or 3× of
+								     a matchup card — and the `n/7` header already gives the total. -->
+								<span
+									class="absolute bottom-1 left-1/2 isolate inline-flex size-6 -translate-x-1/2
+										items-center justify-center"
+								>
+									<span class="absolute inset-0 bg-bright eddie-badge"></span>
+									<span class="absolute inset-[2px] bg-void eddie-badge-inset"></span>
+									<span class="relative z-10 text-sm font-black text-bright tabular-nums">
+										×{entry.quantity}
+									</span>
+								</span>
+							{/if}
+						</button>
+					</li>
+				{/each}
+			</ul>
+		{/if}
+	</div>
 
 	<div class="border-t border-edge p-3">
 		{#if form?.message}
@@ -600,7 +766,8 @@
 		class="flex shrink-0 items-center justify-between border-t border-edge bg-shell px-4 py-3"
 	>
 		<span class="text-sm font-medium text-bright">
-			Deck · <span class={sizeTone}>{deck.totalCards}</span> cards
+			Deck · <span class={sizeTone}>{deck.totalCards}</span> cards{#if deck.sideboardCards > 0}
+				· <span class="tabular-nums">{deck.sideboardCards}/{SIDEBOARD_SIZE}</span> sideboard{/if}
 		</span>
 		<span class="text-muted">▲</span>
 	</button>

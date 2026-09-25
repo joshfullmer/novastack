@@ -31,9 +31,19 @@
  * `deckToJson` is the standardized alternative for anything that wants structure instead of a
  * line format; it uses the same `importCode`, but that's incidental — it was never claimed to
  * match the sim and isn't meant to.
+ *
+ * **`deckToSimFormat` deliberately omits the sideboard, and that isn't an oversight.** The format
+ * above was verified against the sim on 2026-09-23; sideboards only entered the game's tournament
+ * rules on 2026-09-25, so the working assumption is that the sim has no notion of one yet. An
+ * unrecognized `# Sideboard` header is the dangerous direction to guess in: if the sim keeps
+ * appending to the last section it recognized, importing this file would silently build a 57-card
+ * main deck. A lossy export beats a wrong one. `deckToJson` is ours, so it carries the sideboard
+ * unconditionally. To settle it: export a 7-card sideboard from the sim and copy whatever header
+ * it emits, verbatim — see `docs/research/sideboards.md` §6.2.
  */
 import type { Card } from '#lib/cards/schema.js';
 import type { DeckEntryGroup } from './grouping.js';
+import type { DeckEntry } from './legality.js';
 
 function importCode(card: Card): string {
 	return card.printings[0].collectorNumber;
@@ -63,19 +73,23 @@ export function deckToSimFormat(
 export function deckToJson(
 	deckName: string,
 	legends: readonly Card[],
-	mainGroups: readonly DeckEntryGroup[]
+	mainGroups: readonly DeckEntryGroup[],
+	sideboard: readonly DeckEntry[]
 ): string {
+	const line = (entry: DeckEntry) => ({
+		name: entry.card.name,
+		id: importCode(entry.card),
+		quantity: entry.quantity
+	});
+
 	return JSON.stringify(
 		{
 			name: deckName,
 			legends: legends.map((legend) => ({ name: legend.name, id: importCode(legend) })),
-			main: mainGroups.flatMap((group) =>
-				group.entries.map((entry) => ({
-					name: entry.card.name,
-					id: importCode(entry.card),
-					quantity: entry.quantity
-				}))
-			)
+			main: mainGroups.flatMap((group) => group.entries.map(line)),
+			// Always present, `[]` included — a consumer shouldn't have to tell "no sideboard" apart
+			// from "this exporter predates sideboards."
+			sideboard: sideboard.map(line)
 		},
 		null,
 		2

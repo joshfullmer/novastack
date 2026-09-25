@@ -79,6 +79,9 @@ export const load: PageServerLoad = async (event) => {
 			visibility: deck.visibility,
 			folderId: deck.folderId,
 			cardCount: version?.entries.reduce((sum, entry) => sum + entry.quantity, 0) ?? 0,
+			// Kept out of `cardCount`: the 40–50 legal range is about the main deck alone, so
+			// folding the 7 in would make every finished deck read as oversized.
+			sideboardCards: version?.sideboard.reduce((sum, entry) => sum + entry.quantity, 0) ?? 0,
 			legendSlugs: version?.legends ?? [],
 			savedAt: version?.savedAt ?? null
 		})),

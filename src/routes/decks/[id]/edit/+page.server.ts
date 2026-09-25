@@ -25,7 +25,8 @@ export const load: PageServerLoad = async (event) => {
 	const version = await getLatestVersion(event.locals.db, deck.id);
 	const payload = v.parse(DeckVersionPayloadSchema, {
 		entries: version?.entries ?? [],
-		legends: version?.legends ?? []
+		legends: version?.legends ?? [],
+		sideboard: version?.sideboard ?? []
 	});
 
 	return {

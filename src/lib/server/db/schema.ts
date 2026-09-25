@@ -41,10 +41,9 @@ export const deckFolders = sqliteTable(
 		visibility: text('visibility', { enum: ['private', 'shared'] })
 			.notNull()
 			.default('private'),
-		parentFolderId: text('parent_folder_id').references(
-			(): AnySQLiteColumn => deckFolders.id,
-			{ onDelete: 'set null' }
-		),
+		parentFolderId: text('parent_folder_id').references((): AnySQLiteColumn => deckFolders.id, {
+			onDelete: 'set null'
+		}),
 		createdAt: integer('created_at', { mode: 'timestamp_ms' }).notNull().default(now)
 	},
 	(table) => [index('deck_folders_owner_idx').on(table.ownerId)]
@@ -75,7 +74,10 @@ export const decks = sqliteTable(
 		 * than deleting them. */
 		folderId: text('folder_id').references(() => deckFolders.id, { onDelete: 'set null' })
 	},
-	(table) => [index('decks_owner_idx').on(table.ownerId), index('decks_folder_idx').on(table.folderId)]
+	(table) => [
+		index('decks_owner_idx').on(table.ownerId),
+		index('decks_folder_idx').on(table.folderId)
+	]
 );
 
 export const deckVersions = sqliteTable(
@@ -91,6 +93,12 @@ export const deckVersions = sqliteTable(
 		entries: text('entries', { mode: 'json' }).notNull().$type<DeckEntryPayload[]>(),
 		/** Up to 3 Legend card slugs. */
 		legends: text('legends', { mode: 'json' }).notNull().$type<string[]>(),
+		/** The 7-card sideboard. Defaults to `[]`, which is both what every row written before this
+		 * column existed means and a legal deck in its own right — see `sideboardStatus`. */
+		sideboard: text('sideboard', { mode: 'json' })
+			.notNull()
+			.default([])
+			.$type<DeckEntryPayload[]>(),
 		savedAt: integer('saved_at', { mode: 'timestamp_ms' }).notNull().default(now)
 	},
 	(table) => [index('deck_versions_deck_saved_idx').on(table.deckId, table.savedAt)]
