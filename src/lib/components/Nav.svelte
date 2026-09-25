@@ -9,11 +9,13 @@
 	 * Set is a filter, not a route — `Sets` here is a stage-past-this-one landing page, not the
 	 * Set facet.
 	 *
-	 * **Rules is a link with a hover dropdown**, same shape as Decks below: the trigger itself
-	 * links out to the community gameplay guide (there's no in-app rules page yet, but an
-	 * external stopgap beats offering nothing — swap for a real route once there's a
-	 * comprehensive ruleset worth rendering ourselves), and the dropdown adds `/faq`'s general
-	 * rulings as the one rules-adjacent page this app *does* render itself.
+	 * **Rules is a link with a hover dropdown**, same shape as Decks below: the trigger goes
+	 * straight to the comprehensive rules — the document players reach for by default, and the
+	 * reason the trigger stays a link rather than an inert button. The dropdown adds the two
+	 * secondary rules sources: the official tournament rules (organised play only, so it would
+	 * be the wrong default) and `/faq`'s general rulings, the one rules-adjacent page this app
+	 * renders itself. Both official documents are external until there's a ruleset worth
+	 * rendering in-app.
 	 *
 	 * **Decks is a link with a hover dropdown** — `/decks` (My Decks, owner-only) and `/explore`
 	 * (public, §9) are separate top-level routes, matching how every reference site (swudb,
@@ -73,6 +75,11 @@
 	const RULES_URL = 'https://cyberpunktcg.com/comprehensive-rules';
 	const RULES = [
 		{ href: RULES_URL, label: 'Comprehensive Rules', external: true },
+		{
+			href: 'https://cyberpunktcg.com/tournament-rules',
+			label: 'Tournament Rules',
+			external: true
+		},
 		{ href: '/faq', label: 'FAQ' }
 	];
 
