@@ -5503,7 +5503,7 @@
 			],
 			"ramProvided": 2,
 			"ramRequired": null,
-			"rawRulesText": "{Go Solo} (Pay this Legend's cost to play it as a ready Unit. It can attack this turn. If it leaves the field, remove it from the game.)\nIf a friendly Unit would be defeated, you may spend 1 €$ to defeat this Legend instead. (Remove it from the game.)",
+			"rawRulesText": "{Go Solo} (Pay this Legend's cost to play it as a ready Unit. It can attack this turn. If it leaves the field, remove it from the game.)\nIf a friendly Unit would be defeated, you may pay 1 €$ to defeat this Legend instead. (Remove it from the game.)",
 			"rulesText": [
 				[
 					{
@@ -5523,7 +5523,7 @@
 				[
 					{
 						"kind": "text",
-						"text": "If a friendly Unit would be defeated, you may spend 1 "
+						"text": "If a friendly Unit would be defeated, you may pay 1 "
 					},
 					{
 						"kind": "symbol",
@@ -6164,6 +6164,17 @@
 					"thumbhash": "0vaFFAQPM/hVeKmlpzn4F4+FgYGICBiIAA=="
 				},
 				{
+					"artist": "Pandart Studio",
+					"collectorNumber": "157",
+					"id": "9c8b2cab-c07e-44e7-bcfd-277100688d17",
+					"key": "MS01-WNC-157",
+					"locale": "en",
+					"rarity": "Iconic Legend",
+					"setId": "MS01-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/9c8b2cab-c07e-44e7-bcfd-277100688d17/render-mpvmvhko.webp",
+					"thumbhash": "jweGDAQPCvonarRUNQXFGHuAgYGICBiIAA=="
+				},
+				{
 					"artist": "Gautier Viller",
 					"collectorNumber": "β108",
 					"id": "d74468ab-6024-4ae6-b69a-ac41f6e9cfce",
@@ -6241,6 +6252,17 @@
 					"thumbhash": "kBeGDAYPIfo1uZmV9SWYB36HgYGICBiIAA=="
 				},
 				{
+					"artist": "Pandart Studio",
+					"collectorNumber": "051",
+					"id": "20e4171f-db39-4f5a-bbc4-6845b79cf308",
+					"key": "EOR01-WNC-051",
+					"locale": "en",
+					"rarity": "Nova Rare",
+					"setId": "EOR01-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/20e4171f-db39-4f5a-bbc4-6845b79cf308/render-mtcq8wr2.webp",
+					"thumbhash": "kAeGDAQPCeo2upVWOAe1GHyAgYGICBiIAA=="
+				},
+				{
 					"artist": "Gautier Viller",
 					"collectorNumber": "108",
 					"id": "4ea89508-1831-4e21-b4b0-b61771722686",
@@ -6250,6 +6272,17 @@
 					"setId": "MS01-WNC",
 					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/4ea89508-1831-4e21-b4b0-b61771722686/render-67f9591a-0f63-4da1-85fa-3dc79b373457.webp",
 					"thumbhash": "0vaJFAQPM/hVeKmlpzn4F4+FgYGICBiIAA=="
+				},
+				{
+					"artist": "Pandart Studio",
+					"collectorNumber": "157",
+					"id": "7335aecf-e214-4fce-8594-f91485f16755",
+					"key": "MS01-WNC-157-FR",
+					"locale": "fr",
+					"rarity": "Iconic Legend",
+					"setId": "MS01-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/7335aecf-e214-4fce-8594-f91485f16755/render-65ccb284-671d-444d-9bb4-6b2fc1cb9f01.webp",
+					"thumbhash": "jweGDAQPCvknarVVNQXFGHuAgYGICBiIAA=="
 				}
 			],
 			"ramProvided": 2,
@@ -8296,7 +8329,7 @@
 			],
 			"ramProvided": null,
 			"ramRequired": 2,
-			"rawRulesText": "This Unit can't attack.\nAt the end of your turn, choose a card type. Then, reveal the top card of your deck. If it's the chosen type, add it to your hand and ready 1 Eddie. Otherwise, trash it.\n(Card types include Unit, Gear, and Program.)",
+			"rawRulesText": "This Unit can't attack.\nAt the end of your turn, choose a card type. Then, reveal the top card of your deck. If it's the chosen type, add it to your hand and ready 1 Eddie. Otherwise, trash it.\n(Unit, Gear, and Program are card types.)",
 			"rulesText": [
 				[
 					{
@@ -8313,7 +8346,7 @@
 				[
 					{
 						"kind": "reminder",
-						"text": "(Card types include Unit, Gear, and Program.)"
+						"text": "(Unit, Gear, and Program are card types.)"
 					}
 				]
 			],
@@ -16262,7 +16295,7 @@
 			"sortOrder": 2500
 		}
 	],
-	"generatedAt": "2026-09-23T21:04:05.534Z",
+	"generatedAt": "2026-09-26T08:16:57.508Z",
 	"ramPerLegend": 2,
 	"sets": [
 		{
@@ -16273,7 +16306,7 @@
 			"kind": "base",
 			"name": "Welcome to Night City",
 			"printed": "MS01 - WNC [A]",
-			"printingCount": 472,
+			"printingCount": 474,
 			"setCode": "WNC"
 		},
 		{
@@ -16361,7 +16394,7 @@
 			"kind": "derivative",
 			"name": "Edgerunner Open Season 1",
 			"printed": "EOR01 - WNC",
-			"printingCount": 39,
+			"printingCount": 40,
 			"setCode": "WNC"
 		},
 		{
@@ -16400,7 +16433,7 @@
 	],
 	"stats": {
 		"cards": 151,
-		"printings": 700,
+		"printings": 703,
 		"sets": 1
 	}
 }
