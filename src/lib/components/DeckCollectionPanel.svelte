@@ -27,11 +27,24 @@
 		removeTarget,
 		topUpPlan
 	} from '#lib/collection/deck-collection.js';
+	import type { Card } from '#lib/cards/schema.js';
 	import type { NeededCard } from '#lib/collection/missing.js';
 	import type { WantlistSummary } from '#lib/collection/wantlists.js';
 	import { COLOR_TEXT } from './color.js';
 
-	let { entries }: { entries: readonly NeededCard[] } = $props();
+	let {
+		entries,
+		/**
+		 * Called when a row is hovered, so the host can show that card. The deck view has a sticky
+		 * preview panel that every other list on the page already drives this way; without it, the
+		 * one tab where you're reading card names one at a time would be the only place the preview
+		 * sat on a stale card.
+		 *
+		 * A callback rather than a bound `focused` prop: the panel has no opinion about what
+		 * "showing" a card means, and nothing here reads it back.
+		 */
+		onFocusCard
+	}: { entries: readonly NeededCard[]; onFocusCard?: (card: Card) => void } = $props();
 
 	$effect(() => void collection.load());
 
@@ -271,7 +284,11 @@
 			{#each rows as row (row.card.slug)}
 				{@const short = row.missing > 0}
 				<li class="flex items-center gap-3 border-b border-edge/50 px-3 py-1.5 last:border-b-0">
-					<span class="min-w-0 flex-1 truncate text-sm {COLOR_TEXT[row.card.color]}">
+					<span
+						class="min-w-0 flex-1 truncate text-sm {COLOR_TEXT[row.card.color]}"
+						onmouseenter={() => onFocusCard?.(row.card)}
+						role="presentation"
+					>
 						{row.card.name}
 						{#if row.scope === 'printing' && row.ownedElsewhere > 0}
 							<!-- The disclosure that keeps a scoped `0/3` from reading as a bug: you *do* hold

@@ -717,6 +717,7 @@
 					     hand, so a list short of them isn't one you can play. Concatenated rather than
 					     merged; `deckCollectionRows` sums entries naming the same card. -->
 					<DeckCollectionPanel
+						onFocusCard={(card) => (focused = card)}
 						entries={[
 							...deck.legends.map((legend) => ({
 								card: legend,
