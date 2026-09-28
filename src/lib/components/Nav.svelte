@@ -49,9 +49,14 @@
 	const DISCORD_URL = 'https://discord.gg/TtTvVrMhz8';
 
 	/** Measured rather than trusted to the `--spacing-nav` fallback in `layout.css` — the header's
-	 * actual height shifts across breakpoints (e.g. the wordmark hiding below `sm`), and every
-	 * sticky offset below it (`FilterBar`, `CardPane`) reads that same variable, so a stale
-	 * static value would misalign all of them at once. */
+	 * actual height shifts across breakpoints (e.g. the wordmark hiding below `sm`, the search box
+	 * appearing at `lg`), and every sticky offset below it (`FilterBar`, `CardPane`) reads that same
+	 * variable, so a stale static value would misalign all of them at once.
+	 *
+	 * `offsetHeight`, not `clientHeight`: the header carries a `border-b`, which `clientHeight`
+	 * excludes. That put the variable a pixel under the space the header actually occupies — which
+	 * a sticky offset can absorb invisibly, but not the shared Binder's fit, where it lands in a
+	 * `100dvh` subtraction and the error shows up as an overflowing page. */
 	let height = $state(0);
 
 	/** `/cards` pins its own query row instead (`FilterBar`'s `sticky top-nav`) — a phone browsing
@@ -134,7 +139,7 @@
 </script>
 
 <header
-	bind:clientHeight={height}
+	bind:offsetHeight={height}
 	class="z-30 border-b border-edge/60 bg-void/80 backdrop-blur-md {stickyHeader
 		? 'sticky top-0'
 		: ''}"

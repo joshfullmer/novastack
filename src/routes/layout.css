@@ -36,8 +36,32 @@
 
 	--aspect-card: 733 / 1024;
 
-	/* The shared nav's height, so sticky offsets below it have one source of truth. */
-	--spacing-nav: 3.3rem;
+	/* The shared nav's height, so sticky offsets below it have one source of truth.
+
+	   `Nav` measures itself and overwrites this on hydration — that measurement is the
+	   authoritative value. What's declared here (and per-breakpoint below) is what the *first
+	   paint* uses, and it matters more than a fallback usually would: the shared Binder subtracts
+	   it from `100dvh` to fit itself to the screen, so a wrong number here is a visible jump when
+	   the real one lands. A single value guaranteed one, since the header is three different
+	   heights across breakpoints. */
+	--spacing-nav: 2.8125rem;
+}
+
+/* The three heights above, measured: 45px with the link row collapsed to a hamburger, 53px with
+   it open, 59px from `lg` where the nav's search box appears. Declared after `@theme` so these
+   win over the value it emits, and overridden in turn by `Nav`'s own inline measurement on
+   `documentElement`, which beats any stylesheet rule. Mirrors `Nav`'s `sm:`/`lg:` classes — they
+   change together. */
+@media (width >= 40rem) {
+	:root {
+		--spacing-nav: 3.3125rem;
+	}
+}
+
+@media (width >= 64rem) {
+	:root {
+		--spacing-nav: 3.6875rem;
+	}
 }
 
 html {
