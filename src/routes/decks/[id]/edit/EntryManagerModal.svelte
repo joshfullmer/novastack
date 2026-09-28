@@ -1,45 +1,70 @@
 <script lang="ts">
 	/**
-	 * PROTOTYPE — DELETE ME. Variants **D** and **F**: clicking a deck entry opens a manager for
-	 * that card.
+	 * PROTOTYPE (variant F, iterating) — the per-entry manager.
 	 *
-	 * Round 1's lesson was that a 360px rail can't host per-entry controls at any size worth
-	 * clicking. This stops trying: the row becomes a *target*, and everything you might do to an
-	 * entry — copies, sideboard, printing, removal — happens in one surface big enough to show the
-	 * art you're choosing between.
+	 * Clicking an entry opens this instead of silently removing a copy, which is both the fix for
+	 * round 1's "everything is too small" and the end of a destructive default nobody asked for.
+	 * Everything you do to a card in a deck happens here: copies in each pile, which Printing, and
+	 * removal.
 	 *
-	 * It also removes a destructive default. Today a single click on a Gallery tile takes a copy
-	 * out of the deck, with no confirmation and no undo; here a click opens this, and removal is a
-	 * labelled button.
+	 * Printing choice now writes to **real deck state** (`deck.setPrinting`), so it survives Save —
+	 * the payload schema always had an optional `printingId`, and the stub that never wrote it was
+	 * what made saving look broken.
 	 *
-	 * Copies mutate the **real** deck state (local until "Save deck"); only the printing choice is
-	 * stubbed. Mounted once at page level, driven by `proto.managing`.
+	 * Also manages **Legends**, which are a different shape: they occupy one of three slots rather
+	 * than carrying a quantity, so there are no copy steppers and removal frees the slot. Their
+	 * Printing is *not* editable — `deck_versions.legends` stores bare slugs, so there is nowhere to
+	 * put the choice without a payload change. See `PROTOTYPE-NOTES-2.md`.
 	 */
 	import CardImage from '#lib/components/CardImage.svelte';
 	import { printTreatment } from '#lib/cards/derive.js';
+	import { LOCALES, type Locale } from '#lib/cards/vocabulary.js';
 	import { setLabel } from '#lib/collection/printing-search.js';
 	import { cardBySlug, type DeckState } from '#lib/decks/deck-state.svelte.js';
 	import { MAX_COPIES, SIDEBOARD_SIZE } from '#lib/decks/legality.js';
-	import { printingPrototype as proto } from './printing-prototype.svelte.js';
+	import { deckPrinting, isDefaultPrinting } from '#lib/decks/printing.js';
 
-	let { deck }: { deck: DeckState } = $props();
+	let { slug = $bindable(null), deck }: { slug?: string | null; deck: DeckState } = $props();
 
-	const card = $derived(proto.managing ? cardBySlug(proto.managing) : undefined);
-	const printing = $derived(card ? proto.printingFor(card) : null);
-	const inDeck = $derived(card ? deck.quantityOf(card) : 0);
-	const inSideboard = $derived(card ? deck.sideboardQuantityOf(card) : 0);
+	const card = $derived(slug ? cardBySlug(slug) : undefined);
+	const isLegend = $derived(card?.cardType === 'Legend');
+	const printing = $derived(card ? deckPrinting(card, deck.printingIdOf(card)) : null);
+	const inDeck = $derived(card && !isLegend ? deck.quantityOf(card) : 0);
+	const inSideboard = $derived(card && !isLegend ? deck.sideboardQuantityOf(card) : 0);
+	const legendSlot = $derived(
+		card ? deck.legends.findIndex((legend) => legend.slug === card.slug) : -1
+	);
+
+	/**
+	 * Locale filter. `null` is "all", and the control only renders when the card actually has more
+	 * than one locale — on a 14-printing Adam Smasher the French rows are most of what you scroll
+	 * past, and on a single-locale card a filter would be furniture.
+	 */
+	let locale = $state<Locale | null>(null);
+	const locales = $derived(
+		card ? LOCALES.filter((code) => card.printings.some((option) => option.locale === code)) : []
+	);
+	const visiblePrintings = $derived(
+		card ? card.printings.filter((option) => locale === null || option.locale === locale) : []
+	);
 
 	function close() {
-		proto.manage(null);
+		slug = null;
+		locale = null;
+	}
+
+	/** Legends live in slots, so "remove" means clearing the slot this one occupies. */
+	function removeLegend() {
+		if (legendSlot !== -1) deck.setLegend(legendSlot, null);
+		close();
 	}
 </script>
 
 <svelte:window onkeydown={(event) => event.key === 'Escape' && close()} />
 
 {#if card && printing}
-	<!-- A plain fixed backdrop rather than `<dialog>`/`showModal`, deliberately: this is throwaway
-	     code being judged on layout and reach, and the real version should copy
-	     `CardDetailOverlay`'s dialog + view-transition handling rather than this. -->
+	<!-- A plain fixed backdrop rather than `<dialog>`/`showModal`: still prototype code, and the
+	     real version should reuse `CardDetailOverlay`'s dialog + view-transition handling. -->
 	<div
 		class="fixed inset-0 z-50 flex items-center justify-center bg-void/80 p-4 backdrop-blur-sm"
 		onclick={(event) => {
@@ -79,7 +104,14 @@
 
 			<div class="flex min-w-0 flex-1 flex-col">
 				<div class="flex items-baseline justify-between gap-3">
-					<h2 class="min-w-0 truncate text-lg font-semibold text-bright">{card.name}</h2>
+					<div class="min-w-0">
+						<h2 class="truncate text-lg font-semibold text-bright">{card.name}</h2>
+						{#if isLegend}
+							<p class="text-xs text-muted">
+								Legend · slot {legendSlot + 1} of {deck.legends.length}
+							</p>
+						{/if}
+					</div>
 					<button
 						type="button"
 						onclick={close}
@@ -88,61 +120,101 @@
 					>
 				</div>
 
-				<!-- Copies first: it's what you came for nine times out of ten, and the printing is the
-				     occasional errand. Deck and Sideboard side by side because the copy cap spans both
-				     (`canAddCopy`), so seeing one without the other explains nothing when `+` disables. -->
-				<div class="mt-4 grid grid-cols-2 gap-3">
-					{#each [{ label: 'In deck', count: inDeck, add: () => deck.addCard(card), remove: () => deck.removeCard(card), canAdd: deck.canAddCopy(card), hint: `Max ${MAX_COPIES} across both piles` }, { label: 'Sideboard', count: inSideboard, add: () => deck.addToSideboard(card), remove: () => deck.removeFromSideboard(card), canAdd: deck.canAddToSideboard(card), hint: `${deck.sideboardCards}/${SIDEBOARD_SIZE} used` }] as pile (pile.label)}
-						<div class="rounded-lg border border-edge bg-void/40 p-3">
-							<p class="text-xs tracking-wide text-muted uppercase">{pile.label}</p>
-							<div class="mt-2 flex items-center gap-3">
-								<button
-									type="button"
-									onclick={pile.remove}
-									disabled={pile.count === 0}
-									aria-label="One fewer {card.name} in {pile.label}"
-									class="size-8 rounded-md border border-edge text-lg text-muted transition-colors
-										hover:border-card-red hover:text-card-red disabled:opacity-30">−</button
-								>
-								<span class="min-w-6 text-center text-xl font-semibold text-bright tabular-nums"
-									>{pile.count}</span
-								>
-								<button
-									type="button"
-									onclick={pile.add}
-									disabled={!pile.canAdd}
-									aria-label="One more {card.name} in {pile.label}"
-									class="size-8 rounded-md border border-edge text-lg text-muted transition-colors
-										hover:border-neon-dim hover:text-neon disabled:opacity-30">+</button
-								>
+				{#if !isLegend}
+					<!-- Copies first: it's what you came for nine times out of ten, and the printing is the
+					     occasional errand. Deck and Sideboard side by side because the copy cap spans both
+					     (`canAddCopy`), so seeing one without the other explains nothing when `+` disables. -->
+					<div class="mt-4 grid grid-cols-2 gap-3">
+						{#each [{ label: 'In deck', count: inDeck, add: () => deck.addCard(card), remove: () => deck.removeCard(card), canAdd: deck.canAddCopy(card), hint: `Max ${MAX_COPIES} across both piles` }, { label: 'Sideboard', count: inSideboard, add: () => deck.addToSideboard(card), remove: () => deck.removeFromSideboard(card), canAdd: deck.canAddToSideboard(card), hint: `${deck.sideboardCards}/${SIDEBOARD_SIZE} used` }] as pile (pile.label)}
+							<div class="rounded-lg border border-edge bg-void/40 p-3">
+								<p class="text-xs tracking-wide text-muted uppercase">{pile.label}</p>
+								<div class="mt-2 flex items-center gap-3">
+									<button
+										type="button"
+										onclick={pile.remove}
+										disabled={pile.count === 0}
+										aria-label="One fewer {card.name} in {pile.label}"
+										class="size-8 rounded-md border border-edge text-lg text-muted transition-colors
+											hover:border-card-red hover:text-card-red disabled:opacity-30">−</button
+									>
+									<span class="min-w-6 text-center text-xl font-semibold text-bright tabular-nums"
+										>{pile.count}</span
+									>
+									<button
+										type="button"
+										onclick={pile.add}
+										disabled={!pile.canAdd}
+										aria-label="One more {card.name} in {pile.label}"
+										class="size-8 rounded-md border border-edge text-lg text-muted transition-colors
+											hover:border-neon-dim hover:text-neon disabled:opacity-30">+</button
+									>
+								</div>
+								<p class="mt-1.5 text-[0.65rem] text-muted/70">{pile.hint}</p>
 							</div>
-							<p class="mt-1.5 text-[0.65rem] text-muted/70">{pile.hint}</p>
-						</div>
-					{/each}
-				</div>
+						{/each}
+					</div>
+				{/if}
 
 				<div class="mt-4 flex min-h-0 flex-1 flex-col">
 					<div class="mb-2 flex items-baseline justify-between gap-2">
 						<h3 class="text-xs font-medium tracking-widest text-muted uppercase">Printing</h3>
-						<button
-							type="button"
-							onclick={() => proto.choose(card, null)}
-							disabled={proto.isDefault(card)}
-							class="text-[0.65rem] text-muted hover:text-neon disabled:opacity-40"
-							>Use default</button
-						>
+
+						<div class="flex items-center gap-2">
+							{#if locales.length > 1}
+								<!-- Language filter. A segmented control rather than a dropdown: there are two
+								     locales today, and a menu holding two items costs a click to tell you what a
+								     pair of buttons says outright. -->
+								<div class="flex overflow-hidden rounded border border-edge text-[0.6rem]">
+									<button
+										type="button"
+										onclick={() => (locale = null)}
+										class="px-1.5 py-0.5 transition-colors hover:text-bright"
+										class:bg-raised={locale === null}
+										class:text-bright={locale === null}
+										class:text-muted={locale !== null}>All</button
+									>
+									{#each locales as code (code)}
+										<button
+											type="button"
+											onclick={() => (locale = code)}
+											class="px-1.5 py-0.5 uppercase transition-colors hover:text-bright"
+											class:bg-raised={locale === code}
+											class:text-bright={locale === code}
+											class:text-muted={locale !== code}>{code}</button
+										>
+									{/each}
+								</div>
+							{/if}
+
+							{#if isLegend}
+								<span class="text-[0.65rem] text-muted/70">Fixed for Legends</span>
+							{:else}
+								<button
+									type="button"
+									onclick={() => deck.setPrinting(card, null)}
+									disabled={isDefaultPrinting(card, deck.printingIdOf(card))}
+									class="text-[0.65rem] text-muted hover:text-neon disabled:opacity-40"
+									>Use default</button
+								>
+							{/if}
+						</div>
 					</div>
-					<ul class="grid min-h-0 flex-1 grid-cols-5 gap-2 overflow-y-auto pr-1">
-						{#each card.printings as option (option.id)}
+
+					<!-- `p-1` inside the scroller, not `pr-1`: the selected tile's ring is drawn *outside*
+					     its border box, so with the grid flush against an `overflow-y-auto` container the
+					     ring was clipped on every edge. The padding gives it somewhere to be. -->
+					<ul class="grid min-h-0 flex-1 grid-cols-5 gap-2 overflow-y-auto p-1">
+						{#each visiblePrintings as option (option.id)}
 							{@const active = option.id === printing.id}
 							<li>
 								<button
 									type="button"
-									onclick={() => proto.choose(card, option.id)}
+									onclick={() => !isLegend && deck.setPrinting(card, option.id)}
+									disabled={isLegend}
 									aria-current={active ? 'true' : undefined}
 									title="{setLabel(option.setId)} · {printTreatment(option)} · {option.locale}"
 									class="relative block w-full overflow-hidden rounded transition-transform
-										hover:-translate-y-0.5"
+										disabled:cursor-default {isLegend ? '' : 'hover:-translate-y-0.5'}"
 									class:ring-2={active}
 									class:ring-neon={active}
 								>
@@ -169,19 +241,28 @@
 				</div>
 
 				<div class="mt-4 flex items-center justify-between gap-2 border-t border-edge pt-3">
-					<button
-						type="button"
-						onclick={() => {
-							// Both piles, since the modal shows both — "remove this card" shouldn't leave
-							// three of it in the sideboard.
-							for (let copy = inDeck; copy > 0; copy -= 1) deck.removeCard(card);
-							for (let copy = inSideboard; copy > 0; copy -= 1) deck.removeFromSideboard(card);
-							close();
-						}}
-						disabled={inDeck + inSideboard === 0}
-						class="rounded-md border border-edge px-2.5 py-1.5 text-xs text-muted transition-colors
-							hover:border-card-red hover:text-card-red disabled:opacity-40">Remove from deck</button
-					>
+					{#if isLegend}
+						<button
+							type="button"
+							onclick={removeLegend}
+							class="rounded-md border border-edge px-2.5 py-1.5 text-xs text-muted transition-colors
+								hover:border-card-red hover:text-card-red">Remove Legend</button
+						>
+					{:else}
+						<button
+							type="button"
+							onclick={() => {
+								// Both piles, since the modal shows both — "remove this card" shouldn't leave
+								// three of it in the sideboard.
+								for (let copy = inDeck; copy > 0; copy -= 1) deck.removeCard(card);
+								for (let copy = inSideboard; copy > 0; copy -= 1) deck.removeFromSideboard(card);
+								close();
+							}}
+							disabled={inDeck + inSideboard === 0}
+							class="rounded-md border border-edge px-2.5 py-1.5 text-xs text-muted transition-colors
+								hover:border-card-red hover:text-card-red disabled:opacity-40">Remove from deck</button
+						>
+					{/if}
 					<button
 						type="button"
 						onclick={close}

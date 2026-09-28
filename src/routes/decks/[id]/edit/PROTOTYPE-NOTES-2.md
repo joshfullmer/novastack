@@ -70,9 +70,55 @@ with the caption and selection ring following. E measures 480px / 3 columns / 14
 cycler moves `010` → `β010`, its stepper moves 1 → 2, and its tile is inert. F opens the manager
 from a tile — `aria-label="Manage …"`, deck count unchanged — and closes on Escape.
 
-## Verdict
+## Verdict — F wins
 
-_TBD — which variant, or which pieces of each._
+> "I definitely like F." — 2026-09-28
+
+D and E are deleted; `?variant=off|F` is what remains, so F can still be compared against
+production. Six changes were asked for on top of it, all now in:
+
+1. **No hover preview in the Gallery.** At 146px the tile _is_ the preview, and a second copy of the
+   art floating beside it was noise. List rows keep it — there is no art there to replace it.
+2. **Overlaid copy controls** on the tile's bottom corners: `−` left, `+` right, quantity badge
+   between them. They `stopPropagation`, so a stepper click doesn't also open the manager.
+3. **Saving.** Not a save bug — the prototype's printing choice lived in a stub map that never
+   wrote to the payload, so `printingId` was absent from every save. Choice now goes through
+   `deck.setPrinting` into real deck state, so it persists; `#lib/decks/printing.ts` resolves it
+   (and falls back to the default for an id that has left the dataset).
+4. **Locale filter** in the manager — `All | EN | FR`, rendered only when the card has more than
+   one locale.
+5. **Selected-ring clipping** fixed: `ring-2` draws outside the border box, and the grid was flush
+   against an `overflow-y-auto` container. The scroller now has `p-1`, which is where the ring goes.
+6. **Legends** open the manager instead of being removed on click — the same destructive default,
+   on the three cards a deck is built around. Legend mode has no copy steppers (they're slots), and
+   removal frees the slot.
+
+### Still open: a Legend's printing can't be chosen
+
+`deck_versions.legends` is `string[]` — bare slugs — so there is **nowhere to store a Legend's
+printing**. The manager shows the grid disabled with "Fixed for Legends" rather than pretending.
+
+Fixing it means changing the payload shape (a valibot union of `string | { cardSlug, printingId }`
+for back-compat, plus `legendSlugs` consumers in `/decks`, `/explore`, `/f/[code]` and the deck
+view). That's the _most_ visible place a printing choice would land — Legends are what deck tiles
+and OG images show — so it's probably worth doing, but it's a data-model change and wasn't in scope
+for this round.
+
+### Verified after the changes
+
+Driven in the browser against local D1: tile steppers move `×2 → ×3` without opening the manager;
+the hover preview is gone in Gallery and still present in List; the locale filter cuts 3 printings
+to 1 (fr) / 2 (en) with every remaining tile matching; the selected tile has 4px of room inside the
+scroller; a Legend opens in legend mode with 0 copy steppers, a disabled grid and "Remove Legend";
+and choosing the French printing then pressing the real **Save deck** wrote
+`"printingId":"dc8b5417-…"` into `deck_versions` and the deck view now renders that printing
+instead of the English default.
+
+### Not yet wired: gating
+
+`choose-printing` (`#lib/entitlements.ts`) is still unenforced — the manager's printing grid is
+visible to anyone who loads `?variant=F`. Nothing is exposed in production, since the affordances
+are all behind the variant flag, but the gate has to go in before this ships.
 
 To remove: this file, `PROTOTYPE-NOTES.md`, `printing-prototype.svelte.ts`,
 `EntryManagerModal.svelte`, `InlineEntryControls.svelte`,

@@ -36,6 +36,7 @@
 	import { composeDeckImage } from '#lib/decks/deck-image.js';
 	import { deckToJson, deckToSimFormat } from '#lib/decks/export.js';
 	import { groupDeckEntries } from '#lib/decks/grouping.js';
+	import { deckPrinting } from '#lib/decks/printing.js';
 	import { rarityTint } from '#lib/decks/rarity-tone.js';
 	import {
 		colorComposition,
@@ -908,6 +909,7 @@
 							</p>
 							<ul class="grid grid-cols-5 gap-2">
 								{#each group.entries as entry (entry.card.slug)}
+									{@const printing = deckPrinting(entry.card, entry.printingId)}
 									<li class="relative overflow-hidden rounded-md">
 										<a
 											href={resolve('/cards/[slug]', { slug: entry.card.slug })}
@@ -915,8 +917,8 @@
 											onmouseenter={() => (focused = entry.card)}
 										>
 											<CardImage
-												printingId={entry.card.printings[0].id}
-												thumbhash={entry.card.printings[0].thumbhash}
+												printingId={printing.id}
+												thumbhash={printing.thumbhash}
 												color={entry.card.color}
 												alt={entry.card.name}
 												sizes="150px"
@@ -1025,6 +1027,7 @@
 						{:else}
 							<ul class="grid grid-cols-7 gap-2">
 								{#each deck.sideboard as entry (entry.card.slug)}
+									{@const printing = deckPrinting(entry.card, entry.printingId)}
 									<li class="relative overflow-hidden rounded-md">
 										<a
 											href={resolve('/cards/[slug]', { slug: entry.card.slug })}
@@ -1032,8 +1035,8 @@
 											onmouseenter={() => (focused = entry.card)}
 										>
 											<CardImage
-												printingId={entry.card.printings[0].id}
-												thumbhash={entry.card.printings[0].thumbhash}
+												printingId={printing.id}
+												thumbhash={printing.thumbhash}
 												color={entry.card.color}
 												alt={entry.card.name}
 												sizes="110px"

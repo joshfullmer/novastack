@@ -27,35 +27,37 @@
 		SIDEBOARD_SIZE
 	} from '#lib/decks/legality.js';
 	import { createDeckState } from '#lib/decks/deck-state.svelte.js';
+	import { deckPrinting } from '#lib/decks/printing.js';
 	import { groupDeckEntries, groupMatchesByType } from '#lib/decks/grouping.js';
 	import { SIZE_STATUS_TONE } from '#lib/decks/status-tone.js';
 	import { cookieState } from '#lib/cookie-state.svelte.js';
 	import { persistedIntState } from '#lib/persisted-state.svelte.js';
 
-	// PROTOTYPE — printing-choice variant round 2. Delete this block, every `PROTOTYPE` marker
-	// below, and the files it imports. See `PROTOTYPE-NOTES-2.md` in this directory.
+	// PROTOTYPE — variant F, iterating. `off` is still here to compare against production; D and E
+	// lost and are deleted. Delete this block, every `PROTOTYPE` marker below, and the files it
+	// imports. See `PROTOTYPE-NOTES-2.md` in this directory.
 	import PrototypeSwitcher from '#lib/components/PrototypeSwitcher.svelte';
 	import EntryManagerModal from './EntryManagerModal.svelte';
-	import InlineEntryControls from './InlineEntryControls.svelte';
-	import { printingPrototype as proto } from './printing-prototype.svelte.js';
 	import { currentUrl } from '#lib/filters/shallow.js';
 
-	const PROTO_VARIANTS = ['off', 'D', 'E', 'F'] as const;
+	const PROTO_VARIANTS = ['off', 'F'] as const;
 	const PROTO_NAMES = {
 		off: 'production — no picker',
-		D: 'manager modal, 360px rail',
-		E: 'wide rail, inline controls',
 		F: 'wide rail + manager modal'
 	};
 	const protoVariant = $derived(currentUrl().searchParams.get('variant') ?? 'off');
-	/** Round 1 died on the 360px rail, so width is now a variable of the round, not a constant. */
-	const protoWide = $derived(protoVariant === 'E' || protoVariant === 'F');
-	/** D and F answer "click an entry" with a manager; E answers it with controls in the row. */
-	const protoModal = $derived(protoVariant === 'D' || protoVariant === 'F');
-	/** The printing a tile should draw: the prototype's choice while a variant is up, else today's
-	 * behaviour (the Default Printing). */
-	const protoPrinting = (card: Card) =>
-		protoVariant === 'off' ? card.printings[0] : proto.printingFor(card);
+	/** Round 1 died on the 360px rail, so width is a variable of the round, not a constant. */
+	const protoWide = $derived(protoVariant === 'F');
+	/** Clicking an entry opens the manager rather than removing a copy. */
+	const protoModal = $derived(protoVariant === 'F');
+	/** Which entry the manager is open on. */
+	let managing = $state<string | null>(null);
+	/**
+	 * Tiles draw the deck's **chosen** printing now, not the stub's — `setPrinting` writes to deck
+	 * state, so a choice survives Save. `off` renders the same thing for the same reason: an entry
+	 * with no `printingId` resolves to the Default Printing either way.
+	 */
+	const protoPrinting = (card: Card) => deckPrinting(card, deck.printingIdOf(card));
 
 	const legendSlots = Array.from({ length: LEGEND_SLOTS }, (_, index) => index);
 
@@ -255,19 +257,54 @@
 	<title>{data.deckName} — novastack</title>
 </svelte:head>
 
-<!-- PROTOTYPE — one definition per surface, so List and Gallery can't drift while being judged. -->
-{#snippet protoRowControls(card: Card, pile: 'deck' | 'sideboard')}
-	{#if protoVariant === 'E'}
-		<span class="w-44 shrink-0"><InlineEntryControls {card} {deck} {pile} /></span>
-	{:else if protoModal}
+<!-- PROTOTYPE — one definition, used by both piles' List rows. -->
+{#snippet protoRowControls(card: Card)}
+	{#if protoModal}
 		<button
 			type="button"
-			onclick={() => proto.manage(card.slug)}
+			onclick={() => (managing = card.slug)}
 			aria-label="Manage {card.name}"
 			class="shrink-0 rounded-md border border-edge px-1.5 text-muted transition-colors
 				hover:border-neon-dim hover:text-neon">⋯</button
 		>
 	{/if}
+{/snippet}
+
+<!--
+	PROTOTYPE — the overlaid copy controls, bottom corners of a Gallery tile.
+	`−` left, `+` right: the two are mirrored so neither sits under the cursor after the other, and
+	the quantity badge keeps the centre. Only worth doing at F's tile size — at 80px these would
+	cover the art they're meant to leave visible.
+-->
+{#snippet protoTileSteppers(card: Card, pile: 'deck' | 'sideboard')}
+	{@const canAdd = pile === 'deck' ? deck.canAddCopy(card) : deck.canAddToSideboard(card)}
+	<span class="pointer-events-none absolute inset-x-1 bottom-1 flex items-end justify-between">
+		<button
+			type="button"
+			onclick={(event) => {
+				// The tile underneath opens the manager; a stepper click must not also do that.
+				event.stopPropagation();
+				if (pile === 'deck') removeCard(card);
+				else removeFromSideboard(card);
+			}}
+			aria-label="One fewer {card.name}"
+			class="pointer-events-auto size-6 rounded-md border border-edge bg-void/90 text-muted
+				backdrop-blur-sm transition-colors hover:border-card-red hover:text-card-red">−</button
+		>
+		<button
+			type="button"
+			onclick={(event) => {
+				event.stopPropagation();
+				if (pile === 'deck') deck.addCard(card);
+				else deck.addToSideboard(card);
+			}}
+			disabled={!canAdd}
+			aria-label="One more {card.name}"
+			class="pointer-events-auto size-6 rounded-md border border-edge bg-void/90 text-muted
+				backdrop-blur-sm transition-colors hover:border-neon-dim hover:text-neon
+				disabled:opacity-30">+</button
+		>
+	</span>
 {/snippet}
 
 {#snippet browsePanel()}
@@ -502,15 +539,23 @@
 		<div class="flex gap-2">
 			{#each legendSlots as slot (slot)}
 				{@const legend = deck.legends[slot]}
+				<!-- PROTOTYPE — a Legend click removed it outright, which is the same destructive
+				     default the Gallery tiles had, on the three cards a deck is *built* around.
+				     Under F it opens the manager instead; `off` keeps the old behaviour. -->
 				<button
 					type="button"
 					disabled={!legend}
-					onclick={() => legend && toggleLegend(legend)}
-					onmouseenter={(event) => legend && onRowEnter(legend, event)}
-					aria-label={legend ? `Remove ${legend.name}` : `Legend slot ${slot + 1}: empty`}
-					class="flex size-14 items-center justify-center overflow-hidden rounded-md border
-						border-edge disabled:cursor-default"
-					class:hover:border-card-red={!!legend}
+					onclick={() => legend && (protoModal ? (managing = legend.slug) : toggleLegend(legend))}
+					onmouseenter={(event) => legend && !protoWide && onRowEnter(legend, event)}
+					aria-label={legend
+						? protoModal
+							? `Manage ${legend.name}`
+							: `Remove ${legend.name}`
+						: `Legend slot ${slot + 1}: empty`}
+					class="flex items-center justify-center overflow-hidden rounded-md border border-edge
+						disabled:cursor-default {protoWide ? 'size-20' : 'size-14'}"
+					class:hover:border-card-red={!!legend && !protoModal}
+					class:hover:border-neon-dim={!!legend && protoModal}
 				>
 					{#if legend}
 						<CardImage
@@ -518,7 +563,7 @@
 							thumbhash={legend.printings[0].thumbhash}
 							color={legend.color}
 							alt={legend.name}
-							sizes="56px"
+							sizes={protoWide ? '80px' : '56px'}
 						/>
 					{:else}
 						<span class="text-muted">+</span>
@@ -596,7 +641,7 @@
 						{#if protoModal}
 							<button
 								type="button"
-								onclick={() => proto.manage(entry.card.slug)}
+								onclick={() => (managing = entry.card.slug)}
 								class="min-w-0 flex-1 truncate text-left text-sm hover:text-bright
 									{COLOR_TEXT[entry.card.color]}"
 							>
@@ -610,16 +655,14 @@
 							</span>
 						{/if}
 						<!-- PROTOTYPE -->
-						{@render protoRowControls(entry.card, 'deck')}
-						{#if protoVariant !== 'E'}
-							<button
-								type="button"
-								onclick={() => removeCard(entry.card)}
-								aria-label="Remove one {entry.card.name}"
-								class="shrink-0 rounded-md border border-edge px-1.5 text-muted
-									transition-colors hover:border-card-red hover:text-card-red">−</button
-							>
-						{/if}
+						{@render protoRowControls(entry.card)}
+						<button
+							type="button"
+							onclick={() => removeCard(entry.card)}
+							aria-label="Remove one {entry.card.name}"
+							class="shrink-0 rounded-md border border-edge px-1.5 text-muted
+								transition-colors hover:border-card-red hover:text-card-red">−</button
+						>
 					</li>
 				{/each}
 			{:else}
@@ -647,10 +690,8 @@
 							     destructive single click goes away. -->
 							<button
 								type="button"
-								onclick={() =>
-									protoModal ? proto.manage(entry.card.slug) : removeCard(entry.card)}
-								onmouseenter={(event) => onRowEnter(entry.card, event)}
-								disabled={protoVariant === 'E'}
+								onclick={() => (protoModal ? (managing = entry.card.slug) : removeCard(entry.card))}
+								onmouseenter={(event) => !protoWide && onRowEnter(entry.card, event)}
 								aria-label={protoModal
 									? `Manage ${entry.card.name}`
 									: `Remove one ${entry.card.name}`}
@@ -675,11 +716,9 @@
 									</span>
 								</span>
 							</button>
-							<!-- PROTOTYPE — E's controls live under the tile, where there's room for them. -->
-							{#if protoVariant === 'E'}
-								<div class="mt-1">
-									<InlineEntryControls card={entry.card} {deck} pile="deck" />
-								</div>
+							<!-- PROTOTYPE — copies without opening anything, overlaid on the art. -->
+							{#if protoWide}
+								{@render protoTileSteppers(entry.card, 'deck')}
 							{/if}
 						</li>
 					{/each}
@@ -732,7 +771,7 @@
 						{#if protoModal}
 							<button
 								type="button"
-								onclick={() => proto.manage(entry.card.slug)}
+								onclick={() => (managing = entry.card.slug)}
 								class="min-w-0 flex-1 truncate text-left text-sm hover:text-bright
 									{COLOR_TEXT[entry.card.color]}"
 							>
@@ -745,16 +784,14 @@
 									.name}
 							</span>
 						{/if}
-						{@render protoRowControls(entry.card, 'sideboard')}
-						{#if protoVariant !== 'E'}
-							<button
-								type="button"
-								onclick={() => removeFromSideboard(entry.card)}
-								aria-label="Remove one {entry.card.name} from the sideboard"
-								class="shrink-0 rounded-md border border-edge px-1.5 text-muted transition-colors
-									hover:border-card-red hover:text-card-red">−</button
-							>
-						{/if}
+						{@render protoRowControls(entry.card)}
+						<button
+							type="button"
+							onclick={() => removeFromSideboard(entry.card)}
+							aria-label="Remove one {entry.card.name} from the sideboard"
+							class="shrink-0 rounded-md border border-edge px-1.5 text-muted transition-colors
+								hover:border-card-red hover:text-card-red">−</button
+						>
 					</li>
 				{/each}
 			</ul>
@@ -770,9 +807,8 @@
 						<button
 							type="button"
 							onclick={() =>
-								protoModal ? proto.manage(entry.card.slug) : removeFromSideboard(entry.card)}
-							onmouseenter={(event) => onRowEnter(entry.card, event)}
-							disabled={protoVariant === 'E'}
+								protoModal ? (managing = entry.card.slug) : removeFromSideboard(entry.card)}
+							onmouseenter={(event) => !protoWide && onRowEnter(entry.card, event)}
 							aria-label={protoModal
 								? `Manage ${entry.card.name}`
 								: `Remove one ${entry.card.name} from the sideboard`}
@@ -802,6 +838,10 @@
 								</span>
 							{/if}
 						</button>
+						<!-- PROTOTYPE -->
+						{#if protoWide}
+							{@render protoTileSteppers(entry.card, 'sideboard')}
+						{/if}
 					</li>
 				{/each}
 			</ul>
@@ -913,6 +953,6 @@
 
 <!-- PROTOTYPE — the manager is mounted once here, not per row. -->
 {#if protoModal}
-	<EntryManagerModal {deck} />
+	<EntryManagerModal bind:slug={managing} {deck} />
 {/if}
 <PrototypeSwitcher variants={PROTO_VARIANTS} names={PROTO_NAMES} />

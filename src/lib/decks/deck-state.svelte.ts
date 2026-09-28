@@ -145,6 +145,36 @@ export function createDeckState(initial?: DeckVersionPayload) {
 		if (sideboard[index].quantity <= 0) sideboard.splice(index, 1);
 	}
 
+	/**
+	 * Picks which Printing this deck's copies of a Card use — `null` returns it to the Card's
+	 * Default Printing (`#lib/decks/printing.ts`).
+	 *
+	 * Applied to **both piles**, not the one the caller happened to be looking at. A Card in the
+	 * main deck and the sideboard is the same card in the same deck; two printings of it would be a
+	 * distinction the decklist can't express and nobody asked for. The property this keeps is the
+	 * one `combinedEntries` already assumes — see its note on dropping `printingId` when two piles
+	 * disagree, which can now only happen to data written before this existed.
+	 *
+	 * Deletes rather than assigns `undefined`: an absent key is what "following the default" means
+	 * on the wire, and `DeckEntrySchema`'s optional field doesn't treat the two as equal.
+	 */
+	function setPrinting(card: Card, printingId: string | null) {
+		for (const pile of [entries, sideboard]) {
+			const entry = pile.find((candidate) => candidate.card.slug === card.slug);
+			if (!entry) continue;
+			if (printingId === null) delete entry.printingId;
+			else entry.printingId = printingId;
+		}
+	}
+
+	/** The Printing id this deck has chosen for a Card, or `undefined` for the default. */
+	function printingIdOf(card: Card): string | undefined {
+		const entry =
+			entries.find((candidate) => candidate.card.slug === card.slug) ??
+			sideboard.find((candidate) => candidate.card.slug === card.slug);
+		return entry?.printingId;
+	}
+
 	function setLegend(slot: number, card: Card | null) {
 		const next = [...legends];
 		if (card === null) next.splice(slot, 1);
@@ -205,6 +235,8 @@ export function createDeckState(initial?: DeckVersionPayload) {
 		removeCard,
 		addToSideboard,
 		removeFromSideboard,
+		setPrinting,
+		printingIdOf,
 		setLegend,
 		toPayload
 	};
