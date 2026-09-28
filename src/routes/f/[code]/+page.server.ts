@@ -1,5 +1,6 @@
-import { error } from '@sveltejs/kit';
-import { getFolder, listDecksInFolder } from '#lib/server/db/folders.js';
+import { error, redirect } from '@sveltejs/kit';
+import { getFolderByRef, listDecksInFolder } from '#lib/server/db/folders.js';
+import { ensureFolderShareCode } from '#lib/server/db/share-codes.js';
 import { readViewPref } from '#lib/server/view-pref.js';
 import type { PageServerLoad } from './$types';
 
@@ -13,10 +14,16 @@ export const prerender = false;
  * only the folder's non-private decks — folder sharing never overrides a deck's own privacy. A
  * private folder 404s for a non-owner rather than 403ing, so a guessed id doesn't confirm the
  * folder exists.
+ *
+ * **The canonical URL for a folder**, reached by its share code; `/decks/folders/[id]` permanently
+ * redirects here for links shared before codes existed.
  */
 export const load: PageServerLoad = async (event) => {
-	const folder = await getFolder(event.locals.db, event.params.id);
+	const folder = await getFolderByRef(event.locals.db, event.params.code);
 	if (!folder) return error(404, 'Folder not found');
+
+	const shareCode = await ensureFolderShareCode(event.locals.db, folder);
+	if (event.params.code !== shareCode) return redirect(301, `/f/${shareCode}`);
 
 	const isOwner = event.locals.user?.id === folder.ownerId;
 	if (folder.visibility === 'private' && !isOwner) return error(404, 'Folder not found');
@@ -25,9 +32,10 @@ export const load: PageServerLoad = async (event) => {
 	const visibleRows = isOwner ? rows : rows.filter(({ deck }) => deck.visibility !== 'private');
 
 	return {
-		folder: { id: folder.id, name: folder.name, ownerName: folder.ownerName },
+		folder: { id: folder.id, shareCode, name: folder.name, ownerName: folder.ownerName },
 		decks: visibleRows.map(({ deck, version }) => ({
 			id: deck.id,
+			shareCode: deck.shareCode,
 			name: deck.name,
 			cardCount: version?.entries.reduce((sum, entry) => sum + entry.quantity, 0) ?? 0,
 			/** Separate from `cardCount` — 40–50 is the main deck's range, not the deck's total. */

@@ -763,7 +763,7 @@
 		     container, not by each item's own content, so it isn't exposed to that at all. -->
 		<div class="grid grid-cols-2 gap-2">
 			<a
-				href="/decks/{data.deckId}"
+				href="/d/{data.shareCode}"
 				class="rounded-md border border-edge px-3 py-1.5 text-center text-sm font-medium
 					text-body hover:border-card-red hover:text-card-red"
 			>

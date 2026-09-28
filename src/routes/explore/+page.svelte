@@ -28,6 +28,7 @@
 	import { cookieState } from '#lib/cookie-state.svelte.js';
 	import Meta from '#lib/components/Meta.svelte';
 	import { SIZE_STATUS_TONE } from '#lib/decks/status-tone.js';
+	import { deckPath } from '#lib/decks/links.js';
 
 	let { data } = $props();
 
@@ -189,7 +190,7 @@
 					<ul class="grid grid-cols-2 gap-4 lg:grid-cols-3">
 						{#each data.decks as deck (deck.id)}
 							<li class="overflow-hidden rounded-lg border border-edge bg-shell">
-								<a href="/decks/{deck.id}" class="flex gap-1 bg-void p-2">
+								<a href={deckPath(deck)} class="flex gap-1 bg-void p-2">
 									{#each legendSlots as slot (slot)}
 										{@const slug = deck.legendSlugs[slot]}
 										{@const legend = slug ? cardBySlug(slug) : null}
@@ -217,7 +218,7 @@
 									<div class="flex items-center gap-1.5">
 										{@render starterBadge(deck)}
 										<a
-											href="/decks/{deck.id}"
+											href={deckPath(deck)}
 											class="block truncate text-base font-semibold text-bright hover:text-neon"
 											>{deck.name}</a
 										>
@@ -277,7 +278,7 @@
 										{/if}
 									{/each}
 								</div>
-								<a href="/decks/{deck.id}" class="min-w-0 sm:flex-1">
+								<a href={deckPath(deck)} class="min-w-0 sm:flex-1">
 									<div class="flex items-center gap-1.5">
 										{@render starterBadge(deck)}
 										<p class="truncate text-lg font-semibold text-bright hover:text-neon">

@@ -85,7 +85,7 @@
 	const examples = ['owned:0', 'rarity>=epic', 'set:MS01-WNC', 'type:legend'];
 
 	async function copyLink() {
-		await navigator.clipboard.writeText(`${data.origin}/collection/wantlists/${data.wantlist.id}`);
+		await navigator.clipboard.writeText(`${data.origin}/l/${data.wantlist.shareCode}`);
 		copied = true;
 		setTimeout(() => (copied = false), 2000);
 	}

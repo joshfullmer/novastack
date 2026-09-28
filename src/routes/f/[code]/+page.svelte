@@ -13,6 +13,7 @@
 		MIN_DECK_SIZE
 	} from '#lib/decks/legality.js';
 	import { SIZE_STATUS_TONE } from '#lib/decks/status-tone.js';
+	import { deckPath } from '#lib/decks/links.js';
 	import { cookieState } from '#lib/cookie-state.svelte.js';
 
 	let { data } = $props();
@@ -28,7 +29,7 @@
 	title="{data.folder.name} — novastack"
 	description="A folder of Cyberpunk TCG decks by {data.folder.ownerName}."
 	origin={data.origin}
-	path="/decks/folders/{data.folder.id}"
+	path="/f/{data.folder.shareCode}"
 />
 
 <div>
@@ -64,7 +65,7 @@
 			<ul class="grid grid-cols-2 gap-4 lg:grid-cols-3">
 				{#each data.decks as deck (deck.id)}
 					<li class="overflow-hidden rounded-lg border border-edge bg-shell">
-						<a href="/decks/{deck.id}" class="flex gap-1 bg-void p-2">
+						<a href={deckPath(deck)} class="flex gap-1 bg-void p-2">
 							{#each legendSlots as slot (slot)}
 								{@const slug = deck.legendSlugs[slot]}
 								{@const legend = slug ? cardBySlug(slug) : null}
@@ -90,7 +91,7 @@
 						</a>
 						<div class="p-3">
 							<a
-								href="/decks/{deck.id}"
+								href={deckPath(deck)}
 								class="block truncate text-base font-semibold text-bright hover:text-neon"
 								>{deck.name}</a
 							>
@@ -135,7 +136,7 @@
 								{/if}
 							{/each}
 						</div>
-						<a href="/decks/{deck.id}" class="min-w-0 flex-1">
+						<a href={deckPath(deck)} class="min-w-0 flex-1">
 							<p class="truncate text-lg font-semibold text-bright hover:text-neon">
 								{deck.name}
 							</p>

@@ -16,6 +16,7 @@ import { error, fail, redirect } from '@sveltejs/kit';
 import * as v from 'valibot';
 import { dataset } from '#lib/cards/index.js';
 import { POCKETS_PER_PAGE } from '#lib/collection/binders.js';
+import { ensureListShareCode } from '#lib/server/db/share-codes.js';
 import {
 	clearPocket,
 	getBinder,
@@ -50,6 +51,8 @@ export const load: PageServerLoad = async (event) => {
 	return {
 		binder: {
 			id: binder.id,
+			/** What the Share button copies — see `/l/[code]/+server.ts`. */
+			shareCode: await ensureListShareCode(event.locals.db, binder),
 			name: binder.name,
 			visibility: binder.visibility,
 			ownerName: binder.ownerName

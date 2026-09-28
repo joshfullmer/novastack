@@ -2,10 +2,11 @@ import { error, fail, redirect } from '@sveltejs/kit';
 import * as v from 'valibot';
 import { DeckVersionPayloadSchema } from '#lib/decks/schema.js';
 import { diffVersions } from '#lib/decks/version-diff.js';
+import { deckPath } from '#lib/decks/links.js';
 import {
 	deleteDeck,
 	duplicateDeck,
-	getDeck,
+	getDeckByRef,
 	getDeckLikeInfo,
 	getLatestVersion,
 	likeDeck,
@@ -14,6 +15,7 @@ import {
 	setDeckVisibility,
 	unlikeDeck
 } from '#lib/server/db/decks.js';
+import { ensureDeckShareCode } from '#lib/server/db/share-codes.js';
 import { readViewPref } from '#lib/server/view-pref.js';
 import type { Actions, PageServerLoad } from './$types';
 
@@ -23,20 +25,26 @@ export const prerender = false;
 
 const VisibilitySchema = v.picklist(['public', 'unlisted', 'private']);
 
-/** Row-operation actions (§8) also reachable from this deck's own view, not just the `/decks`
- * list — owner-only regardless of the deck's own visibility. */
+/**
+ * Row-operation actions (§8) also reachable from this deck's own view, not just the `/decks`
+ * list — owner-only regardless of the deck's own visibility.
+ *
+ * Resolves `params.code` through `getDeckByRef`, so an action posted from a page someone reached
+ * by its old UUID URL still works. Returns the **UUID**: every write below is keyed on `decks.id`,
+ * and the share code is a URL concern that has no business reaching the data layer.
+ */
 async function requireOwner(event: {
 	locals: App.Locals;
-	params: { id: string };
+	params: { code: string };
 }): Promise<{ deckId: string; userId: string }> {
 	if (!event.locals.user) return redirect(302, '/auth/login');
 	const userId = event.locals.user.id;
 
-	const deck = await getDeck(event.locals.db, event.params.id);
+	const deck = await getDeckByRef(event.locals.db, event.params.code);
 	if (!deck) return error(404, 'Deck not found');
 	if (deck.ownerId !== userId) return error(403, 'Not your deck');
 
-	return { deckId: event.params.id, userId };
+	return { deckId: deck.id, userId };
 }
 
 /**
@@ -44,10 +52,19 @@ async function requireOwner(event: {
  * gated by visibility." Anyone may load a public/unlisted deck's view, signed in or not; a
  * private deck is owner-only. The editor at `/decks/[id]/edit` is the separate, stricter,
  * always-owner-only route.
+ *
+ * **The canonical URL for a deck**, reached by its share code. `/decks/[id]` (the UUID path every
+ * pre-2026-09 link points at) permanently redirects here.
  */
 export const load: PageServerLoad = async (event) => {
-	const deck = await getDeck(event.locals.db, event.params.id);
+	const deck = await getDeckByRef(event.locals.db, event.params.code);
 	if (!deck) return error(404, 'Deck not found');
+
+	// Someone hand-edited a UUID into `/d/...`, or a code-less row has just been healed. Send them
+	// to the one URL that is this deck's own, so what they copy out of the address bar is short and
+	// so the page has exactly one address for caching and `rel=canonical`.
+	const shareCode = await ensureDeckShareCode(event.locals.db, deck);
+	if (event.params.code !== shareCode) return redirect(301, `/d/${shareCode}`);
 
 	const isOwner = event.locals.user?.id === deck.ownerId;
 	if (deck.visibility === 'private' && !isOwner) return error(403, 'This deck is private');
@@ -86,6 +103,8 @@ export const load: PageServerLoad = async (event) => {
 
 	return {
 		deckId: deck.id,
+		/** The URL-facing id — share links, the canonical tag, and the editor link all use this. */
+		shareCode,
 		deckName: deck.name,
 		ownerName: deck.ownerName,
 		visibility: deck.visibility,
@@ -127,7 +146,7 @@ export const actions: Actions = {
 		const { deckId, userId } = await requireOwner(event);
 		const copy = await duplicateDeck(event.locals.db, deckId, userId);
 		if (!copy) return error(404, 'Deck not found');
-		return redirect(303, `/decks/${copy.id}`);
+		return redirect(303, deckPath(copy));
 	},
 
 	/**
@@ -142,14 +161,14 @@ export const actions: Actions = {
 	 */
 	copy: async (event) => {
 		if (!event.locals.user) return redirect(302, '/auth/login');
-		const deck = await getDeck(event.locals.db, event.params.id);
+		const deck = await getDeckByRef(event.locals.db, event.params.code);
 		if (!deck) return error(404, 'Deck not found');
 		if (deck.visibility === 'private' && deck.ownerId !== event.locals.user.id) {
 			return error(403, 'This deck is private');
 		}
 		const copy = await duplicateDeck(event.locals.db, deck.id, event.locals.user.id);
 		if (!copy) return error(404, 'Deck not found');
-		return redirect(303, `/decks/${copy.id}`);
+		return redirect(303, deckPath(copy));
 	},
 
 	delete: async (event) => {
@@ -161,7 +180,7 @@ export const actions: Actions = {
 	toggleLike: async (event) => {
 		if (!event.locals.user) return redirect(302, '/auth/login');
 
-		const deck = await getDeck(event.locals.db, event.params.id);
+		const deck = await getDeckByRef(event.locals.db, event.params.code);
 		if (!deck) return error(404, 'Deck not found');
 		if (deck.ownerId === event.locals.user.id) return error(403, "Can't like your own deck");
 

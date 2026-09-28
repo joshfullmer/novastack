@@ -5,7 +5,9 @@
  */
 import { and, asc, count, desc, eq, gte } from 'drizzle-orm';
 import type { DeckVersionPayload } from '#lib/decks/schema.js';
+import { normalizeShareCode } from '#lib/short-id.js';
 import type { getDb } from './index.js';
+import { freshDeckShareCode } from './share-codes.js';
 import { deckLikes, decks, deckVersions, user } from './schema.js';
 
 /** Genre convention (`docs/spec/deckbuilder.md` §9): "Hot" is a rolling window, not all-time. */
@@ -16,7 +18,10 @@ type Visibility = NonNullable<(typeof decks.$inferInsert)['visibility']>;
 type Db = ReturnType<typeof getDb>;
 
 export async function createDeck(db: Db, ownerId: string, name: string) {
-	const [deck] = await db.insert(decks).values({ ownerId, name }).returning();
+	const [deck] = await db
+		.insert(decks)
+		.values({ ownerId, name, shareCode: await freshDeckShareCode(db) })
+		.returning();
 	await db
 		.insert(deckVersions)
 		.values({ deckId: deck.id, entries: [], legends: [], sideboard: [] });
@@ -30,6 +35,26 @@ export async function getDeck(db: Db, deckId: string) {
 		.from(decks)
 		.innerJoin(user, eq(user.id, decks.ownerId))
 		.where(eq(decks.id, deckId));
+	return row ? { ...row.deck, ownerName: row.ownerName } : null;
+}
+
+/**
+ * A deck by **either** identifier — its share code (`k7m2qx9v4t`) or its UUID.
+ *
+ * One function rather than two call sites choosing, because both public routes have to accept
+ * both: `/d/[code]` is the canonical URL but must not 404 on a hand-edited UUID, and
+ * `/decks/[id]` has years of already-shared UUID links pointing at it and now also receives
+ * codes from the app's own internal links. The two shapes can't be confused — 10 characters of
+ * Crockford base32 versus 36 of hyphenated hex — so which column to query is decided locally,
+ * with no extra round trip (`normalizeShareCode` in `#lib/short-id.ts`).
+ */
+export async function getDeckByRef(db: Db, ref: string) {
+	const code = normalizeShareCode(ref);
+	const [row] = await db
+		.select({ deck: decks, ownerName: user.name })
+		.from(decks)
+		.innerJoin(user, eq(user.id, decks.ownerId))
+		.where(code === null ? eq(decks.id, ref) : eq(decks.shareCode, code));
 	return row ? { ...row.deck, ownerName: row.ownerName } : null;
 }
 
@@ -83,9 +108,15 @@ export async function duplicateDeck(db: Db, deckId: string, ownerId: string) {
 	if (!original) return null;
 
 	const version = await getLatestVersion(db, deckId);
+	// A copy is a new deck, so it gets its own code — never the original's, which would have two
+	// decks answering one link.
 	const [copy] = await db
 		.insert(decks)
-		.values({ ownerId, name: `${original.name} (copy)` })
+		.values({
+			ownerId,
+			name: `${original.name} (copy)`,
+			shareCode: await freshDeckShareCode(db)
+		})
 		.returning();
 	await db.insert(deckVersions).values({
 		deckId: copy.id,

@@ -12,6 +12,8 @@
  * they are a separate table.
  */
 import { and, asc, desc, eq, inArray, sql } from 'drizzle-orm';
+import { normalizeShareCode } from '#lib/short-id.js';
+import { freshListShareCode } from './share-codes.js';
 import type { WantlistSummary } from '#lib/collection/wantlists.js';
 import type { getDb } from './index.js';
 import { printingLists, user, wantlistEntries } from './schema.js';
@@ -72,13 +74,23 @@ export async function listWantlists(db: Db, ownerId: string): Promise<WantlistSu
 	});
 }
 
-/** Joined with the owner's display name, for the shared view's "by {name}" attribution. */
-export async function getWantlist(db: Db, id: string) {
+/**
+ * Joined with the owner's display name, for the shared view's "by {name}" attribution.
+ *
+ * Takes **either** identifier — share code or UUID. See `getBinder` and `getDeckByRef`.
+ */
+export async function getWantlist(db: Db, ref: string) {
+	const code = normalizeShareCode(ref);
 	const [row] = await db
 		.select({ list: printingLists, ownerName: user.name })
 		.from(printingLists)
 		.innerJoin(user, eq(user.id, printingLists.ownerId))
-		.where(and(eq(printingLists.id, id), eq(printingLists.kind, 'wantlist')));
+		.where(
+			and(
+				code === null ? eq(printingLists.id, ref) : eq(printingLists.shareCode, code),
+				eq(printingLists.kind, 'wantlist')
+			)
+		);
 
 	return row ? { ...row.list, ownerName: row.ownerName } : null;
 }
@@ -114,7 +126,13 @@ export async function createWantlist(db: Db, ownerId: string, name: string) {
 
 	const [wantlist] = await db
 		.insert(printingLists)
-		.values({ ownerId, kind: 'wantlist', name, isDefault: existing === undefined })
+		.values({
+			ownerId,
+			kind: 'wantlist',
+			name,
+			isDefault: existing === undefined,
+			shareCode: await freshListShareCode(db)
+		})
 		.returning();
 	return wantlist;
 }

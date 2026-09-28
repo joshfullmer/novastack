@@ -27,6 +27,7 @@
 		MIN_DECK_SIZE
 	} from '#lib/decks/legality.js';
 	import { SIZE_STATUS_TONE } from '#lib/decks/status-tone.js';
+	import { deckPath, folderPath } from '#lib/decks/links.js';
 	import { cookieState } from '#lib/cookie-state.svelte.js';
 
 	let { data } = $props();
@@ -502,7 +503,7 @@
 						type="button"
 						title="Copy share link"
 						onclick={() =>
-							navigator.clipboard.writeText(`${data.origin}/decks/folders/${currentFolder.id}`)}
+							navigator.clipboard.writeText(`${data.origin}${folderPath(currentFolder)}`)}
 						class="text-xs text-neon hover:underline"
 					>
 						🔗 Copy share link
@@ -533,7 +534,7 @@
 						     ancestor would clip it no matter how the dropdown itself is positioned. This is
 						     the only part that actually needs clipping: the art strip's square corners
 						     against the card's rounded ones. -->
-						<a href="/decks/{deck.id}" class="flex gap-1 overflow-hidden rounded-t-lg bg-void p-2">
+						<a href={deckPath(deck)} class="flex gap-1 overflow-hidden rounded-t-lg bg-void p-2">
 							{#each legendSlots as slot (slot)}
 								{@const slug = deck.legendSlugs[slot]}
 								{@const legend = slug ? cardBySlug(slug) : null}
@@ -562,7 +563,7 @@
 								{@render renameForm(deck, 'text-base font-semibold')}
 							{:else}
 								<a
-									href="/decks/{deck.id}"
+									href={deckPath(deck)}
 									class="block truncate text-base font-semibold text-bright hover:text-neon"
 									>{deck.name}</a
 								>
@@ -672,7 +673,7 @@
 						{#if renamingId === deck.id}
 							{@render renameForm(deck, 'text-lg font-semibold')}
 						{:else}
-							<a href="/decks/{deck.id}" class="min-w-0 sm:flex-1">
+							<a href={deckPath(deck)} class="min-w-0 sm:flex-1">
 								<p class="truncate text-lg font-semibold text-bright hover:text-neon">
 									{deck.name}
 								</p>

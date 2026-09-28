@@ -3,8 +3,10 @@
  * their decks, independent of deck visibility. See `schema.ts` for the shape.
  */
 import { eq } from 'drizzle-orm';
+import { normalizeShareCode } from '#lib/short-id.js';
 import { getLatestVersion } from './decks.js';
 import type { getDb } from './index.js';
+import { freshFolderShareCode } from './share-codes.js';
 import { deckFolders, decks, user } from './schema.js';
 
 type Db = ReturnType<typeof getDb>;
@@ -23,8 +25,22 @@ export async function getFolder(db: Db, folderId: string) {
 	return row ? { ...row.folder, ownerName: row.ownerName } : null;
 }
 
+/** A folder by **either** identifier — share code or UUID. See `getDeckByRef` for the reasoning. */
+export async function getFolderByRef(db: Db, ref: string) {
+	const code = normalizeShareCode(ref);
+	const [row] = await db
+		.select({ folder: deckFolders, ownerName: user.name })
+		.from(deckFolders)
+		.innerJoin(user, eq(user.id, deckFolders.ownerId))
+		.where(code === null ? eq(deckFolders.id, ref) : eq(deckFolders.shareCode, code));
+	return row ? { ...row.folder, ownerName: row.ownerName } : null;
+}
+
 export async function createFolder(db: Db, ownerId: string, name: string) {
-	const [folder] = await db.insert(deckFolders).values({ ownerId, name }).returning();
+	const [folder] = await db
+		.insert(deckFolders)
+		.values({ ownerId, name, shareCode: await freshFolderShareCode(db) })
+		.returning();
 	return folder;
 }
 
@@ -54,5 +70,7 @@ export async function moveDeckToFolder(db: Db, deckId: string, folderId: string 
  * single deck's own `load`, rather than parameterizing the query. */
 export async function listDecksInFolder(db: Db, folderId: string) {
 	const rows = await db.select().from(decks).where(eq(decks.folderId, folderId));
-	return Promise.all(rows.map(async (deck) => ({ deck, version: await getLatestVersion(db, deck.id) })));
+	return Promise.all(
+		rows.map(async (deck) => ({ deck, version: await getLatestVersion(db, deck.id) }))
+	);
 }

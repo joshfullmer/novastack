@@ -18,7 +18,23 @@ import { svelteKitHandler } from 'better-auth/svelte-kit';
  * cost a debugging session on `/api/collection`, which 401'd for signed-in users because
  * `/api/auth` didn't match it.
  */
-const DYNAMIC_PREFIXES = ['/collection', '/decks', '/explore', '/auth', '/account', '/api'];
+/**
+ * `/d/`, `/f/` and `/l/` are the short share paths (`#lib/short-id.ts`) — the canonical deck and
+ * folder views and the printing-list resolver. Listed **with their trailing slash** so they match
+ * only the share routes and not, say, a future `/downloads`: every other entry here is a whole
+ * top-level segment, and these three are one character long.
+ */
+const DYNAMIC_PREFIXES = [
+	'/collection',
+	'/decks',
+	'/explore',
+	'/auth',
+	'/account',
+	'/api',
+	'/d/',
+	'/f/',
+	'/l/'
+];
 
 /**
  * A Discord sign-up lands with no `username` (see

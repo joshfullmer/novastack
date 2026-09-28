@@ -12,6 +12,8 @@
  * partial failure here.
  */
 import { and, asc, eq, inArray, or, sql } from 'drizzle-orm';
+import { normalizeShareCode } from '#lib/short-id.js';
+import { freshListShareCode } from './share-codes.js';
 import { POCKETS_PER_PAGE, type BinderSummary } from '#lib/collection/binders.js';
 import type { getDb } from './index.js';
 import { binderPockets, printingLists, user } from './schema.js';
@@ -71,13 +73,24 @@ export async function listBinders(db: Db, ownerId: string): Promise<BinderSummar
 	});
 }
 
-/** Joined with the owner's display name, for the shared view's "by {name}" attribution. */
-export async function getBinder(db: Db, id: string) {
+/**
+ * Joined with the owner's display name, for the shared view's "by {name}" attribution.
+ *
+ * Takes **either** identifier — share code or UUID — so `/l/{code}` can hand the code straight
+ * through and every link shared before codes existed keeps working. See `getDeckByRef`.
+ */
+export async function getBinder(db: Db, ref: string) {
+	const code = normalizeShareCode(ref);
 	const [row] = await db
 		.select({ list: printingLists, ownerName: user.name })
 		.from(printingLists)
 		.innerJoin(user, eq(user.id, printingLists.ownerId))
-		.where(and(eq(printingLists.id, id), eq(printingLists.kind, 'binder')));
+		.where(
+			and(
+				code === null ? eq(printingLists.id, ref) : eq(printingLists.shareCode, code),
+				eq(printingLists.kind, 'binder')
+			)
+		);
 
 	return row ? { ...row.list, ownerName: row.ownerName } : null;
 }
@@ -119,7 +132,7 @@ export async function getBinderPages(db: Db, listId: string): Promise<(string | 
 export async function createBinder(db: Db, ownerId: string, name: string) {
 	const [binder] = await db
 		.insert(printingLists)
-		.values({ ownerId, kind: 'binder', name })
+		.values({ ownerId, kind: 'binder', name, shareCode: await freshListShareCode(db) })
 		.returning();
 	return binder;
 }

@@ -75,6 +75,7 @@ export const load: PageServerLoad = async (event) => {
 	return {
 		decks: owned.map(({ deck, version }) => ({
 			id: deck.id,
+			shareCode: deck.shareCode,
 			name: deck.name,
 			visibility: deck.visibility,
 			folderId: deck.folderId,
@@ -87,6 +88,7 @@ export const load: PageServerLoad = async (event) => {
 		})),
 		folders: folders.map((folder) => ({
 			id: folder.id,
+			shareCode: folder.shareCode,
 			name: folder.name,
 			visibility: folder.visibility
 		})),

@@ -9,6 +9,7 @@
 import { error, fail, redirect } from '@sveltejs/kit';
 import * as v from 'valibot';
 import { dataset } from '#lib/cards/index.js';
+import { ensureListShareCode } from '#lib/server/db/share-codes.js';
 import {
 	getWantlist,
 	getWantlistEntries,
@@ -38,6 +39,8 @@ export const load: PageServerLoad = async (event) => {
 	return {
 		wantlist: {
 			id: wantlist.id,
+			/** What the Share button copies — see `/l/[code]/+server.ts`. */
+			shareCode: await ensureListShareCode(event.locals.db, wantlist),
 			name: wantlist.name,
 			visibility: wantlist.visibility,
 			ownerName: wantlist.ownerName

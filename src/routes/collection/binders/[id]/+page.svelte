@@ -384,7 +384,7 @@
 	// ---------------------------------------------------------------------------------------------
 
 	async function copyLink() {
-		await navigator.clipboard.writeText(`${data.origin}/collection/binders/${data.binder.id}`);
+		await navigator.clipboard.writeText(`${data.origin}/l/${data.binder.shareCode}`);
 		copied = true;
 		setTimeout(() => (copied = false), 2000);
 	}

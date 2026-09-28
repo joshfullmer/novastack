@@ -14,7 +14,8 @@ import {
 	integer,
 	primaryKey,
 	sqliteTable,
-	text
+	text,
+	uniqueIndex
 } from 'drizzle-orm/sqlite-core';
 import type { DeckEntryPayload } from '#lib/decks/schema.js';
 import { user } from './auth.schema.js';
@@ -44,9 +45,14 @@ export const deckFolders = sqliteTable(
 		parentFolderId: text('parent_folder_id').references((): AnySQLiteColumn => deckFolders.id, {
 			onDelete: 'set null'
 		}),
+		/** See `decks.shareCode`. */
+		shareCode: text('share_code'),
 		createdAt: integer('created_at', { mode: 'timestamp_ms' }).notNull().default(now)
 	},
-	(table) => [index('deck_folders_owner_idx').on(table.ownerId)]
+	(table) => [
+		index('deck_folders_owner_idx').on(table.ownerId),
+		uniqueIndex('deck_folders_share_code_idx').on(table.shareCode)
+	]
 );
 
 export const decks = sqliteTable(
@@ -72,11 +78,31 @@ export const decks = sqliteTable(
 		/** Zero-or-one — a deck belongs to at most one folder, mirroring common folder (not tag)
 		 * conventions. `set null` on folder delete: deleting a folder un-groups its decks rather
 		 * than deleting them. */
-		folderId: text('folder_id').references(() => deckFolders.id, { onDelete: 'set null' })
+		folderId: text('folder_id').references(() => deckFolders.id, { onDelete: 'set null' }),
+		/**
+		 * The public identifier in a share URL — `/d/k7m2qx9v4t` (`#lib/short-id.ts`).
+		 *
+		 * A second identifier rather than a replacement for `id`, because `id` was already a UUID
+		 * with real users and real shared links behind it: SQLite cannot alter a primary key in
+		 * place, so swapping it would mean rebuilding this table and rewriting `deck_versions`,
+		 * `deck_likes` and `decks.folder_id` against live data — and every link already pasted
+		 * somewhere would die. This column is an `ALTER TABLE ADD COLUMN` instead, and `/decks/{uuid}`
+		 * keeps resolving forever.
+		 *
+		 * **Nullable on purpose, permanently.** The unique index is what carries the invariant;
+		 * `NOT NULL` would buy nothing and cost a second table rewrite. A null means "not yet
+		 * assigned", which `ensureShareCode` fills on first read — so a row written by an older
+		 * Worker mid-deploy, or missed by the backfill, is never unshareable, just briefly codeless.
+		 */
+		shareCode: text('share_code')
 	},
 	(table) => [
 		index('decks_owner_idx').on(table.ownerId),
-		index('decks_folder_idx').on(table.folderId)
+		index('decks_folder_idx').on(table.folderId),
+		// Unique rather than plain: this is an identifier, and a duplicate would silently serve one
+		// person's deck on another's link. SQLite permits many NULLs in a unique index, which is what
+		// makes a staged backfill possible at all.
+		uniqueIndex('decks_share_code_idx').on(table.shareCode)
 	]
 );
 
@@ -199,9 +225,15 @@ export const printingLists = sqliteTable(
 		 * — SQLite can't express "at most one true per group" as a constraint.
 		 */
 		isDefault: integer('is_default', { mode: 'boolean' }).notNull().default(false),
+		/** See `decks.shareCode`. Shared across both kinds — a Binder and a Wantlist are shared the
+		 * same way, and the short link (`/l/{code}`) resolves by looking at `kind`. */
+		shareCode: text('share_code'),
 		createdAt: integer('created_at', { mode: 'timestamp_ms' }).notNull().default(now)
 	},
-	(table) => [index('printing_lists_owner_kind_idx').on(table.ownerId, table.kind)]
+	(table) => [
+		index('printing_lists_owner_kind_idx').on(table.ownerId, table.kind),
+		uniqueIndex('printing_lists_share_code_idx').on(table.shareCode)
+	]
 );
 
 /**
@@ -260,6 +292,35 @@ export const wantlistEntries = sqliteTable(
 	// Primary key only: it already indexes `list_id` leftmost, which is what every query filters on.
 	(table) => [primaryKey({ columns: [table.listId, table.printingId] })]
 );
+
+/**
+ * What a user has **paid for** — the feature keys in `#lib/entitlements.ts`.
+ *
+ * JSON rather than a row per grant, following `collecting_goals` rather than `collection_items`,
+ * and for the same reason: it is read whole on the requests that gate on it, written whole when a
+ * grant changes, and never queried by element. There will be a handful of keys, ever.
+ *
+ * **Absence is the free tier.** No row means no grants, so every existing user is correct without a
+ * backfill, and nothing has to write a row for the overwhelming majority who never pay. That also
+ * makes a revoke a delete, which leaves no "used to be a subscriber" residue to reason about.
+ *
+ * Keys, not a plan name: see `#lib/entitlements.ts` for why the billing artifact is deliberately
+ * kept out of the database. Validated leniently at the boundary by `parseFeatures` — an unknown key
+ * is ignored rather than fatal, because a renamed feature must not 500 the request of whoever was
+ * grandfathered into it.
+ *
+ * No admin UI writes this yet, the same way `decks.isStarterDeck` has none: today a grant is a
+ * one-line `wrangler d1 execute`, and the Stripe webhook that eventually replaces that writes this
+ * one row.
+ */
+export const userEntitlements = sqliteTable('user_entitlements', {
+	userId: text('user_id')
+		.primaryKey()
+		.references(() => user.id, { onDelete: 'cascade' }),
+	/** Feature keys — see `FEATURES` in `#lib/entitlements.ts`. */
+	features: text('features', { mode: 'json' }).notNull().$type<string[]>(),
+	updatedAt: integer('updated_at', { mode: 'timestamp_ms' }).notNull().default(now)
+});
 
 /** One row per (deck, user) — enforced by the primary key, not just an application check. */
 export const deckLikes = sqliteTable(

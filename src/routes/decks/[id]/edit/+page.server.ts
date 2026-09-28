@@ -1,7 +1,9 @@
 import { error, fail, redirect } from '@sveltejs/kit';
 import * as v from 'valibot';
+import { deckPath } from '#lib/decks/links.js';
 import { DeckVersionPayloadSchema } from '#lib/decks/schema.js';
 import { getDeck, getLatestVersion, renameDeck, saveDeckVersion } from '#lib/server/db/decks.js';
+import { ensureDeckShareCode } from '#lib/server/db/share-codes.js';
 import { readViewPref } from '#lib/server/view-pref.js';
 import type { Actions, PageServerLoad } from './$types';
 
@@ -31,6 +33,9 @@ export const load: PageServerLoad = async (event) => {
 
 	return {
 		deckId: deck.id,
+		/** So "Discard changes" and the post-save redirect point straight at the canonical short
+		 * URL instead of bouncing through `/decks/[id]`'s 301. */
+		shareCode: await ensureDeckShareCode(event.locals.db, deck),
 		deckName: deck.name,
 		payload,
 		// Shared with the read-only view (`/decks/[id]`) — "how I like browsing a deck's cards"
@@ -65,6 +70,6 @@ export const actions: Actions = {
 		}
 
 		await saveDeckVersion(event.locals.db, deck.id, payload);
-		return redirect(303, `/decks/${deck.id}`);
+		return redirect(303, deckPath(deck));
 	}
 };

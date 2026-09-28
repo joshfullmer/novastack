@@ -61,6 +61,7 @@ export const load: PageServerLoad = async (event) => {
 	const decks = rows
 		.map(({ deck, ownerName, version, likeCount, hotCount }) => ({
 			id: deck.id,
+			shareCode: deck.shareCode,
 			name: deck.name,
 			ownerId: deck.ownerId,
 			ownerName,

@@ -288,7 +288,7 @@
 	title="{data.deckName} — novastack"
 	description="A {deck.totalCards}-card Cyberpunk TCG deck by {data.ownerName}."
 	origin={data.origin}
-	path="/decks/{data.deckId}"
+	path="/d/{data.shareCode}"
 />
 
 <!--
