@@ -162,8 +162,19 @@
 	function onSource(next: string) {
 		// Debounced and history-replacing, matching `/cards`: one entry per pause in typing rather
 		// than one per keystroke. The pills push instead, so Back undoes a filter.
+		//
+		// **`shallow: true` is load-bearing, not an optimisation.** SvelteKit resets focus to
+		// `<body>` after every real navigation (its own a11y behaviour), so with a plain `goto` this
+		// box lost focus 200ms after each pause in typing — mid-query, with the autocomplete popup
+		// torn down under the caret. Shallow routing doesn't touch focus, and nothing here wants a
+		// real navigation anyway: `?q=` is read back out of `currentUrl()` and applied client-side,
+		// and this route's load never looks at `searchParams` — the same reasoning `openDetail` and
+		// `closeDetail` above are already written up with.
 		clearTimeout(queryTimer);
-		queryTimer = setTimeout(() => void goto(urlWith({ q: next }), { replace: true }), 200);
+		queryTimer = setTimeout(
+			() => void goto(urlWith({ q: next }), { shallow: true, replace: true }),
+			200
+		);
 	}
 
 	/**
