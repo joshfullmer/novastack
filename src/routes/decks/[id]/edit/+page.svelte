@@ -32,6 +32,29 @@
 	import { cookieState } from '#lib/cookie-state.svelte.js';
 	import { persistedIntState } from '#lib/persisted-state.svelte.js';
 
+	// PROTOTYPE — printing-choice variant round. Delete this block, the four `PROTOTYPE` markers
+	// below, and the files it imports. See `PROTOTYPE-NOTES.md` in this directory.
+	import PrototypeSwitcher from '#lib/components/PrototypeSwitcher.svelte';
+	import PrintingAffordanceA from './PrintingAffordanceA.svelte';
+	import PrintingAffordanceB from './PrintingAffordanceB.svelte';
+	import PrintingAffordanceC from './PrintingAffordanceC.svelte';
+	import PrintingPaneB from './PrintingPaneB.svelte';
+	import { printingPrototype as proto } from './printing-prototype.svelte.js';
+	import { currentUrl } from '#lib/filters/shallow.js';
+
+	const PROTO_VARIANTS = ['off', 'A', 'B', 'C'] as const;
+	const PROTO_NAMES = {
+		off: 'production — no picker',
+		A: 'inline popover grid',
+		B: 'docked pane, selection-driven',
+		C: 'cycle in place'
+	};
+	const protoVariant = $derived(currentUrl().searchParams.get('variant') ?? 'off');
+	/** The printing a tile should draw: the prototype's choice while a variant is up, else today's
+	 * behaviour (the Default Printing). */
+	const protoPrinting = (card: Card) =>
+		protoVariant === 'off' ? card.printings[0] : proto.printingFor(card);
+
 	const legendSlots = Array.from({ length: LEGEND_SLOTS }, (_, index) => index);
 
 	/**
@@ -229,6 +252,18 @@
 <svelte:head>
 	<title>{data.deckName} — novastack</title>
 </svelte:head>
+
+<!-- PROTOTYPE — one definition, called from both the List row and the Gallery tile, so the two
+     surfaces can't drift while the round is being judged. -->
+{#snippet printingAffordance(card: Card)}
+	{#if protoVariant === 'A'}
+		<PrintingAffordanceA {card} />
+	{:else if protoVariant === 'B'}
+		<PrintingAffordanceB {card} />
+	{:else if protoVariant === 'C'}
+		<PrintingAffordanceC {card} />
+	{/if}
+{/snippet}
 
 {#snippet browsePanel()}
 	<!-- `items-baseline`, not `items-center` — the tabs carry a `pb-2`/`-mb-px` underline trick the
@@ -554,6 +589,8 @@
 						<span class="min-w-0 flex-1 truncate text-sm {COLOR_TEXT[entry.card.color]}">
 							<span class="mr-1.5 text-muted tabular-nums">{entry.quantity}×</span>{entry.card.name}
 						</span>
+						<!-- PROTOTYPE -->
+						{@render printingAffordance(entry.card)}
 						<button
 							type="button"
 							onclick={() => removeCard(entry.card)}
@@ -579,7 +616,15 @@
 				</p>
 				<ul class="grid grid-cols-4 gap-2">
 					{#each group.entries as entry (entry.card.slug)}
+						{@const printing = protoPrinting(entry.card)}
 						<li class="relative">
+							<!-- PROTOTYPE — outside the remove button: nesting one interactive control in
+							     another is invalid, and clicking the picker must not also remove a copy. -->
+							{#if protoVariant !== 'off'}
+								<span class="absolute top-1 right-1 z-10 flex">
+									{@render printingAffordance(entry.card)}
+								</span>
+							{/if}
 							<button
 								type="button"
 								onclick={() => removeCard(entry.card)}
@@ -588,8 +633,8 @@
 								class="block w-full overflow-hidden rounded-md"
 							>
 								<CardImage
-									printingId={entry.card.printings[0].id}
-									thumbhash={entry.card.printings[0].thumbhash}
+									printingId={printing.id}
+									thumbhash={printing.thumbhash}
 									color={entry.card.color}
 									alt={entry.card.name}
 									sizes="80px"
@@ -804,3 +849,9 @@
 </div>
 
 <CardHoverPreview {hovered} />
+
+<!-- PROTOTYPE — variant B's pane is mounted once here, not per row. -->
+{#if protoVariant === 'B'}
+	<PrintingPaneB />
+{/if}
+<PrototypeSwitcher variants={PROTO_VARIANTS} names={PROTO_NAMES} />
