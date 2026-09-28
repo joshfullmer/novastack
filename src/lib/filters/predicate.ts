@@ -29,17 +29,19 @@ import { admits, type ColorBudget } from './budget.js';
 export type NumericField = 'cost' | 'power' | 'ram';
 
 /**
- * Everything the `numeric` leaf can bound: the three card facets above, plus **Owned Count**.
+ * Everything the `numeric` leaf can bound: the three card facets above, plus the two scopes
+ * ownership is countable at — **Owned Count** rolled up to the Card (`owned`) and the copies of
+ * *this* Printing (`copies`). `numericValue` is where the two part ways.
  *
- * Deliberately a wider type rather than a second leaf kind. Ownership needs exactly what those
+ * Deliberately a wider type rather than separate leaf kinds. Ownership needs exactly what those
  * three already have — inclusive bounds, chained intervals, and operator inversion under
  * negation — and `compileNumeric` / `compileInvertedNumericBound` implement all of it. A parallel
  * `owned` leaf would have meant a second copy of that desugaring to keep in step.
  *
  * `NumericField` stays narrow on purpose: the chip controls and `Dataset.domains` are about card
- * facets with a known range, and Owned Count is neither.
+ * facets with a known range, and neither ownership scope is either.
  */
-export type CountField = NumericField | 'owned';
+export type CountField = NumericField | 'owned' | 'copies';
 
 /**
  * How many copies of a Printing the viewer owns. A function rather than a map so the engine never
@@ -111,14 +113,20 @@ export type Match = { card: Card; printing: Printing };
  * existential, not universal.
  *
  * Rolled up, the questions people actually ask work: `owned:0` is "Cards I don't have" and
- * `owned<4` is "Cards I'm short of a playset of". Printing-level ownership stays reachable where
- * it belongs — the per-printing checklist on `/sets/[id]`.
+ * `owned<4` is "Cards I'm short of a playset of".
  *
- * Never null: zero is a real answer, so no bound has to reason about a null bucket the way Cost
- * and Power do.
+ * **`copies` is the printing-scoped half**, counting only the `(card, printing)` pair under test.
+ * The existential blowup above is a property of `evaluate`, not of the scope itself: a surface
+ * that tests one row *per printing* — the `/collection` grid, the `/sets/[id]` checklist — asks a
+ * sharp question with it, and `copies:0` there means "this art, which I don't have", which is
+ * exactly what a checklist is for. On a Card grid it degenerates, and the spec says so (§3).
+ *
+ * Neither is ever null: zero is a real answer, so no bound has to reason about a null bucket the
+ * way Cost and Power do.
  */
 function numericValue(
 	card: Card,
+	printing: Printing,
 	field: CountField,
 	ownedOf: OwnedLookup
 ): number | null {
@@ -131,15 +139,18 @@ function numericValue(
 			return card.ramRequired;
 		case 'owned':
 			return card.printings.reduce((total, printing) => total + ownedOf(printing.id), 0);
+		case 'copies':
+			return ownedOf(printing.id);
 	}
 }
 
 function testNumeric(
 	card: Card,
+	printing: Printing,
 	predicate: Extract<Predicate, { kind: 'numeric' }>,
 	ownedOf: OwnedLookup
 ): boolean {
-	const value = numericValue(card, predicate.field, ownedOf);
+	const value = numericValue(card, printing, predicate.field, ownedOf);
 
 	// A null is a distinct bucket and never zero, so no bound can reach it. Without this,
 	// `power ≥ 0` would silently drop 43 cards while looking like it selected everything.
@@ -236,7 +247,7 @@ export function test(
 		case 'tournamentLegal':
 			return card.tournamentLegal === predicate.value;
 		case 'numeric':
-			return testNumeric(card, predicate, ownedOf);
+			return testNumeric(card, printing, predicate, ownedOf);
 		case 'text':
 			return testText(dataset, card, predicate);
 		case 'ramBudget':
@@ -279,7 +290,7 @@ export function evaluate(
 }
 
 /**
- * Does this tree bound Owned Count anywhere?
+ * Does this tree bound ownership anywhere, at either scope?
  *
  * Lets a page decide whether it needs the viewer's Collection at all — and lets a query asking
  * about ownership count as opting into the ownership UI, which is a clearer statement of intent
@@ -294,7 +305,7 @@ export function mentionsOwned(predicate: Predicate): boolean {
 		case 'not':
 			return mentionsOwned(predicate.child);
 		case 'numeric':
-			return predicate.field === 'owned';
+			return predicate.field === 'owned' || predicate.field === 'copies';
 		default:
 			return false;
 	}

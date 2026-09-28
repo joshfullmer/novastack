@@ -5,7 +5,7 @@
 import { describe, expect, it } from 'vitest';
 import { createDataset } from '#lib/cards/dataset.js';
 import { makeCard, makePrinting, makeSnapshot } from '#lib/cards/fixtures.js';
-import { evaluate, type Predicate } from '#lib/filters/predicate.js';
+import { evaluate, test as testPredicate, type Predicate } from '#lib/filters/predicate.js';
 import { readChipView } from '#lib/filters/chips.js';
 import { compileQuery } from './compile.ts';
 import { parse } from './parser.ts';
@@ -311,6 +311,67 @@ describe("owned — the viewer's collection", () => {
 
 	it('is reachable by its alias', () => {
 		expect(runOwned('have>=4').slugs).toEqual(['playset']);
+	});
+
+	/**
+	 * `copies` — the same count, per Printing. Asserted over **printing rows** rather than through
+	 * `evaluate`, because that is the shape of the surfaces it exists for (`/collection`'s grid,
+	 * the `/sets/[id]` checklist): one row per printing, `test` per row. The last case here pins
+	 * the degeneracy that makes it the wrong field for a Card grid.
+	 */
+	describe('copies — the same count, per printing', () => {
+		function rowIds(source: string): string[] {
+			const { node } = parse(source);
+			const { predicate } = compileQuery(node, { dataset: ownedDataset });
+			return ownedDataset.cards
+				.flatMap((card) => card.printings.map((printing) => ({ card, printing })))
+				.filter((row) => testPredicate(predicate, ownedDataset, row.card, row.printing, ownedOf))
+				.map((row) => row.printing.id);
+		}
+
+		it('counts the printing under test, with no roll-up to the Card', () => {
+			// The bug this field was added for: `two-printings` holds its 2 copies in `p-beta`, so the
+			// `p-retail` row is genuinely missing and `owned:0` — rolled up — could never say so.
+			expect(rowIds('copies:0')).toEqual(['p-unowned', 'p-retail']);
+			expect(rowIds('copies:2')).toEqual(['p-beta']);
+			expect(rowIds('owned:0')).toEqual(['p-unowned']);
+		});
+
+		it('bounds, chains and sugars exactly like owned:', () => {
+			expect(rowIds('copies>=4')).toEqual(['p-playset']);
+			expect(rowIds('1<=copies<=2')).toEqual(['p-single', 'p-beta']);
+			expect(rowIds('copies:yes')).toEqual(['p-playset', 'p-single', 'p-beta']);
+			expect(rowIds('copies:no')).toEqual(['p-unowned', 'p-retail']);
+		});
+
+		it('shares the whole ownership rule set — same sugar shape, same refusals, same negation', () => {
+			expect(runOwned('copies:yes').predicate).toEqual({
+				kind: 'numeric',
+				field: 'copies',
+				min: 1,
+				max: null,
+				includeNull: false
+			});
+			expect(runOwned('copies>yes').warnings.length).toBeGreaterThan(0);
+			expect(runOwned('copies:none').warnings.length).toBeGreaterThan(0);
+			expect(runOwned('copies:has').warnings.length).toBeGreaterThan(0);
+			expect(rowIds('-copies:yes')).toEqual(['p-unowned', 'p-retail']);
+			expect(rowIds('-copies>=4')).toEqual(['p-single', 'p-unowned', 'p-retail', 'p-beta']);
+		});
+
+		it('composes with a printing-level field on the same row', () => {
+			// Unlike `owned>=1 set:SD01-HEI` ("a card I own, printed in that set"), this is "the
+			// SD01-HEI printing itself, which I own" — the question a checklist asks.
+			expect(rowIds('copies>=1 set:SD01-HEI')).toEqual(['p-beta']);
+			expect(rowIds('copies:0 set:MS01-WNC')).toEqual(['p-unowned', 'p-retail']);
+		});
+
+		it('degenerates on a Card grid, which is why the roll-up still exists', () => {
+			// `evaluate` matches a Card when *some* printing satisfies the tree, so a card owned in
+			// one printing still answers `copies:0` through another. Blunt here, sharp per row — spec
+			// §3 says so, and the ownership control on `/collection` is what picks the right one.
+			expect(runOwned('copies:0').slugs).toEqual(['unowned', 'two-printings']);
+		});
 	});
 });
 

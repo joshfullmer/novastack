@@ -115,6 +115,7 @@ Origin: [Scryfall's grammar in detail](../../.scratch/query-language/issues/01-s
 | set                              | `set:` `s:`                   | `:` `=`*        | quoted or slug string                           | never null                                                 | no            |
 | rarity                           | `rarity:` `r:`                | `: = < <= > >=` | Rarity enum                                     | never null                                                 | yes           |
 | owned                            | `owned:` `have:`              | `: = < <= > >=` | integer, or `yes`/`no`                          | never null — zero is a real answer                         | yes           |
+| copies                           | `copies:`                     | `: = < <= > >=` | integer, or `yes`/`no`                          | never null — zero is a real answer                         | yes           |
 | text (bare / `name:` / `rules:`) | _(none)_ / `name:` / `rules:` | `:` `=`*        | word, quoted phrase, `/regex/`, or `none`/`has` | rules-haystack-empty (`empty`); `name:none` always dropped | no            |
 | ramBudget                        | `legends:`                    | `:` `=`*        | tally/digit color value (§3.3)                  | n/a                                                        | no            |
 
@@ -142,9 +143,9 @@ unlike the other numerics, all of them deliberate:
   is true of nearly every Card — measured against the real dataset, `owned:0` returned 151 of 151.
   Negation doesn't rescue it either, since `-owned:yes` is still existential rather than universal.
   Rolled up, `owned:0` is "Cards I don't have" and `owned<4` is "Cards I'm short of a playset of".
-  Per-printing ownership stays reachable on the `/sets/[id]` checklist, which has a control per
-  printing. Composing with a printing-level field therefore reads as
+  Composing with a printing-level field therefore reads as
   `owned>=1 set:MS01-WNC` = "a card I own that has a printing in that set".
+  Per-printing ownership is a **separate field**, `copies:` — see below.
 - **Never null**, so no `none`/`has`. Zero is a real answer: a Printing is never "unknown", only
   owned zero times. `owned:none` and `owned:has` parse and drop as inapplicable, the same
   treatment `name:none` gets (§3.4).
@@ -158,8 +159,27 @@ trackers in this genre already use, and worth accepting because "do I have this 
 commonest question and shouldn't require thinking in bounds. The sugar takes `:`/`=` only;
 `owned>yes` asks nothing and is malformed.
 
-Values come from the viewer's own Collection, so the field is **per-user**: `evaluate` takes an
-`OwnedLookup` rather than reading a `Dataset` field, because a `Dataset` is the shared snapshot
+`copies` (keyword `copies:`, no alias — `have:` is already `owned:`'s) is the same count without
+the roll-up: copies of **the Printing under test**. Identical to `owned` in every other respect —
+numeric, comparable, chainable, never null, same `yes`/`no` sugar, same logical-complement
+negation — and compiled by the same function, so the two can't drift.
+
+It exists because the roll-up above is right for a grid of Cards and wrong for a grid of
+Printings. The `/collection` grid and the `/sets/[id]` checklist test one row **per printing**, so
+`copies:0` there is "this art, which I don't have" — the question a checklist is built to ask, and
+the one `owned:0` cannot express: every Card in the dataset has several printings, so owning any
+one of them makes `owned:0` false for all of its rows.
+
+**The scopes are not interchangeable, and the choice belongs to the surface.** On a Card grid,
+§4's existential match makes `copies:0` true of nearly every Card — 151 of 151, measured — which
+is exactly the degeneracy the roll-up exists to avoid. So `/cards` and anything else built on
+`evaluate` writes `owned:`, `/collection`'s ownership control writes `copies:` (`query-edit.ts`'s
+`FacetEdit`), and a hand-typed clause is honoured as written on either. Both are always accepted
+by the parser: the language does not know which page it is on, and a field that silently changed
+meaning per surface would be worse than one that is sharp in one place and blunt in another.
+
+Values for both come from the viewer's own Collection, so they are **per-user**: `evaluate` takes
+an `OwnedLookup` rather than reading a `Dataset` field, because a `Dataset` is the shared snapshot
 and folding a per-request value into it would make it look cacheable. Signed out, the lookup
 answers zero for everything, so `owned>=1` matches nothing and `owned:0` matches everything —
 truthful, and not an error a reader deserves for typing a word off this page.

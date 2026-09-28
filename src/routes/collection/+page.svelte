@@ -92,7 +92,7 @@
 	/**
 	 * The same query pipeline `/cards` uses — `QueryEditor` for highlighting and autocomplete,
 	 * `parseQueryState` for the parse. Reusing it rather than keeping a plain substring box means
-	 * `owned:0`, `rarity>=epic` and `set:` all work here.
+	 * `copies:0`, `rarity>=epic` and `set:` all work here.
 	 *
 	 * No `browser` guard, unlike `/cards`: that page is prerendered and so cannot touch
 	 * `searchParams` at build time, whereas this subtree is `prerender = false`.
@@ -121,16 +121,26 @@
 	/**
 	 * The All/Owned/Missing control **is** the query — the same contract chips have on `/cards`
 	 * (query-language spec §9). Each pill's href is the query it would produce, and the current
-	 * state is read back out of the compiled predicate, so typing `owned:0` by hand lights
+	 * state is read back out of the compiled predicate, so typing `copies:0` by hand lights
 	 * "Missing".
 	 *
-	 * `null` is a real fourth state: `owned<4` is a genuine ownership filter none of the three
-	 * represents, so none of them claims it. Lighting "All" there would be a lie.
+	 * **`copies:`, not `owned:`, because this grid lists Printings.** `owned:` rolls up to the
+	 * Card (`#lib/filters/predicate.ts`), so on a row per printing it answers a question nobody
+	 * asked: with every Card in the dataset having several printings, owning any one of them made
+	 * "Missing" hide the other rows — the set header would offer "Add 11 missing" and the filter
+	 * would then show none of them. `copies:0` is per row, and agrees with the veil, the stepper
+	 * and both "missing" counts on the page.
+	 *
+	 * `null` is a real fourth state: `copies<4` is a genuine ownership filter none of the three
+	 * represents, and so is a hand-typed `owned:` clause at the other scope. Lighting "All" for
+	 * either would be a lie.
 	 */
 	const ownedFilter = $derived.by((): 'all' | 'owned' | 'missing' | null => {
-		const leaves = ownedLeaves(queryState.predicate);
-		if (leaves.length === 0) return 'all';
+		const leaves = countLeaves(queryState.predicate, 'copies');
 		if (leaves.length > 1) return null;
+		if (leaves.length === 0) {
+			return countLeaves(queryState.predicate, 'owned').length === 0 ? 'all' : null;
+		}
 
 		const [leaf] = leaves;
 		if (leaf.min === 1 && leaf.max === null) return 'owned';
@@ -138,15 +148,18 @@
 		return null;
 	});
 
-	function ownedLeaves(predicate: Predicate): Extract<Predicate, { kind: 'numeric' }>[] {
+	function countLeaves(
+		predicate: Predicate,
+		field: 'copies' | 'owned'
+	): Extract<Predicate, { kind: 'numeric' }>[] {
 		switch (predicate.kind) {
 			case 'and':
 			case 'or':
-				return predicate.children.flatMap(ownedLeaves);
+				return predicate.children.flatMap((child) => countLeaves(child, field));
 			case 'not':
-				return ownedLeaves(predicate.child);
+				return countLeaves(predicate.child, field);
 			case 'numeric':
-				return predicate.field === 'owned' ? [predicate] : [];
+				return predicate.field === field ? [predicate] : [];
 			default:
 				return [];
 		}
@@ -154,7 +167,7 @@
 
 	function ownedFilterHref(state: 'all' | 'owned' | 'missing'): string {
 		// Span-based, so it rewrites only ownership's own clause and leaves the rest of the query.
-		return urlWith({ q: withFacetEdit(queryState.source, dataset, { facet: 'owned', state }) });
+		return urlWith({ q: withFacetEdit(queryState.source, dataset, { facet: 'copies', state }) });
 	}
 
 	let queryTimer: ReturnType<typeof setTimeout> | undefined;
@@ -297,7 +310,7 @@
 		<QueryEditor
 			id="collection-query"
 			value={queryState.source}
-			placeholder="Search, or write a query — try owned:0 rarity>=epic"
+			placeholder="Search, or write a query — try copies:0 rarity>=epic"
 			warnings={queryState.warnings}
 			{onSource}
 		/>
@@ -327,7 +340,7 @@
 
 <!--
 	Where "want" goes, said once at the top rather than implied by every tile's button. A collector
-	filtering to `owned:0 rarity>=epic` and then wanting the lot needs to know which list they're
+	filtering to `copies:0 rarity>=epic` and then wanting the lot needs to know which list they're
 	filling, and the bulk action is right next to the query that defines "the lot".
 -->
 {#if collection.editable}

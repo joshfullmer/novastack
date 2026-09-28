@@ -238,12 +238,12 @@ function compileNegation(
 
 function isInvertibleBound(node: FieldNode): boolean {
 	if (!COMPARABLE_FIELDS.includes(node.field)) return false;
-	// `owned` is comparable but deliberately not inverted by operator. Operator inversion exists
-	// because a logical `not` over a nullable numeric would also admit the null bucket — spec §3.6
-	// — and Owned Count has no null bucket, so `-owned>=4` genuinely *is* `not (owned >= 4)`.
-	// Routing it through the plain `not` wrapper also means the `yes`/`no` sugar negates correctly
-	// instead of the inverted path trying to read an integer out of "yes".
-	if (node.field === 'owned') return false;
+	// Both ownership scopes are comparable but deliberately not inverted by operator. Operator
+	// inversion exists because a logical `not` over a nullable numeric would also admit the null
+	// bucket — spec §3.6 — and neither has a null bucket, so `-owned>=4` genuinely *is*
+	// `not (owned >= 4)`. Routing them through the plain `not` wrapper also means the `yes`/`no`
+	// sugar negates correctly instead of the inverted path trying to read an integer out of "yes".
+	if (node.field === 'owned' || node.field === 'copies') return false;
 	return !isReservedWord(node.value, 'none') && !isReservedWord(node.value, 'has');
 }
 
@@ -272,7 +272,8 @@ export function compileField(
 		case 'ram':
 			return compileNumeric(node, warnings, node.field);
 		case 'owned':
-			return compileOwned(node, warnings);
+		case 'copies':
+			return compileOwned(node, warnings, node.field);
 		case 'rarity':
 			return compileRarity(node, warnings);
 		case 'name':
@@ -518,15 +519,22 @@ function compileNumeric(
 }
 
 /**
- * Owned Count. Bounds, chained intervals and integer parsing all come from `compileNumeric`; the
- * only thing this adds is the `yes`/`no` sugar and the refusal of `none`/`has`.
+ * Ownership, at either scope — `owned:` rolled up to the Card, `copies:` per Printing. Bounds,
+ * chained intervals and integer parsing all come from `compileNumeric`; the only thing this adds
+ * is the `yes`/`no` sugar and the refusal of `none`/`has`. The two scopes differ only in the
+ * `field` they carry into the leaf, so they share every rule here by construction — the sugar
+ * can't come to mean one thing for one of them and something else for the other.
  *
  * `owned:yes` is `owned>=1` and `owned:no` is `owned:0` — the phrasing other trackers use, and
  * worth accepting because "do I have this at all" is the commonest question and nobody should
  * have to think in bounds to ask it. Only `:` and `=` take the sugar: `owned>yes` is not a
  * question, so it is malformed rather than silently reinterpreted.
  */
-function compileOwned(node: FieldNode, warnings: ParseWarning[]): Predicate | null {
+function compileOwned(
+	node: FieldNode,
+	warnings: ParseWarning[],
+	field: 'owned' | 'copies'
+): Predicate | null {
 	// No null bucket to probe — zero is a real answer, so these are inapplicable rather than
 	// malformed, the same treatment `name:none` gets.
 	if (isReservedWord(node.value, 'none') || isReservedWord(node.value, 'has')) {
@@ -537,10 +545,10 @@ function compileOwned(node: FieldNode, warnings: ParseWarning[]): Predicate | nu
 	if (sugar !== undefined) {
 		if (node.chain !== undefined) return malformed(node, warnings);
 		if (node.operator !== ':' && node.operator !== '=') return malformed(node, warnings);
-		return { kind: 'numeric', field: 'owned', ...sugar, includeNull: false };
+		return { kind: 'numeric', field, ...sugar, includeNull: false };
 	}
 
-	return compileNumeric(node, warnings, 'owned');
+	return compileNumeric(node, warnings, field);
 }
 
 const OWNED_SUGAR: Record<string, { min: number | null; max: number | null }> = {

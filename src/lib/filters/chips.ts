@@ -43,8 +43,9 @@ function topLevelChildren(predicate: Predicate): readonly Predicate[] {
  * has to track them separately, unlike every other leaf kind which names exactly one facet.
  *
  * Templated over `CountField` so a new bounded field can't be added to the predicate without
- * appearing here. `numeric:owned` is the one member with no chip control behind it — ownership is
- * query-only — so it can enter the blocked set but nothing ever looks it up. */
+ * appearing here. `numeric:owned` and `numeric:copies` are the two members with no chip control
+ * behind them — ownership has no chip, only the segmented control on `/collection`, which reads
+ * its own state — so they can enter the blocked set but nothing ever looks them up. */
 type FacetKey = Predicate['kind'] | `numeric:${CountField}`;
 
 function leafKey(predicate: Predicate): FacetKey {

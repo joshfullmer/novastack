@@ -21,6 +21,7 @@ export const FIELD_KINDS = [
 	'set',
 	'rarity',
 	'owned',
+	'copies',
 	'name',
 	'rules',
 	'text',
@@ -154,6 +155,26 @@ export const FIELDS: readonly FieldSpec[] = [
 		kind: 'owned',
 		canonical: 'owned',
 		aliases: ['have'],
+		value: 'numeric',
+		comparisons: true,
+		nullable: false
+	},
+	{
+		/**
+		 * Copies of *this Printing* — `owned:` without the roll-up to the Card.
+		 *
+		 * A second field rather than a mode of `owned:`, because the two answer genuinely
+		 * different questions and neither one can stand in for the other: `owned:0` is "a Card I
+		 * don't have", `copies:0` is "an art I don't have". Per-printing is the right scope for a
+		 * checklist and the wrong one for a Card grid, where §4's existential match makes it true
+		 * of nearly everything — so the language offers both and says which is which, rather than
+		 * silently meaning one thing on `/cards` and another on `/collection`.
+		 *
+		 * Same shape as `owned:` otherwise: numeric, comparable, no null bucket, `yes`/`no` sugar.
+		 */
+		kind: 'copies',
+		canonical: 'copies',
+		aliases: [],
 		value: 'numeric',
 		comparisons: true,
 		nullable: false

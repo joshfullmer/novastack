@@ -21,7 +21,7 @@ describe('autocompleteFor', () => {
 
 	it('sorts alias suggestions ahead of canonical ones — shorthand is what a fluent user reaches for', () => {
 		const state = autocompleteFor('c', 1);
-		expect(state?.suggestions.map((s) => s.keyword)).toEqual(['c', 'color', 'cost']);
+		expect(state?.suggestions.map((s) => s.keyword)).toEqual(['c', 'color', 'copies', 'cost']);
 	});
 
 	it('field suggestions insert the bare keyword — the colon is the caller’s job', () => {

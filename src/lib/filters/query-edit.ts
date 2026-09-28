@@ -32,10 +32,14 @@ export type FacetEdit =
 	| { facet: 'cost' | 'power' | 'ram'; range: NumericRange }
 	/**
 	 * Ownership as the three states a segmented control offers, rather than a `NumericRange`:
-	 * `rangeClause` emits `field:has` for the unbounded case, and `owned` has no null bucket to
-	 * probe (`docs/spec/query-language.md` §3). `all` removes the clause entirely.
+	 * `rangeClause` emits `field:has` for the unbounded case, and neither ownership scope has a
+	 * null bucket to probe (`docs/spec/query-language.md` §3). `all` removes the clause entirely.
+	 *
+	 * Which scope is the caller's to choose, and it follows what the surface *lists*: `owned` for
+	 * a grid of Cards (`/cards`), `copies` for a grid of Printings (`/collection`), where a
+	 * rolled-up clause would hide a missing art behind a copy of the same card in another one.
 	 */
-	| { facet: 'owned'; state: 'all' | 'owned' | 'missing' }
+	| { facet: 'owned' | 'copies'; state: 'all' | 'owned' | 'missing' }
 	| { facet: 'legends'; colors: readonly Color[] };
 
 type FacetTarget =
@@ -102,10 +106,11 @@ function clauseFor(edit: FacetEdit, dataset: Dataset): string | null {
 		case 'ram':
 			return rangeClause(edit.facet, edit.range);
 		case 'owned':
+		case 'copies':
 			// `owned:yes` over `owned>=1` deliberately: it is what the control means, and it is the
 			// spelling the syntax page teaches.
 			if (edit.state === 'all') return null;
-			return edit.state === 'owned' ? 'owned:yes' : 'owned:0';
+			return edit.state === 'owned' ? `${edit.facet}:yes` : `${edit.facet}:0`;
 		case 'legends': {
 			if (edit.colors.length === 0) return null;
 			const budget = budgetFromLegendColors(edit.colors, dataset.ramPerLegend);
@@ -138,6 +143,7 @@ function targetFor(facet: FacetEdit['facet']): FacetTarget {
 		case 'power':
 		case 'ram':
 		case 'owned':
+		case 'copies':
 			return { kind: 'numeric', field: facet };
 	}
 }

@@ -89,6 +89,34 @@ describe('withFacetEdit', () => {
 		);
 	});
 
+	it('writes ownership as the three states the segmented control offers', () => {
+		expect(withFacetEdit('', dataset, { facet: 'copies', state: 'missing' })).toBe('copies:0');
+		expect(withFacetEdit('copies:0', dataset, { facet: 'copies', state: 'owned' })).toBe(
+			'copies:yes'
+		);
+		expect(
+			withFacetEdit('copies:yes type:legend', dataset, { facet: 'copies', state: 'all' })
+		).toBe('type:legend');
+	});
+
+	it('keeps the two ownership scopes as separate facets', () => {
+		// `/collection` edits `copies` and `/cards` edits `owned`; neither may quietly rewrite the
+		// other's clause, or a hand-typed rolled-up filter would vanish on the first pill click.
+		expect(withFacetEdit('owned:0', dataset, { facet: 'copies', state: 'missing' })).toBe(
+			'copies:0 owned:0'
+		);
+		expect(withFacetEdit('copies:0 owned:0', dataset, { facet: 'owned', state: 'all' })).toBe(
+			'copies:0'
+		);
+	});
+
+	it('preserves the rest of the query when switching ownership state', () => {
+		// The reported bug's query: the pill must rewrite ownership and nothing else.
+		expect(withFacetEdit('legends:rryyyy', dataset, { facet: 'copies', state: 'missing' })).toBe(
+			'copies:0 legends:rryyyy'
+		);
+	});
+
 	it('round-trips through the parser back to the same interactive value', async () => {
 		const { parseQuery } = await import('#lib/query/index.js');
 		const { readChipView } = await import('./chips.js');
