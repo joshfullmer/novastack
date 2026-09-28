@@ -23,7 +23,7 @@
 	import { dataset } from '#lib/cards/index.js';
 	import { splitCardName } from '#lib/cards/derive.js';
 	import Meta from '#lib/components/Meta.svelte';
-	import MissingPanel from '#lib/components/MissingPanel.svelte';
+	import DeckCollectionPanel from '#lib/components/DeckCollectionPanel.svelte';
 	import type { Card } from '#lib/cards/schema.js';
 	import { COLORS } from '#lib/cards/vocabulary.js';
 	import {
@@ -63,7 +63,7 @@
 
 	// Main Deck / History — a tab, not a stacked section, so Change History (below) never
 	// competes with the deck's own card list for vertical space.
-	let mainTab = $state<'deck' | 'history'>('deck');
+	let mainTab = $state<'deck' | 'collection' | 'history'>('deck');
 
 	function cardLabel(slug: string) {
 		return dataset.bySlug.get(slug)?.name ?? slug;
@@ -595,21 +595,6 @@
 					</div>
 				{/if}
 
-				<!-- Beside legality on purpose: "is this deck legal" and "can I actually build it" are
-				     the two questions you ask before playing a list, and the second one is the only
-				     thing on this page that depends on who's reading it. Renders nothing for a
-				     signed-out visitor — see `MissingPanel`. The Legends count too: they're cards you
-				     need copies of like any other — and so does the sideboard, since tournament rules
-				     §D.1 requires all 7 in hand, so a list missing them isn't one you can field.
-				     Concatenated, not merged: `missingForDeck` sums entries naming the same card. -->
-				<MissingPanel
-					entries={[
-						...deck.legends.map((legend) => ({ card: legend, quantity: 1 })),
-						...deck.entries,
-						...deck.sideboard
-					]}
-				/>
-
 				<div class="mb-4 flex flex-wrap items-center gap-4">
 					<div class="flex items-center gap-3">
 						{#each legendSlots as slot (slot)}
@@ -671,6 +656,13 @@
 						>
 						<button
 							type="button"
+							onclick={() => (mainTab = 'collection')}
+							class="text-sm font-medium transition-colors hover:text-bright"
+							class:text-bright={mainTab === 'collection'}
+							class:text-muted={mainTab !== 'collection'}>Collection</button
+						>
+						<button
+							type="button"
 							onclick={() => (mainTab = 'history')}
 							class="text-sm font-medium transition-colors hover:text-bright"
 							class:text-bright={mainTab === 'history'}
@@ -713,7 +705,19 @@
 					</div>
 				</div>
 
-				{#if mainTab === 'history'}
+				{#if mainTab === 'collection'}
+					<!-- Everything you need copies of to field this list: the Legends count like any
+					     other card, and so does the sideboard — tournament rules §D.1 wants all 7 in
+					     hand, so a list short of them isn't one you can play. Concatenated rather than
+					     merged; `deckCollectionRows` sums entries naming the same card. -->
+					<DeckCollectionPanel
+						entries={[
+							...deck.legends.map((legend) => ({ card: legend, quantity: 1 })),
+							...deck.entries,
+							...deck.sideboard
+						]}
+					/>
+				{:else if mainTab === 'history'}
 					<!-- Change History — replaces the Main Deck list on its own tab, not stacked below
 					     it. Newest-first; no-op saves and the deck-creation version are filtered out
 					     entirely (visibleHistory). Newest visible entry starts open; the rest are
