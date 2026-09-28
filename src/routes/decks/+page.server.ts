@@ -91,7 +91,7 @@ export const load: PageServerLoad = async (event) => {
 			visibility: folder.visibility
 		})),
 		// Shared with /explore — "how I like browsing a list of decks" is one preference, not two.
-		deckView: readViewPref(event.cookies, 'decks-list-view', ['list', 'grid'], 'list')
+		deckView: readViewPref(event.cookies, 'decks-list-view', ['list', 'grid'], 'grid')
 	};
 };
 

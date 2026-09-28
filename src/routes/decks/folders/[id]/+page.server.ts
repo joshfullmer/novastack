@@ -36,6 +36,6 @@ export const load: PageServerLoad = async (event) => {
 		})),
 		// Shared with /decks and /explore — "how I like browsing a list of decks" is one
 		// preference, not three.
-		deckView: readViewPref(event.cookies, 'decks-list-view', ['list', 'grid'], 'list')
+		deckView: readViewPref(event.cookies, 'decks-list-view', ['list', 'grid'], 'grid')
 	};
 };

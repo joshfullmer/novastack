@@ -109,6 +109,6 @@ export const load: PageServerLoad = async (event) => {
 		// since this route has no dedicated `+layout.server.ts` supplying it (`/decks` does).
 		user: event.locals.user,
 		// Shared with /decks — "how I like browsing a list of decks" is one preference, not two.
-		deckView: readViewPref(event.cookies, 'decks-list-view', ['list', 'grid'], 'list')
+		deckView: readViewPref(event.cookies, 'decks-list-view', ['list', 'grid'], 'grid')
 	};
 };

@@ -35,7 +35,7 @@ export const load: PageServerLoad = async (event) => {
 		payload,
 		// Shared with the read-only view (`/decks/[id]`) — "how I like browsing a deck's cards"
 		// is one preference, not two.
-		deckView: readViewPref(event.cookies, 'deck-cards-view', ['list', 'gallery'], 'list')
+		deckView: readViewPref(event.cookies, 'deck-cards-view', ['list', 'gallery'], 'gallery')
 	};
 };
 
