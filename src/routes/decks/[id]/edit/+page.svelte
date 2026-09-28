@@ -568,7 +568,7 @@
 			{/each}
 		</ul>
 	{:else}
-		<div class="flex-1 overflow-y-auto p-3">
+		<div class="flex-1 overflow-y-auto p-3" onmouseleave={() => (hovered = null)} role="group">
 			{#each mainGroups as group (group.cardType)}
 				<p
 					class="mt-3 mb-1.5 rounded-md bg-raised px-3 py-1.5 text-xs tracking-wide uppercase
@@ -583,6 +583,7 @@
 							<button
 								type="button"
 								onclick={() => removeCard(entry.card)}
+								onmouseenter={(event) => onRowEnter(entry.card, event)}
 								aria-label="Remove one {entry.card.name}"
 								class="block w-full overflow-hidden rounded-md"
 							>
