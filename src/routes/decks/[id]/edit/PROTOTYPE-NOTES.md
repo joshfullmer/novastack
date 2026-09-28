@@ -1,4 +1,8 @@
-# PROTOTYPE — printing choice in the deck editor
+# PROTOTYPE round 1 — printing choice in the deck editor
+
+> **CLOSED.** All three variants were rejected; `?variant=A|B|C` no longer exists and the variant
+> files are deleted. Kept for the verdict at the bottom, which is what round 2 is built on — see
+> `PROTOTYPE-NOTES-2.md` for what's currently runnable.
 
 **Question:** what should choosing a Printing per deck entry feel like, in an editor that has two
 very different modes (dense List rows, 4-col Gallery tiles) and cards with **2–14 printings** each?
@@ -71,6 +75,4 @@ assembly rather than new design.
 
 Round 2 variants live in `PROTOTYPE-NOTES-2.md` once built.
 
-To remove: this file, `printing-prototype.svelte.ts`, `PrintingAffordance{A,B,C}.svelte`,
-`PrintingPaneB.svelte`, `#lib/components/PrototypeSwitcher.svelte`, and the four `PROTOTYPE`
-markers in `+page.svelte`.
+To remove: this file — see `PROTOTYPE-NOTES-2.md` for the current delete list.

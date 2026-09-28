@@ -32,24 +32,26 @@
 	import { cookieState } from '#lib/cookie-state.svelte.js';
 	import { persistedIntState } from '#lib/persisted-state.svelte.js';
 
-	// PROTOTYPE — printing-choice variant round. Delete this block, the four `PROTOTYPE` markers
-	// below, and the files it imports. See `PROTOTYPE-NOTES.md` in this directory.
+	// PROTOTYPE — printing-choice variant round 2. Delete this block, every `PROTOTYPE` marker
+	// below, and the files it imports. See `PROTOTYPE-NOTES-2.md` in this directory.
 	import PrototypeSwitcher from '#lib/components/PrototypeSwitcher.svelte';
-	import PrintingAffordanceA from './PrintingAffordanceA.svelte';
-	import PrintingAffordanceB from './PrintingAffordanceB.svelte';
-	import PrintingAffordanceC from './PrintingAffordanceC.svelte';
-	import PrintingPaneB from './PrintingPaneB.svelte';
+	import EntryManagerModal from './EntryManagerModal.svelte';
+	import InlineEntryControls from './InlineEntryControls.svelte';
 	import { printingPrototype as proto } from './printing-prototype.svelte.js';
 	import { currentUrl } from '#lib/filters/shallow.js';
 
-	const PROTO_VARIANTS = ['off', 'A', 'B', 'C'] as const;
+	const PROTO_VARIANTS = ['off', 'D', 'E', 'F'] as const;
 	const PROTO_NAMES = {
 		off: 'production — no picker',
-		A: 'inline popover grid',
-		B: 'docked pane, selection-driven',
-		C: 'cycle in place'
+		D: 'manager modal, 360px rail',
+		E: 'wide rail, inline controls',
+		F: 'wide rail + manager modal'
 	};
 	const protoVariant = $derived(currentUrl().searchParams.get('variant') ?? 'off');
+	/** Round 1 died on the 360px rail, so width is now a variable of the round, not a constant. */
+	const protoWide = $derived(protoVariant === 'E' || protoVariant === 'F');
+	/** D and F answer "click an entry" with a manager; E answers it with controls in the row. */
+	const protoModal = $derived(protoVariant === 'D' || protoVariant === 'F');
 	/** The printing a tile should draw: the prototype's choice while a variant is up, else today's
 	 * behaviour (the Default Printing). */
 	const protoPrinting = (card: Card) =>
@@ -253,15 +255,18 @@
 	<title>{data.deckName} — novastack</title>
 </svelte:head>
 
-<!-- PROTOTYPE — one definition, called from both the List row and the Gallery tile, so the two
-     surfaces can't drift while the round is being judged. -->
-{#snippet printingAffordance(card: Card)}
-	{#if protoVariant === 'A'}
-		<PrintingAffordanceA {card} />
-	{:else if protoVariant === 'B'}
-		<PrintingAffordanceB {card} />
-	{:else if protoVariant === 'C'}
-		<PrintingAffordanceC {card} />
+<!-- PROTOTYPE — one definition per surface, so List and Gallery can't drift while being judged. -->
+{#snippet protoRowControls(card: Card, pile: 'deck' | 'sideboard')}
+	{#if protoVariant === 'E'}
+		<span class="w-44 shrink-0"><InlineEntryControls {card} {deck} {pile} /></span>
+	{:else if protoModal}
+		<button
+			type="button"
+			onclick={() => proto.manage(card.slug)}
+			aria-label="Manage {card.name}"
+			class="shrink-0 rounded-md border border-edge px-1.5 text-muted transition-colors
+				hover:border-neon-dim hover:text-neon">⋯</button
+		>
 	{/if}
 {/snippet}
 
@@ -586,18 +591,35 @@
 						class="flex items-center justify-between gap-2 border-b border-edge/50 px-4 py-1.5"
 						onmouseenter={(event) => onRowEnter(entry.card, event)}
 					>
-						<span class="min-w-0 flex-1 truncate text-sm {COLOR_TEXT[entry.card.color]}">
-							<span class="mr-1.5 text-muted tabular-nums">{entry.quantity}×</span>{entry.card.name}
-						</span>
+						<!-- PROTOTYPE — under D/F the whole name is the target, since "click the entry" is
+						     the gesture being tested; `off` keeps a plain span. -->
+						{#if protoModal}
+							<button
+								type="button"
+								onclick={() => proto.manage(entry.card.slug)}
+								class="min-w-0 flex-1 truncate text-left text-sm hover:text-bright
+									{COLOR_TEXT[entry.card.color]}"
+							>
+								<span class="mr-1.5 text-muted tabular-nums">{entry.quantity}×</span>{entry.card
+									.name}
+							</button>
+						{:else}
+							<span class="min-w-0 flex-1 truncate text-sm {COLOR_TEXT[entry.card.color]}">
+								<span class="mr-1.5 text-muted tabular-nums">{entry.quantity}×</span>{entry.card
+									.name}
+							</span>
+						{/if}
 						<!-- PROTOTYPE -->
-						{@render printingAffordance(entry.card)}
-						<button
-							type="button"
-							onclick={() => removeCard(entry.card)}
-							aria-label="Remove one {entry.card.name}"
-							class="shrink-0 rounded-md border border-edge px-1.5 text-muted
-								transition-colors hover:border-card-red hover:text-card-red">−</button
-						>
+						{@render protoRowControls(entry.card, 'deck')}
+						{#if protoVariant !== 'E'}
+							<button
+								type="button"
+								onclick={() => removeCard(entry.card)}
+								aria-label="Remove one {entry.card.name}"
+								class="shrink-0 rounded-md border border-edge px-1.5 text-muted
+									transition-colors hover:border-card-red hover:text-card-red">−</button
+							>
+						{/if}
 					</li>
 				{/each}
 			{:else}
@@ -614,22 +636,24 @@
 					<span class="font-semibold text-bright">{group.label}</span>
 					<span class="text-muted tabular-nums">{group.quantity}</span>
 				</p>
-				<ul class="grid grid-cols-4 gap-2">
+				<!-- PROTOTYPE — 3 across in the wide variants; 4 is what 360px forced. -->
+				<ul class="grid gap-2 {protoWide ? 'grid-cols-3' : 'grid-cols-4'}">
 					{#each group.entries as entry (entry.card.slug)}
 						{@const printing = protoPrinting(entry.card)}
 						<li class="relative">
-							<!-- PROTOTYPE — outside the remove button: nesting one interactive control in
-							     another is invalid, and clicking the picker must not also remove a copy. -->
-							{#if protoVariant !== 'off'}
-								<span class="absolute top-1 right-1 z-10 flex">
-									{@render printingAffordance(entry.card)}
-								</span>
-							{/if}
+							<!-- PROTOTYPE — what a tile click *means* is the question here. `off` and E remove
+							     a copy (E adds a stepper below, so the gesture is redundant there and the
+							     tile is inert); D and F open the manager instead, which is how the
+							     destructive single click goes away. -->
 							<button
 								type="button"
-								onclick={() => removeCard(entry.card)}
+								onclick={() =>
+									protoModal ? proto.manage(entry.card.slug) : removeCard(entry.card)}
 								onmouseenter={(event) => onRowEnter(entry.card, event)}
-								aria-label="Remove one {entry.card.name}"
+								disabled={protoVariant === 'E'}
+								aria-label={protoModal
+									? `Manage ${entry.card.name}`
+									: `Remove one ${entry.card.name}`}
 								class="block w-full overflow-hidden rounded-md"
 							>
 								<CardImage
@@ -637,7 +661,7 @@
 									thumbhash={printing.thumbhash}
 									color={entry.card.color}
 									alt={entry.card.name}
-									sizes="80px"
+									sizes={protoWide ? '140px' : '80px'}
 								/>
 								<!-- Same chamfered-corner clip as the Eddiable "€$" badge (`CardStats.svelte`)
 									— see the deck view's own quantity badge for the two-layer rationale. -->
@@ -651,6 +675,12 @@
 									</span>
 								</span>
 							</button>
+							<!-- PROTOTYPE — E's controls live under the tile, where there's room for them. -->
+							{#if protoVariant === 'E'}
+								<div class="mt-1">
+									<InlineEntryControls card={entry.card} {deck} pile="deck" />
+								</div>
+							{/if}
 						</li>
 					{/each}
 				</ul>
@@ -697,37 +727,63 @@
 							last:border-b-0"
 						onmouseenter={(event) => onRowEnter(entry.card, event)}
 					>
-						<span class="min-w-0 flex-1 truncate text-sm {COLOR_TEXT[entry.card.color]}">
-							<span class="mr-1.5 text-muted tabular-nums">{entry.quantity}×</span>{entry.card.name}
-						</span>
-						<button
-							type="button"
-							onclick={() => removeFromSideboard(entry.card)}
-							aria-label="Remove one {entry.card.name} from the sideboard"
-							class="shrink-0 rounded-md border border-edge px-1.5 text-muted transition-colors
-								hover:border-card-red hover:text-card-red">−</button
-						>
+						<!-- PROTOTYPE — the 7 get the same treatment as the main deck; round 1 skipped them
+						     and that just made the two piles inconsistent to judge. -->
+						{#if protoModal}
+							<button
+								type="button"
+								onclick={() => proto.manage(entry.card.slug)}
+								class="min-w-0 flex-1 truncate text-left text-sm hover:text-bright
+									{COLOR_TEXT[entry.card.color]}"
+							>
+								<span class="mr-1.5 text-muted tabular-nums">{entry.quantity}×</span>{entry.card
+									.name}
+							</button>
+						{:else}
+							<span class="min-w-0 flex-1 truncate text-sm {COLOR_TEXT[entry.card.color]}">
+								<span class="mr-1.5 text-muted tabular-nums">{entry.quantity}×</span>{entry.card
+									.name}
+							</span>
+						{/if}
+						{@render protoRowControls(entry.card, 'sideboard')}
+						{#if protoVariant !== 'E'}
+							<button
+								type="button"
+								onclick={() => removeFromSideboard(entry.card)}
+								aria-label="Remove one {entry.card.name} from the sideboard"
+								class="shrink-0 rounded-md border border-edge px-1.5 text-muted transition-colors
+									hover:border-card-red hover:text-card-red">−</button
+							>
+						{/if}
 					</li>
 				{/each}
 			</ul>
 		{:else}
 			<!-- Click removes one, same gesture as the main deck's own Gallery mode. -->
-			<ul class="grid grid-cols-4 gap-2 border-t border-edge/50 p-3" role="list">
+			<ul
+				class="grid gap-2 border-t border-edge/50 p-3 {protoWide ? 'grid-cols-3' : 'grid-cols-4'}"
+				role="list"
+			>
 				{#each deck.sideboard as entry (entry.card.slug)}
+					{@const sidePrinting = protoPrinting(entry.card)}
 					<li class="relative">
 						<button
 							type="button"
-							onclick={() => removeFromSideboard(entry.card)}
+							onclick={() =>
+								protoModal ? proto.manage(entry.card.slug) : removeFromSideboard(entry.card)}
 							onmouseenter={(event) => onRowEnter(entry.card, event)}
-							aria-label="Remove one {entry.card.name} from the sideboard"
+							disabled={protoVariant === 'E'}
+							aria-label={protoModal
+								? `Manage ${entry.card.name}`
+								: `Remove one ${entry.card.name} from the sideboard`}
 							class="block w-full overflow-hidden rounded-md"
 						>
 							<CardImage
-								printingId={entry.card.printings[0].id}
-								thumbhash={entry.card.printings[0].thumbhash}
+								printingId={sidePrinting.id}
+								thumbhash={sidePrinting.thumbhash}
 								color={entry.card.color}
 								alt={entry.card.name}
-								sizes="80px"
+								sizes={protoWide ? '140px' : '80px'}
 							/>
 							{#if entry.quantity > 1}
 								<!-- Same chamfered badge as the main-deck gallery above, but only past one
@@ -792,7 +848,12 @@
 	<div class="flex min-w-0 flex-1 flex-col overflow-hidden">
 		{@render browsePanel()}
 	</div>
-	<aside class="flex w-[360px] shrink-0 flex-col border-x border-edge bg-shell">
+	<!-- PROTOTYPE — the width under test. 360px is production; 480px is variants E and F. -->
+	<aside
+		class="flex shrink-0 flex-col border-x border-edge bg-shell {protoWide
+			? 'w-[480px]'
+			: 'w-[360px]'}"
+	>
 		{@render deckPanel()}
 	</aside>
 </div>
@@ -850,8 +911,8 @@
 
 <CardHoverPreview {hovered} />
 
-<!-- PROTOTYPE — variant B's pane is mounted once here, not per row. -->
-{#if protoVariant === 'B'}
-	<PrintingPaneB />
+<!-- PROTOTYPE — the manager is mounted once here, not per row. -->
+{#if protoModal}
+	<EntryManagerModal {deck} />
 {/if}
 <PrototypeSwitcher variants={PROTO_VARIANTS} names={PROTO_NAMES} />
