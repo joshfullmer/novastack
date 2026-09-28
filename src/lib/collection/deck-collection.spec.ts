@@ -158,6 +158,7 @@ describe('deckCollectionSummary', () => {
 			cardsComplete: 1,
 			cardsShort: 1,
 			copiesShort: 3,
+			printingShortfallCards: 0,
 			complete: false
 		});
 	});
@@ -166,5 +167,106 @@ describe('deckCollectionSummary', () => {
 		const owned = owning({ 'adam-retail': 2 });
 		const rows = deckCollectionRows([{ card: adam, quantity: 2 }], owned);
 		expect(deckCollectionSummary(rows).complete).toBe(true);
+	});
+});
+
+describe('rows scoped to a chosen printing', () => {
+	it('counts only the chosen printing, and says where the rest are', () => {
+		const owned = owning({ 'adam-retail': 3 });
+		const [row] = deckCollectionRows([{ card: adam, quantity: 3, printingId: 'adam-fr' }], owned);
+
+		expect(row.scope).toBe('printing');
+		expect(row.owned).toBe(0);
+		expect(row.missing).toBe(3);
+		expect(row.ownedElsewhere).toBe(3);
+		// Playability is untouched: three English copies field the deck fine.
+		expect(row.playableOwned).toBe(3);
+		expect(row.playableMissing).toBe(0);
+	});
+
+	it('stays Card level when the deck named no printing', () => {
+		const owned = owning({ 'adam-retail': 1, 'adam-beta': 1 });
+		const [row] = deckCollectionRows([{ card: adam, quantity: 3 }], owned);
+
+		expect(row.scope).toBe('card');
+		expect(row.owned).toBe(2);
+		expect(row.ownedElsewhere).toBe(0);
+	});
+
+	it('stays Card level for a printing that has left the dataset', () => {
+		// A deck following a stale id is not making a statement about art — it renders the default.
+		const [row] = deckCollectionRows(
+			[{ card: adam, quantity: 1, printingId: 'adam-from-a-deleted-set' }],
+			owning({ 'adam-retail': 1 })
+		);
+		expect(row.scope).toBe('card');
+		expect(row.owned).toBe(1);
+	});
+
+	it("treats a deck that named the default printing as a choice about art", () => {
+		const owned = owning({ 'adam-beta': 2 });
+		const [row] = deckCollectionRows(
+			[{ card: adam, quantity: 2, printingId: 'adam-retail' }],
+			owned
+		);
+		expect(row.scope).toBe('printing');
+		expect(row.owned).toBe(0);
+		expect(row.ownedElsewhere).toBe(2);
+	});
+
+	it('tops up the chosen printing, not the cheapest way to make the deck playable', () => {
+		const owned = owning({ 'adam-retail': 3 });
+		const rows = deckCollectionRows([{ card: adam, quantity: 3, printingId: 'adam-fr' }], owned);
+		expect([...topUpPlan(rows, owned)]).toEqual([['adam-fr', 3]]);
+	});
+
+	it('never decrements a printing the row is not showing', () => {
+		// `−` on a scoped row holding none must do nothing, rather than quietly taking an English
+		// copy off a row that reads 0/3 in French.
+		const owned = owning({ 'adam-retail': 2 });
+		const [row] = deckCollectionRows([{ card: adam, quantity: 3, printingId: 'adam-fr' }], owned);
+		expect(removeTarget(row, owned)).toBeNull();
+	});
+
+	it('takes the first printing named when a deck lists a card twice', () => {
+		const owned = owning({});
+		const [row] = deckCollectionRows(
+			[
+				{ card: adam, quantity: 1, printingId: 'adam-beta' },
+				{ card: adam, quantity: 2 }
+			],
+			owned
+		);
+		expect(row.needed).toBe(3);
+		expect(row.addTarget).toBe('adam-beta');
+	});
+});
+
+describe('the headline stays about playability', () => {
+	it('reports no shortfall for a deck owned in the wrong art, but flags the printings', () => {
+		const owned = owning({ 'adam-retail': 3, 'royce-retail': 1 });
+		const rows = deckCollectionRows(
+			[
+				{ card: adam, quantity: 3, printingId: 'adam-fr' },
+				{ card: royce, quantity: 1 }
+			],
+			owned
+		);
+
+		const summary = deckCollectionSummary(rows);
+		expect(summary.complete).toBe(true);
+		expect(summary.copiesShort).toBe(0);
+		expect(summary.printingShortfallCards).toBe(1);
+	});
+
+	it('counts Card-level copies short, ignoring which printing they would be', () => {
+		const owned = owning({ 'adam-beta': 1 });
+		const rows = deckCollectionRows([{ card: adam, quantity: 3, printingId: 'adam-fr' }], owned);
+
+		const summary = deckCollectionSummary(rows);
+		// Two copies short to play; three short of the French art, which is the row's business.
+		expect(summary.copiesShort).toBe(2);
+		expect(rows[0].missing).toBe(3);
+		expect(summary.printingShortfallCards).toBe(0);
 	});
 });

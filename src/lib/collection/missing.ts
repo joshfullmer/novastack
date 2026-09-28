@@ -21,8 +21,16 @@
  */
 import type { Card } from '#lib/cards/schema.js';
 
-/** The shape both the deck view and `/explore` already have: a Card and how many it asks for. */
-export type NeededCard = { card: Card; quantity: number };
+/**
+ * The shape both the deck view and `/explore` already have: a Card, how many it asks for, and —
+ * when the deck named one — which Printing.
+ *
+ * `missingForDeck` ignores `printingId` entirely, on purpose: **Missing is Card level** (see above),
+ * so a deck asking for French art is still buildable from English copies. The field is here for
+ * consumers that care which art was chosen — `wantedPrintingId` for a Wantlist entry, and the
+ * Collection tab's per-row scope (`deck-collection.ts`).
+ */
+export type NeededCard = { card: Card; quantity: number; printingId?: string };
 
 export type MissingCard = {
 	card: Card;

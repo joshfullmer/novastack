@@ -155,7 +155,15 @@
 	<div class="rounded-md border border-edge bg-surface">
 		<div class="flex flex-wrap items-baseline gap-x-4 gap-y-2 border-b border-edge px-3 py-2.5">
 			{#if summary.complete}
-				<p class="text-sm font-medium text-neon-dim">You own every card in this deck.</p>
+				<p class="text-sm font-medium text-neon-dim">
+					You own every card in this deck.{#if summary.printingShortfallCards > 0}<span
+							class="font-normal text-muted"
+						>
+							· {summary.printingShortfallCards}
+							{summary.printingShortfallCards === 1 ? 'card' : 'cards'} not in the printing this deck
+							chose</span
+						>{/if}
+				</p>
 			{:else}
 				<p class="text-sm font-medium text-bright">
 					You're missing {summary.cardsShort}
@@ -265,7 +273,13 @@
 				<li class="flex items-center gap-3 border-b border-edge/50 px-3 py-1.5 last:border-b-0">
 					<span class="min-w-0 flex-1 truncate text-sm {COLOR_TEXT[row.card.color]}">
 						{row.card.name}
-						{#if row.printingsHeld > 1}
+						{#if row.scope === 'printing' && row.ownedElsewhere > 0}
+							<!-- The disclosure that keeps a scoped `0/3` from reading as a bug: you *do* hold
+							     copies, just not the art this deck asked for. -->
+							<span class="text-[0.65rem] text-muted/70"
+								>· {row.ownedElsewhere} in other printings</span
+							>
+						{:else if row.scope === 'card' && row.printingsHeld > 1}
 							<!-- Explains a total that doesn't match any single printing's count, which is
 							     otherwise baffling on a card you hold in two languages. -->
 							<span class="text-[0.65rem] text-muted/70"
@@ -276,7 +290,13 @@
 
 					<span
 						class="shrink-0 text-xs tabular-nums {short ? 'text-card-red' : 'text-neon-dim'}"
-						title={short ? `Missing ${row.missing}` : 'You have enough of this card'}
+						title={row.scope === 'printing'
+							? short
+								? `Missing ${row.missing} of the printing this deck chose`
+								: "You own this deck's chosen printing"
+							: short
+								? `Missing ${row.missing}`
+								: 'You have enough of this card'}
 					>
 						{row.owned}/{row.needed}
 					</span>

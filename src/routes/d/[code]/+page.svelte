@@ -718,7 +718,11 @@
 					     merged; `deckCollectionRows` sums entries naming the same card. -->
 					<DeckCollectionPanel
 						entries={[
-							...deck.legends.map((legend) => ({ card: legend, quantity: 1 })),
+							...deck.legends.map((legend) => ({
+								card: legend,
+								quantity: 1,
+								printingId: deck.printingIdOf(legend)
+							})),
 							...deck.entries,
 							...deck.sideboard
 						]}
