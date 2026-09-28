@@ -1,20 +1,21 @@
 <script lang="ts">
 	/**
-	 * PROTOTYPE (variant F, iterating) — the per-entry manager.
+	 * Everything you can do to one card in a deck — copies in each pile, which Printing, removal —
+	 * in a surface big enough to show the art you're choosing between.
 	 *
-	 * Clicking an entry opens this instead of silently removing a copy, which is both the fix for
-	 * round 1's "everything is too small" and the end of a destructive default nobody asked for.
-	 * Everything you do to a card in a deck happens here: copies in each pile, which Printing, and
-	 * removal.
+	 * **Why a modal and not controls in the row.** Two variant rounds established it: a 360px rail
+	 * can't host a per-entry control at a size worth clicking, and a printings grid for a card with
+	 * fourteen of them needs real space. The row became a target instead, which also retired a
+	 * destructive default — a single click on a Gallery tile used to remove a copy with no
+	 * confirmation and no undo. Removal is a labelled button here.
 	 *
-	 * Printing choice now writes to **real deck state** (`deck.setPrinting`), so it survives Save —
-	 * the payload schema always had an optional `printingId`, and the stub that never wrote it was
-	 * what made saving look broken.
+	 * **Legends are a different shape** and handled in the same place: they occupy one of three
+	 * slots rather than carrying a quantity, so there are no copy steppers and removal frees the
+	 * slot. Their Printing matters most of all — Legends are the art a deck is recognised by, and
+	 * what the export image and deck tiles show.
 	 *
-	 * Also manages **Legends**, which are a different shape: they occupy one of three slots rather
-	 * than carrying a quantity, so there are no copy steppers and removal frees the slot. Their
-	 * Printing *is* editable — `LegendEntrySchema` now carries one — which matters more here than
-	 * anywhere else, since Legends are the art a deck is recognised by.
+	 * Copies mutate deck state directly, which is local until the editor's Save; nothing here
+	 * writes to the server.
 	 */
 	import CardImage from '#lib/components/CardImage.svelte';
 	import { printTreatment } from '#lib/cards/derive.js';
@@ -24,7 +25,22 @@
 	import { MAX_COPIES, SIDEBOARD_SIZE } from '#lib/decks/legality.js';
 	import { deckPrinting, isDefaultPrinting } from '#lib/decks/printing.js';
 
-	let { slug = $bindable(null), deck }: { slug?: string | null; deck: DeckState } = $props();
+	let {
+		slug = $bindable(null),
+		deck,
+		/**
+		 * Whether the viewer may change Printings (`choose-printing`, `#lib/entitlements.ts`).
+		 *
+		 * False **hides the section outright** rather than disabling it: an unentitled user has no
+		 * use for a grid of art they can't pick, and a locked control invites a click that can only
+		 * disappoint. Copies and removal are ungated, so the manager still has a job.
+		 *
+		 * Stored choices are untouched either way — the deck keeps its art and keeps rendering it,
+		 * and the editor's `save` action carries printings forward so an unentitled edit can't
+		 * quietly erase them (`#lib/decks/carry-printings.ts`).
+		 */
+		canChoosePrinting = false
+	}: { slug?: string | null; deck: DeckState; canChoosePrinting?: boolean } = $props();
 
 	const card = $derived(slug ? cardBySlug(slug) : undefined);
 	const isLegend = $derived(card?.cardType === 'Legend');
@@ -177,85 +193,87 @@
 					</div>
 				{/if}
 
-				<div class="mt-4 flex min-h-0 flex-1 flex-col">
-					<div class="mb-2 flex items-baseline justify-between gap-2">
-						<h3 class="text-xs font-medium tracking-widest text-muted uppercase">Printing</h3>
+				{#if canChoosePrinting}
+					<div class="mt-4 flex min-h-0 flex-1 flex-col">
+						<div class="mb-2 flex items-baseline justify-between gap-2">
+							<h3 class="text-xs font-medium tracking-widest text-muted uppercase">Printing</h3>
 
-						<div class="flex items-center gap-2">
-							{#if locales.length > 1}
-								<!-- Language filter. A segmented control rather than a dropdown: there are two
+							<div class="flex items-center gap-2">
+								{#if locales.length > 1}
+									<!-- Language filter. A segmented control rather than a dropdown: there are two
 								     locales today, and a menu holding two items costs a click to tell you what a
 								     pair of buttons says outright. -->
-								<div class="flex overflow-hidden rounded border border-edge text-[0.6rem]">
-									<button
-										type="button"
-										onclick={() => (locale = null)}
-										class="px-1.5 py-0.5 transition-colors hover:text-bright"
-										class:bg-raised={locale === null}
-										class:text-bright={locale === null}
-										class:text-muted={locale !== null}>All</button
-									>
-									{#each locales as code (code)}
+									<div class="flex overflow-hidden rounded border border-edge text-[0.6rem]">
 										<button
 											type="button"
-											onclick={() => (locale = code)}
-											class="px-1.5 py-0.5 uppercase transition-colors hover:text-bright"
-											class:bg-raised={locale === code}
-											class:text-bright={locale === code}
-											class:text-muted={locale !== code}>{code}</button
+											onclick={() => (locale = null)}
+											class="px-1.5 py-0.5 transition-colors hover:text-bright"
+											class:bg-raised={locale === null}
+											class:text-bright={locale === null}
+											class:text-muted={locale !== null}>All</button
 										>
-									{/each}
-								</div>
-							{/if}
+										{#each locales as code (code)}
+											<button
+												type="button"
+												onclick={() => (locale = code)}
+												class="px-1.5 py-0.5 uppercase transition-colors hover:text-bright"
+												class:bg-raised={locale === code}
+												class:text-bright={locale === code}
+												class:text-muted={locale !== code}>{code}</button
+											>
+										{/each}
+									</div>
+								{/if}
 
-							<button
-								type="button"
-								onclick={() => deck.setPrinting(card, null)}
-								disabled={isDefaultPrinting(card, deck.printingIdOf(card))}
-								class="text-[0.65rem] text-muted hover:text-neon disabled:opacity-40"
-								>Use default</button
-							>
-						</div>
-					</div>
-
-					<!-- `p-1` inside the scroller, not `pr-1`: the selected tile's ring is drawn *outside*
-					     its border box, so with the grid flush against an `overflow-y-auto` container the
-					     ring was clipped on every edge. The padding gives it somewhere to be. -->
-					<ul class="grid min-h-0 flex-1 grid-cols-5 gap-2 overflow-y-auto p-1">
-						{#each visiblePrintings as option (option.id)}
-							{@const active = option.id === printing.id}
-							<li>
 								<button
 									type="button"
-									onclick={() => deck.setPrinting(card, option.id)}
-									aria-current={active ? 'true' : undefined}
-									title="{setLabel(option.setId)} · {printTreatment(option)} · {option.locale}"
-									class="relative block w-full overflow-hidden rounded transition-transform
-										hover:-translate-y-0.5"
-									class:ring-2={active}
-									class:ring-neon={active}
+									onclick={() => deck.setPrinting(card, null)}
+									disabled={isDefaultPrinting(card, deck.printingIdOf(card))}
+									class="text-[0.65rem] text-muted hover:text-neon disabled:opacity-40"
+									>Use default</button
 								>
-									<CardImage
-										printingId={option.id}
-										thumbhash={option.thumbhash}
-										color={card.color}
-										alt=""
-										sizes="96px"
-									/>
-									<span
-										class="pointer-events-none absolute inset-x-0 bottom-0 flex items-center gap-0.5
-											bg-void/85 px-1 font-mono text-[0.5rem] text-muted tabular-nums"
+							</div>
+						</div>
+
+						<!-- `p-1` inside the scroller, not `pr-1`: the selected tile's ring is drawn *outside*
+					     its border box, so with the grid flush against an `overflow-y-auto` container the
+					     ring was clipped on every edge. The padding gives it somewhere to be. -->
+						<ul class="grid min-h-0 flex-1 grid-cols-5 gap-2 overflow-y-auto p-1">
+							{#each visiblePrintings as option (option.id)}
+								{@const active = option.id === printing.id}
+								<li>
+									<button
+										type="button"
+										onclick={() => deck.setPrinting(card, option.id)}
+										aria-current={active ? 'true' : undefined}
+										title="{setLabel(option.setId)} · {printTreatment(option)} · {option.locale}"
+										class="relative block w-full overflow-hidden rounded transition-transform
+										hover:-translate-y-0.5"
+										class:ring-2={active}
+										class:ring-neon={active}
 									>
-										<span class="truncate">{option.collectorNumber}</span>
-										{#if option.locale !== 'en'}
-											<span class="ml-auto uppercase">{option.locale}</span>
-										{/if}
-									</span>
-								</button>
-							</li>
-						{/each}
-					</ul>
-				</div>
+										<CardImage
+											printingId={option.id}
+											thumbhash={option.thumbhash}
+											color={card.color}
+											alt=""
+											sizes="96px"
+										/>
+										<span
+											class="pointer-events-none absolute inset-x-0 bottom-0 flex items-center gap-0.5
+											bg-void/85 px-1 font-mono text-[0.5rem] text-muted tabular-nums"
+										>
+											<span class="truncate">{option.collectorNumber}</span>
+											{#if option.locale !== 'en'}
+												<span class="ml-auto uppercase">{option.locale}</span>
+											{/if}
+										</span>
+									</button>
+								</li>
+							{/each}
+						</ul>
+					</div>
+				{/if}
 
 				<div class="mt-4 flex items-center justify-between gap-2 border-t border-edge pt-3">
 					{#if isLegend}

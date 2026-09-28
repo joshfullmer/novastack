@@ -1,7 +1,10 @@
 import { error, fail, redirect } from '@sveltejs/kit';
 import * as v from 'valibot';
+import { carryForwardPrintings } from '#lib/decks/carry-printings.js';
 import { deckPath } from '#lib/decks/links.js';
 import { DeckVersionPayloadSchema } from '#lib/decks/schema.js';
+import { can } from '#lib/entitlements.js';
+import { featuresFor } from '#lib/server/db/entitlements.js';
 import { getDeck, getLatestVersion, renameDeck, saveDeckVersion } from '#lib/server/db/decks.js';
 import { ensureDeckShareCode } from '#lib/server/db/share-codes.js';
 import { readViewPref } from '#lib/server/view-pref.js';
@@ -33,6 +36,15 @@ export const load: PageServerLoad = async (event) => {
 
 	return {
 		deckId: deck.id,
+		/**
+		 * Whether this user may choose Printings (`#lib/entitlements.ts`). The editor hides the
+		 * picker outright when false — see the `save` action below, which re-derives this rather
+		 * than trusting it, because page data is a rendering hint and not a permission.
+		 */
+		canChoosePrinting: can(
+			await featuresFor(event.locals.db, event.locals.user?.id),
+			'choose-printing'
+		),
 		/** So "Discard changes" and the post-save redirect point straight at the canonical short
 		 * URL instead of bouncing through `/decks/[id]`'s 301. */
 		shareCode: await ensureDeckShareCode(event.locals.db, deck),
@@ -69,7 +81,33 @@ export const actions: Actions = {
 			return fail(400, { message: 'Malformed deck payload' });
 		}
 
-		await saveDeckVersion(event.locals.db, deck.id, payload);
+		/**
+		 * An unentitled save keeps whatever Printings the deck already had, rather than taking the
+		 * client's word for it (`carryForwardPrintings` explains the reasoning at length). Two
+		 * failure modes this closes: a lapsed subscriber silently losing every choice the next time
+		 * they touch a quantity, and a hand-crafted POST setting printings without the grant.
+		 *
+		 * Re-derived here, never read from the form: what the page was *rendered* with is a hint,
+		 * and this is the boundary that actually decides.
+		 */
+		const entitled = can(
+			await featuresFor(event.locals.db, event.locals.user?.id),
+			'choose-printing'
+		);
+		let toStore = payload;
+		if (!entitled) {
+			const current = await getLatestVersion(event.locals.db, deck.id);
+			const stored = current
+				? v.parse(DeckVersionPayloadSchema, {
+						entries: current.entries,
+						legends: current.legends,
+						sideboard: current.sideboard
+					})
+				: null;
+			toStore = carryForwardPrintings(stored, payload);
+		}
+
+		await saveDeckVersion(event.locals.db, deck.id, toStore);
 		return redirect(303, deckPath(deck));
 	}
 };

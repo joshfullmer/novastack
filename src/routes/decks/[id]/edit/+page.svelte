@@ -1,11 +1,16 @@
 <script lang="ts">
 	/**
-	 * The deckbuilder screen — `docs/spec/deckbuilder.md` §5. Ported from the winning prototype
-	 * (`src/routes/prototype/deckbuilder/VariantA.svelte`) and wired to real persistence: state is
-	 * seeded from the loaded deck, mutated locally via `#lib/decks/deck-state.svelte.js`, and
-	 * saved through the `save` action as one new `deck_versions` row.
+	 * The deckbuilder screen — `docs/spec/deckbuilder.md` §5. State is seeded from the loaded deck,
+	 * mutated locally via `#lib/decks/deck-state.svelte.js`, and saved through the `save` action as
+	 * one new `deck_versions` row.
 	 *
-	 * Owner-only — the read-only counterpart other users see is `/decks/[id]`.
+	 * Owner-only — the read-only counterpart other users see is `/d/[code]`.
+	 *
+	 * **Per-entry editing happens in `DeckEntryManager`**, opened by clicking an entry. That came
+	 * out of two variant rounds (`.scratch/` has the notes): controls small enough to sit beside a
+	 * row in a 360px rail were never comfortable to hit, so the rail widened to 480px, the Gallery
+	 * went 3-up, and the row became a target rather than a host for controls. Copies are still
+	 * one click away, via the steppers overlaid on each tile.
 	 *
 	 * Export (§6) is deliberately absent — sharing/export is Phase 2, not built yet.
 	 */
@@ -26,6 +31,7 @@
 		MIN_DECK_SIZE,
 		SIDEBOARD_SIZE
 	} from '#lib/decks/legality.js';
+	import DeckEntryManager from '#lib/components/DeckEntryManager.svelte';
 	import { createDeckState } from '#lib/decks/deck-state.svelte.js';
 	import { deckPrinting } from '#lib/decks/printing.js';
 	import { groupDeckEntries, groupMatchesByType } from '#lib/decks/grouping.js';
@@ -33,31 +39,19 @@
 	import { cookieState } from '#lib/cookie-state.svelte.js';
 	import { persistedIntState } from '#lib/persisted-state.svelte.js';
 
-	// PROTOTYPE — variant F, iterating. `off` is still here to compare against production; D and E
-	// lost and are deleted. Delete this block, every `PROTOTYPE` marker below, and the files it
-	// imports. See `PROTOTYPE-NOTES-2.md` in this directory.
-	import PrototypeSwitcher from '#lib/components/PrototypeSwitcher.svelte';
-	import EntryManagerModal from './EntryManagerModal.svelte';
-	import { currentUrl } from '#lib/filters/shallow.js';
-
-	const PROTO_VARIANTS = ['off', 'F'] as const;
-	const PROTO_NAMES = {
-		off: 'production — no picker',
-		F: 'wide rail + manager modal'
-	};
-	const protoVariant = $derived(currentUrl().searchParams.get('variant') ?? 'off');
-	/** Round 1 died on the 360px rail, so width is a variable of the round, not a constant. */
-	const protoWide = $derived(protoVariant === 'F');
-	/** Clicking an entry opens the manager rather than removing a copy. */
-	const protoModal = $derived(protoVariant === 'F');
-	/** Which entry the manager is open on. */
-	let managing = $state<string | null>(null);
 	/**
-	 * Tiles draw the deck's **chosen** printing now, not the stub's — `setPrinting` writes to deck
-	 * state, so a choice survives Save. `off` renders the same thing for the same reason: an entry
-	 * with no `printingId` resolves to the Default Printing either way.
+	 * Which entry the manager (`DeckEntryManager`) is open on, by card slug — `null` when closed.
+	 *
+	 * Clicking an entry opens it rather than removing a copy. That gesture change came out of a
+	 * variant round: a per-entry control small enough to fit beside a row was never comfortable to
+	 * hit, and a single click that silently destroys a copy was a destructive default nobody asked
+	 * for. The rail is 480px and the Gallery is 3-up for the same reason — at 4-up in 360px the
+	 * tiles were too small to read the art anybody came here to choose.
 	 */
-	const protoPrinting = (card: Card) => deckPrinting(card, deck.printingIdOf(card));
+	let managing = $state<string | null>(null);
+
+	/** The printing a tile draws — the deck's own choice, else the Card's Default Printing. */
+	const entryPrinting = (card: Card) => deckPrinting(card, deck.printingIdOf(card));
 
 	const legendSlots = Array.from({ length: LEGEND_SLOTS }, (_, index) => index);
 
@@ -257,26 +251,24 @@
 	<title>{data.deckName} — novastack</title>
 </svelte:head>
 
-<!-- PROTOTYPE — one definition, used by both piles' List rows. -->
-{#snippet protoRowControls(card: Card)}
-	{#if protoModal}
-		<button
-			type="button"
-			onclick={() => (managing = card.slug)}
-			aria-label="Manage {card.name}"
-			class="shrink-0 rounded-md border border-edge px-1.5 text-muted transition-colors
-				hover:border-neon-dim hover:text-neon">⋯</button
-		>
-	{/if}
+<!-- One definition, used by both piles' List rows. -->
+{#snippet manageButton(card: Card)}
+	<button
+		type="button"
+		onclick={() => (managing = card.slug)}
+		aria-label="Manage {card.name}"
+		class="shrink-0 rounded-md border border-edge px-1.5 text-muted transition-colors
+			hover:border-neon-dim hover:text-neon">⋯</button
+	>
 {/snippet}
 
 <!--
-	PROTOTYPE — the overlaid copy controls, bottom corners of a Gallery tile.
-	`−` left, `+` right: the two are mirrored so neither sits under the cursor after the other, and
-	the quantity badge keeps the centre. Only worth doing at F's tile size — at 80px these would
-	cover the art they're meant to leave visible.
+	The overlaid copy controls, in a Gallery tile's bottom corners.
+	`−` left, `+` right: mirrored so neither sits under the cursor after the other, leaving the
+	quantity badge the centre. Only viable at this tile size — at the old 80px they'd have covered
+	the art they exist to leave visible.
 -->
-{#snippet protoTileSteppers(card: Card, pile: 'deck' | 'sideboard')}
+{#snippet tileSteppers(card: Card, pile: 'deck' | 'sideboard')}
 	{@const canAdd = pile === 'deck' ? deck.canAddCopy(card) : deck.canAddToSideboard(card)}
 	<span class="pointer-events-none absolute inset-x-1 bottom-1 flex items-end justify-between">
 		<button
@@ -557,23 +549,17 @@
 		<div class="flex gap-2">
 			{#each legendSlots as slot (slot)}
 				{@const legend = deck.legends[slot]}
-				<!-- PROTOTYPE — a Legend click removed it outright, which is the same destructive
-				     default the Gallery tiles had, on the three cards a deck is *built* around.
-				     Under F it opens the manager instead; `off` keeps the old behaviour. -->
+				<!-- A Legend click used to remove it outright — the same destructive default the Gallery
+				     tiles had, on the three cards a deck is *built* around. It opens the manager now,
+				     where removal is a labelled button. -->
 				<button
 					type="button"
 					disabled={!legend}
-					onclick={() => legend && (protoModal ? (managing = legend.slug) : toggleLegend(legend))}
-					onmouseenter={(event) => legend && !protoWide && onRowEnter(legend, event)}
-					aria-label={legend
-						? protoModal
-							? `Manage ${legend.name}`
-							: `Remove ${legend.name}`
-						: `Legend slot ${slot + 1}: empty`}
-					class="flex items-center justify-center overflow-hidden rounded-md border border-edge
-						disabled:cursor-default {protoWide ? 'size-20' : 'size-14'}"
-					class:hover:border-card-red={!!legend && !protoModal}
-					class:hover:border-neon-dim={!!legend && protoModal}
+					onclick={() => legend && (managing = legend.slug)}
+					aria-label={legend ? `Manage ${legend.name}` : `Legend slot ${slot + 1}: empty`}
+					class="flex size-20 items-center justify-center overflow-hidden rounded-md border
+						border-edge disabled:cursor-default"
+					class:hover:border-neon-dim={!!legend}
 				>
 					{#if legend}
 						{@const legendPrinting = deckPrinting(legend, deck.printingIdOf(legend))}
@@ -582,7 +568,7 @@
 							thumbhash={legendPrinting.thumbhash}
 							color={legend.color}
 							alt={legend.name}
-							sizes={protoWide ? '80px' : '56px'}
+							sizes="80px"
 						/>
 					{:else}
 						<span class="text-muted">+</span>
@@ -655,26 +641,17 @@
 						class="flex items-center justify-between gap-2 border-b border-edge/50 px-4 py-1.5"
 						onmouseenter={(event) => onRowEnter(entry.card, event)}
 					>
-						<!-- PROTOTYPE — under D/F the whole name is the target, since "click the entry" is
-						     the gesture being tested; `off` keeps a plain span. -->
-						{#if protoModal}
-							<button
-								type="button"
-								onclick={() => (managing = entry.card.slug)}
-								class="min-w-0 flex-1 truncate text-left text-sm hover:text-bright
-									{COLOR_TEXT[entry.card.color]}"
-							>
-								<span class="mr-1.5 text-muted tabular-nums">{entry.quantity}×</span>{entry.card
-									.name}
-							</button>
-						{:else}
-							<span class="min-w-0 flex-1 truncate text-sm {COLOR_TEXT[entry.card.color]}">
-								<span class="mr-1.5 text-muted tabular-nums">{entry.quantity}×</span>{entry.card
-									.name}
-							</span>
-						{/if}
-						<!-- PROTOTYPE -->
-						{@render protoRowControls(entry.card)}
+						<!-- The whole name is the target: "click the entry to manage it" is the gesture, and
+						     a 24px `⋯` beside it would be the thing round one proved doesn't work. -->
+						<button
+							type="button"
+							onclick={() => (managing = entry.card.slug)}
+							class="min-w-0 flex-1 truncate text-left text-sm hover:text-bright
+								{COLOR_TEXT[entry.card.color]}"
+						>
+							<span class="mr-1.5 text-muted tabular-nums">{entry.quantity}×</span>{entry.card.name}
+						</button>
+						{@render manageButton(entry.card)}
 						<button
 							type="button"
 							onclick={() => removeCard(entry.card)}
@@ -698,22 +675,18 @@
 					<span class="font-semibold text-bright">{group.label}</span>
 					<span class="text-muted tabular-nums">{group.quantity}</span>
 				</p>
-				<!-- PROTOTYPE — 3 across in the wide variants; 4 is what 360px forced. -->
-				<ul class="grid gap-2 {protoWide ? 'grid-cols-3' : 'grid-cols-4'}">
+				<!-- 3 across, not 4: at 4-up in this rail the tiles were ~80px, too small to read the
+				     art. See the `managing` comment above. -->
+				<ul class="grid grid-cols-3 gap-2">
 					{#each group.entries as entry (entry.card.slug)}
-						{@const printing = protoPrinting(entry.card)}
+						{@const printing = entryPrinting(entry.card)}
 						<li class="relative">
-							<!-- PROTOTYPE — what a tile click *means* is the question here. `off` and E remove
-							     a copy (E adds a stepper below, so the gesture is redundant there and the
-							     tile is inert); D and F open the manager instead, which is how the
-							     destructive single click goes away. -->
+							<!-- No hover preview here, unlike the List rows: at this size the tile *is* the
+							     preview, and a second copy of the art floating beside it was just noise. -->
 							<button
 								type="button"
-								onclick={() => (protoModal ? (managing = entry.card.slug) : removeCard(entry.card))}
-								onmouseenter={(event) => !protoWide && onRowEnter(entry.card, event)}
-								aria-label={protoModal
-									? `Manage ${entry.card.name}`
-									: `Remove one ${entry.card.name}`}
+								onclick={() => (managing = entry.card.slug)}
+								aria-label="Manage {entry.card.name}"
 								class="block w-full overflow-hidden rounded-md"
 							>
 								<CardImage
@@ -721,7 +694,7 @@
 									thumbhash={printing.thumbhash}
 									color={entry.card.color}
 									alt={entry.card.name}
-									sizes={protoWide ? '140px' : '80px'}
+									sizes="140px"
 								/>
 								<!-- Same chamfered-corner clip as the Eddiable "€$" badge (`CardStats.svelte`)
 									— see the deck view's own quantity badge for the two-layer rationale. -->
@@ -735,10 +708,8 @@
 									</span>
 								</span>
 							</button>
-							<!-- PROTOTYPE — copies without opening anything, overlaid on the art. -->
-							{#if protoWide}
-								{@render protoTileSteppers(entry.card, 'deck')}
-							{/if}
+							<!-- Copies without opening anything, overlaid on the art. -->
+							{@render tileSteppers(entry.card, 'deck')}
 						</li>
 					{/each}
 				</ul>
@@ -785,25 +756,17 @@
 							last:border-b-0"
 						onmouseenter={(event) => onRowEnter(entry.card, event)}
 					>
-						<!-- PROTOTYPE — the 7 get the same treatment as the main deck; round 1 skipped them
-						     and that just made the two piles inconsistent to judge. -->
-						{#if protoModal}
-							<button
-								type="button"
-								onclick={() => (managing = entry.card.slug)}
-								class="min-w-0 flex-1 truncate text-left text-sm hover:text-bright
-									{COLOR_TEXT[entry.card.color]}"
-							>
-								<span class="mr-1.5 text-muted tabular-nums">{entry.quantity}×</span>{entry.card
-									.name}
-							</button>
-						{:else}
-							<span class="min-w-0 flex-1 truncate text-sm {COLOR_TEXT[entry.card.color]}">
-								<span class="mr-1.5 text-muted tabular-nums">{entry.quantity}×</span>{entry.card
-									.name}
-							</span>
-						{/if}
-						{@render protoRowControls(entry.card)}
+						<!-- The 7 get the same treatment as the main deck — one gesture per deck, not per
+						     pile. -->
+						<button
+							type="button"
+							onclick={() => (managing = entry.card.slug)}
+							class="min-w-0 flex-1 truncate text-left text-sm hover:text-bright
+								{COLOR_TEXT[entry.card.color]}"
+						>
+							<span class="mr-1.5 text-muted tabular-nums">{entry.quantity}×</span>{entry.card.name}
+						</button>
+						{@render manageButton(entry.card)}
 						<button
 							type="button"
 							onclick={() => removeFromSideboard(entry.card)}
@@ -816,21 +779,14 @@
 			</ul>
 		{:else}
 			<!-- Click removes one, same gesture as the main deck's own Gallery mode. -->
-			<ul
-				class="grid gap-2 border-t border-edge/50 p-3 {protoWide ? 'grid-cols-3' : 'grid-cols-4'}"
-				role="list"
-			>
+			<ul class="grid grid-cols-3 gap-2 border-t border-edge/50 p-3" role="list">
 				{#each deck.sideboard as entry (entry.card.slug)}
-					{@const sidePrinting = protoPrinting(entry.card)}
+					{@const sidePrinting = entryPrinting(entry.card)}
 					<li class="relative">
 						<button
 							type="button"
-							onclick={() =>
-								protoModal ? (managing = entry.card.slug) : removeFromSideboard(entry.card)}
-							onmouseenter={(event) => !protoWide && onRowEnter(entry.card, event)}
-							aria-label={protoModal
-								? `Manage ${entry.card.name}`
-								: `Remove one ${entry.card.name} from the sideboard`}
+							onclick={() => (managing = entry.card.slug)}
+							aria-label="Manage {entry.card.name}"
 							class="block w-full overflow-hidden rounded-md"
 						>
 							<CardImage
@@ -838,7 +794,7 @@
 								thumbhash={sidePrinting.thumbhash}
 								color={entry.card.color}
 								alt={entry.card.name}
-								sizes={protoWide ? '140px' : '80px'}
+								sizes="140px"
 							/>
 							{#if entry.quantity > 1}
 								<!-- Same chamfered badge as the main-deck gallery above, but only past one
@@ -857,10 +813,7 @@
 								</span>
 							{/if}
 						</button>
-						<!-- PROTOTYPE -->
-						{#if protoWide}
-							{@render protoTileSteppers(entry.card, 'sideboard')}
-						{/if}
+						{@render tileSteppers(entry.card, 'sideboard')}
 					</li>
 				{/each}
 			</ul>
@@ -907,12 +860,9 @@
 	<div class="flex min-w-0 flex-1 flex-col overflow-hidden">
 		{@render browsePanel()}
 	</div>
-	<!-- PROTOTYPE — the width under test. 360px is production; 480px is variants E and F. -->
-	<aside
-		class="flex shrink-0 flex-col border-x border-edge bg-shell {protoWide
-			? 'w-[480px]'
-			: 'w-[360px]'}"
-	>
+	<!-- 480px, up from 360: the rail hosts real per-entry controls now, and 3-up tiles at a size
+	     where the art is legible. The browse grid still holds 8 columns comfortably at 1800px. -->
+	<aside class="flex w-[480px] shrink-0 flex-col border-x border-edge bg-shell">
 		{@render deckPanel()}
 	</aside>
 </div>
@@ -970,8 +920,5 @@
 
 <CardHoverPreview {hovered} />
 
-<!-- PROTOTYPE — the manager is mounted once here, not per row. -->
-{#if protoModal}
-	<EntryManagerModal bind:slug={managing} {deck} />
-{/if}
-<PrototypeSwitcher variants={PROTO_VARIANTS} names={PROTO_NAMES} />
+<!-- Mounted once here, not per row. -->
+<DeckEntryManager bind:slug={managing} {deck} canChoosePrinting={data.canChoosePrinting} />
