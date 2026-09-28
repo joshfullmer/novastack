@@ -19,7 +19,7 @@
 	 */
 	import CardImage from '#lib/components/CardImage.svelte';
 	import { printTreatment } from '#lib/cards/derive.js';
-	import { LOCALES, type Locale } from '#lib/cards/vocabulary.js';
+	import { DEFAULT_LOCALE, LOCALES, type Locale } from '#lib/cards/vocabulary.js';
 	import { setLabel } from '#lib/collection/printing-search.js';
 	import { cardBySlug, type DeckState } from '#lib/decks/deck-state.svelte.js';
 	import { MAX_COPIES, SIDEBOARD_SIZE } from '#lib/decks/legality.js';
@@ -52,16 +52,23 @@
 	);
 
 	/**
-	 * Locale filter. `null` is "all", and the control only renders when the card actually has more
-	 * than one locale — on a 14-printing Adam Smasher the French rows are most of what you scroll
-	 * past, and on a single-locale card a filter would be furniture.
+	 * Locale filter — always exactly one language, never "all".
+	 *
+	 * A mixed list is the wrong default: on a 14-printing Adam Smasher the French rows are most of
+	 * what you scroll past, and nobody is weighing an English printing against the French one of the
+	 * same art — they've already decided which language they play in.
+	 *
+	 * `null` means "not chosen yet", resolving to **the locale of the printing this deck is already
+	 * using** — English for anything on a Default Printing. A hardcoded `en` would have hidden the
+	 * selected tile, and with it the selection ring, on any deck already using a French printing.
 	 */
 	let locale = $state<Locale | null>(null);
 	const locales = $derived(
 		card ? LOCALES.filter((code) => card.printings.some((option) => option.locale === code)) : []
 	);
+	const activeLocale = $derived(locale ?? printing?.locale ?? DEFAULT_LOCALE);
 	const visiblePrintings = $derived(
-		card ? card.printings.filter((option) => locale === null || option.locale === locale) : []
+		card ? card.printings.filter((option) => option.locale === activeLocale) : []
 	);
 
 	function close() {
@@ -200,26 +207,19 @@
 
 							<div class="flex items-center gap-2">
 								{#if locales.length > 1}
-									<!-- Language filter. A segmented control rather than a dropdown: there are two
-								     locales today, and a menu holding two items costs a click to tell you what a
-								     pair of buttons says outright. -->
+									<!-- A segmented control rather than a dropdown: two locales today, and a menu
+								     holding two items costs a click to say what a pair of buttons says outright.
+								     Hidden entirely for a single-locale card, where it would be furniture. -->
 									<div class="flex overflow-hidden rounded border border-edge text-[0.6rem]">
-										<button
-											type="button"
-											onclick={() => (locale = null)}
-											class="px-1.5 py-0.5 transition-colors hover:text-bright"
-											class:bg-raised={locale === null}
-											class:text-bright={locale === null}
-											class:text-muted={locale !== null}>All</button
-										>
 										{#each locales as code (code)}
 											<button
 												type="button"
 												onclick={() => (locale = code)}
+												aria-pressed={activeLocale === code}
 												class="px-1.5 py-0.5 uppercase transition-colors hover:text-bright"
-												class:bg-raised={locale === code}
-												class:text-bright={locale === code}
-												class:text-muted={locale !== code}>{code}</button
+												class:bg-raised={activeLocale === code}
+												class:text-bright={activeLocale === code}
+												class:text-muted={activeLocale !== code}>{code}</button
 											>
 										{/each}
 									</div>
