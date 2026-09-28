@@ -13,8 +13,8 @@
 	 *
 	 * Also manages **Legends**, which are a different shape: they occupy one of three slots rather
 	 * than carrying a quantity, so there are no copy steppers and removal frees the slot. Their
-	 * Printing is *not* editable — `deck_versions.legends` stores bare slugs, so there is nowhere to
-	 * put the choice without a payload change. See `PROTOTYPE-NOTES-2.md`.
+	 * Printing *is* editable — `LegendEntrySchema` now carries one — which matters more here than
+	 * anywhere else, since Legends are the art a deck is recognised by.
 	 */
 	import CardImage from '#lib/components/CardImage.svelte';
 	import { printTreatment } from '#lib/cards/derive.js';
@@ -134,9 +134,22 @@
 										onclick={pile.remove}
 										disabled={pile.count === 0}
 										aria-label="One fewer {card.name} in {pile.label}"
-										class="size-8 rounded-md border border-edge text-lg text-muted transition-colors
-											hover:border-card-red hover:text-card-red disabled:opacity-30">−</button
+										class="grid size-8 place-items-center rounded-md border border-edge text-muted
+											transition-colors hover:border-card-red hover:text-card-red disabled:opacity-30"
 									>
+										<!-- A stroke, not a `−`: `place-items-center` centres a glyph's *line box*, and
+										     `+`/`−` sit on the baseline with descender space below, so the ink lands
+										     visibly low. Centred in its own viewBox is centred by construction. See
+										     `QuantityStepper.svelte`, which hit this first. -->
+										<svg viewBox="0 0 12 12" class="size-3.5" aria-hidden="true">
+											<path
+												d="M2.5 6h7"
+												stroke="currentColor"
+												stroke-width="1.5"
+												stroke-linecap="round"
+											/>
+										</svg>
+									</button>
 									<span class="min-w-6 text-center text-xl font-semibold text-bright tabular-nums"
 										>{pile.count}</span
 									>
@@ -145,9 +158,18 @@
 										onclick={pile.add}
 										disabled={!pile.canAdd}
 										aria-label="One more {card.name} in {pile.label}"
-										class="size-8 rounded-md border border-edge text-lg text-muted transition-colors
-											hover:border-neon-dim hover:text-neon disabled:opacity-30">+</button
+										class="grid size-8 place-items-center rounded-md border border-edge text-muted
+											transition-colors hover:border-neon-dim hover:text-neon disabled:opacity-30"
 									>
+										<svg viewBox="0 0 12 12" class="size-3.5" aria-hidden="true">
+											<path
+												d="M6 2.5v7M2.5 6h7"
+												stroke="currentColor"
+												stroke-width="1.5"
+												stroke-linecap="round"
+											/>
+										</svg>
+									</button>
 								</div>
 								<p class="mt-1.5 text-[0.65rem] text-muted/70">{pile.hint}</p>
 							</div>
@@ -186,17 +208,13 @@
 								</div>
 							{/if}
 
-							{#if isLegend}
-								<span class="text-[0.65rem] text-muted/70">Fixed for Legends</span>
-							{:else}
-								<button
-									type="button"
-									onclick={() => deck.setPrinting(card, null)}
-									disabled={isDefaultPrinting(card, deck.printingIdOf(card))}
-									class="text-[0.65rem] text-muted hover:text-neon disabled:opacity-40"
-									>Use default</button
-								>
-							{/if}
+							<button
+								type="button"
+								onclick={() => deck.setPrinting(card, null)}
+								disabled={isDefaultPrinting(card, deck.printingIdOf(card))}
+								class="text-[0.65rem] text-muted hover:text-neon disabled:opacity-40"
+								>Use default</button
+							>
 						</div>
 					</div>
 
@@ -209,12 +227,11 @@
 							<li>
 								<button
 									type="button"
-									onclick={() => !isLegend && deck.setPrinting(card, option.id)}
-									disabled={isLegend}
+									onclick={() => deck.setPrinting(card, option.id)}
 									aria-current={active ? 'true' : undefined}
 									title="{setLabel(option.setId)} · {printTreatment(option)} · {option.locale}"
 									class="relative block w-full overflow-hidden rounded transition-transform
-										disabled:cursor-default {isLegend ? '' : 'hover:-translate-y-0.5'}"
+										hover:-translate-y-0.5"
 									class:ring-2={active}
 									class:ring-neon={active}
 								>

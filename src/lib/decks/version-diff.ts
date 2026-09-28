@@ -9,7 +9,7 @@
  * between the two piles is the single most common edit a tuned list gets, and a merged diff would
  * render it as nothing at all — the combined quantity doesn't change.
  */
-import type { DeckEntryPayload } from './schema.js';
+import type { DeckEntryPayload, LegendEntryPayload } from './schema.js';
 
 export type EntryDiff =
 	| { kind: 'added'; cardSlug: string; quantity: number }
@@ -23,7 +23,11 @@ export type VersionDiff = {
 	legendsRemoved: string[];
 };
 
-type Version = { entries: DeckEntryPayload[]; legends: string[]; sideboard: DeckEntryPayload[] };
+type Version = {
+	entries: DeckEntryPayload[];
+	legends: LegendEntryPayload[];
+	sideboard: DeckEntryPayload[];
+};
 
 function diffEntries(
 	before: readonly DeckEntryPayload[],
@@ -49,13 +53,17 @@ function diffEntries(
 
 /** `prev` is `null` for a deck's first version — diffs against an empty deck. */
 export function diffVersions(prev: Version | null, curr: Version): VersionDiff {
-	const prevLegends = new Set(prev?.legends ?? []);
-	const currLegends = new Set(curr.legends);
+	// By slug, ignoring `printingId` — the same rule `diffEntries` follows, and for the same reason
+	// given at the top of this file: swapping a card's art is not a change to the decklist.
+	const prevLegends = new Set((prev?.legends ?? []).map((legend) => legend.cardSlug));
+	const currLegends = new Set(curr.legends.map((legend) => legend.cardSlug));
 
 	return {
 		entries: diffEntries(prev?.entries ?? [], curr.entries),
 		sideboard: diffEntries(prev?.sideboard ?? [], curr.sideboard),
-		legendsAdded: curr.legends.filter((slug) => !prevLegends.has(slug)),
+		legendsAdded: curr.legends
+			.map((legend) => legend.cardSlug)
+			.filter((slug) => !prevLegends.has(slug)),
 		legendsRemoved: [...prevLegends].filter((slug) => !currLegends.has(slug))
 	};
 }

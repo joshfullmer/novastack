@@ -241,7 +241,10 @@
 		const blob = await composeDeckImage({
 			deckName: data.deckName,
 			ownerName: data.ownerName,
-			legends: deck.legends,
+			legends: deck.legends.map((legend) => ({
+				card: legend,
+				printingId: deck.printingIdOf(legend)
+			})),
 			mainGroups,
 			sideboard: deck.sideboard,
 			shareUrl: window.location.href
@@ -308,10 +311,11 @@
 			     weight pushing the real content down a screen's worth of scroll. -->
 			<div class="hidden lg:sticky lg:top-6 lg:block lg:self-start">
 				{#if shown}
+					{@const shownPrinting = deckPrinting(shown, deck.printingIdOf(shown))}
 					<div class="card-frame overflow-hidden rounded-lg border border-edge">
 						<CardImage
-							printingId={shown.printings[0].id}
-							thumbhash={shown.printings[0].thumbhash}
+							printingId={shownPrinting.id}
+							thumbhash={shownPrinting.thumbhash}
 							color={shown.color}
 							alt={shown.name}
 							sizes="240px"
@@ -601,6 +605,7 @@
 						{#each legendSlots as slot (slot)}
 							{@const legend = deck.legends[slot]}
 							{#if legend}
+								{@const legendPrinting = deckPrinting(legend, deck.printingIdOf(legend))}
 								<a
 									href={resolve('/cards/[slug]', { slug: legend.slug })}
 									class="card-frame w-16 shrink-0 overflow-hidden rounded-md border border-edge
@@ -608,8 +613,8 @@
 									onmouseenter={() => (focused = legend)}
 								>
 									<CardImage
-										printingId={legend.printings[0].id}
-										thumbhash={legend.printings[0].thumbhash}
+										printingId={legendPrinting.id}
+										thumbhash={legendPrinting.thumbhash}
 										color={legend.color}
 										alt={legend.name}
 										sizes="96px"

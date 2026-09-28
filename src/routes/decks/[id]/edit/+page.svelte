@@ -288,9 +288,18 @@
 				else removeFromSideboard(card);
 			}}
 			aria-label="One fewer {card.name}"
-			class="pointer-events-auto size-6 rounded-md border border-edge bg-void/90 text-muted
-				backdrop-blur-sm transition-colors hover:border-card-red hover:text-card-red">−</button
+			class="pointer-events-auto grid size-6 place-items-center rounded-md border border-edge
+				bg-void/90 text-muted backdrop-blur-sm transition-colors hover:border-card-red
+				hover:text-card-red"
 		>
+			<!-- A stroke, not a `−` glyph: `place-items-center` centres the *line box*, and `+`/`−`
+			     sit on the baseline with descender space under them, so the ink reads low in a box
+			     this small. A path centred in its own viewBox is centred by construction, in any
+			     font. `QuantityStepper.svelte` documents the same finding. -->
+			<svg viewBox="0 0 12 12" class="size-3" aria-hidden="true">
+				<path d="M2.5 6h7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+			</svg>
+		</button>
 		<button
 			type="button"
 			onclick={(event) => {
@@ -300,10 +309,19 @@
 			}}
 			disabled={!canAdd}
 			aria-label="One more {card.name}"
-			class="pointer-events-auto size-6 rounded-md border border-edge bg-void/90 text-muted
-				backdrop-blur-sm transition-colors hover:border-neon-dim hover:text-neon
-				disabled:opacity-30">+</button
+			class="pointer-events-auto grid size-6 place-items-center rounded-md border border-edge
+				bg-void/90 text-muted backdrop-blur-sm transition-colors hover:border-neon-dim
+				hover:text-neon disabled:opacity-30"
 		>
+			<svg viewBox="0 0 12 12" class="size-3" aria-hidden="true">
+				<path
+					d="M6 2.5v7M2.5 6h7"
+					stroke="currentColor"
+					stroke-width="1.5"
+					stroke-linecap="round"
+				/>
+			</svg>
+		</button>
 	</span>
 {/snippet}
 
@@ -558,9 +576,10 @@
 					class:hover:border-neon-dim={!!legend && protoModal}
 				>
 					{#if legend}
+						{@const legendPrinting = deckPrinting(legend, deck.printingIdOf(legend))}
 						<CardImage
-							printingId={legend.printings[0].id}
-							thumbhash={legend.printings[0].thumbhash}
+							printingId={legendPrinting.id}
+							thumbhash={legendPrinting.thumbhash}
 							color={legend.color}
 							alt={legend.name}
 							sizes={protoWide ? '80px' : '56px'}

@@ -5,7 +5,12 @@
  */
 import { describe, expect, it } from 'vitest';
 import * as v from 'valibot';
-import { DeckEntrySchema, DeckVersionPayloadSchema } from './schema.js';
+import {
+	DeckEntrySchema,
+	DeckVersionPayloadSchema,
+	LegendEntrySchema,
+	legendSlugsFromJson
+} from './schema.js';
 
 describe('DeckEntrySchema', () => {
 	it('parses a full entry', () => {
@@ -29,13 +34,31 @@ describe('DeckEntrySchema', () => {
 });
 
 describe('DeckVersionPayloadSchema', () => {
-	it('parses a full payload', () => {
+	it('parses a full payload, normalizing legends to objects', () => {
 		const payload = {
 			entries: [{ cardSlug: 'v-streetkid', quantity: 1 }],
-			legends: ['adam-smasher', 'alt-cunningham'],
+			legends: ['adam-smasher', { cardSlug: 'alt-cunningham', printingId: 'alt-beta' }],
 			sideboard: [{ cardSlug: 'chrome-fang', quantity: 2 }]
 		};
-		expect(v.parse(DeckVersionPayloadSchema, payload)).toEqual(payload);
+		expect(v.parse(DeckVersionPayloadSchema, payload)).toEqual({
+			...payload,
+			legends: [
+				{ cardSlug: 'adam-smasher' },
+				{ cardSlug: 'alt-cunningham', printingId: 'alt-beta' }
+			]
+		});
+	});
+
+	it('accepts a legends array of bare slugs — every row written before printings were choosable', () => {
+		const parsed = v.parse(DeckVersionPayloadSchema, {
+			entries: [],
+			legends: ['adam-smasher', 'alt-cunningham', 'royce']
+		});
+		expect(parsed.legends).toEqual([
+			{ cardSlug: 'adam-smasher' },
+			{ cardSlug: 'alt-cunningham' },
+			{ cardSlug: 'royce' }
+		]);
 	});
 
 	it('parses zero entries and zero legends — a brand-new draft deck', () => {
@@ -71,5 +94,42 @@ describe('DeckVersionPayloadSchema', () => {
 	it('holds the sideboard to the same per-entry rules as the main deck', () => {
 		const payload = { entries: [], legends: [], sideboard: [{ cardSlug: 'x', quantity: 4 }] };
 		expect(() => v.parse(DeckVersionPayloadSchema, payload)).toThrow();
+	});
+});
+
+describe('LegendEntrySchema', () => {
+	it('turns a bare slug into an object, so downstream sees one shape', () => {
+		expect(v.parse(LegendEntrySchema, 'adam-smasher')).toEqual({ cardSlug: 'adam-smasher' });
+	});
+
+	it('keeps a chosen printing', () => {
+		const legend = { cardSlug: 'adam-smasher', printingId: 'adam-beta' };
+		expect(v.parse(LegendEntrySchema, legend)).toEqual(legend);
+	});
+
+	it('rejects an empty slug in either shape', () => {
+		expect(() => v.parse(LegendEntrySchema, '')).toThrow();
+		expect(() => v.parse(LegendEntrySchema, { cardSlug: '' })).toThrow();
+	});
+
+	it('rejects an empty printingId rather than storing a meaningless one', () => {
+		expect(() => v.parse(LegendEntrySchema, { cardSlug: 'x', printingId: '' })).toThrow();
+	});
+});
+
+describe('legendSlugsFromJson', () => {
+	it('reads both stored shapes, and a mix of them', () => {
+		expect(
+			legendSlugsFromJson(['adam-smasher', { cardSlug: 'royce', printingId: 'royce-beta' }])
+		).toEqual(['adam-smasher', 'royce']);
+	});
+
+	it('is empty for anything that is not an array of legends', () => {
+		// The deck-list pages read this straight off the row, so a surprise must render nothing
+		// rather than throw on a page that is mostly about other decks.
+		expect(legendSlugsFromJson(null)).toEqual([]);
+		expect(legendSlugsFromJson(undefined)).toEqual([]);
+		expect(legendSlugsFromJson('adam-smasher')).toEqual([]);
+		expect(legendSlugsFromJson([42, null, {}, { cardSlug: 7 }, ''])).toEqual([]);
 	});
 });

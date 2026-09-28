@@ -17,7 +17,7 @@ import {
 	text,
 	uniqueIndex
 } from 'drizzle-orm/sqlite-core';
-import type { DeckEntryPayload } from '#lib/decks/schema.js';
+import type { DeckEntryPayload, LegendEntryPayload } from '#lib/decks/schema.js';
 import { user } from './auth.schema.js';
 
 const now = sql`(cast(unixepoch('subsecond') * 1000 as integer))`;
@@ -117,8 +117,16 @@ export const deckVersions = sqliteTable(
 			.references(() => decks.id, { onDelete: 'cascade' }),
 		/** See `#lib/decks/schema.js` — validated there, not trusted as typed straight off a read. */
 		entries: text('entries', { mode: 'json' }).notNull().$type<DeckEntryPayload[]>(),
-		/** Up to 3 Legend card slugs. */
-		legends: text('legends', { mode: 'json' }).notNull().$type<string[]>(),
+		/**
+		 * Up to 3 Legends, each a `{ cardSlug, printingId? }`.
+		 *
+		 * Rows written before printings were choosable hold **bare slugs** instead, which this type
+		 * deliberately doesn't advertise: `$type` is a claim about what we write, and every read goes
+		 * through `LegendEntrySchema` (`#lib/decks/schema.js`), whose union absorbs both shapes. The
+		 * alternative — a union here — would make every write site prove which shape it was writing
+		 * for no benefit, since we only ever write the new one.
+		 */
+		legends: text('legends', { mode: 'json' }).notNull().$type<LegendEntryPayload[]>(),
 		/** The 7-card sideboard. Defaults to `[]`, which is both what every row written before this
 		 * column existed means and a legal deck in its own right — see `sideboardStatus`. */
 		sideboard: text('sideboard', { mode: 'json' })

@@ -17,6 +17,7 @@ import {
 	renameFolder,
 	setFolderVisibility
 } from '#lib/server/db/folders.js';
+import { legendSlugsFromJson } from '#lib/decks/schema.js';
 import { readViewPref } from '#lib/server/view-pref.js';
 import type { Actions, PageServerLoad } from './$types';
 
@@ -83,7 +84,7 @@ export const load: PageServerLoad = async (event) => {
 			// Kept out of `cardCount`: the 40–50 legal range is about the main deck alone, so
 			// folding the 7 in would make every finished deck read as oversized.
 			sideboardCards: version?.sideboard.reduce((sum, entry) => sum + entry.quantity, 0) ?? 0,
-			legendSlugs: version?.legends ?? [],
+			legendSlugs: legendSlugsFromJson(version?.legends),
 			savedAt: version?.savedAt ?? null
 		})),
 		folders: folders.map((folder) => ({

@@ -16,10 +16,18 @@ import { cardImageUrl } from '#lib/cards/schema.js';
 import type { Card } from '#lib/cards/schema.js';
 import type { Color } from '#lib/cards/vocabulary.js';
 import type { DeckEntryGroup } from './grouping.js';
+import { deckPrinting } from './printing.js';
 import type { DeckEntry } from './legality.js';
 
 const CANVAS_WIDTH = 1200;
 const PADDING = 32;
+/**
+ * A Legend as this composer needs it: the Card, and which Printing of it the deck chose. A pair
+ * rather than a bare `Card`, because the exported image is the one artifact people *share* — it
+ * would be the worst place to quietly fall back to the default art.
+ */
+type LegendArt = { card: Card; printingId?: string };
+
 const GAP = 16;
 /** Full-width columns, used when the deck has no sideboard and so no rail. */
 const GRID_COLUMNS = 8;
@@ -147,8 +155,8 @@ function drawMark(
 /** Sandwiches the odd-colored-out Legend between the repeated color when 2 of 3 Legends share a
  * Color, so the gradient reads as "two of a color bracketing the third" rather than a random
  * left-to-right order. Falls through unchanged for any other split (including <3 Legends). */
-function gradientColorOrder(legends: readonly Card[]): Color[] {
-	const colors = legends.map((legend) => legend.color);
+function gradientColorOrder(legends: readonly LegendArt[]): Color[] {
+	const colors = legends.map((legend) => legend.card.color);
 	if (colors.length === 3) {
 		const counts = new Map<Color, number>();
 		for (const color of colors) counts.set(color, (counts.get(color) ?? 0) + 1);
@@ -165,7 +173,7 @@ function paintBackground(
 	ctx: CanvasRenderingContext2D,
 	width: number,
 	height: number,
-	legends: readonly Card[]
+	legends: readonly LegendArt[]
 ) {
 	const colorOrder = gradientColorOrder(legends);
 	if (colorOrder.length === 0) {
@@ -237,7 +245,9 @@ async function drawEntryGrid(
 ) {
 	const { originX, originY, columns, cellWidth, cellHeight } = layout;
 	const images = await Promise.all(
-		entries.map((entry) => loadImage(cardImageUrl(entry.card.printings[0].id, 244)))
+		entries.map((entry) =>
+			loadImage(cardImageUrl(deckPrinting(entry.card, entry.printingId).id, 244))
+		)
 	);
 
 	for (const [index, entry] of entries.entries()) {
@@ -283,7 +293,7 @@ async function drawEntryGrid(
 export async function composeDeckImage(options: {
 	deckName: string;
 	ownerName: string;
-	legends: readonly Card[];
+	legends: readonly LegendArt[];
 	mainGroups: readonly DeckEntryGroup[];
 	sideboard: readonly DeckEntry[];
 	shareUrl: string;
@@ -362,7 +372,9 @@ export async function composeDeckImage(options: {
 
 	if (legends.length > 0) {
 		const legendImages = await Promise.all(
-			legends.map((legend) => loadImage(cardImageUrl(legend.printings[0].id, 244)))
+			legends.map((legend) =>
+				loadImage(cardImageUrl(deckPrinting(legend.card, legend.printingId).id, 244))
+			)
 		);
 		for (const [index, img] of legendImages.entries()) {
 			const x = PADDING + index * (LEGEND_WIDTH + GAP);

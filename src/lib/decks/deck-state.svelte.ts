@@ -57,8 +57,27 @@ const toPayloadEntries = (entries: readonly DeckEntry[]) =>
 export function createDeckState(initial?: DeckVersionPayload) {
 	let legends = $state<Card[]>(
 		(initial?.legends ?? [])
-			.map((slug) => cardBySlug(slug))
+			.map((legend) => cardBySlug(legend.cardSlug))
 			.filter((card): card is Card => card !== undefined)
+	);
+
+	/**
+	 * Legend slug → chosen Printing id.
+	 *
+	 * A record beside `legends` rather than a `{ card, printingId }` pair *in* it, because
+	 * `legends` is `Card[]` and every consumer wants it that way — `budgetFromLegends`,
+	 * `legendNameConflicts`, `notLegalCards`, the export image, and a dozen bits of markup. Pairing
+	 * it up would have rippled `.card` through all of them to store one optional string.
+	 *
+	 * The cost is that this can drift from `legends`, so `setLegend` is the only thing that writes
+	 * the array and it prunes here in the same breath. `toPayload` reads the two together.
+	 */
+	const legendPrintings = $state<Record<string, string>>(
+		Object.fromEntries(
+			(initial?.legends ?? [])
+				.filter((legend) => legend.printingId !== undefined)
+				.map((legend) => [legend.cardSlug, legend.printingId as string])
+		)
 	);
 	const entries = $state<DeckEntry[]>(hydrate(initial?.entries ?? []));
 	const sideboard = $state<DeckEntry[]>(hydrate(initial?.sideboard ?? []));
@@ -165,6 +184,13 @@ export function createDeckState(initial?: DeckVersionPayload) {
 			if (printingId === null) delete entry.printingId;
 			else entry.printingId = printingId;
 		}
+
+		// Legends live in slots rather than piles, but "which printing of this card does the deck
+		// use" is one question, so one function answers it for both.
+		if (legends.some((legend) => legend.slug === card.slug)) {
+			if (printingId === null) delete legendPrintings[card.slug];
+			else legendPrintings[card.slug] = printingId;
+		}
 	}
 
 	/** The Printing id this deck has chosen for a Card, or `undefined` for the default. */
@@ -172,11 +198,17 @@ export function createDeckState(initial?: DeckVersionPayload) {
 		const entry =
 			entries.find((candidate) => candidate.card.slug === card.slug) ??
 			sideboard.find((candidate) => candidate.card.slug === card.slug);
-		return entry?.printingId;
+		return entry?.printingId ?? legendPrintings[card.slug];
 	}
 
 	function setLegend(slot: number, card: Card | null) {
 		const next = [...legends];
+		// Whatever is leaving this slot takes its printing choice with it — otherwise a Legend
+		// swapped out and later swapped back would silently resurrect a printing nobody re-picked,
+		// and `toPayload` would carry an entry for a card the deck no longer names.
+		const leaving = legends[slot];
+		if (leaving && leaving.slug !== card?.slug) delete legendPrintings[leaving.slug];
+
 		if (card === null) next.splice(slot, 1);
 		else next[slot] = card;
 		legends = next.filter((value): value is Card => value !== undefined);
@@ -185,7 +217,14 @@ export function createDeckState(initial?: DeckVersionPayload) {
 	function toPayload(): DeckVersionPayload {
 		return {
 			entries: toPayloadEntries(entries),
-			legends: legends.map((legend) => legend.slug),
+			// Always the object form, never a bare slug: the reader accepts both (`LegendEntrySchema`)
+			// but there is no reason to keep writing the shape that can't hold a printing.
+			legends: legends.map((legend) => {
+				const printingId = legendPrintings[legend.slug];
+				return printingId === undefined
+					? { cardSlug: legend.slug }
+					: { cardSlug: legend.slug, printingId };
+			}),
 			sideboard: toPayloadEntries(sideboard)
 		};
 	}
