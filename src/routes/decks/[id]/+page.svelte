@@ -695,19 +695,19 @@
 						<div class="flex overflow-hidden rounded-md border border-edge text-xs">
 							<button
 								type="button"
-								onclick={() => (deckView.value = 'list')}
-								class="px-2 py-1 transition-colors hover:bg-raised/60 hover:text-bright"
-								class:bg-raised={deckView.value === 'list'}
-								class:text-bright={deckView.value === 'list'}
-								class:text-muted={deckView.value !== 'list'}>List</button
-							>
-							<button
-								type="button"
 								onclick={() => (deckView.value = 'gallery')}
 								class="px-2 py-1 transition-colors hover:bg-raised/60 hover:text-bright"
 								class:bg-raised={deckView.value === 'gallery'}
 								class:text-bright={deckView.value === 'gallery'}
 								class:text-muted={deckView.value !== 'gallery'}>Gallery</button
+							>
+							<button
+								type="button"
+								onclick={() => (deckView.value = 'list')}
+								class="px-2 py-1 transition-colors hover:bg-raised/60 hover:text-bright"
+								class:bg-raised={deckView.value === 'list'}
+								class:text-bright={deckView.value === 'list'}
+								class:text-muted={deckView.value !== 'list'}>List</button
 							>
 						</div>
 					</div>
