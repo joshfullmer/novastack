@@ -1,5 +1,26 @@
 - Combining Chips and Sliders makes things break
 
+## Binders on a phone: a spread is the wrong shape for 390px
+
+A shared Binder now fits the screen from `sm` up — the spread takes its aspect ratio from its own
+card grid and the browser sizes it against the height available
+(`/collection/binders/[id]/+page.svelte`). Below `sm` none of that applies, and the result is the
+one left standing: six Pockets across a 390px viewport is ~45px per card, filling the top third of
+the screen with the rest empty. Fitting won't help — it's already the full width.
+
+The only real fix is to stop showing two Pages at once on a phone, which contradicts the page's own
+stated invariant ("two Pages at a time, always, because that is what a binder is"). So it's a
+deliberate open question, not an oversight:
+
+- **One Page at a time below `sm`?** Doubles the card size immediately. Costs the spread metaphor
+  and needs the turn animation to mean something different — a leaf swinging about a spine it no
+  longer has.
+- **Or keep the spread and let it be small**, on the grounds that a phone is not where you show
+  someone a binder.
+
+Whichever wins, the page strip's arrows are already the primary control at that width (the flanking
+arrows are `hidden sm:flex`), so navigation doesn't block the decision.
+
 ## Card click: zoom-in detail overlay — built on `/collection`, not elsewhere
 
 `CardDetailOverlay.svelte` does this on `/collection`: the card flies from the tile it was clicked
