@@ -61,6 +61,17 @@ test.describe('on a phone', () => {
 		expect(box?.width ?? 0).toBeGreaterThan(0);
 	});
 
+	test('keeps the nav search off the header entirely', async ({ page }) => {
+		// The header is the scarcest space on this viewport — it was already the reason the link row
+		// collapsed into a hamburger. `Cards` is one tap away and lands on a page whose own query
+		// row is sticky, so the nav box is desktop-only rather than folded into the menu.
+		await page.goto('/faq');
+		await expect(page.locator('nav').getByRole('combobox')).toBeHidden();
+
+		await page.getByRole('button', { name: 'Open menu' }).click();
+		await expect(page.locator('#mobile-nav-menu').getByRole('combobox')).toHaveCount(0);
+	});
+
 	test('filtering still works with the panel open', async ({ page }) => {
 		await gotoGrid(page, '/cards');
 		await page.getByRole('button', { name: /^Chips & filters/ }).click();

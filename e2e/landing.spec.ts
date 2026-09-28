@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test';
+import { expect, test, type Page } from '@playwright/test';
 import { readFileSync } from 'node:fs';
 import * as v from 'valibot';
 import { LandingSchema } from '../src/lib/cards/schema.ts';
@@ -71,8 +71,8 @@ test.describe('the landing page', () => {
 
 	test('the search field navigates into the grid', async ({ page }) => {
 		await page.goto('/');
-		await page.getByRole('searchbox', { name: 'Search cards' }).fill('blocker');
-		await page.getByRole('searchbox', { name: 'Search cards' }).press('Enter');
+		await page.getByRole('combobox', { name: 'Search cards' }).fill('blocker');
+		await page.getByRole('combobox', { name: 'Search cards' }).press('Enter');
 
 		await expect(page).toHaveURL('/cards?q=blocker');
 		await expect(page.getByText(/^\d+ of \d+$/)).toBeVisible();
@@ -80,16 +80,48 @@ test.describe('the landing page', () => {
 
 	test('accepts the full query language, not just plain words', async ({ page }) => {
 		await page.goto('/');
-		await page.getByRole('searchbox', { name: 'Search cards' }).fill('t:legend c:red');
-		await page.getByRole('searchbox', { name: 'Search cards' }).press('Enter');
+		await page.getByRole('combobox', { name: 'Search cards' }).fill('t:legend c:red');
+		await page.getByRole('combobox', { name: 'Search cards' }).press('Enter');
 
 		await expect(page).toHaveURL('/cards?q=t%3Alegend%20c%3Ared');
 		await expect(page.getByText(/^\d+ of \d+$/)).toBeVisible();
 	});
 
+	test('the search field is focused on arrival', async ({ page }) => {
+		await page.goto('/');
+		await expect(page.getByRole('combobox', { name: 'Search cards' })).toBeFocused();
+	});
+
+	test('highlights and completes the query language, same as /cards', async ({ page }) => {
+		await page.goto('/');
+		const box = page.getByRole('combobox', { name: 'Search cards' });
+
+		// The overlay is what's actually visible — the input's own text is transparent — so a
+		// recognized field showing up as a `text-neon` span is the observable form of "highlighted".
+		await box.fill('c:red');
+		// Scoped to the form: the wordmark's own `stack` is a `text-neon` span too.
+		await expect(page.locator('form span.text-neon')).toHaveText('c');
+
+		// Autocomplete, which needs no dataset: `rar` is a prefix of the `rarity` field keyword.
+		await box.fill('rar');
+		await expect(page.getByRole('option', { name: /rarity/ })).toBeVisible();
+		await box.press('Enter');
+		// Accepting completed the word rather than submitting — `/` is still the page.
+		await expect(page).toHaveURL('/');
+		await expect(box).toHaveValue('rarity:');
+	});
+
+	test('flags a syntax mistake without downloading the dataset', async ({ page }) => {
+		await page.goto('/');
+		// Warnings here are the syntax half only (`parse`, not `parseQuery`) — an unknown field is
+		// on that side of the line, so `/` can mark it without the 277 KB snapshot.
+		await page.getByRole('combobox', { name: 'Search cards' }).fill('nope:1');
+		await expect(page.getByRole('status')).toContainText('Unknown field');
+	});
+
 	test('an empty search leaves no empty param behind', async ({ page }) => {
 		await page.goto('/');
-		await page.getByRole('searchbox', { name: 'Search cards' }).press('Enter');
+		await page.getByRole('combobox', { name: 'Search cards' }).press('Enter');
 		await expect(page).toHaveURL('/cards');
 	});
 
@@ -135,5 +167,40 @@ test.describe('navigation', () => {
 			page.getByText(/Unofficial fan project\. Not associated with or endorsed by the publisher/)
 		).toBeVisible();
 		await expect(page.getByRole('link', { name: 'api.netdeck.gg' })).toBeVisible();
+	});
+
+	/**
+	 * The nav's card search. The assertions worth having are about where it *isn't*: on `/` and
+	 * `/cards` a second box would sit inches from a box that already does the same job.
+	 */
+	test.describe('the nav search', () => {
+		const navSearch = (page: Page) => page.locator('nav').getByRole('combobox');
+
+		test('searches the whole pool from any other page', async ({ page }) => {
+			await page.goto('/faq');
+			await navSearch(page).fill('c:red');
+			await navSearch(page).press('Enter');
+
+			await expect(page).toHaveURL('/cards?q=c%3Ared');
+			await expect(page.getByText(/^\d+ of \d+$/)).toBeVisible();
+		});
+
+		test('is absent where a query box already exists', async ({ page }) => {
+			await page.goto('/');
+			await expect(navSearch(page)).toHaveCount(0);
+
+			await page.goto('/cards');
+			await expect(navSearch(page)).toHaveCount(0);
+		});
+
+		test('empties itself once spent, rather than following you around', async ({ page }) => {
+			await page.goto('/faq');
+			await navSearch(page).fill('c:red');
+			await navSearch(page).press('Enter');
+			await expect(page).toHaveURL('/cards?q=c%3Ared');
+
+			await page.goBack();
+			await expect(navSearch(page)).toHaveValue('');
+		});
 	});
 });

@@ -19,6 +19,13 @@ import { cardsOfColor, flavourOnlyWord, gotoGrid, snapshot, TOTAL_CARDS } from '
 const total = TOTAL_CARDS;
 const count = cardsOfColor;
 
+declare global {
+	interface Window {
+		/** Set by the Escape-propagation test only, to count keydowns that reach `window`. */
+		__escapeCount?: number;
+	}
+}
+
 const resultCount = (page: Page) => page.getByText(/^\d+ of \d+$/);
 
 const tiles = (page: Page) => page.locator('ul li a[href^="/cards/"]');
@@ -175,6 +182,73 @@ test.describe('filtering', () => {
 	test('the result count lives in a polite live region', async ({ page }) => {
 		await gotoGrid(page, '/cards');
 		await expect(resultCount(page)).toHaveAttribute('aria-live', 'polite');
+	});
+
+	/**
+	 * Escape's two stages (the ARIA APG combobox pattern's own optional behaviour): dismiss the
+	 * suggestion popup while it's showing, clear the box once it isn't.
+	 */
+	test.describe('Escape', () => {
+		test('dismisses the popup first and clears only on the second press', async ({ page }) => {
+			await gotoGrid(page, '/cards');
+			const box = queryBox(page);
+			// Ends on a completable word, so the popup is open — `rar` prefixes the `rarity` keyword.
+			await box.pressSequentially('c:red rar');
+			await expect(page.getByRole('option', { name: /rarity/ })).toBeVisible();
+
+			await box.press('Escape');
+			await expect(page.getByRole('option', { name: /rarity/ })).toHaveCount(0);
+			// The load-bearing half: dismissing the popup must not also wipe what was typed.
+			await expect(box).toHaveValue('c:red rar');
+
+			await box.press('Escape');
+			await expect(box).toHaveValue('');
+			// A cleared query is an absent param, the same canonicality rule "Clear all" keeps.
+			await expect(page).toHaveURL('/cards');
+		});
+
+		test('leaves the clear undoable', async ({ page }) => {
+			// `clear()` goes through `execCommand` rather than assigning state precisely so this
+			// works — one keypress must not be able to destroy a long hand-written query. Undo fires
+			// its own `input` event, so the text, the highlight overlay and the URL all come back.
+			await gotoGrid(page, '/cards');
+			const box = queryBox(page);
+			// A word no field keyword prefixes, so no popup is open and Escape goes straight to the
+			// clear. `c:red` would spend the first press dismissing the suggestion for `red`.
+			await box.fill('blocker');
+			await expect(page).toHaveURL('/cards?q=blocker');
+
+			await box.press('Escape');
+			await expect(box).toHaveValue('');
+
+			await box.press('ControlOrMeta+z');
+			await expect(box).toHaveValue('blocker');
+			await expect(page).toHaveURL('/cards?q=blocker');
+		});
+
+		test('reaches window handlers only when there is nothing to clear', async ({ page }) => {
+			// `DeckEntryManager` closes on a window-level Escape, and `Nav` carries this same box on
+			// every wide page — so a clear has to stop propagating, or one press would clear the box
+			// and close an unrelated sheet. An *empty* box must not swallow the key for nothing.
+			await gotoGrid(page, '/cards');
+			const box = queryBox(page);
+
+			await page.evaluate(() => {
+				window.__escapeCount = 0;
+				window.addEventListener('keydown', (event) => {
+					if (event.key === 'Escape') window.__escapeCount = (window.__escapeCount ?? 0) + 1;
+				});
+			});
+			const seen = () => page.evaluate(() => window.__escapeCount ?? 0);
+
+			await box.fill('blocker');
+			await box.press('Escape');
+			await expect(box).toHaveValue('');
+			expect(await seen(), 'a clear must not also trip window handlers').toBe(0);
+
+			await box.press('Escape');
+			expect(await seen(), 'an empty box has no reason to swallow Escape').toBe(1);
+		});
 	});
 });
 

@@ -10,7 +10,7 @@
 	 *
 	 * - **Don't import the dataset.** It imports `#lib/cards/landing.js` (1.7 KB) instead: the seven
 	 *   curated heroes and the build-time stats line. `/` cannot count 133 cards without downloading
-	 *   them, and the counts drift.
+	 *   them, and the counts drift. This is also what shapes the search box below — see there.
 	 * - **Don't bury the art.** Near-full opacity, no blur, and a gradient that starts transparent.
 	 *   Heavily overlaid, the collage stops selling what the site is.
 	 * - **Don't clip it.** The fan runs *up* behind the translucent nav and *wider* than the text
@@ -34,9 +34,11 @@
 	import ogIcon from '#lib/assets/og-icon.png';
 	import { landing } from '#lib/cards/landing.js';
 	import CardImage from '#lib/components/CardImage.svelte';
+	import QueryEditor from '#lib/components/filters/QueryEditor.svelte';
 	import Mark from '#lib/components/Mark.svelte';
 	import Meta from '#lib/components/Meta.svelte';
-	import { PARAM } from '#lib/filters/state.js';
+	import { cardsSearchHref, PARAM } from '#lib/filters/state.js';
+	import { parse } from '#lib/query/parser.js';
 
 	let { data } = $props();
 
@@ -75,12 +77,27 @@
 
 	let query = $state('');
 
+	/**
+	 * Syntax warnings only — `parse`, not `parseQuery`.
+	 *
+	 * `QueryEditor`'s highlighting and autocomplete are already dataset-free (`highlight.ts` walks
+	 * the AST, `autocomplete.ts` the token stream and `vocabulary.ts`'s closed enums), so the box
+	 * here is the same box `/cards` has. Warnings are the one part that isn't: `parseQuery`'s second
+	 * half compiles against the dataset, which is the one import this page may not make.
+	 *
+	 * The syntax half covers unknown fields, malformed values and unclosed parens — everything
+	 * reachable by mistyping. What `/` cannot flag, and `/cards` can, is a value that's well-formed
+	 * but not in the data (`set:xyz`, `tag:nope`) and an invalid regex. Pressing Enter lands on
+	 * `/cards`, which flags all of them on the same text, so the gap costs a keystroke, not the
+	 * feedback — a deliberate trade against a 277 KB download on the landing page.
+	 */
+	const warnings = $derived(parse(query).warnings);
+
 	async function search(event: SubmitEvent) {
 		// Progressive enhancement: the form works without this handler, but a blank submit would
-		// leave `?search=` behind, and a cleared filter must be an *absent* param.
+		// leave `?q=` behind, and a cleared filter must be an *absent* param — `cardsSearchHref`.
 		event.preventDefault();
-		const trimmed = query.trim();
-		await goto(trimmed === '' ? '/cards' : `/cards?${PARAM.query}=${encodeURIComponent(trimmed)}`);
+		await goto(cardsSearchHref(query));
 	}
 </script>
 
@@ -114,23 +131,37 @@
 				Every card in the Cyberpunk TCG — searchable, filterable, and shown at full art.
 			</p>
 
-			<form action="/cards" method="GET" onsubmit={search} class="mt-8 flex gap-2">
+			<form action="/cards" method="GET" onsubmit={search} class="mt-8 flex items-center gap-2">
 				<label for="landing-search" class="sr-only">Search cards</label>
-				<input
-					id="landing-search"
-					name={PARAM.query}
-					bind:value={query}
-					type="search"
-					placeholder="Search cards…"
-					autocomplete="off"
-					class="min-w-0 flex-1 rounded-lg border border-edge
-						bg-surface/80 px-4 py-3 text-bright shadow-xl shadow-black/40 transition-colors outline-none placeholder:text-muted
-						focus:border-neon"
-				/>
+				<!--
+					`QueryEditor`'s own `<input>` carries no `name` — it's an editing surface, not the
+					form's field — so the no-JS path needs this hidden one to have anything to submit at
+					all. That path is the whole reason this is a real `<form action="/cards">` rather than
+					a click handler, so replacing the plain input can't be allowed to quietly break it.
+				-->
+				<input type="hidden" name={PARAM.query} value={query} />
+				<!-- `text-left`: the hero block is centred, but a query box's text is not. -->
+				<div class="min-w-0 flex-1 text-left">
+					<QueryEditor
+						id="landing-search"
+						value={query}
+						placeholder="Search, or write a query — try t:legend c:red"
+						{warnings}
+						autofocus
+						class="shadow-xl shadow-black/40"
+						onSource={(next) => (query = next)}
+					/>
+				</div>
+				<!--
+					`py-2.5` and a transparent border rather than `py-3`, so the button's box matches the
+					editor's shell exactly — `items-center` then leaves both at their natural height.
+					Letting the editor stretch instead would shift its overlay off its input: the overlay
+					is padded from the shell's box, the input from its own.
+				-->
 				<button
 					type="submit"
-					class="shrink-0 rounded-lg bg-neon px-5 py-3 font-medium text-void transition-colors
-						hover:bg-bright">Go</button
+					class="shrink-0 rounded-lg border border-transparent bg-neon px-5 py-2.5 font-medium
+						text-void transition-colors hover:bg-bright">Go</button
 				>
 			</form>
 

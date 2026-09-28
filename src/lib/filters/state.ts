@@ -82,6 +82,20 @@ export function toQueryUrl(current: { readonly href: string }, source: string, s
 	return next;
 }
 
+/**
+ * Where a plain search box sends its text: `/cards`, with `?q=` only when there's something to
+ * put in it.
+ *
+ * Shared by the two boxes that *navigate* rather than filter in place — the landing hero and
+ * `Nav`'s. Both are progressively enhanced `<form action="/cards" method="GET">`s, so the reason
+ * they need this at all is the empty case: a blank native submit leaves `?q=` behind, and a
+ * cleared query has to be an *absent* param (the same canonicality rule `toQueryUrl` keeps).
+ */
+export function cardsSearchHref(source: string): string {
+	const trimmed = source.trim();
+	return trimmed === '' ? '/cards' : `/cards?${PARAM.query}=${encodeURIComponent(trimmed)}`;
+}
+
 /** True as soon as there's a query — which is exactly when "clear all" should appear. Sort
  * alone is not a filter (spec §5), so it's deliberately excluded here, same as stage 1. */
 export function isFiltered(source: string): boolean {

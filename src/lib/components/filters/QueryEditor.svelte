@@ -110,6 +110,19 @@
 	 * so completing a word that's sitting directly before its own already-typed `:` can't produce
 	 * a double colon.
 	 *
+	 * **`Escape` has two stages**, which is the ARIA APG combobox pattern's own optional behaviour:
+	 * dismiss the popup while it's showing, clear the box once it isn't. On `/cards` that makes it a
+	 * keyboard accelerator for the "Clear all" button `FilterBar` already renders — no new mechanism
+	 * — and on `/` and in `Nav` it's the fastest way to abandon a mistyped query. `clear()` below
+	 * goes out of its way to keep the clear undoable; see it for why that needs a deprecated API.
+	 *
+	 * **`Enter` is only swallowed when accepting would actually edit the text.** With the popup
+	 * open on a word that's already complete (`c:red`), accepting inserts exactly what's there —
+	 * invisible, but the keypress is gone. That cost nothing while this only ever lived in
+	 * `FilterBar`, where `Enter` does nothing anyway; on `/` the same key submits the form, so a
+	 * finished query plus `Enter` sat there looking broken. `handleKeydown` compares the insertion
+	 * against the span it would replace and passes the key through when they match.
+	 *
 	 * **Mobile popup positioning** (`.scratch/editor-affordances/issues/05-mobile-popup-positioning.md`):
 	 * both floating elements broke immediately on a 390px phone viewport — the popup ran off the
 	 * right edge, and the tooltip's "always above" placement (ticket 03) had nowhere to go above a
@@ -140,14 +153,31 @@
 		value,
 		placeholder = '',
 		warnings = [],
+		autofocus = false,
+		size = 'comfortable',
+		class: className = '',
 		onSource
 	}: {
 		id: string;
 		value: string;
 		placeholder?: string;
 		warnings?: readonly ParseWarning[];
+		/** Focuses on mount. Only for a page whose whole point *is* the query box — see `/`. */
+		autofocus?: boolean;
+		/** `dense` for a box that has to fit inside existing chrome (`Nav`). A named variant rather
+		 * than caller-supplied padding classes: the overlay and the real input have to agree on the
+		 * padding exactly or the visible text sits off the caret, so both read the one entry in
+		 * `PADDING` below and there is no way for a caller to change one without the other. */
+		size?: 'comfortable' | 'dense';
+		/** Extra classes for the outer shell. Font size is inherited by both layers (Tailwind's
+		 * preflight gives form controls `font: inherit`), so `text-sm` here is safe; padding is
+		 * not a caller's to set — that's what `size` is for. */
+		class?: string;
 		onSource: (next: string) => void;
 	} = $props();
+
+	const PADDING = { comfortable: 'px-4 py-2.5', dense: 'px-3 py-1.5' } as const;
+	const padding = $derived(PADDING[size]);
 
 	let inputEl = $state<HTMLInputElement>();
 	let text = $state('');
@@ -232,12 +262,19 @@
 		hoveredWarning = warnings.find((w) => w.span[0] <= index && index < w.span[1]) ?? null;
 	}
 
-	async function acceptSuggestion(state: AutocompleteState, suggestion: Suggestion) {
+	/** What accepting `suggestion` would actually put in the text. A field suggestion inserts the
+	 * bare keyword and gets its `:` here, rather than in `autocomplete.ts`, so the decision can
+	 * look at what's already typed after the completed span — completing a word sitting directly
+	 * before its own already-typed `:` must not produce a double colon. */
+	function insertionFor(state: AutocompleteState, suggestion: Suggestion): string {
 		const alreadyHasOperator = /^[:=<>]/.test(text.slice(state.span[1]));
-		const insertText =
-			state.kind === 'field' && !alreadyHasOperator
-				? `${suggestion.insertText}:`
-				: suggestion.insertText;
+		return state.kind === 'field' && !alreadyHasOperator
+			? `${suggestion.insertText}:`
+			: suggestion.insertText;
+	}
+
+	async function acceptSuggestion(state: AutocompleteState, suggestion: Suggestion) {
+		const insertText = insertionFor(state, suggestion);
 		const before = text.slice(0, state.span[0]);
 		const after = text.slice(state.span[1]);
 		const newCaret = before.length + insertText.length;
@@ -250,7 +287,47 @@
 		inputEl?.setSelectionRange(newCaret, newCaret);
 	}
 
+	/**
+	 * Empties the box through the browser's own editing pipeline rather than by assigning state,
+	 * so the native undo stack survives it: Cmd+Z restores the query, and the `input` event that
+	 * undo fires (`inputType: 'historyUndo'`) comes back through `oninput` like any other edit, so
+	 * `text` and `onSource` follow it without a second mechanism. Assigning `text` — or
+	 * `inputEl.value` — instead wipes that stack, which would make one Escape on a long
+	 * hand-written query unrecoverable.
+	 *
+	 * `execCommand` is the only way to do this. Nothing in the platform exposes the undo stack —
+	 * the old `UndoManager` proposal was dropped, and Input Events' `historyUndo` only *reports* an
+	 * undo — and ARIA has nothing to say about it either (it specifies semantics, not editing
+	 * behaviour; the APG's combobox pattern defines Escape's two stages and stops there). So this
+	 * is deprecated-but-universally-implemented with no replacement, which is the shape of API it's
+	 * still reasonable to use: it returns `false` rather than throwing where it isn't supported,
+	 * and that's what the fallback below is for.
+	 */
+	function clear() {
+		if (inputEl === undefined) return;
+		inputEl.select();
+		if (document.execCommand('delete')) return;
+		text = '';
+		onSource('');
+	}
+
 	function handleKeydown(event: KeyboardEvent) {
+		// Escape's two stages, in the order the APG's combobox pattern gives them: dismiss the popup
+		// while it's showing, clear the box once it isn't. The popup-open case falls through to the
+		// branch below, so a single press never does both.
+		if (event.key === 'Escape' && !suggestionsOpen) {
+			// Nothing to clear: let Escape carry on to whatever else wants it rather than swallowing
+			// a keypress to no effect.
+			if (text === '') return;
+			event.preventDefault();
+			// `stopPropagation`, unlike the dismiss branch below: window-level Escape handlers exist
+			// in this app (`DeckEntryManager`), and `Nav`'s copy of this box now sits on every `lg`+
+			// page, so without this one press would clear the box *and* close an unrelated sheet.
+			event.stopPropagation();
+			clear();
+			return;
+		}
+
 		if (!suggestionsOpen || autocomplete === null) return;
 		const { suggestions } = autocomplete;
 		if (event.key === 'ArrowDown') {
@@ -260,8 +337,19 @@
 			event.preventDefault();
 			selectedIndex = (selectedIndex - 1 + suggestions.length) % suggestions.length;
 		} else if (event.key === 'Enter' || event.key === 'Tab') {
+			const suggestion = suggestions[selectedIndex];
+			// A suggestion that's already fully typed (`c:red`, with `red` still the word under the
+			// caret) would insert exactly what's there — so swallowing the key spends it on a visibly
+			// null edit. On `/` that key is the form's submit, which made typing a complete query and
+			// pressing Enter look like nothing happened; let it through instead, and close the popup so
+			// the second press isn't spent on it either.
+			const [from, to] = autocomplete.span;
+			if (insertionFor(autocomplete, suggestion) === text.slice(from, to)) {
+				dismissed = true;
+				return;
+			}
 			event.preventDefault();
-			void acceptSuggestion(autocomplete, suggestions[selectedIndex]);
+			void acceptSuggestion(autocomplete, suggestion);
 		} else if (event.key === 'Escape') {
 			event.preventDefault();
 			dismissed = true;
@@ -371,16 +459,23 @@
 </script>
 
 <div
-	class="relative rounded-lg border border-edge bg-void transition-colors focus-within:border-neon"
+	class="relative rounded-lg border border-edge bg-void transition-colors focus-within:border-neon
+		{className}"
 	style="font-kerning: none; font-variant-ligatures: none;"
 >
-	<div aria-hidden="true" class="pointer-events-none absolute inset-0 overflow-hidden px-4 py-2.5">
+	<div aria-hidden="true" class="pointer-events-none absolute inset-0 overflow-hidden {padding}">
 		<div class="whitespace-pre" style="transform: translateX({-scrollLeft}px)">
 			{#each segments as segment, i (i)}<span class={segment.class}>{segment.text}</span>{/each}
 		</div>
 	</div>
+	<!-- Autofocus is opt-in per caller, and the real attribute rather than a `focus()` effect, so
+		the field is already focused in the SSR'd HTML instead of only after hydration. The a11y rule
+		exists because a stolen focus disorients — `/` is the exception it allows for: a landing page
+		whose single purpose is this box, with nothing above it to skip past. -->
+	<!-- svelte-ignore a11y_autofocus -->
 	<input
 		{id}
+		{autofocus}
 		bind:this={inputEl}
 		value={text}
 		oninput={(event) => {
@@ -408,7 +503,7 @@
 		{placeholder}
 		autocomplete="off"
 		spellcheck="false"
-		class="relative w-full bg-transparent px-4 py-2.5 text-transparent caret-bright outline-none
+		class="relative w-full bg-transparent {padding} text-transparent caret-bright outline-none
 			selection:bg-bright/25 placeholder:text-muted"
 	/>
 	{#if suggestionsOpen && autocomplete !== null && popupPos !== null}

@@ -21,9 +21,28 @@
 	 * (public, §9) are separate top-level routes, matching how every reference site (swudb,
 	 * Piltover Archive, Moxfield) splits these rather than tabbing them on one page. Clicking
 	 * "Decks" itself goes to My Decks; the dropdown is a shortcut straight to Explore.
+	 *
+	 * **The search box is the same `QueryEditor` `/cards` and `/` use** — syntax highlighting and
+	 * autocomplete included, because they cost nothing here: both are dataset-free (`highlight.ts`
+	 * walks the AST, `autocomplete.ts` the token stream), so a box in the shared layout doesn't
+	 * drag 277 KB onto every route. Warnings are the syntax half only (`parse`, not `parseQuery`),
+	 * for the same reason and with the same disclosed gap the landing page documents.
+	 *
+	 * Where it does *not* appear is the point of it:
+	 *
+	 * - **`/cards`** already pins `FilterBar`'s query row directly below this header, against the
+	 *   same card pool. Two identical boxes 8px apart is a bug that looks like a feature.
+	 * - **`/`** is a search box already, at hero size, autofocused.
+	 * - **below `lg`**, where the link row is already at its limit — the box would have to steal
+	 *   width from it, and the hamburger menu deliberately doesn't carry one either: `Cards` is one
+	 *   tap away and lands on a page whose own query row is sticky.
 	 */
+	import { goto } from '$app/navigation';
 	import { page } from '$app/state';
 	import { slide } from 'svelte/transition';
+	import { cardsSearchHref, PARAM } from '#lib/filters/state.js';
+	import { parse } from '#lib/query/parser.js';
+	import QueryEditor from './filters/QueryEditor.svelte';
 	import DiscordIcon from './DiscordIcon.svelte';
 	import Mark from './Mark.svelte';
 
@@ -84,6 +103,20 @@
 	];
 
 	const isCurrent = (href: string) => page.url.pathname.startsWith(href);
+
+	const showSearch = $derived(page.url.pathname !== '/' && page.url.pathname !== '/cards');
+
+	let searchQuery = $state('');
+	const searchWarnings = $derived(parse(searchQuery).warnings);
+
+	async function search(event: SubmitEvent) {
+		event.preventDefault();
+		await goto(cardsSearchHref(searchQuery));
+		// Cleared once it has been spent: the text lives on in the URL and in `FilterBar`'s own box
+		// from here, and this one is hidden on `/cards` anyway — leaving it filled would only mean
+		// stale text reappearing on whatever page is visited next.
+		searchQuery = '';
+	}
 
 	/** Below `sm` the full link row plus Discord/Account/Sign-out doesn't fit — it was overflowing
 	 * the viewport outright (no wrapping, no shrinking anywhere) rather than degrading gracefully.
@@ -207,6 +240,26 @@
 				</ul>
 			</li>
 		</ul>
+
+		{#if showSearch}
+			<!-- `lg:flex`, and `w-64` rather than `flex-1`: the link row above keeps `flex-1`, so the
+				box stays a fixed size instead of ballooning on a wide screen. -->
+			<form action="/cards" method="GET" onsubmit={search} class="hidden w-64 items-center lg:flex">
+				<label for="nav-query" class="sr-only">Search cards</label>
+				<!-- `QueryEditor`'s own input carries no `name` — see `/`'s copy of this pattern. -->
+				<input type="hidden" name={PARAM.query} value={searchQuery} />
+				<div class="min-w-0 flex-1 text-sm">
+					<QueryEditor
+						id="nav-query"
+						value={searchQuery}
+						placeholder="Search cards…"
+						warnings={searchWarnings}
+						size="dense"
+						onSource={(next) => (searchQuery = next)}
+					/>
+				</div>
+			</form>
+		{/if}
 
 		<div class="hidden items-center gap-4 sm:flex">
 			<a
