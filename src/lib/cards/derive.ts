@@ -171,7 +171,8 @@ export function printingsInSet(
 	return results;
 }
 
-export type PrintTreatment = 'retail' | 'beta';
+export const PRINT_TREATMENTS = ['retail', 'beta'] as const;
+export type PrintTreatment = (typeof PRINT_TREATMENTS)[number];
 
 /**
  * A Printing's Print Treatment (`CONTEXT.md`) — retail or the Kickstarter-only beta run. The `β`

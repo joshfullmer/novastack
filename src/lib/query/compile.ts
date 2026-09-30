@@ -27,13 +27,9 @@ import {
 	type Rarity
 } from '#lib/cards/vocabulary.js';
 import { slugLookup, type Dataset } from '#lib/cards/dataset.js';
+import { PRINT_TREATMENTS, type PrintTreatment } from '#lib/cards/derive.js';
 import * as v from 'valibot';
-import {
-	and,
-	type CountField,
-	type NumericField,
-	type Predicate
-} from '#lib/filters/predicate.js';
+import { and, type CountField, type NumericField, type Predicate } from '#lib/filters/predicate.js';
 import { parseLegendsValue } from './legends-value.ts';
 import { compileSafeRegex } from './regex-safety.ts';
 import type {
@@ -182,6 +178,15 @@ function mergeRarity(children: readonly Predicate[]): Predicate | null {
 	return { kind: 'rarity', values };
 }
 
+function mergeTreatment(children: readonly Predicate[]): Predicate | null {
+	const values: PrintTreatment[] = [];
+	for (const child of children) {
+		if (child.kind !== 'treatment') return null;
+		for (const value of child.values) if (!values.includes(value)) values.push(value);
+	}
+	return { kind: 'treatment', values };
+}
+
 /** The bound half of `(cost>=3) or cost:none` — the only shape `rangeClause` (query-edit.ts)
  * ever writes for "a bound, plus the null bucket" — is a genuine two-child `or` at the AST
  * level, since no single leaf can carry both a real bound and `includeNull`. `compileNumeric`'s
@@ -213,6 +218,7 @@ function combineOr(children: readonly Predicate[]): Predicate {
 		mergeClassification(children) ??
 		mergeSet(children) ??
 		mergeRarity(children) ??
+		mergeTreatment(children) ??
 		mergeNumeric(children);
 	return merged ?? { kind: 'or', children };
 }
@@ -276,6 +282,8 @@ export function compileField(
 			return compileOwned(node, warnings, node.field);
 		case 'rarity':
 			return compileRarity(node, warnings);
+		case 'treatment':
+			return compileTreatment(node, warnings);
 		case 'name':
 			return isReservedWord(node.value, 'none') || isReservedWord(node.value, 'has')
 				? droppedInapplicable(node, warnings)
@@ -421,6 +429,23 @@ function compileSet(
 	const canonical = lookup.get(node.value.text.toLowerCase());
 	if (canonical === undefined) return malformed(node, warnings);
 	return { kind: 'set', values: [canonical] };
+}
+
+// ---------------------------------------------------------------------------
+// Treatment — two-value enum, never null
+// ---------------------------------------------------------------------------
+
+function compileTreatment(node: FieldNode, warnings: ParseWarning[]): Predicate | null {
+	if (!requireSimpleOperator(node, warnings)) return null;
+	if (isReservedWord(node.value, 'none') || isReservedWord(node.value, 'has')) {
+		return droppedInapplicable(node, warnings);
+	}
+	if (node.value.type === 'regex') return malformed(node, warnings);
+
+	const text = node.value.text.toLowerCase();
+	const value = PRINT_TREATMENTS.find((treatment) => treatment === text);
+	if (value === undefined) return malformed(node, warnings);
+	return { kind: 'treatment', values: [value] };
 }
 
 // ---------------------------------------------------------------------------

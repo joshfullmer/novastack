@@ -21,6 +21,7 @@
 import type { Card, Printing } from '#lib/cards/schema.js';
 import type { Dataset } from '#lib/cards/dataset.js';
 import { normalizeForSearch } from '#lib/cards/dataset.js';
+import { printTreatment, type PrintTreatment } from '#lib/cards/derive.js';
 import { plainText } from '#lib/cards/rules-text.js';
 import type { CardType, Color, Keyword, Rarity } from '#lib/cards/vocabulary.js';
 import { admits, type ColorBudget } from './budget.js';
@@ -96,7 +97,8 @@ export type Predicate =
 	  }
 	| { kind: 'ramBudget'; budget: ColorBudget }
 	| { kind: 'set'; values: readonly string[] }
-	| { kind: 'rarity'; values: readonly Rarity[] };
+	| { kind: 'rarity'; values: readonly Rarity[] }
+	| { kind: 'treatment'; values: readonly PrintTreatment[] };
 
 export type Match = { card: Card; printing: Printing };
 
@@ -256,6 +258,8 @@ export function test(
 			return predicate.values.includes(printing.setId);
 		case 'rarity':
 			return predicate.values.includes(printing.rarity);
+		case 'treatment':
+			return predicate.values.includes(printTreatment(printing));
 	}
 }
 

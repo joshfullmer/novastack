@@ -6,6 +6,7 @@
  *
  * Spec: `docs/spec/query-language.md` §3.
  */
+import { PRINT_TREATMENTS } from '#lib/cards/derive.js';
 import { CARD_TYPES, COLORS, KEYWORDS, RARITY_ORDER } from '#lib/cards/vocabulary.js';
 
 export const FIELD_KINDS = [
@@ -20,6 +21,7 @@ export const FIELD_KINDS = [
 	'tournamentLegal',
 	'set',
 	'rarity',
+	'treatment',
 	'owned',
 	'copies',
 	'name',
@@ -139,6 +141,20 @@ export const FIELDS: readonly FieldSpec[] = [
 		comparisons: true,
 		nullable: false,
 		enum: RARITY_ORDER
+	},
+	{
+		/**
+		 * Print Treatment (`CONTEXT.md`) — retail or the Kickstarter-only beta run, read off the
+		 * Collector Number's `β` prefix. Per-printing like Set and Rarity, so `rarity:iconic
+		 * treatment:retail` means a printing that is both.
+		 */
+		kind: 'treatment',
+		canonical: 'treatment',
+		aliases: ['tr'],
+		value: 'enum',
+		comparisons: false,
+		nullable: false,
+		enum: PRINT_TREATMENTS
 	},
 	{
 		/**

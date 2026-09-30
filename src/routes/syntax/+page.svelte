@@ -28,6 +28,7 @@
 		tournamentLegal: 'Tournament Legal',
 		set: 'Set',
 		rarity: 'Rarity',
+		treatment: 'Print Treatment',
 		owned: 'Owned Count (per card)',
 		copies: 'Owned Count (per printing)',
 		name: 'Name',

@@ -193,6 +193,16 @@ describe('evaluate — printing-level facets and witness selection', () => {
 		expect(evaluate(dataset, tree)).toEqual([]);
 	});
 
+	it('reads Print Treatment off the Collector Number, on the same printing as Rarity', () => {
+		const beta = evaluate(dataset, { kind: 'treatment', values: ['beta'] });
+		expect(beta.map((m) => m.printing.id)).toEqual(['iconic']);
+		const retailIconic = and([
+			{ kind: 'treatment', values: ['retail'] },
+			{ kind: 'rarity', values: ['Iconic Legend'] }
+		]);
+		expect(evaluate(dataset, retailIconic)).toEqual([]);
+	});
+
 	it('combines a card-level and a printing-level facet', () => {
 		const tree = and([
 			{ kind: 'color', values: ['Red'] },

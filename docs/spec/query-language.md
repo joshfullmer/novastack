@@ -114,6 +114,7 @@ Origin: [Scryfall's grammar in detail](../../.scratch/query-language/issues/01-s
 | tournamentLegal                  | `legal:`                      | `:` `=`*        | `true`/`false`                                  | never null                                                 | no            |
 | set                              | `set:` `s:`                   | `:` `=`*        | quoted or slug string                           | never null                                                 | no            |
 | rarity                           | `rarity:` `r:`                | `: = < <= > >=` | Rarity enum                                     | never null                                                 | yes           |
+| treatment                        | `treatment:` `tr:`            | `:` `=`*        | `retail` / `beta`                               | never null                                                 | no            |
 | owned                            | `owned:` `have:`              | `: = < <= > >=` | integer, or `yes`/`no`                          | never null — zero is a real answer                         | yes           |
 | copies                           | `copies:`                     | `: = < <= > >=` | integer, or `yes`/`no`                          | never null — zero is a real answer                         | yes           |
 | text (bare / `name:` / `rules:`) | _(none)_ / `name:` / `rules:` | `:` `=`*        | word, quoted phrase, `/regex/`, or `none`/`has` | rules-haystack-empty (`empty`); `name:none` always dropped | no            |
@@ -316,11 +317,11 @@ Origin: [Nulls in the language](../../.scratch/query-language/issues/04-nulls-in
 
 ### 3.6 Negation
 
-| category                       | fields                                                                                         | mechanism                                                     | null under negation       |
-| ------------------------------ | ---------------------------------------------------------------------------------------------- | ------------------------------------------------------------- | ------------------------- |
-| Membership                     | color, cardType, keyword, tag, set, rarity-as-membership, eddiable, tournamentLegal, ramBudget | generic `not` node, true complement                           | included where applicable |
-| Ordered comparison             | cost, power, ram, rarity-as-comparison                                                         | **parser-level operator inversion**, compiled to a fresh leaf | always excluded           |
-| Presence test (`:none`/`:has`) | any nullable field                                                                             | generic `not` node                                            | n/a                       |
+| category                       | fields                                                                                                    | mechanism                                                     | null under negation       |
+| ------------------------------ | --------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------- | ------------------------- |
+| Membership                     | color, cardType, keyword, tag, set, rarity-as-membership, treatment, eddiable, tournamentLegal, ramBudget | generic `not` node, true complement                           | included where applicable |
+| Ordered comparison             | cost, power, ram, rarity-as-comparison                                                                    | **parser-level operator inversion**, compiled to a fresh leaf | always excluded           |
+| Presence test (`:none`/`:has`) | any nullable field                                                                                        | generic `not` node                                            | n/a                       |
 
 Membership negation maps directly onto `{ kind: 'not', child }` wrapping the leaf — the existing
 evaluator (`!test(child, …)`) already does the right thing: a card with no tags at all correctly
@@ -394,11 +395,12 @@ export type Predicate =
 	  }
 	| { kind: 'ramBudget'; budget: ColorBudget }
 	| { kind: 'set'; values: readonly string[] }
-	| { kind: 'rarity'; values: readonly Rarity[] };
+	| { kind: 'rarity'; values: readonly Rarity[] }
+	| { kind: 'treatment'; values: readonly PrintTreatment[] };
 ```
 
 - **`numeric`, `ramBudget`, `color`, `cardType`, `eddiable`, `tournamentLegal`, `set`, `rarity`,
-  and the four structural kinds need zero changes.** Ranges, both forms of negation, and
+  `treatment`, and the four structural kinds need zero changes.** Ranges, both forms of negation, and
   `field:none`/`:has` for numerics are all already expressible via `min`/`max`/`includeNull`.
 - **`text` needs `mode`, `scope`, and `empty`** — found across three separate tickets (§3.7's
   regex, §3.4's name/rules split, §3.5's rules-haystack-emptiness), each independent, each

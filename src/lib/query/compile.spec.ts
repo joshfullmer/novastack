@@ -375,6 +375,26 @@ describe("owned — the viewer's collection", () => {
 	});
 });
 
+describe('treatment', () => {
+	it('compiles to a membership leaf, with the alias and OR-merging', () => {
+		expect(run('treatment:beta').predicate).toEqual({ kind: 'treatment', values: ['beta'] });
+		expect(run('tr:Retail').predicate).toEqual({ kind: 'treatment', values: ['retail'] });
+		expect(run('tr:retail or tr:beta').predicate).toEqual({
+			kind: 'treatment',
+			values: ['retail', 'beta']
+		});
+	});
+
+	it('matches nothing in a fixture with no beta printings', () => {
+		expect(run('treatment:beta').slugs).toEqual([]);
+		expect(run('-treatment:beta').slugs).toHaveLength(3);
+	});
+
+	it('drops an unknown value with a warning', () => {
+		expect(run('treatment:foil').warnings).not.toEqual([]);
+	});
+});
+
 describe('rarity — ordered comparisons', () => {
 	it('reads a >= comparison as an enumerated slice', () => {
 		// Both cards are Epic-or-above in the curated order: red-legend is Epic, blue-program is

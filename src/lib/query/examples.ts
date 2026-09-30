@@ -18,6 +18,10 @@ export const EXAMPLES: readonly Example[] = [
 	{ query: 'tag:none', description: 'Array emptiness — cards with no tags.' },
 	{ query: 'tag:"Tyger Claws"', description: 'A multi-word value, quoted.' },
 	{ query: 'rarity>=epic', description: 'Rarity comparisons use the curated order.' },
+	{
+		query: 'rarity:iconic-legend treatment:retail',
+		description: 'Retail printings only — `treatment:beta` for the Kickstarter run.'
+	},
 	{ query: 'owned:0', description: 'Cards missing from your collection, in any printing.' },
 	{ query: 'owned<4 set:MS01-WNC', description: 'Where you are short of a playset.' },
 	{
