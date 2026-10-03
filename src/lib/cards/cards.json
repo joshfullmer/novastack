@@ -3058,6 +3058,17 @@
 					"thumbhash": "EhmGHAYPkfpkGYqwB1wVc2aAgYGICBiIAA=="
 				},
 				{
+					"artist": "Pandart Studio",
+					"collectorNumber": "145",
+					"id": "21716e98-de73-4769-aa28-3474841c0f46",
+					"key": "MS01-WNC-145",
+					"locale": "en",
+					"rarity": "Iconic Legend",
+					"setId": "MS01-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/21716e98-de73-4769-aa28-3474841c0f46/render-mpvmqcnt.webp",
+					"thumbhash": "jyiGDAQPmIc2iaaGsE+YjqOAgYGICBiIAA=="
+				},
+				{
 					"artist": "Łukasz Poller",
 					"collectorNumber": "β036",
 					"id": "33cfbdb0-a169-458a-86dc-9123697654d7",
@@ -3102,6 +3113,17 @@
 					"thumbhash": "EhmGHAYPkfpkGYqwB1sVc2aAgHB3CAiHAA=="
 				},
 				{
+					"artist": "Pandart Studio",
+					"collectorNumber": "035",
+					"id": "f97b60b0-f2c5-4703-9602-2542f473c915",
+					"key": "EOR01-WNC-035",
+					"locale": "en",
+					"rarity": "Nova Rare",
+					"setId": "EOR01-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/f97b60b0-f2c5-4703-9602-2542f473c915/render-mtcqin6k.webp",
+					"thumbhash": "jyiGDAQPmHc2iZaGsD+YjqOAgYGICBiIAA=="
+				},
+				{
 					"artist": "Łukasz Poller",
 					"collectorNumber": "036",
 					"id": "65a67458-6a1f-47f8-913d-281ce8585f78",
@@ -3111,6 +3133,17 @@
 					"setId": "MS01-WNC",
 					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/65a67458-6a1f-47f8-913d-281ce8585f78/render-cd93e570-fd4d-4c5a-9aac-351a49dcd2ec.webp",
 					"thumbhash": "EhmGHAYPkepkGYqwB1wVc2aAgYGICBiIAA=="
+				},
+				{
+					"artist": "Pandart Studio",
+					"collectorNumber": "145",
+					"id": "0a49bd60-2457-49b2-9574-fcbca496d76e",
+					"key": "MS01-WNC-145-FR",
+					"locale": "fr",
+					"rarity": "Iconic Legend",
+					"setId": "MS01-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/0a49bd60-2457-49b2-9574-fcbca496d76e/render-05aba86e-5a6c-4a12-a5dd-27c87d76062f.webp",
+					"thumbhash": "jyiGDAQPl3c3iZaHsE+YjqOAgYGICBiIAA=="
 				}
 			],
 			"ramProvided": 2,
@@ -16383,7 +16416,7 @@
 			"sortOrder": 2500
 		}
 	],
-	"generatedAt": "2026-09-30T16:20:41.352Z",
+	"generatedAt": "2026-10-03T05:31:12.697Z",
 	"ramPerLegend": 2,
 	"sets": [
 		{
@@ -16394,7 +16427,7 @@
 			"kind": "base",
 			"name": "Welcome to Night City",
 			"printed": "MS01 - WNC [A]",
-			"printingCount": 480,
+			"printingCount": 482,
 			"setCode": "WNC"
 		},
 		{
@@ -16475,14 +16508,14 @@
 			"setCode": "WNC"
 		},
 		{
-			"cardCount": 24,
+			"cardCount": 25,
 			"category": "EOR01",
 			"cycle": null,
 			"id": "EOR01-WNC",
 			"kind": "derivative",
 			"name": "Edgerunner Open Season 1",
 			"printed": "EOR01 - WNC",
-			"printingCount": 42,
+			"printingCount": 43,
 			"setCode": "WNC"
 		},
 		{
@@ -16521,7 +16554,7 @@
 	],
 	"stats": {
 		"cards": 151,
-		"printings": 711,
+		"printings": 714,
 		"sets": 1
 	}
 }
