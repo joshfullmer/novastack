@@ -42,7 +42,7 @@
 	import FaqText from '#lib/components/FaqText.svelte';
 	import Meta from '#lib/components/Meta.svelte';
 	import RulesText from '#lib/components/RulesText.svelte';
-	import { splitCardName } from '#lib/cards/derive.js';
+	import { printTreatment, splitCardName } from '#lib/cards/derive.js';
 	import { cardImageUrl, PRINTING_PARAM } from '#lib/cards/schema.js';
 	import { findSetIdentifier } from '#lib/cards/sets.js';
 	import { DEFAULT_LOCALE, type Locale } from '#lib/cards/vocabulary.js';
@@ -118,7 +118,20 @@
 			: card.printings
 	);
 
-	const artists = $derived([...new Set(visiblePrintings.map((entry) => entry.artist))]);
+	// Beta is the closed, Kickstarter-only run and usually repeats a retail printing's art, so it
+	// gets one opt-out rather than a treatment axis. Offered only where hiding leaves something.
+	const hasSplit = $derived(
+		visiblePrintings.some((entry) => printTreatment(entry) === 'beta') &&
+			visiblePrintings.some((entry) => printTreatment(entry) === 'retail')
+	);
+	let hideBeta = $state(false);
+	const shownPrintings = $derived(
+		hasSplit && hideBeta
+			? visiblePrintings.filter((entry) => printTreatment(entry) === 'retail')
+			: visiblePrintings
+	);
+
+	const artists = $derived([...new Set(shownPrintings.map((entry) => entry.artist))]);
 
 	const nameParts = $derived(splitCardName(card));
 
@@ -196,7 +209,7 @@
 		<h2 class="text-lg font-semibold text-bright">
 			Printings
 			<span class="ml-1 text-sm font-normal text-muted tabular-nums">
-				{visiblePrintings.length}{#if artists.length > 1}
+				{shownPrintings.length}{#if artists.length > 1}
 					· {artists.length} artists{/if}
 			</span>
 		</h2>
@@ -216,8 +229,19 @@
 			</div>
 		{/if}
 
+		{#if hasSplit}
+			<button
+				type="button"
+				aria-pressed={hideBeta}
+				onclick={() => (hideBeta = !hideBeta)}
+				class="mt-3 ml-2 rounded-md border px-3 py-1 text-sm transition-colors {hideBeta
+					? 'border-neon bg-neon text-void'
+					: 'border-edge text-body hover:bg-raised'}">Hide beta</button
+			>
+		{/if}
+
 		<ul class="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-			{#each visiblePrintings as entry, index (entry.id)}
+			{#each shownPrintings as entry, index (entry.id)}
 				{@const entrySet = findSetIdentifier(entry.setId)}
 				{@const current = entry.key === printing.key}
 				<li>
