@@ -109,7 +109,7 @@
 
 	type DiffCell = { slug: string; quantity: number };
 	type EntryDiffColumns = {
-		changed: { left: DiffCell; right: DiffCell }[];
+		changed: { left: DiffCell; right: DiffCell; tone: 'red' | 'green' }[];
 		removed: DiffCell[];
 		added: DiffCell[];
 	};
@@ -128,7 +128,8 @@
 			.filter((e) => e.kind === 'changed')
 			.map((e) => ({
 				left: { slug: e.cardSlug, quantity: e.from },
-				right: { slug: e.cardSlug, quantity: e.to }
+				right: { slug: e.cardSlug, quantity: e.to },
+				tone: e.to > e.from ? ('green' as const) : ('red' as const)
 			}))
 			.sort((a, b) => byName(a.left, b.left));
 		const removed = entries
@@ -797,7 +798,7 @@
 								</div>
 								<div class="flex flex-wrap gap-2 p-2">
 									{#each cols.changed as row (row.right.slug)}
-										{@render historyThumb(row.right.slug, row.right.quantity, 'neutral')}
+										{@render historyThumb(row.right.slug, row.right.quantity, row.tone)}
 									{/each}
 									{#each cols.added as item (item.slug)}
 										{@render historyThumb(item.slug, item.quantity, 'green')}
