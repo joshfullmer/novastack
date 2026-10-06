@@ -168,6 +168,23 @@
 		{/if}
 	</section>
 
+	<!-- Rare by nature — most people move a collection in once, if ever — so it lives here rather than
+	     taking space in the collection's rail. `/collection` points an empty collection at the
+	     import. Native `download` link, so Export works without JavaScript. -->
+	<section class="mt-8 flex flex-col gap-3 border-t border-edge/60 pt-8">
+		<h2 class="text-sm font-medium text-bright">Your data</h2>
+		<p class="text-sm text-muted">
+			Your collection as a CSV: everything you own, re-importable. Import a CSV from an export or a
+			spreadsheet.
+		</p>
+		<div class="flex gap-4 text-sm">
+			<a href="/api/collection/export" download class="text-neon hover:underline"
+				>Export collection</a
+			>
+			<a href="/collection/import" class="text-neon hover:underline">Import collection</a>
+		</div>
+	</section>
+
 	<section class="mt-8 flex flex-col gap-3 border-t border-edge/60 pt-8">
 		<h2 class="text-sm font-medium text-card-red">Delete account</h2>
 		{#if data.hasPassword}

@@ -253,25 +253,6 @@
 						{collection.goalIsDefault ? 'Default — tap to choose' : 'Customised'}
 					</span>
 				</a>
-
-				<a
-					href="/api/collection/export"
-					download
-					class="mt-2 block rounded-lg px-3 py-2 text-xs text-muted transition-colors
-					hover:bg-surface hover:text-neon"
-				>
-					Export CSV
-					<span class="mt-0.5 block text-muted/50">Everything you own, re-importable</span>
-				</a>
-
-				<a
-					href="/collection/import"
-					class="block rounded-lg px-3 py-2 text-xs text-muted transition-colors
-					hover:bg-surface hover:text-neon"
-				>
-					Import CSV
-					<span class="mt-0.5 block text-muted/50">From an export or a spreadsheet</span>
-				</a>
 			</div>
 		</aside>
 	{/if}

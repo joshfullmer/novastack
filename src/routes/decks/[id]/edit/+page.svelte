@@ -15,6 +15,8 @@
 	 * Export (§6) is deliberately absent — sharing/export is Phase 2, not built yet.
 	 */
 	import { enhance } from '$app/forms';
+	import { afterNavigate, goto } from '$app/navigation';
+	import { page } from '$app/state';
 	import CardHoverPreview from '#lib/components/CardHoverPreview.svelte';
 	import CardImage from '#lib/components/CardImage.svelte';
 	import { COLOR_TEXT } from '#lib/components/color.js';
@@ -33,6 +35,7 @@
 	} from '#lib/decks/legality.js';
 	import DeckEntryManager from '#lib/components/DeckEntryManager.svelte';
 	import DeckImportDialog from '#lib/components/DeckImportDialog.svelte';
+	import ImportIcon from '#lib/components/ImportIcon.svelte';
 	import { createDeckState } from '#lib/decks/deck-state.svelte.js';
 	import { deckPrinting } from '#lib/decks/printing.js';
 	import { groupDeckEntries, groupMatchesByType } from '#lib/decks/grouping.js';
@@ -112,9 +115,23 @@
 	// A deck that already has its 3 Legends opens straight on the Main Deck tab — see
 	// `toggleLegend` below for the same rule applied live as Legends are picked/removed.
 	let tab = $state<'legends' | 'main'>(deck.legends.length === LEGEND_SLOTS ? 'main' : 'legends');
-	// Mounted once at the bottom, opened from the deck panel's "Import list" — which renders in both
-	// the desktop rail and the mobile sheet, so a per-panel dialog would have meant two of them.
+	// Mounted once at the bottom, opened from the browse panel's import button — which renders in
+	// both layouts, so a per-panel dialog would have meant two of them. `/decks`'s import button
+	// arrives here with `?import`, which opens it straight away (see `afterNavigate` below).
 	let importDialog: DeckImportDialog;
+	// `afterNavigate` rather than `onMount`: it also runs on the initial hydration, and by then the
+	// router is ready, which `goto` needs. The param is dropped so a reload doesn't reopen it.
+	// One-shot, because a shallow `goto` leaves `page.url` as it was: without the flag the dropped
+	// param would still be there to read, and this would reopen the dialog and `goto` forever.
+	let openedFromImportParam = false;
+	afterNavigate(() => {
+		if (openedFromImportParam || !page.url.searchParams.has('import')) return;
+		openedFromImportParam = true;
+		importDialog.show();
+		const url = new URL(page.url.href);
+		url.searchParams.delete('import');
+		goto(url, { state: page.state, shallow: true, replace: true });
+	});
 	let searchLegends = $state('');
 	let searchMain = $state('');
 
@@ -379,6 +396,18 @@
 			class:text-muted={tab !== 'main'}
 		>
 			Main Deck
+		</button>
+		<!-- Rare, and mostly used once while a deck is being started, so it is a quiet text button
+		     out of the way rather than a full-width one competing with Save in the deck panel. It
+		     lives here because `browsePanel` renders in both the desktop and mobile layouts. -->
+		<button
+			type="button"
+			onclick={() => importDialog.show()}
+			aria-label="Import a decklist"
+			title="Import a decklist"
+			class="ml-auto self-center text-muted transition-colors hover:text-neon"
+		>
+			<ImportIcon class="size-4" />
 		</button>
 	</div>
 
@@ -833,12 +862,6 @@
 		     browser quirk, verified in isolation) even with identical
 		     flex-grow/shrink/basis/min-width. Grid's `minmax(0, 1fr)` tracks size by the
 		     container, not by each item's own content, so it isn't exposed to that at all. -->
-		<button
-			type="button"
-			onclick={() => importDialog.show()}
-			class="mb-2 w-full rounded-md border border-edge px-3 py-1.5 text-sm text-body
-				hover:border-neon hover:text-neon">Import list</button
-		>
 		<div class="grid grid-cols-2 gap-2">
 			<a
 				href="/d/{data.shareCode}"

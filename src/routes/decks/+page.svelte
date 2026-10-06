@@ -18,6 +18,7 @@
 	import { enhance } from '$app/forms';
 	import { menuPosition } from '#lib/menu-position.js';
 	import CardImage from '#lib/components/CardImage.svelte';
+	import ImportIcon from '#lib/components/ImportIcon.svelte';
 	import Meta from '#lib/components/Meta.svelte';
 	import { cardBySlug } from '#lib/decks/deck-state.svelte.js';
 	import {
@@ -452,7 +453,18 @@
 						class:text-muted={deckView.value !== 'list'}>List</button
 					>
 				</div>
-				<form method="POST" action="/decks/new">
+				<form method="POST" action="/decks/new" class="flex items-center gap-3">
+					<!-- A second submit on the same form: it creates the same empty deck, but lands in the
+					     editor with the import dialog open. No JS, and no menu for a single item. -->
+					<button
+						type="submit"
+						formaction="/decks/new?import"
+						aria-label="New deck from an imported list"
+						title="New deck from an imported list"
+						class="text-muted transition-colors hover:text-neon"
+					>
+						<ImportIcon class="size-4" />
+					</button>
 					<button
 						type="submit"
 						class="rounded-md bg-neon px-3 py-1.5 text-sm font-medium text-void hover:bg-neon-dim"

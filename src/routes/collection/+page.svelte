@@ -300,6 +300,14 @@
 	<p class="mt-2 text-sm text-muted tabular-nums">
 		{shown} printings shown · always private
 	</p>
+	{#if collection.status === 'ready' && collection.distinctPrintings === 0}
+		<!-- Only someone with nothing recorded sees this: it is the one moment an import is the answer,
+		     and it keeps the link out of everyone else's way. -->
+		<p class="mt-1 text-sm text-muted">
+			Have a spreadsheet or an export?
+			<a href="/collection/import" class="text-neon hover:underline">Import it</a>.
+		</p>
+	{/if}
 </div>
 
 <div
