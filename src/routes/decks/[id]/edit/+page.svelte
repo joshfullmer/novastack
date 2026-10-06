@@ -399,13 +399,16 @@
 		</button>
 		<!-- Rare, and mostly used once while a deck is being started, so it is a quiet text button
 		     out of the way rather than a full-width one competing with Save in the deck panel. It
-		     lives here because `browsePanel` renders in both the desktop and mobile layouts. -->
+		     lives here because `browsePanel` renders in both the desktop and mobile layouts. The
+		     `-mt-1.5` keeps its 32px from making the row taller than the tabs: they rest their
+		     underline on the row's bottom border, which a taller row would leave floating. -->
 		<button
 			type="button"
 			onclick={() => importDialog.show()}
 			aria-label="Import a decklist"
 			title="Import a decklist"
-			class="ml-auto self-center text-muted transition-colors hover:text-neon"
+			class="-mt-1.5 ml-auto flex size-8 shrink-0 items-center justify-center self-start rounded-md
+				border border-edge text-muted transition-colors hover:border-neon hover:text-neon"
 		>
 			<ImportIcon class="size-4" />
 		</button>
