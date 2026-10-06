@@ -453,7 +453,7 @@
 						class:text-muted={deckView.value !== 'list'}>List</button
 					>
 				</div>
-				<form method="POST" action="/decks/new" class="flex items-center gap-3">
+				<form method="POST" action="/decks/new" class="flex items-stretch gap-3">
 					<!-- A second submit on the same form: it creates the same empty deck, but lands in the
 					     editor with the import dialog open. No JS, and no menu for a single item. -->
 					<button
@@ -461,7 +461,8 @@
 						formaction="/decks/new?import"
 						aria-label="New deck from an imported list"
 						title="New deck from an imported list"
-						class="text-muted transition-colors hover:text-neon"
+						class="flex items-center justify-center rounded-md border border-edge px-2.5 text-muted
+							transition-colors hover:border-neon hover:text-neon"
 					>
 						<ImportIcon class="size-4" />
 					</button>
