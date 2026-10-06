@@ -28,18 +28,24 @@
  * documented contract between the two sites, since both happen to source from the same
  * upstream — worth re-verifying if a future export mismatch is ever reported.
  *
+ * **`deckToSimFormat` carries the sideboard under `# Sideboard`.** Verified live against the sim on
+ * 2026-10-06 — it had no sideboard when this format was first checked (2026-09-23), and shipped
+ * one after: its own Text export of a 2-card sideboard is `# Name: …`, a blank line, `# Sideboard`,
+ * then the same `{quantity}x {number} {name}` lines. Like the sim, an empty Sideboard has no
+ * header at all, so a deck without one exports exactly the text it always did. See
+ * `docs/research/sideboards.md` §6.2.
+ *
+ * `deckToMeleeFormat` is the paste for a Melee decklist submission, the tournament software.
+ * Read out of the official site's own bundle (cyberpunktcg.com, `cyberpunk-melee`), not from a
+ * live export — Share needs an account — so a mismatch report is the cue to re-check it: bare
+ * `MainDeck` / `Legends` / `Sideboard` headers, `{quantity} {name}` lines with no `x` and no
+ * collector number, sections in that order, separated by a blank line. `MainDeck` is always
+ * present; the other two only when non-empty. Names are `Name — Subtitle` with an em dash,
+ * rebuilt from `subtitle` rather than taken from `card.name`, whose separator has changed twice.
+ *
  * `deckToJson` is the standardized alternative for anything that wants structure instead of a
  * line format; it uses the same `importCode`, but that's incidental — it was never claimed to
  * match the sim and isn't meant to.
- *
- * **`deckToSimFormat` deliberately omits the sideboard, and that isn't an oversight.** The format
- * above was verified against the sim on 2026-09-23; sideboards only entered the game's tournament
- * rules on 2026-09-25, so the working assumption is that the sim has no notion of one yet. An
- * unrecognized `# Sideboard` header is the dangerous direction to guess in: if the sim keeps
- * appending to the last section it recognized, importing this file would silently build a 57-card
- * main deck. A lossy export beats a wrong one. `deckToJson` is ours, so it carries the sideboard
- * unconditionally. To settle it: export a 7-card sideboard from the sim and copy whatever header
- * it emits, verbatim — see `docs/research/sideboards.md` §6.2.
  */
 import type { Card } from '#lib/cards/schema.js';
 import type { DeckEntryGroup } from './grouping.js';
@@ -52,22 +58,54 @@ function importCode(card: Card): string {
 export function deckToSimFormat(
 	deckName: string,
 	legends: readonly Card[],
-	mainGroups: readonly DeckEntryGroup[]
+	mainGroups: readonly DeckEntryGroup[],
+	sideboard: readonly DeckEntry[]
 ): string {
-	const legendLines = legends.map((legend) => `1x ${importCode(legend)} ${legend.name}`);
-	const mainLines = mainGroups.flatMap((group) =>
-		group.entries.map((entry) => `${entry.quantity}x ${importCode(entry.card)} ${entry.card.name}`)
-	);
+	const simLine = (entry: DeckEntry) =>
+		`${entry.quantity}x ${importCode(entry.card)} ${entry.card.name}`;
 
 	return [
 		`# Name: ${deckName}`,
 		'',
 		'# Legends',
-		...legendLines,
+		...legends.map((legend) => `1x ${importCode(legend)} ${legend.name}`),
 		'',
 		'# Main Deck',
-		...mainLines
+		...mainGroups.flatMap((group) => group.entries.map(simLine)),
+		...(sideboard.length > 0 ? ['', '# Sideboard', ...sideboard.map(simLine)] : [])
 	].join('\n');
+}
+
+/** `Name — Subtitle`, the separator Melee's own export uses, whatever `card.name` happens to use. */
+function meleeName(card: Card): string {
+	if (card.subtitle === null) return card.name;
+	const base = card.name.slice(0, card.name.length - card.subtitle.length);
+	return `${base.replace(/\s*[:\u2013\u2014-]\s*$/, '')} \u2014 ${card.subtitle}`;
+}
+
+export function deckToMeleeFormat(
+	legends: readonly Card[],
+	mainGroups: readonly DeckEntryGroup[],
+	sideboard: readonly DeckEntry[]
+): string {
+	const line = (entry: DeckEntry) => `${entry.quantity} ${meleeName(entry.card)}`;
+	const section = (header: string, lines: readonly string[]) => [header, ...lines].join('\n');
+
+	return [
+		section(
+			'MainDeck',
+			mainGroups.flatMap((group) => group.entries.map(line))
+		),
+		...(legends.length > 0
+			? [
+					section(
+						'Legends',
+						legends.map((legend) => `1 ${meleeName(legend)}`)
+					)
+				]
+			: []),
+		...(sideboard.length > 0 ? [section('Sideboard', sideboard.map(line))] : [])
+	].join('\n\n');
 }
 
 export function deckToJson(

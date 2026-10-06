@@ -34,7 +34,7 @@
 	} from '#lib/decks/legality.js';
 	import { createDeckState } from '#lib/decks/deck-state.svelte.js';
 	import { composeDeckImage } from '#lib/decks/deck-image.js';
-	import { deckToJson, deckToSimFormat } from '#lib/decks/export.js';
+	import { deckToJson, deckToMeleeFormat, deckToSimFormat } from '#lib/decks/export.js';
 	import { groupDeckEntries } from '#lib/decks/grouping.js';
 	import { deckPrinting } from '#lib/decks/printing.js';
 	import { rarityTint } from '#lib/decks/rarity-tone.js';
@@ -222,10 +222,24 @@
 	}
 
 	function copySimFormat() {
-		copyExport(deckToSimFormat(data.deckName, deck.legends, mainGroups));
+		copyExport(deckToSimFormat(data.deckName, deck.legends, mainGroups, deck.sideboard));
 	}
 	function downloadSimFormat() {
-		downloadExport(deckToSimFormat(data.deckName, deck.legends, mainGroups), 'text/plain', 'txt');
+		downloadExport(
+			deckToSimFormat(data.deckName, deck.legends, mainGroups, deck.sideboard),
+			'text/plain',
+			'txt'
+		);
+	}
+	function copyMelee() {
+		copyExport(deckToMeleeFormat(deck.legends, mainGroups, deck.sideboard));
+	}
+	function downloadMelee() {
+		downloadExport(
+			deckToMeleeFormat(deck.legends, mainGroups, deck.sideboard),
+			'text/plain',
+			'txt'
+		);
 	}
 	function copyJson() {
 		copyExport(deckToJson(data.deckName, deck.legends, mainGroups, deck.sideboard));
@@ -488,6 +502,19 @@
 										onclick={downloadSimFormat}
 										class="block w-full rounded px-2 py-1.5 text-left text-body hover:bg-raised"
 										>Download sim-format (.txt)</button
+									>
+									<div class="my-1 border-t border-edge"></div>
+									<button
+										type="button"
+										onclick={copyMelee}
+										class="block w-full rounded px-2 py-1.5 text-left text-body hover:bg-raised"
+										>Copy Melee list</button
+									>
+									<button
+										type="button"
+										onclick={downloadMelee}
+										class="block w-full rounded px-2 py-1.5 text-left text-body hover:bg-raised"
+										>Download Melee (.txt)</button
 									>
 									<div class="my-1 border-t border-edge"></div>
 									<button

@@ -1,11 +1,12 @@
 /**
  * `deckToSimFormat`'s shape was verified live against cyberpunk-tcg-sim.online (see export.ts's
- * own doc comment) — these tests pin that shape, not re-derive it.
+ * own doc comment) — these tests pin that shape, not re-derive it. `deckToMeleeFormat`'s was read
+ * out of the official site's bundle.
  */
 import { describe, expect, it } from 'vitest';
 import { makeCard, makePrinting } from '#lib/cards/fixtures.js';
 import type { DeckEntryGroup } from './grouping.js';
-import { deckToJson, deckToSimFormat } from './export.js';
+import { deckToJson, deckToMeleeFormat, deckToSimFormat } from './export.js';
 
 const dexter = makeCard({
 	name: 'Dexter DeShawn — Off the Grid',
@@ -19,6 +20,18 @@ const chromeFang = makeCard({
 	printings: [makePrinting({ collectorNumber: '008' })]
 });
 
+const dexterColon = makeCard({
+	name: 'Dexter DeShawn: Off the Grid',
+	subtitle: 'Off the Grid',
+	cardType: 'Legend'
+});
+
+const kiroshi = makeCard({
+	name: 'Kiroshi Optics',
+	cardType: 'Gear',
+	printings: [makePrinting({ collectorNumber: '061' })]
+});
+
 const mainGroups: DeckEntryGroup[] = [
 	{
 		cardType: 'Unit',
@@ -30,7 +43,7 @@ const mainGroups: DeckEntryGroup[] = [
 
 describe('deckToSimFormat', () => {
 	it("matches the sim's own export shape: bare Collector Number, name, # Legends / # Main Deck", () => {
-		expect(deckToSimFormat('Custom Deck 1', [dexter], mainGroups)).toBe(
+		expect(deckToSimFormat('Custom Deck 1', [dexter], mainGroups, [])).toBe(
 			[
 				'# Name: Custom Deck 1',
 				'',
@@ -44,7 +57,7 @@ describe('deckToSimFormat', () => {
 	});
 
 	it('uses card.printings[0], never a Category prefix — MS01-002 is what broke import upstream', () => {
-		const text = deckToSimFormat('Deck', [dexter], []);
+		const text = deckToSimFormat('Deck', [dexter], [], []);
 		expect(text).toContain('1x 002 Dexter DeShawn — Off the Grid');
 		expect(text).not.toContain('MS01');
 		expect(text).not.toContain('-002');
@@ -71,10 +84,65 @@ describe('deckToJson', () => {
 });
 
 describe('the sim format and the sideboard', () => {
-	it('omits it on purpose — an unverified header could import as a 57-card main deck', () => {
-		// See `export.ts`'s doc comment and `docs/research/sideboards.md` §6.2. Delete this test
-		// when the sim's own sideboard export has been checked, not before.
-		const text = deckToSimFormat('Deck', [dexter], mainGroups);
-		expect(text).not.toContain('Sideboard');
+	it("appends a # Sideboard section, as the sim's own export does", () => {
+		// Checked live against the sim on 2026-10-06: `# Name`, a blank line, `# Sideboard`, then
+		// the same `{quantity}x {number} {name}` lines.
+		expect(
+			deckToSimFormat('Deck', [dexter], mainGroups, [
+				{ card: kiroshi, quantity: 2 },
+				{ card: chromeFang, quantity: 1 }
+			])
+		).toBe(
+			[
+				'# Name: Deck',
+				'',
+				'# Legends',
+				'1x 002 Dexter DeShawn — Off the Grid',
+				'',
+				'# Main Deck',
+				'3x 008 Chrome Fang',
+				'',
+				'# Sideboard',
+				'2x 061 Kiroshi Optics',
+				'1x 008 Chrome Fang'
+			].join('\n')
+		);
+	});
+
+	it('leaves no trace of a sideboard when there is none', () => {
+		expect(deckToSimFormat('Deck', [dexter], mainGroups, [])).not.toContain('Sideboard');
+	});
+});
+
+describe('deckToMeleeFormat', () => {
+	it('is bare headers and `{quantity} {name}` lines, MainDeck first', () => {
+		expect(deckToMeleeFormat([dexterColon], mainGroups, [{ card: kiroshi, quantity: 2 }])).toBe(
+			[
+				'MainDeck',
+				'3 Chrome Fang',
+				'',
+				'Legends',
+				'1 Dexter DeShawn — Off the Grid',
+				'',
+				'Sideboard',
+				'2 Kiroshi Optics'
+			].join('\n')
+		);
+	});
+
+	it('writes subtitled names with an em dash, whatever separator card.name uses', () => {
+		const hyphenated = makeCard({
+			name: 'V - Streetkid',
+			subtitle: 'Streetkid',
+			cardType: 'Legend'
+		});
+		expect(deckToMeleeFormat([dexterColon, hyphenated], [], [])).toContain(
+			'1 Dexter DeShawn — Off the Grid\n1 V — Streetkid'
+		);
+	});
+
+	it('omits Legends and Sideboard when empty, but never MainDeck', () => {
+		expect(deckToMeleeFormat([], mainGroups, [])).toBe('MainDeck\n3 Chrome Fang');
+		expect(deckToMeleeFormat([], [], [])).toBe('MainDeck');
 	});
 });

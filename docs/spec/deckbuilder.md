@@ -294,7 +294,7 @@ grid's own inner scroll and then discovering an outer page scroll was also neede
   owner most recently saved is what a viewer sees. Version history (§3.2) already answers "what
   did this look like before" for anyone who needs it; the link itself carries no separate version
   concept.
-- **Plain-text export**, both copy-to-clipboard and file download, two formats behind one
+- **Plain-text export**, both copy-to-clipboard and file download, three formats behind one
   dropdown (`#lib/decks/export.ts`):
 
   **Sim format** — matches cyberpunk-tcg-sim.online's own import/export shape, verified live
@@ -326,12 +326,14 @@ grid's own inner scroll and then discovering an outer page scroll was also neede
   checked fact about today's data, not a documented contract, worth re-verifying if a future
   export mismatch is reported.
 
-  **The Sim format deliberately omits the sideboard.** Its shape was verified against the sim on
-  2026-09-23, before sideboards existed in the game's rules at all, so the working assumption is
-  that the sim has no notion of one yet. Guessing a `# Sideboard` header is the dangerous
-  direction: if the sim keeps appending to the last section it recognized, the import silently
-  builds a 57-card main deck. To settle it, export a 7-card sideboard from the sim and copy
-  whatever header it emits, verbatim (`docs/research/sideboards.md` §6.2).
+  **The Sim format carries the sideboard** under its own `# Sideboard` header, after Main Deck, with
+  the same line shape and no header when empty — checked live against the sim on 2026-10-06, which
+  by then had a Sideboard target and emitted exactly that (`docs/research/sideboards.md` §6.2).
+
+  **Melee** — the paste for a Melee decklist submission, the tournament software. Read out of the
+  official site's own bundle (`cyberpunk-melee`), not from a live export: bare `MainDeck` /
+  `Legends` / `Sideboard` headers, `{quantity} {name}` lines (no `x`, no collector number), the
+  latter two omitted when empty, Legends and subtitled cards written `Name — Subtitle`.
 
   **JSON** — a standardized alternative for anything that wants structure instead of a line
   format, using the same bare import code; it was never claimed to match the sim and isn't meant
