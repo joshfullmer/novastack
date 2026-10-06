@@ -368,6 +368,34 @@ grid's own inner scroll and then discovering an outer page scroll was also neede
   new infrastructure — a rendering pipeline and a Worker route — for a capability client-side
   canvas already covers, violating this spec's own §1.5 constraint on backend blast radius.
 
+### 6.1 Import
+
+- **Pasted text, into the editor, as an unsaved draft.** An "Import list" dialog on
+  `/decks/[id]/edit` parses client-side against the card data the editor already holds, previews
+  the result live, and **Replace draft** swaps it in. Nothing is written until the existing Save,
+  so Save stays the only write path and "Discard changes" is the undo. Importing never renames the
+  deck.
+- **One tolerant parser for every format in circulation** (`#lib/decks/import.ts`): the sim's
+  `# Legends` / `# Main Deck` / `# Sideboard` with `{qty}x {number} {name}` lines, the official
+  builder's `// Legends (3)` / `// Units (24)` / `// Sideboard (7)` with `{qty} {name}` lines, and
+  Melee's bare `MainDeck` / `Legends` / `Sideboard`. The official and Melee shapes were read out of
+  the official site's bundle (`cyberpunktcg.com`), not from live exports. `#` is a section in the
+  sim format and a deck name in the official one, so known section words win.
+- **Name is the key; the collector number is only a fallback.** Resolution is by a punctuation-
+  and diacritic-insensitive name key, which is unique across all cards today and makes the
+  `:` / `-` / `—` Legend separators interchangeable (the separator has already changed twice). A
+  leading code token is stripped only when the whole line doesn't resolve.
+- **Never guess.** A line that doesn't match exactly one card is listed as unresolved, with up to
+  three clickable suggestions (an ambiguous bare Legend name lists its candidates).
+- **The two add-time limits clamp, with a warning each** (§4): a 4th copy, counted across both
+  piles, and an 8th sideboard card (later lines lose). Every other illegality imports as-is and
+  surfaces in the usual issues banner.
+- **Printings are carried by card** from the draft being replaced; an import never chooses one.
+- **Collection import** is a separate page, `/collection/import`: a CSV or pasted spreadsheet rows
+  (comma or tab), resolved by `printing_id`, else set identifier + collector number + locale. It
+  **sets** each row's Owned Count, never deletes anything the file doesn't mention, and previews
+  new / changed / decreasing / unresolved rows before committing through `POST /api/collection`.
+
 ---
 
 ## 7. Routes
@@ -439,8 +467,7 @@ Things a reader will reasonably ask that this spec does not answer.
    deckbuilder screen itself, a separate tab, or only on a saved deck's viewer page?
 2. **Printing selection UX within the deck-building flow** — where and how a Deck Entry's optional
    Printing gets overridden from its Default. Minor; not addressed by the prototype.
-3. **Import from another deckbuilder's format.** Export format (§6) is settled; what's importable
-   — round-tripping novastack's own text export, or parsing other tools' formats — is not.
+3. ~~**Import from another deckbuilder's format.**~~ **Resolved 2026-10-06** — see §6.1.
 4. **Mobile/responsive behavior for the deckbuilder screen.** Not addressed by the prototype,
    which was built and reviewed desktop-only.
 5. **Exact 3-Legend RAM-threshold solving.** The Legends tab's color-presence filter (§5.1) is a

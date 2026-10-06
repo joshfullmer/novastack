@@ -1,13 +1,15 @@
 # novastack
 
 An unofficial, art-forward card database for the Cyberpunk TCG, built from card data on
-`api.netdeck.gg`. Browse and filter every card; the deckbuilder is stage 2.
+`api.netdeck.gg`: browse and filter every card, build and share decks, and track a collection —
+binders, wantlists, a collecting goal, and what a deck is missing. Decks and collections import
+and export (sim, official-builder and Melee text; CSV).
 
 **Unofficial fan project. Not associated with or endorsed by the publisher.** Card names, art and
 rules text belong to their respective owners.
 
-SvelteKit 3 · Svelte 5 (runes) · TypeScript · Tailwind v4 · Valibot · Cloudflare Workers static
-assets. Everything prerenders.
+SvelteKit 3 · Svelte 5 (runes) · TypeScript · Tailwind v4 · Valibot · Cloudflare Workers with D1
+(accounts, decks, collections). The card database prerenders; the account-backed routes do not.
 
 ---
 
