@@ -214,6 +214,47 @@ export function createDeckState(initial?: DeckVersionPayload) {
 		legends = next.filter((value): value is Card => value !== undefined);
 	}
 
+	/**
+	 * Swaps the whole draft for an imported one (`#lib/decks/import.js`). Nothing is saved — this is
+	 * the same local state every other edit touches, so "Save deck" is still the only write and
+	 * "Discard changes" still undoes it.
+	 *
+	 * A Card the old draft already had keeps the Printing it was given. An import names Cards, never
+	 * Printings, so taking it verbatim would silently wipe every `choose-printing` choice the user
+	 * had made the moment they re-pasted an edited copy of their own list. Keyed by Card, across
+	 * both piles and the Legends, for the same reason `setPrinting` writes both piles.
+	 */
+	function replaceWith(next: {
+		legends: readonly Card[];
+		entries: readonly DeckEntry[];
+		sideboard: readonly DeckEntry[];
+	}) {
+		const carried: Record<string, string> = {};
+		for (const card of [
+			...legends,
+			...entries.map((entry) => entry.card),
+			...sideboard.map((entry) => entry.card)
+		]) {
+			const printingId = printingIdOf(card);
+			if (printingId !== undefined) carried[card.slug] = printingId;
+		}
+
+		const withCarried = (pile: readonly DeckEntry[]): DeckEntry[] =>
+			pile.map(({ card, quantity }) => {
+				const printingId = carried[card.slug];
+				return printingId === undefined ? { card, quantity } : { card, quantity, printingId };
+			});
+
+		entries.splice(0, entries.length, ...withCarried(next.entries));
+		sideboard.splice(0, sideboard.length, ...withCarried(next.sideboard));
+		for (const slug of Object.keys(legendPrintings)) delete legendPrintings[slug];
+		legends = [...next.legends];
+		for (const legend of next.legends) {
+			const printingId = carried[legend.slug];
+			if (printingId !== undefined) legendPrintings[legend.slug] = printingId;
+		}
+	}
+
 	function toPayload(): DeckVersionPayload {
 		return {
 			entries: toPayloadEntries(entries),
@@ -277,6 +318,7 @@ export function createDeckState(initial?: DeckVersionPayload) {
 		setPrinting,
 		printingIdOf,
 		setLegend,
+		replaceWith,
 		toPayload
 	};
 }

@@ -32,6 +32,7 @@
 		SIDEBOARD_SIZE
 	} from '#lib/decks/legality.js';
 	import DeckEntryManager from '#lib/components/DeckEntryManager.svelte';
+	import DeckImportDialog from '#lib/components/DeckImportDialog.svelte';
 	import { createDeckState } from '#lib/decks/deck-state.svelte.js';
 	import { deckPrinting } from '#lib/decks/printing.js';
 	import { groupDeckEntries, groupMatchesByType } from '#lib/decks/grouping.js';
@@ -111,6 +112,9 @@
 	// A deck that already has its 3 Legends opens straight on the Main Deck tab — see
 	// `toggleLegend` below for the same rule applied live as Legends are picked/removed.
 	let tab = $state<'legends' | 'main'>(deck.legends.length === LEGEND_SLOTS ? 'main' : 'legends');
+	// Mounted once at the bottom, opened from the deck panel's "Import list" — which renders in both
+	// the desktop rail and the mobile sheet, so a per-panel dialog would have meant two of them.
+	let importDialog: DeckImportDialog;
 	let searchLegends = $state('');
 	let searchMain = $state('');
 
@@ -829,6 +833,12 @@
 		     browser quirk, verified in isolation) even with identical
 		     flex-grow/shrink/basis/min-width. Grid's `minmax(0, 1fr)` tracks size by the
 		     container, not by each item's own content, so it isn't exposed to that at all. -->
+		<button
+			type="button"
+			onclick={() => importDialog.show()}
+			class="mb-2 w-full rounded-md border border-edge px-3 py-1.5 text-sm text-body
+				hover:border-neon hover:text-neon">Import list</button
+		>
 		<div class="grid grid-cols-2 gap-2">
 			<a
 				href="/d/{data.shareCode}"
@@ -922,3 +932,9 @@
 
 <!-- Mounted once here, not per row. -->
 <DeckEntryManager bind:slug={managing} {deck} canChoosePrinting={data.canChoosePrinting} />
+<!-- A full set of Legends opens on the Main Deck tab, as it does on load. -->
+<DeckImportDialog
+	bind:this={importDialog}
+	{deck}
+	onapply={() => (tab = deck.legends.length === LEGEND_SLOTS ? 'main' : tab)}
+/>
