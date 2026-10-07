@@ -19,6 +19,8 @@
 		"ingest:data": "node scripts/ingest.ts --skip-images",
 		"test:e2e": "playwright test",
 		"ingest:check": "node scripts/ingest.ts --check",
+		"prices": "node scripts/prices.ts",
+		"prices:check": "node scripts/prices.ts --check",
 		"resegment": "node scripts/resegment.ts",
 		"db:push": "drizzle-kit push",
 		"db:generate": "drizzle-kit generate",

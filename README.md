@@ -36,6 +36,8 @@ when refreshing the data.
 | `pnpm ingest`       | refetch the source API, mirror images, rewrite the snapshot            |
 | `pnpm ingest:data`  | same, skipping images (reuses mirrored ThumbHashes)                    |
 | `pnpm ingest:check` | report what a refresh _would_ change, and write nothing                |
+| `pnpm prices`       | refetch TCGplayer + Cardmarket prices, rewrite `static/prices.json`    |
+| `pnpm prices:check` | report what a price refresh _would_ change, and write nothing          |
 
 ---
 
@@ -163,6 +165,26 @@ cache so only art whose `source_image_url` actually moved is re-fetched.
 
 It also has `workflow_dispatch` — run it by hand from the Actions tab when you want the update
 applied _and_ raised as a PR rather than committed straight to your working tree.
+
+### Refreshing prices
+
+```sh
+pnpm prices:check   # exit 0 current · 1 would change · 2 invariant violated
+pnpm prices         # writes static/prices.json
+```
+
+Prices come from TCGplayer (market, USD, via TCGCSV's daily export — TCGplayer's own API no longer
+issues keys) and Cardmarket (trend, EUR, from its public price-guide files). They are joined onto
+Printing ids and written to one static file the app fetches same-origin; nothing runs on a Worker.
+TCGCSV asks for **one pull per day**, so this is not something to loop. The file carries each
+source's own rebuild time, and a run that violates an invariant (a wrong marketplace id, a renumbered
+group) writes nothing and exits `2`, leaving the last file in place.
+
+Not every Printing has a price, and that is honest rather than a gap to fill: English retail is
+presale until 2026-11-06, neither marketplace lists a French run, and a card with several arts in one
+Cardmarket expansion cannot be told apart by name there, so it is left unjoined rather than guessed.
+The curated group and expansion ids live in `src/lib/prices/marketplaces.ts`; the measurements and
+terms behind all of this are in `docs/research/prices.md`.
 
 ### Why art mirroring lives inside ingest
 

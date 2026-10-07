@@ -60,13 +60,20 @@ async function withRetry<T>(
 	throw lastError;
 }
 
+export type FetchOptions = RetryOptions & {
+	/** Added to the defaults — a source that wants an identifying `User-Agent` asks for it here. */
+	headers?: Record<string, string>;
+};
+
 export async function fetchJson<TSchema extends v.GenericSchema>(
 	url: string,
 	schema: TSchema,
-	options: RetryOptions = {}
+	options: FetchOptions = {}
 ): Promise<v.InferOutput<TSchema>> {
 	return withRetry(url, options, async () => {
-		const response = await fetch(url, { headers: { accept: 'application/json' } });
+		const response = await fetch(url, {
+			headers: { accept: 'application/json', ...options.headers }
+		});
 		assertRetryableStatus(response, url);
 
 		const contentType = response.headers.get('content-type') ?? '(none)';
