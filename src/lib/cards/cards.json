@@ -10046,7 +10046,7 @@
 		{
 			"cardType": "Legend",
 			"classifications": [
-				"Aldecado",
+				"Aldecaldo",
 				"Merc",
 				"Nomad"
 			],
@@ -10172,7 +10172,7 @@
 		{
 			"cardType": "Unit",
 			"classifications": [
-				"Aldecado",
+				"Aldecaldo",
 				"Merc",
 				"Nomad"
 			],
@@ -12704,7 +12704,7 @@
 		{
 			"cardType": "Unit",
 			"classifications": [
-				"Aldecado",
+				"Aldecaldo",
 				"Nomad"
 			],
 			"color": "Green",
@@ -15506,7 +15506,7 @@
 		{
 			"cardType": "Program",
 			"classifications": [
-				"Aldecado",
+				"Aldecaldo",
 				"Nomad"
 			],
 			"color": "Green",
@@ -16482,7 +16482,7 @@
 			"sortOrder": 2500
 		}
 	],
-	"generatedAt": "2026-10-05T16:15:50.142Z",
+	"generatedAt": "2026-10-07T10:41:08.001Z",
 	"ramPerLegend": 2,
 	"sets": [
 		{
