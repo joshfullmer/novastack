@@ -27,10 +27,15 @@
 		removeTarget,
 		topUpPlan
 	} from '#lib/collection/deck-collection.js';
+	import { printTreatment } from '#lib/cards/derive.js';
 	import type { Card } from '#lib/cards/schema.js';
 	import type { NeededCard } from '#lib/collection/missing.js';
 	import type { WantlistSummary } from '#lib/collection/wantlists.js';
+	import { costToComplete, MARKETPLACE_INFO, MARKETPLACES } from '#lib/prices/cost.js';
+	import { formatMoney } from '#lib/prices/format.js';
+	import { prices } from '#lib/prices/state.svelte.js';
 	import { COLOR_TEXT } from './color.js';
+	import PriceNote from './PriceNote.svelte';
 
 	let {
 		entries,
@@ -50,6 +55,23 @@
 
 	const rows = $derived(deckCollectionRows(entries, (id) => collection.quantityOf(id)));
 	const summary = $derived(deckCollectionSummary(rows));
+
+	// Priced at the headline's own figure — the Card-level shortfall — so "missing 7 cards" and "to
+	// buy: $4.20" are about the same seven cards. See `#lib/prices/cost.ts` for which printing.
+	$effect(() => void prices.load());
+	const cost = $derived(
+		costToComplete(
+			rows.map((row) => ({ card: row.card, copies: row.playableMissing })),
+			(id) => prices.quote(id)
+		)
+	);
+	const offersBySlug = $derived(new Map(cost.rows.map((row) => [row.card.slug, row.offers])));
+	const shortPrintingIds = $derived(
+		cost.rows.flatMap((row) => row.card.printings.map((printing) => printing.id))
+	);
+	const anyPriced = $derived(
+		MARKETPLACES.some((marketplace) => cost.totals[marketplace].pricedCards > 0)
+	);
 
 	/** Wantlist menu state, carried over from `MissingPanel`. `null` until fetched, so "none yet"
 	 * stays distinguishable from "not asked". */
@@ -221,6 +243,38 @@
 			</div>
 		</div>
 
+		<!-- What buying the shortfall costs. Only when something is short *and* something is priced:
+		     a complete deck has nothing to buy, and a row of "unpriced" before the snapshot lands (or
+		     for a deck of cards nobody lists yet) would be noise. Each marketplace is its own total
+		     in its own currency and says how many cards it covers — a total over 5 of 7 cards is a
+		     floor, not a price, and the number of cards left out is the thing that says so. -->
+		{#if !summary.complete && anyPriced}
+			<div class="border-b border-edge px-3 py-2">
+				<p class="flex flex-wrap items-baseline gap-x-4 gap-y-1 text-xs">
+					<span class="text-muted">To buy</span>
+					{#each MARKETPLACES as marketplace (marketplace)}
+						{@const tally = cost.totals[marketplace]}
+						{#if tally.pricedCards > 0}
+							<span class="text-muted">
+								{MARKETPLACE_INFO[marketplace].name}
+								<span class="font-mono text-sm text-bright tabular-nums"
+									>{formatMoney(tally.total, MARKETPLACE_INFO[marketplace].currency)}</span
+								>
+								<span class="text-muted/70 tabular-nums"
+									>· {tally.pricedCards} of {cost.rows.length}
+									{cost.rows.length === 1 ? 'card' : 'cards'}</span
+								>
+							</span>
+						{/if}
+					{/each}
+				</p>
+				<p class="mt-1 text-xs text-muted/70">
+					The cheapest English printing of each card, beta included until retail is on sale.
+				</p>
+				<PriceNote printingIds={shortPrintingIds} class="mt-0.5" />
+			</div>
+		{/if}
+
 		{#if menuOpen}
 			<div class="border-b border-edge bg-void/30 px-3 py-2.5">
 				{#if wantlists === null && !failure}
@@ -283,6 +337,7 @@
 		<ul role="list">
 			{#each rows as row (row.card.slug)}
 				{@const short = row.missing > 0}
+				{@const offers = row.playableMissing > 0 ? offersBySlug.get(row.card.slug) : undefined}
 				<li class="flex items-center gap-3 border-b border-edge/50 px-3 py-1.5 last:border-b-0">
 					<span
 						class="min-w-0 flex-1 truncate text-sm {COLOR_TEXT[row.card.color]}"
@@ -304,6 +359,34 @@
 							>
 						{/if}
 					</span>
+
+					<!-- The cheapest printing's price, per copy, linked to where to buy it. Only for a card the
+					     deck is actually short of (Card level, like the headline). The tooltip names the
+					     printing, because "cheapest" can be a beta copy you did not have in mind. -->
+					{#if offers}
+						<span class="flex shrink-0 items-baseline gap-2 text-xs">
+							{#each MARKETPLACES as marketplace (marketplace)}
+								{@const offer = offers[marketplace]}
+								{#if offer}
+									<a
+										href={MARKETPLACE_INFO[marketplace].url(offer.productId)}
+										target="_blank"
+										rel="noopener noreferrer"
+										title="{MARKETPLACE_INFO[marketplace].name}, each — {printTreatment(
+											offer.printing
+										) === 'beta'
+											? 'beta'
+											: 'retail'} printing #{offer.printing.collectorNumber}"
+										class="font-mono text-muted tabular-nums transition-colors hover:text-neon"
+										>{formatMoney(offer.amount, MARKETPLACE_INFO[marketplace].currency)}<span
+											class="sr-only"
+											>, {MARKETPLACE_INFO[marketplace].name}, opens in a new tab</span
+										></a
+									>
+								{/if}
+							{/each}
+						</span>
+					{/if}
 
 					<span
 						class="shrink-0 text-xs tabular-nums {short ? 'text-card-red' : 'text-neon-dim'}"
