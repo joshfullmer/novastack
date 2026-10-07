@@ -24,6 +24,8 @@
 	import { DEFAULT_LOCALE } from '#lib/cards/vocabulary.js';
 	import { printingRow, setLabel } from '#lib/collection/printing-search.js';
 	import CardImage from '#lib/components/CardImage.svelte';
+	import PriceLinks from '#lib/components/PriceLinks.svelte';
+	import PriceNote from '#lib/components/PriceNote.svelte';
 	import QuantityStepper from '#lib/components/QuantityStepper.svelte';
 	import RulesText from '#lib/components/RulesText.svelte';
 
@@ -270,6 +272,10 @@
 				<p class="mt-1 text-xs text-muted">
 					{row.printing.rarity}{row.printing.artist ? ` · Art by ${row.printing.artist}` : ''}
 				</p>
+				<!-- Where to buy this Printing. Owning and wanting it are above; buying it is the third
+				     thing a collector does with a card. -->
+				<PriceLinks printingId={row.printing.id} class="mt-2" />
+				<PriceNote printingIds={[row.printing.id]} class="mt-1" />
 
 				{#if row.card.rulesText.length > 0}
 					<div class="mt-3 border-t border-edge pt-3">

@@ -38,6 +38,8 @@
 	import { collection } from '#lib/collection/state.svelte.js';
 	import { manageCollection } from '#lib/collection/manage-pref.svelte.js';
 	import CardMetaBadges from '#lib/components/CardMetaBadges.svelte';
+	import PriceLinks from '#lib/components/PriceLinks.svelte';
+	import PriceNote from '#lib/components/PriceNote.svelte';
 	import CardStats from '#lib/components/CardStats.svelte';
 	import FaqText from '#lib/components/FaqText.svelte';
 	import Meta from '#lib/components/Meta.svelte';
@@ -240,6 +242,10 @@
 			>
 		{/if}
 
+		<!-- Fetched on the client (this page is edge-cached and prices move daily), so these appear a
+		     beat after the gallery. The note says which prices they are. -->
+		<PriceNote printingIds={shownPrintings.map((entry) => entry.id)} class="mt-3" />
+
 		<ul class="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
 			{#each shownPrintings as entry, index (entry.id)}
 				{@const entrySet = findSetIdentifier(entry.setId)}
@@ -292,6 +298,9 @@
 							</div>
 						</dl>
 					</button>
+					<!-- Outside the chooser button for the same reason as the stepper below: a link nested
+					     in a button is invalid markup, and clicking it would also select the printing. -->
+					<PriceLinks printingId={entry.id} class="mt-2" />
 					{#if manageCollection.enabled && collection.status !== 'idle' && collection.status !== 'loading'}
 						<!-- Outside the chooser `<button>` on purpose: a stepper nested in a button is
 						     invalid markup, and its clicks would also select the printing. -->
