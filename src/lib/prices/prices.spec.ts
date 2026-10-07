@@ -11,8 +11,7 @@ import { describe, expect, it } from 'vitest';
 import * as v from 'valibot';
 import { dataset } from '../cards/index.ts';
 import { printTreatment } from '../cards/derive.ts';
-import { TCGPLAYER_GROUPS, runKey } from './marketplaces.ts';
-import { runOf } from './mapping.ts';
+import { TCGPLAYER_GROUPS, runKey, runOf } from './marketplaces.ts';
 import { PricesSchema, stringifyPrices } from './schema.ts';
 
 const text = readFileSync('static/prices.json', 'utf8');

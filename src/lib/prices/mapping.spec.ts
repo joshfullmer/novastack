@@ -284,6 +284,98 @@ describe('mapCardmarket', () => {
 	});
 });
 
+describe('mapCardmarket tie-break', () => {
+	// Two arts of one card in WNC beta, which Cardmarket lists as two products with one name. The
+	// standard art is the lower collector number and the lower `idProduct`.
+	const card = cardWith('Adam Smasher', { collectorNumber: 'β001' }, { collectorNumber: 'β141' });
+	const [standard, iconic] = card.printings;
+	const products = [cmProduct(2, 'Adam Smasher'), cmProduct(1, 'Adam Smasher')]; // unsorted on purpose
+
+	const tcg = (standardCents: number | null, iconicCents: number | null) => (id: string) =>
+		id === standard.id ? standardCents : id === iconic.id ? iconicCents : null;
+
+	it('pairs the arts when both marketplaces rank them the same way', () => {
+		const { quotes, report } = mapCardmarket(
+			[card],
+			{ products, prices: [cmRow(1, 0.5), cmRow(2, 100)] },
+			tcg(91, 10963)
+		);
+		expect(quotes.get(standard.id)).toEqual({ productId: 1, trend: 50 });
+		expect(quotes.get(iconic.id)).toEqual({ productId: 2, trend: 10000 });
+		expect(report.paired).toBe(2);
+		expect(report.tied).toEqual([]);
+	});
+
+	it('drops a pairing the prices contradict', () => {
+		const { quotes, report } = mapCardmarket(
+			[card],
+			{ products, prices: [cmRow(1, 0.5), cmRow(2, 100)] },
+			tcg(10963, 91) // TCGplayer says the *lower* number is the expensive one
+		);
+		expect(quotes.size).toBe(0);
+		expect(report.tied).toHaveLength(2);
+	});
+
+	it('does not pair what it cannot check: a missing price on either side', () => {
+		expect(
+			mapCardmarket([card], { products, prices: [cmRow(1, 0.5), cmRow(2, 100)] }, tcg(91, null))
+				.quotes.size
+		).toBe(0);
+		expect(
+			mapCardmarket([card], { products, prices: [cmRow(1, 0.5), cmRow(2, 0)] }, tcg(91, 10963))
+				.quotes.size
+		).toBe(0);
+	});
+
+	it('does not pair what the prices cannot tell apart: two equal prices', () => {
+		expect(
+			mapCardmarket([card], { products, prices: [cmRow(1, 1), cmRow(2, 1)] }, tcg(91, 10963)).quotes
+				.size
+		).toBe(0);
+		expect(
+			mapCardmarket([card], { products, prices: [cmRow(1, 0.5), cmRow(2, 100)] }, tcg(500, 500))
+				.quotes.size
+		).toBe(0);
+	});
+
+	it('never pairs when the counts differ — a third product is one we cannot place', () => {
+		const three = [...products, cmProduct(3, 'Adam Smasher')];
+		const { quotes } = mapCardmarket(
+			[card],
+			{ products: three, prices: [cmRow(1, 0.5), cmRow(2, 100), cmRow(3, 300)] },
+			tcg(91, 10963)
+		);
+		expect(quotes.size).toBe(0);
+	});
+
+	it('pairs three arts only if all three rank the same', () => {
+		const trio = cardWith(
+			'V Streetkid',
+			{ collectorNumber: 'β005a' },
+			{ collectorNumber: 'β005b' },
+			{ collectorNumber: 'β144' }
+		);
+		const trioProducts = [1, 2, 3].map((id) => cmProduct(id, 'V Streetkid'));
+		const market = new Map(trio.printings.map((printing, i) => [printing.id, [29, 31, 12365][i]]));
+		const prices = [cmRow(1, 0.2), cmRow(2, 0.3), cmRow(3, 120)];
+
+		const ok = mapCardmarket(
+			[trio],
+			{ products: trioProducts, prices },
+			(id) => market.get(id) ?? null
+		);
+		expect(ok.quotes.size).toBe(3);
+
+		market.set(trio.printings[1].id, 5); // 005b now cheaper than 005a on TCGplayer only
+		const bad = mapCardmarket(
+			[trio],
+			{ products: trioProducts, prices },
+			(id) => market.get(id) ?? null
+		);
+		expect(bad.quotes.size).toBe(0);
+	});
+});
+
 describe('buildPrices', () => {
 	const card = cardWith('Chrome Fang', { collectorNumber: 'β012' });
 	const built = buildPrices(

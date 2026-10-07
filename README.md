@@ -181,10 +181,14 @@ source's own rebuild time, and a run that violates an invariant (a wrong marketp
 group) writes nothing and exits `2`, leaving the last file in place.
 
 Not every Printing has a price, and that is honest rather than a gap to fill: English retail is
-presale until 2026-11-06, neither marketplace lists a French run, and a card with several arts in one
-Cardmarket expansion cannot be told apart by name there, so it is left unjoined rather than guessed.
-The curated group and expansion ids live in `src/lib/prices/marketplaces.ts`; the measurements and
-terms behind all of this are in `docs/research/prices.md`.
+presale until 2026-11-06, and neither marketplace lists a French run. Cardmarket has no collector
+numbers, so a card with several arts in one expansion (every Legend) cannot be told apart by name
+there; the arts are paired with its products by collector-number against `idProduct` order, and
+**only if** Cardmarket's price order agrees with TCGplayer's for every pair. Anything the prices
+contradict or cannot check stays unjoined, and the app then treats that card as unpriced on
+Cardmarket instead of pricing it at whichever art did join. The curated group and expansion ids live
+in `src/lib/prices/marketplaces.ts`; the measurements and terms behind all of this are in
+`docs/research/prices.md`.
 
 ### Why art mirroring lives inside ingest
 

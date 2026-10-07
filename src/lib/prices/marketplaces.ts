@@ -17,12 +17,22 @@
  * they carry no market price yet, so they resolve to "no price" and light up on their own at launch
  * with no further change.
  */
+import { printTreatment } from '../cards/derive.ts';
+import type { Printing } from '../cards/schema.ts';
 import { DEFAULT_LOCALE, type Locale } from '../cards/vocabulary.ts';
 
 export type Run = { setId: string; beta: boolean; locale: Locale };
 
 export function runKey({ setId, beta, locale }: Run): string {
 	return `${setId}|${beta ? 'beta' : 'retail'}|${locale}`;
+}
+
+export function runOf(printing: Printing): Run {
+	return {
+		setId: printing.setId,
+		beta: printTreatment(printing) === 'beta',
+		locale: printing.locale
+	};
 }
 
 const en = (setId: string, beta: boolean): string =>

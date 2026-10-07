@@ -163,7 +163,8 @@ function describe(snapshot: Prices, report: PriceReport, printings: number): str
 			`${report.tcgplayer.noProduct.length} with a group but no matching number, ` +
 			`${report.tcgplayer.nameMismatches.length} name mismatch(es)`,
 		`  Cardmarket  ${cardmarket.length}/${printings} printings joined, ${cardmarketPriced.length} priced`,
-		`              ${report.cardmarket.tied.length} left unjoined as ambiguous, ` +
+		`              ${report.cardmarket.paired} paired by price order, ` +
+			`${report.cardmarket.tied.length} left unjoined as ambiguous, ` +
 			`${report.cardmarket.nameNotFound.length} name(s) not found`,
 		`  sources     TCGplayer ${snapshot.tcgplayer.updatedAt} · Cardmarket ${snapshot.cardmarket.updatedAt}`
 	];

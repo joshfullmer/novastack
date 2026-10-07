@@ -16,9 +16,8 @@
  * Nothing here ever falls back from one run to another. Retail and beta are different products
  * with different prices, and a French Printing has no marketplace product to borrow.
  */
-import { printTreatment } from '../cards/derive.ts';
 import type { Card, Printing } from '../cards/schema.ts';
-import { CARDMARKET_EXPANSIONS, TCGPLAYER_GROUPS, runKey, type Run } from './marketplaces.ts';
+import { CARDMARKET_EXPANSIONS, TCGPLAYER_GROUPS, runKey, runOf } from './marketplaces.ts';
 import type { Prices, Quote } from './schema.ts';
 import type {
 	CardmarketPriceRow,
@@ -26,14 +25,6 @@ import type {
 	TcgcsvPrice,
 	TcgcsvProduct
 } from './sources.ts';
-
-export function runOf(printing: Printing): Run {
-	return {
-		setId: printing.setId,
-		beta: printTreatment(printing) === 'beta',
-		locale: printing.locale
-	};
-}
 
 /**
  * Our collector number in TCGplayer's spelling: `β005a` → `B005a`, `10` → `010`.
@@ -175,6 +166,8 @@ export function mapTcgplayer(
 export type CardmarketReport = {
 	/** Name is not unique in the expansion (or a card has several arts in the run): not guessed. */
 	tied: string[];
+	/** Of those, how many a price-order cross-check against TCGplayer resolved. See `pairTies`. */
+	paired: number;
 	/** Expansion exists but nothing in it has this name. */
 	nameNotFound: string[];
 	/** How many of our Printings each curated expansion was asked about, and how many it knew. */
@@ -187,9 +180,56 @@ function cardmarketPrice(row: CardmarketPriceRow | undefined): number | null {
 	return toMinor(row?.trend) ?? toMinor(row?.['trend-foil']);
 }
 
+/**
+ * Several arts of one card in one run share a name on Cardmarket, which carries no collector
+ * number, so name alone cannot say which product is which Printing.
+ *
+ * What can: the arts of a card are consistently priced against each other on both marketplaces —
+ * the standard art is cheap and the Iconic Legend is not — so the Printings in collector-number
+ * order and the products in `idProduct` order should rank the same way by price. Pairing them that
+ * way is accepted **only if** every pair's order agrees, strictly, between Cardmarket's trend and
+ * TCGplayer's market price. A pairing the prices contradict is dropped, and so is one that cannot
+ * be checked (a missing price) or cannot discriminate (two equal prices): left unjoined, as before.
+ *
+ * It is corroboration and not proof — arts priced a cent apart can swap without the check noticing,
+ * at the cost of a cent and a link to the sibling art — but it is what stops the cheapest art of a
+ * Legend being invisible, which made a deck's Cardmarket total an order of magnitude too high.
+ * Measured agreement before this was written: 30 of 30 two-way ties (`docs/research/prices.md` §4.3).
+ */
+function pairTies(
+	printings: readonly Printing[],
+	candidates: readonly CardmarketProduct[],
+	priceById: ReadonlyMap<number, CardmarketPriceRow>,
+	tcgplayerMarket: (printingId: string) => number | null
+): [Printing, CardmarketProduct][] | null {
+	if (printings.length < 2 || printings.length !== candidates.length) return null;
+
+	const byNumber = [...printings].sort((a, b) =>
+		collectorNumberKey(a.collectorNumber).localeCompare(collectorNumberKey(b.collectorNumber))
+	);
+	const byId = [...candidates].sort((a, b) => a.idProduct - b.idProduct);
+	const pairs = byNumber.map((printing, index): [Printing, CardmarketProduct] => [
+		printing,
+		byId[index]
+	]);
+
+	const tcg = pairs.map(([printing]) => tcgplayerMarket(printing.id));
+	const cm = pairs.map(([, product]) => cardmarketPrice(priceById.get(product.idProduct)));
+	for (let i = 0; i < pairs.length; i += 1) {
+		for (let j = i + 1; j < pairs.length; j += 1) {
+			const [ti, tj, ci, cj] = [tcg[i], tcg[j], cm[i], cm[j]];
+			if (ti === null || tj === null || ci === null || cj === null) return null;
+			if (ti === tj || ci === cj || Math.sign(ti - tj) !== Math.sign(ci - cj)) return null;
+		}
+	}
+	return pairs;
+}
+
 export function mapCardmarket(
 	cards: readonly Card[],
-	source: { products: readonly CardmarketProduct[]; prices: readonly CardmarketPriceRow[] }
+	source: { products: readonly CardmarketProduct[]; prices: readonly CardmarketPriceRow[] },
+	/** TCGplayer's market price for a Printing in minor units — used only to check a tie-break. */
+	tcgplayerMarket: (printingId: string) => number | null = () => null
 ): { quotes: Map<string, NonNullable<Quote['cardmarket']>>; report: CardmarketReport } {
 	const byName = new Map<string, CardmarketProduct[]>();
 	for (const product of source.products) {
@@ -198,34 +238,54 @@ export function mapCardmarket(
 	}
 	const priceById = new Map(source.prices.map((row) => [row.idProduct, row]));
 
-	const report: CardmarketReport = { tied: [], nameNotFound: [], expansions: new Map(), mapped: 0 };
+	const report: CardmarketReport = {
+		tied: [],
+		paired: 0,
+		nameNotFound: [],
+		expansions: new Map(),
+		mapped: 0
+	};
 	const quotes = new Map<string, NonNullable<Quote['cardmarket']>>();
+	const quote = (printing: Printing, product: CardmarketProduct) =>
+		quotes.set(printing.id, {
+			productId: product.idProduct,
+			trend: cardmarketPrice(priceById.get(product.idProduct))
+		});
 
 	for (const card of cards) {
+		// A card's Printings in one run, which is the unit a name can or cannot identify.
+		const runs = new Map<string, { expansion: number; printings: Printing[] }>();
 		for (const printing of card.printings) {
 			const run = runKey(runOf(printing));
 			const expansion = CARDMARKET_EXPANSIONS.get(run);
 			if (expansion === undefined) continue;
+			const entry = runs.get(run) ?? { expansion, printings: [] };
+			entry.printings.push(printing);
+			runs.set(run, entry);
+		}
 
-			const sameRun = card.printings.filter((other) => runKey(runOf(other)) === run).length;
+		for (const { expansion, printings } of runs.values()) {
 			const candidates = byName.get(`${expansion}|${nameKey(card.name)}`) ?? [];
 
 			const tally = report.expansions.get(expansion) ?? { ours: 0, found: 0 };
-			tally.ours += 1;
-			if (candidates.length > 0) tally.found += 1;
+			tally.ours += printings.length;
+			if (candidates.length > 0) tally.found += printings.length;
 			report.expansions.set(expansion, tally);
 
 			if (candidates.length === 0) {
-				report.nameNotFound.push(printing.key);
-			} else if (candidates.length > 1 || sameRun > 1) {
-				report.tied.push(printing.key);
-			} else {
-				const [product] = candidates;
-				quotes.set(printing.id, {
-					productId: product.idProduct,
-					trend: cardmarketPrice(priceById.get(product.idProduct))
-				});
+				report.nameNotFound.push(...printings.map((printing) => printing.key));
+			} else if (printings.length === 1 && candidates.length === 1) {
+				quote(printings[0], candidates[0]);
 				report.mapped += 1;
+			} else {
+				const pairs = pairTies(printings, candidates, priceById, tcgplayerMarket);
+				if (pairs === null) {
+					report.tied.push(...printings.map((printing) => printing.key));
+				} else {
+					for (const [printing, product] of pairs) quote(printing, product);
+					report.mapped += pairs.length;
+					report.paired += pairs.length;
+				}
 			}
 		}
 	}
@@ -250,7 +310,7 @@ export function buildPrices(
 	}
 ): { prices: Prices; report: PriceReport } {
 	const tcg = mapTcgplayer(cards, tcgplayer);
-	const cm = mapCardmarket(cards, cardmarket);
+	const cm = mapCardmarket(cards, cardmarket, (id) => tcg.quotes.get(id)?.market ?? null);
 
 	const quotes: Record<string, Quote> = {};
 	for (const [id, quote] of tcg.quotes) quotes[id] = { ...quotes[id], tcgplayer: quote };

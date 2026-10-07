@@ -403,6 +403,18 @@ Cardmarket covers things TCGplayer does not: DD1 (15/15) and DD2 (14/14) are nam
 The two sources also agree on which beta cards are foil: Cardmarket has 80 products with only
 `trend-foil` and 92 with only `trend`, TCGplayer has 80 `Foil` and 92 `Normal` for the same 172.
 
+**Update, 2026-10-07 (built).** `src/lib/prices/mapping.ts` now does exactly the cross-check described
+above and no more: tied printings (collector-number order) are paired with tied products (`idProduct`
+order), and the pairing is kept only if Cardmarket's trend and TCGplayer's market price rank every pair
+strictly the same way; a missing price, an equal price, or a count mismatch leaves them unjoined.
+That moved Cardmarket from 195 to **255 of 720** joins (60 paired, 5 still tied, 2 name not found), and
+the paired joins' CM/TCG price ratios sit in the same band as the unambiguous ones (median 0.85 vs
+0.59, both inside 0.02-2.0). It also fixed a real error: before it, the three Legends in a test deck
+priced on Cardmarket at their pre-release printing (EUR 10-28) while the standard beta art, which the
+name tie had hidden, was EUR 0.07-0.42; the deck's Cardmarket total read EUR 37 against TCGplayer's
+USD 2.71. The UI additionally refuses to call a card's Cardmarket price "the cheapest" while any
+English printing in a Cardmarket-covered run has no Cardmarket quote (`#lib/prices/cost.ts`).
+
 ### 4.4 Failure modes (what will actually bite)
 
 - **Retail has no price until after 2026-11-06.** Both marketplaces list it as presale; Cardmarket has

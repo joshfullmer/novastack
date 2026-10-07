@@ -18,6 +18,7 @@ function report(overrides: {
 		},
 		cardmarket: {
 			tied: [],
+			paired: 0,
 			nameNotFound: [],
 			expansions: new Map(),
 			mapped: 0,
