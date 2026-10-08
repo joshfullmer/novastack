@@ -134,6 +134,17 @@
 					"thumbhash": "zjiCFAQPlReDmof7sAqGy4CMgYGHBxh4AA=="
 				},
 				{
+					"artist": "Pandart Studio",
+					"collectorNumber": "141",
+					"id": "828f575e-012d-4287-8b35-b0d8e5a4464c",
+					"key": "MS01-WNC-141",
+					"locale": "en",
+					"rarity": "Iconic Legend",
+					"setId": "MS01-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/828f575e-012d-4287-8b35-b0d8e5a4464c/render-mpvmqjzm.webp",
+					"thumbhash": "EDiGHAYP3e5Jh1VWkAq2uHCMgYGICBiIAA=="
+				},
+				{
 					"artist": "Michał Dziekan",
 					"collectorNumber": "β001",
 					"id": "4d75c13e-bde2-409b-8bcc-516e054f28f5",
@@ -189,6 +200,17 @@
 					"thumbhash": "kjiKHAQPdwiXt1h5dweXl4CNgYGICBiIAA=="
 				},
 				{
+					"artist": "Pandart Studio",
+					"collectorNumber": "029",
+					"id": "4eebb315-5f75-404e-b82a-7840b64cae88",
+					"key": "EOR01-WNC-029",
+					"locale": "en",
+					"rarity": "Nova Rare",
+					"setId": "EOR01-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/4eebb315-5f75-404e-b82a-7840b64cae88/render-mtcqmd71.webp",
+					"thumbhash": "UkiGHAgPvM5J90VWgwqmqHCLgYGICBiIAA=="
+				},
+				{
 					"artist": "Michał Dziekan",
 					"collectorNumber": "001",
 					"id": "e8a372eb-313d-43a0-a972-cf742a97baef",
@@ -198,6 +220,17 @@
 					"setId": "MS01-WNC",
 					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/e8a372eb-313d-43a0-a972-cf742a97baef/render-ba7cf79d-b704-419d-a6dc-1e25435c9784.webp",
 					"thumbhash": "zjiCFAYPlTeDmXf7sQqGy4CMgYGHBxh4AA=="
+				},
+				{
+					"artist": "Pandart Studio",
+					"collectorNumber": "141",
+					"id": "34b9a5b6-8c89-4f62-89a4-26a774e2b3d7",
+					"key": "MS01-WNC-141-FR",
+					"locale": "fr",
+					"rarity": "Iconic Legend",
+					"setId": "MS01-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/34b9a5b6-8c89-4f62-89a4-26a774e2b3d7/render-4502c9f0-6a90-4fba-b73c-c61921ced93f.webp",
+					"thumbhash": "EDiGHAYPzO5Jl1VWkAq2uHCMgYGICBiIAA=="
 				}
 			],
 			"ramProvided": 2,
@@ -894,8 +927,37 @@
 			],
 			"ramProvided": 2,
 			"ramRequired": null,
-			"rawRulesText": "1 €$, {Spend} Play a Program from your trash. Bottom-deck it after you play it. (You still pay its cost.)",
+			"rawRulesText": "{Spend} Your next Program this turn plays for -1 €$ for each friendly min Gig, to a minimum of 1 €$.\n1 €$, {Spend} Play a Program from your trash. Bottom-deck it after you play it. (You still pay its cost.)",
 			"rulesText": [
+				[
+					{
+						"keyword": "Spend",
+						"kind": "keyword",
+						"text": "{Spend}"
+					},
+					{
+						"kind": "text",
+						"text": " Your next Program this turn plays for -1 "
+					},
+					{
+						"kind": "symbol",
+						"symbol": "eurodollars",
+						"text": "€$"
+					},
+					{
+						"kind": "text",
+						"text": " for each friendly min Gig, to a minimum of 1 "
+					},
+					{
+						"kind": "symbol",
+						"symbol": "eurodollars",
+						"text": "€$"
+					},
+					{
+						"kind": "text",
+						"text": "."
+					}
+				],
 				[
 					{
 						"kind": "text",
@@ -10678,7 +10740,7 @@
 			],
 			"ramProvided": null,
 			"ramRequired": 3,
-			"rawRulesText": "Choose one effect. If a friendly d4 is a min Gig, choose both instead.\nGive a rival Unit -5 power this turn. // Bottom-deck a rival Unit with power 0.",
+			"rawRulesText": "Choose one effect. If a friendly d4 is a min Gig, choose both instead.\nGive a rival Unit -4 power this turn. // Bottom-deck a rival Unit with power 0.",
 			"rulesText": [
 				[
 					{
@@ -10701,7 +10763,7 @@
 				[
 					{
 						"kind": "text",
-						"text": "Give a rival Unit -5 power this turn."
+						"text": "Give a rival Unit -4 power this turn."
 					},
 					{
 						"kind": "choiceBreak",
@@ -16482,7 +16544,7 @@
 			"sortOrder": 2500
 		}
 	],
-	"generatedAt": "2026-10-07T10:41:08.001Z",
+	"generatedAt": "2026-10-08T19:40:07.856Z",
 	"ramPerLegend": 2,
 	"sets": [
 		{
@@ -16493,7 +16555,7 @@
 			"kind": "base",
 			"name": "Welcome to Night City",
 			"printed": "MS01 - WNC [A]",
-			"printingCount": 486,
+			"printingCount": 488,
 			"setCode": "WNC"
 		},
 		{
@@ -16574,14 +16636,14 @@
 			"setCode": "WNC"
 		},
 		{
-			"cardCount": 27,
+			"cardCount": 28,
 			"category": "EOR01",
 			"cycle": null,
 			"id": "EOR01-WNC",
 			"kind": "derivative",
 			"name": "Edgerunner Open Season 1",
 			"printed": "EOR01 - WNC",
-			"printingCount": 45,
+			"printingCount": 46,
 			"setCode": "WNC"
 		},
 		{
@@ -16620,7 +16682,7 @@
 	],
 	"stats": {
 		"cards": 151,
-		"printings": 720,
+		"printings": 723,
 		"sets": 1
 	}
 }
