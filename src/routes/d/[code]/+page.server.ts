@@ -3,6 +3,7 @@ import * as v from 'valibot';
 import { DeckVersionPayloadSchema } from '#lib/decks/schema.js';
 import { diffVersions } from '#lib/decks/version-diff.js';
 import { deckPath } from '#lib/decks/links.js';
+import { can } from '#lib/entitlements.js';
 import {
 	deleteDeck,
 	duplicateDeck,
@@ -15,6 +16,7 @@ import {
 	setDeckVisibility,
 	unlikeDeck
 } from '#lib/server/db/decks.js';
+import { featuresFor } from '#lib/server/db/entitlements.js';
 import { ensureDeckShareCode } from '#lib/server/db/share-codes.js';
 import { readViewPref } from '#lib/server/view-pref.js';
 import type { Actions, PageServerLoad } from './$types';
@@ -110,6 +112,16 @@ export const load: PageServerLoad = async (event) => {
 		visibility: deck.visibility,
 		isOwner,
 		payload,
+		/**
+		 * Whether the deck's **owner** may choose Printings (`#lib/entitlements.ts`) — not the viewer,
+		 * so it is the same for everyone and safe in a shared response. A lapsed grant leaves the deck
+		 * its Printings, still rendered, but the owner can no longer be said to have chosen art, so
+		 * the deck price shows one figure rather than a split that implies they did.
+		 */
+		ownerCanChoosePrinting: can(
+			await featuresFor(event.locals.db, deck.ownerId),
+			'choose-printing'
+		),
 		likeCount,
 		viewerHasLiked,
 		history,

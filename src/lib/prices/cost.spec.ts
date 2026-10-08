@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { makeCard, makePrinting } from '../cards/fixtures.ts';
 import type { Card } from '../cards/schema.ts';
-import { cheapestOffer, costOfPrintings, costToComplete } from './cost.ts';
+import { cheapestOffer, costOfPrintings, costToComplete, deckCost } from './cost.ts';
 import type { Quote } from './schema.ts';
 
 const tcg = (productId: number, market: number | null): Quote => ({
@@ -201,5 +201,137 @@ describe('costOfPrintings', () => {
 		const none = costOfPrintings([{ printingId: 'a', quantity: 0 }], quotes);
 		expect(none.tcgplayer).toEqual({ total: 0, priced: 0, pricedCopies: 0, unpriced: 0 });
 		expect(costOfPrintings([], quotes).cardmarket.total).toBe(0);
+	});
+});
+
+describe('deckCost', () => {
+	// Default printing is the retail copy; the beta is cheaper, the French has no listing.
+	const fang = threePrintings('chrome-fang');
+	const blade = threePrintings('mantis-blades');
+
+	const quotes = lookup({
+		'chrome-fang-retail': { ...tcg(1, 500), ...cm(11, 400) },
+		'chrome-fang-beta': { ...tcg(2, 25), ...cm(12, 20) },
+		'mantis-blades-beta': { ...tcg(3, 100), ...cm(13, 90) } // its retail copy has no market yet
+	});
+
+	it('prices a card with no chosen printing at its cheapest — not at its unpriced Default', () => {
+		const { tcgplayer } = deckCost(
+			[
+				{ card: fang, quantity: 3 }, // default is retail, $5.00; cheapest is the $0.25 beta
+				{ card: blade, quantity: 2 } // default is retail with no market yet
+			],
+			quotes
+		);
+		expect(tcgplayer.built).toMatchObject({ total: 25 * 3 + 100 * 2, priced: 2, unpriced: 0 });
+	});
+
+	it('gives a deck that chose nothing two identical figures', () => {
+		const { tcgplayer } = deckCost([{ card: fang, quantity: 3 }], quotes);
+		expect(tcgplayer.built).toEqual(tcgplayer.cheapest);
+	});
+
+	it('prices a chosen printing at that printing, not the cheapest — the gap is what the art costs', () => {
+		const { tcgplayer, cardmarket } = deckCost(
+			[{ card: fang, quantity: 3, printingId: 'chrome-fang-retail' }],
+			quotes
+		);
+		expect(tcgplayer.built.total).toBe(500 * 3);
+		expect(tcgplayer.cheapest.total).toBe(25 * 3);
+		expect(cardmarket.built.total).toBe(400 * 3);
+		expect(cardmarket.cheapest.total).toBe(20 * 3);
+	});
+
+	it('prices the cheapest way to field the same list, whichever printing it uses', () => {
+		const { tcgplayer } = deckCost(
+			[
+				{ card: fang, quantity: 3 },
+				{ card: blade, quantity: 2 }
+			],
+			quotes
+		);
+		expect(tcgplayer.cheapest).toMatchObject({ total: 25 * 3 + 100 * 2, priced: 2, unpriced: 0 });
+	});
+
+	it('does not swap a chosen printing nobody lists for a cheaper one — a French copy is unpriced', () => {
+		const { tcgplayer } = deckCost(
+			[{ card: fang, quantity: 1, printingId: 'chrome-fang-fr' }],
+			quotes
+		);
+		expect(tcgplayer.built).toMatchObject({ total: 0, priced: 0, unpriced: 1 });
+		expect(tcgplayer.cheapest.priced).toBe(1);
+	});
+
+	it('sums a card named twice, and lets the first entry choose its printing', () => {
+		const { tcgplayer } = deckCost(
+			[
+				{ card: fang, quantity: 2, printingId: 'chrome-fang-retail' }, // main deck
+				{ card: fang, quantity: 1 } // sideboard, no choice recorded
+			],
+			quotes
+		);
+		expect(tcgplayer.built).toMatchObject({ total: 500 * 3, priced: 1, pricedCopies: 3 });
+	});
+
+	it('treats a chosen printing that has left the dataset as no choice', () => {
+		const { tcgplayer } = deckCost([{ card: fang, quantity: 1, printingId: 'gone' }], quotes);
+		expect(tcgplayer.built.total).toBe(25);
+	});
+
+	it('is all zeroes for an empty list', () => {
+		const { cardmarket } = deckCost([], quotes);
+		expect(cardmarket.built).toEqual({ total: 0, priced: 0, pricedCopies: 0, unpriced: 0 });
+		expect(cardmarket.cheapest.total).toBe(0);
+	});
+});
+
+describe('deckCost: whether the art was customised', () => {
+	const fang = threePrintings('chrome-fang'); // default retail $5.00, cheapest is the $0.25 beta
+	const quotes = lookup({
+		'chrome-fang-retail': tcg(1, 500),
+		'chrome-fang-beta': tcg(2, 25)
+	});
+	const customised = (printingId?: string) =>
+		deckCost([{ card: fang, quantity: 1, printingId }], quotes).tcgplayer.customised;
+
+	it('is not, for a deck that chose nothing', () => {
+		expect(customised()).toBe(false);
+	});
+
+	it('is not, when the choice is the Default Printing', () => {
+		expect(customised('chrome-fang-retail')).toBe(false);
+	});
+
+	it('is not, when the choice is the cheapest', () => {
+		expect(customised('chrome-fang-beta')).toBe(false);
+	});
+
+	it('is, when the choice is neither — here a French copy', () => {
+		expect(customised('chrome-fang-fr')).toBe(true);
+	});
+
+	it('is, if any one card in the deck is dressed up, however plain the rest', () => {
+		const blade = threePrintings('mantis-blades');
+		const dressed = deckCost(
+			[
+				{ card: fang, quantity: 1, printingId: 'chrome-fang-beta' },
+				{ card: blade, quantity: 1, printingId: 'mantis-blades-fr' }
+			],
+			quotes
+		);
+		expect(dressed.tcgplayer.customised).toBe(true);
+	});
+
+	it('judges "cheapest" per marketplace — a copy cheapest on one is not on the other', () => {
+		const both = lookup({
+			'chrome-fang-retail': { ...tcg(1, 500), ...cm(11, 10) },
+			'chrome-fang-beta': { ...tcg(2, 25), ...cm(12, 400) }
+		});
+		const { tcgplayer, cardmarket } = deckCost(
+			[{ card: fang, quantity: 1, printingId: 'chrome-fang-beta' }],
+			both
+		);
+		expect(tcgplayer.customised).toBe(false); // the cheapest on TCGplayer
+		expect(cardmarket.customised).toBe(true); // not the cheapest on Cardmarket, and not the default
 	});
 });

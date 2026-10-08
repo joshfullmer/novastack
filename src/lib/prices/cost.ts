@@ -221,3 +221,81 @@ export function costOfPrintings(
 	}
 	return totals;
 }
+
+/** One decklist line: a card, how many, and the Printing the deck names for it, if it names one. */
+export type DeckCostEntry = { card: Card; quantity: number; printingId?: string };
+
+/**
+ * What a whole decklist costs — the figure a player shows off, and the one a newcomer needs to
+ * know — both ways, per marketplace:
+ *
+ * - **`built`: the deck as its owner made it.** Each card at the Printing the deck **chose** for it,
+ *   so a deck dressed in expensive alt-arts says so. A card the deck chose no Printing for is priced
+ *   at its cheapest instead: nobody asked for any particular art, so the cheapest is the honest
+ *   stand-in — and the alternative, the Default Printing, is an English retail copy with no market
+ *   price before 2026-11-06 and would read as an unpriced deck. A chosen Printing nobody lists (a
+ *   French copy) is **not** swapped for a cheaper one: that choice was made, so it is unpriced.
+ * - **`cheapest`: what it takes to field the list.** Each card at its cheapest priced English
+ *   Printing (`cheapestOffer`), the same rule as a Wantlist built from a deck.
+ *
+ * **`customised`** is whether the two figures are worth telling apart: whether any card's chosen
+ * Printing is neither its Default nor its cheapest on this marketplace. A deck that chose nothing,
+ * or only Default or cheapest Printings, has no art premium to show, and the UI collapses to one
+ * figure; otherwise the gap between the two is what the chosen art costs over the cheapest.
+ *
+ * Whole list, not a shortfall — nothing here knows or cares what anyone owns (`costToComplete` is
+ * that). It covers everything needed to play it: the Legends, the main deck and the sideboard, as
+ * the Collection tab does, so the two never disagree about what "the deck" is.
+ *
+ * Entries naming the same Card are summed first, and the first one's Printing wins, for the reason
+ * `deckCollectionRows` gives: a card keeps one Printing across both piles. Items are distinct
+ * cards, so "N of M" means the same here as everywhere else.
+ */
+export function deckCost(
+	entries: readonly DeckCostEntry[],
+	quoteOf: (printingId: string) => Quote | undefined
+): Record<
+	Marketplace,
+	{ built: MarketplaceTotal; cheapest: MarketplaceTotal; customised: boolean }
+> {
+	const byCard = new Map<string, { card: Card; quantity: number; printingId?: string }>();
+	for (const { card, quantity, printingId } of entries) {
+		const existing = byCard.get(card.slug);
+		if (existing) {
+			existing.quantity += quantity;
+			existing.printingId ??= printingId;
+		} else {
+			byCard.set(card.slug, { card, quantity, printingId });
+		}
+	}
+
+	const totals = {
+		tcgplayer: { built: emptyTotal(), cheapest: emptyTotal(), customised: false },
+		cardmarket: { built: emptyTotal(), cheapest: emptyTotal(), customised: false }
+	};
+
+	for (const { card, quantity, printingId } of byCard.values()) {
+		// A named Printing that has left the dataset counts as no choice, like everywhere else.
+		const chosen = card.printings.find((printing) => printing.id === printingId);
+		for (const marketplace of MARKETPLACES) {
+			const offer = cheapestOffer(card, quoteOf, marketplace);
+			const cheapest = offer?.amount ?? null;
+			const built =
+				chosen === undefined
+					? cheapest
+					: (listingOf(quoteOf(chosen.id), marketplace)?.amount ?? null);
+			tally(totals[marketplace].built, built, quantity);
+			tally(totals[marketplace].cheapest, cheapest, quantity);
+
+			// A choice that is the Default or the cheapest is the baseline, not a statement about art.
+			if (
+				chosen !== undefined &&
+				chosen.id !== card.printings[0].id &&
+				chosen.id !== offer?.printing.id
+			) {
+				totals[marketplace].customised = true;
+			}
+		}
+	}
+	return totals;
+}

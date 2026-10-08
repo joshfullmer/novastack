@@ -24,6 +24,7 @@
 	import { splitCardName } from '#lib/cards/derive.js';
 	import Meta from '#lib/components/Meta.svelte';
 	import DeckCollectionPanel from '#lib/components/DeckCollectionPanel.svelte';
+	import DeckPrice from '#lib/components/DeckPrice.svelte';
 	import type { Card } from '#lib/cards/schema.js';
 	import { COLORS } from '#lib/cards/vocabulary.js';
 	import {
@@ -161,6 +162,20 @@
 	const shownNameParts = $derived(shown === null ? null : splitCardName(shown));
 
 	const mainGroups = $derived(groupDeckEntries(dataset, deck.entries));
+
+	// Everything needed to field this list, as the Collection tab and the price panel both read it:
+	// the Legends count like any other card, and so does the sideboard (tournament rules §D.1 wants
+	// all 7 in hand, so a list short of them isn't one you can play). Concatenated rather than merged;
+	// both consumers sum entries naming the same card.
+	const listEntries = $derived([
+		...deck.legends.map((legend) => ({
+			card: legend,
+			quantity: 1,
+			printingId: deck.printingIdOf(legend)
+		})),
+		...deck.entries,
+		...deck.sideboard
+	]);
 	const sizeTone = $derived(SIZE_STATUS_TONE[deck.sizeStatus]);
 
 	const curve = $derived(costCurve(deck.entries));
@@ -743,22 +758,7 @@
 				</div>
 
 				{#if mainTab === 'collection'}
-					<!-- Everything you need copies of to field this list: the Legends count like any
-					     other card, and so does the sideboard — tournament rules §D.1 wants all 7 in
-					     hand, so a list short of them isn't one you can play. Concatenated rather than
-					     merged; `deckCollectionRows` sums entries naming the same card. -->
-					<DeckCollectionPanel
-						onFocusCard={(card) => (focused = card)}
-						entries={[
-							...deck.legends.map((legend) => ({
-								card: legend,
-								quantity: 1,
-								printingId: deck.printingIdOf(legend)
-							})),
-							...deck.entries,
-							...deck.sideboard
-						]}
-					/>
+					<DeckCollectionPanel onFocusCard={(card) => (focused = card)} entries={listEntries} />
 				{:else if mainTab === 'history'}
 					<!-- Change History — replaces the Main Deck list on its own tab, not stacked below
 					     it. Newest-first; no-op saves and the deck-creation version are filtered out
@@ -1107,6 +1107,8 @@
 
 			<!-- Stats sidebar -->
 			<div class="flex flex-col gap-4">
+				<DeckPrice entries={listEntries} ownerCanChoosePrinting={data.ownerCanChoosePrinting} />
+
 				<div class="rounded-md border border-edge bg-shell p-4">
 					<p class="mb-3 text-xs font-medium tracking-wide text-muted uppercase">Cost curve</p>
 					{#if curve.length === 0}
