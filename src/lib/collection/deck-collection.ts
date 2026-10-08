@@ -214,3 +214,32 @@ export function deckCollectionSummary(rows: readonly DeckCollectionRow[]) {
 		complete: cardsShort === 0
 	};
 }
+
+/**
+ * What "Add to wantlist" asks for: each short card, at the Printing to ask for it in.
+ *
+ * A Wantlist is a shopping list, so the Printing should be one you can actually go and buy — and
+ * the one that makes the list cost what the deck's own "to buy" figure says it does. That makes the
+ * default **the cheapest priced Printing** (`cheapest`, supplied by the caller because "cheapest"
+ * depends on which marketplace the reader is looking at), not the Card's Default Printing, which is
+ * often an unpriced retail copy or an expensive alt-art.
+ *
+ * Two things still beat it:
+ * - **The deck's own choice.** A scoped row's Printing is a statement that the art matters, so that
+ *   is what gets wanted, price or no price.
+ * - **No price to go on.** A Card with no priced Printing falls back to the add target, which is
+ *   the Default Printing — a guess nobody has better information about.
+ *
+ * Quantities are the row's own `missing`, in its scope, exactly as before.
+ */
+export function wantlistPlan(
+	rows: readonly DeckCollectionRow[],
+	cheapest: (card: Card) => string | undefined
+): { printingId: string; quantity: number }[] {
+	return rows
+		.filter((row) => row.missing > 0)
+		.map((row) => ({
+			printingId: (row.scope === 'card' ? cheapest(row.card) : undefined) ?? row.addTarget,
+			quantity: row.missing
+		}));
+}

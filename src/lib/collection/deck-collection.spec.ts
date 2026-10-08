@@ -12,7 +12,8 @@ import {
 	deckCollectionRows,
 	deckCollectionSummary,
 	removeTarget,
-	topUpPlan
+	topUpPlan,
+	wantlistPlan
 } from './deck-collection.ts';
 
 const adam = makeCard({
@@ -203,7 +204,7 @@ describe('rows scoped to a chosen printing', () => {
 		expect(row.owned).toBe(1);
 	});
 
-	it("treats a deck that named the default printing as a choice about art", () => {
+	it('treats a deck that named the default printing as a choice about art', () => {
 		const owned = owning({ 'adam-beta': 2 });
 		const [row] = deckCollectionRows(
 			[{ card: adam, quantity: 2, printingId: 'adam-retail' }],
@@ -268,5 +269,50 @@ describe('the headline stays about playability', () => {
 		expect(summary.copiesShort).toBe(2);
 		expect(rows[0].missing).toBe(3);
 		expect(summary.printingShortfallCards).toBe(0);
+	});
+});
+
+describe('wantlistPlan', () => {
+	const rows = deckCollectionRows(
+		[
+			{ card: adam, quantity: 2 },
+			{ card: royce, quantity: 1 }
+		],
+		owning({})
+	);
+
+	it('asks for the cheapest printing, not the default, when the deck made no choice', () => {
+		const plan = wantlistPlan(rows, (card) =>
+			card.slug === 'adam-smasher' ? 'adam-beta' : undefined
+		);
+		expect(plan).toContainEqual({ printingId: 'adam-beta', quantity: 2 });
+	});
+
+	it('falls back to the default printing when nothing is priced', () => {
+		const plan = wantlistPlan(rows, () => undefined);
+		expect(plan).toEqual([
+			{ printingId: 'adam-retail', quantity: 2 },
+			{ printingId: 'royce-retail', quantity: 1 }
+		]);
+	});
+
+	it("keeps the deck's own chosen printing, however cheap another is", () => {
+		const scoped = deckCollectionRows(
+			[{ card: adam, quantity: 2, printingId: 'adam-fr' }],
+			owning({})
+		);
+		expect(wantlistPlan(scoped, () => 'adam-beta')).toEqual([
+			{ printingId: 'adam-fr', quantity: 2 }
+		]);
+	});
+
+	it('asks only for what is missing, in the row’s own scope', () => {
+		const partial = deckCollectionRows([{ card: adam, quantity: 3 }], owning({ 'adam-retail': 1 }));
+		expect(wantlistPlan(partial, () => 'adam-beta')).toEqual([
+			{ printingId: 'adam-beta', quantity: 2 }
+		]);
+
+		const owned = deckCollectionRows([{ card: royce, quantity: 1 }], owning({ 'royce-retail': 1 }));
+		expect(wantlistPlan(owned, () => 'royce-retail')).toEqual([]);
 	});
 });

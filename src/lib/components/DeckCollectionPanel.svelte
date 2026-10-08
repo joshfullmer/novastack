@@ -25,7 +25,8 @@
 		deckCollectionRows,
 		deckCollectionSummary,
 		removeTarget,
-		topUpPlan
+		topUpPlan,
+		wantlistPlan
 	} from '#lib/collection/deck-collection.js';
 	import { printTreatment } from '#lib/cards/derive.js';
 	import type { Card } from '#lib/cards/schema.js';
@@ -115,9 +116,12 @@
 		busy = true;
 		failure = null;
 
-		const items = rows
-			.filter((row) => row.missing > 0)
-			.map((row) => ({ printingId: row.addTarget, quantity: row.missing }));
+		// At the cheapest priced printing (on the marketplace you are looking at), not the Default
+		// Printing — so the list costs what the "To buy" figure above says. See `wantlistPlan`.
+		const items = wantlistPlan(
+			rows,
+			(card) => offersBySlug.get(card.slug)?.[priceSource.value]?.printing.id
+		);
 
 		try {
 			const response = await fetch('/api/collection/wantlists', {
