@@ -1,5 +1,5 @@
 import { error, redirect } from '@sveltejs/kit';
-import { legendSlugsFromJson } from '#lib/decks/schema.js';
+import { legendRefsFromJson } from '#lib/decks/schema.js';
 import { getFolderByRef, listDecksInFolder } from '#lib/server/db/folders.js';
 import { ensureFolderShareCode } from '#lib/server/db/share-codes.js';
 import { readViewPref } from '#lib/server/view-pref.js';
@@ -41,7 +41,7 @@ export const load: PageServerLoad = async (event) => {
 			cardCount: version?.entries.reduce((sum, entry) => sum + entry.quantity, 0) ?? 0,
 			/** Separate from `cardCount` — 40–50 is the main deck's range, not the deck's total. */
 			sideboardCards: version?.sideboard.reduce((sum, entry) => sum + entry.quantity, 0) ?? 0,
-			legendSlugs: legendSlugsFromJson(version?.legends)
+			legends: legendRefsFromJson(version?.legends)
 		})),
 		// Shared with /decks and /explore — "how I like browsing a list of decks" is one
 		// preference, not three.

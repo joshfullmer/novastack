@@ -9,6 +9,7 @@ import {
 	DeckEntrySchema,
 	DeckVersionPayloadSchema,
 	LegendEntrySchema,
+	legendRefsFromJson,
 	legendSlugsFromJson
 } from './schema.js';
 
@@ -131,5 +132,24 @@ describe('legendSlugsFromJson', () => {
 		expect(legendSlugsFromJson(undefined)).toEqual([]);
 		expect(legendSlugsFromJson('adam-smasher')).toEqual([]);
 		expect(legendSlugsFromJson([42, null, {}, { cardSlug: 7 }, ''])).toEqual([]);
+	});
+});
+
+describe('legendRefsFromJson', () => {
+	it('keeps the printing a Legend was saved with, and leaves it off one that has none', () => {
+		expect(
+			legendRefsFromJson(['adam-smasher', { cardSlug: 'royce', printingId: 'royce-beta' }])
+		).toEqual([{ cardSlug: 'adam-smasher' }, { cardSlug: 'royce', printingId: 'royce-beta' }]);
+	});
+
+	it('treats an empty printing id as none, not as a choice', () => {
+		expect(legendRefsFromJson([{ cardSlug: 'royce', printingId: '' }])).toEqual([
+			{ cardSlug: 'royce' }
+		]);
+	});
+
+	it('is empty for anything that is not an array of legends', () => {
+		expect(legendRefsFromJson(null)).toEqual([]);
+		expect(legendRefsFromJson([42, null, {}, { cardSlug: 7 }, ''])).toEqual([]);
 	});
 });

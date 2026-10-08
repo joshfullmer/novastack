@@ -42,27 +42,41 @@ export const LegendEntrySchema = v.union([
 ]);
 export type LegendEntryPayload = v.InferOutput<typeof LegendEntrySchema>;
 
+/** A Legend as the deck-list surfaces need it: which Card, and the Printing the deck chose, if any. */
+export type LegendRef = { cardSlug: string; printingId?: string };
+
 /**
- * The Legend slugs in a **raw** `deck_versions.legends` value, tolerating either stored shape.
+ * The Legends in a **raw** `deck_versions.legends` value — slug **and chosen Printing** — tolerating
+ * either stored shape.
  *
  * For the deck-list surfaces (`/decks`, `/explore`, `/f/[code]`), which read the column straight
  * off the row to render three thumbnails and never parse the whole payload. They predate the object
  * form, so without this they would silently render nothing the moment a deck saved a Legend
- * printing — a blank tile, no error. Anything that needs more than slugs should parse
- * `DeckVersionPayloadSchema` instead.
+ * printing — a blank tile, no error. The printing is carried through for the same reason the deck
+ * itself keeps it: a thumbnail that ignores the art its deck chose is a different deck.
+ * Anything that needs more than this should parse `DeckVersionPayloadSchema` instead.
+ *
+ * `printingId` is only present when the row names one; resolving a stale or absent id to the
+ * Default Printing is `deckPrinting`'s job (`#lib/decks/printing.ts`), not this one's.
  */
-export function legendSlugsFromJson(value: unknown): string[] {
+export function legendRefsFromJson(value: unknown): LegendRef[] {
 	if (!Array.isArray(value)) return [];
-	return value
-		.map((legend) => {
-			if (typeof legend === 'string') return legend;
-			if (legend !== null && typeof legend === 'object' && 'cardSlug' in legend) {
-				const { cardSlug } = legend as { cardSlug: unknown };
-				if (typeof cardSlug === 'string') return cardSlug;
-			}
-			return null;
-		})
-		.filter((slug): slug is string => slug !== null && slug.length > 0);
+	return value.flatMap((legend): LegendRef[] => {
+		if (typeof legend === 'string') return legend.length > 0 ? [{ cardSlug: legend }] : [];
+		if (legend !== null && typeof legend === 'object' && 'cardSlug' in legend) {
+			const { cardSlug, printingId } = legend as { cardSlug: unknown; printingId?: unknown };
+			if (typeof cardSlug !== 'string' || cardSlug.length === 0) return [];
+			return typeof printingId === 'string' && printingId.length > 0
+				? [{ cardSlug, printingId }]
+				: [{ cardSlug }];
+		}
+		return [];
+	});
+}
+
+/** Just the slugs, for the surfaces that count a Legend as a Card and don't draw it. */
+export function legendSlugsFromJson(value: unknown): string[] {
+	return legendRefsFromJson(value).map((legend) => legend.cardSlug);
 }
 
 export const DeckVersionPayloadSchema = v.object({

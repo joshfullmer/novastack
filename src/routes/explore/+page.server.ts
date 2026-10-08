@@ -1,5 +1,5 @@
 import * as v from 'valibot';
-import { legendSlugsFromJson } from '#lib/decks/schema.js';
+import { legendRefsFromJson, legendSlugsFromJson } from '#lib/decks/schema.js';
 import { dataset } from '#lib/cards/index.js';
 import { missingForDeck } from '#lib/collection/missing.js';
 import { getCollection } from '#lib/server/db/collection.js';
@@ -70,7 +70,7 @@ export const load: PageServerLoad = async (event) => {
 			cardCount: version?.entries.reduce((sum, entry) => sum + entry.quantity, 0) ?? 0,
 			/** Separate from `cardCount` — 40–50 is the main deck's range, not the deck's total. */
 			sideboardCards: version?.sideboard.reduce((sum, entry) => sum + entry.quantity, 0) ?? 0,
-			legendSlugs: legendSlugsFromJson(version?.legends),
+			legends: legendRefsFromJson(version?.legends),
 			likeCount,
 			hotCount,
 			isStarterDeck: deck.isStarterDeck,
@@ -79,8 +79,9 @@ export const load: PageServerLoad = async (event) => {
 			// `missingForDeck` sums duplicate slugs itself, so the two piles can be concatenated
 			// rather than merged first.
 			missing: missingFor([
-				// Through `legendSlugsFromJson` like the thumbnails above: this reads the raw column,
-				// where a Legend may still be a bare slug.
+				// Through `legendSlugsFromJson`, not the `legends` above: Missing is Card level, so which
+				// printing a Legend was saved with is beside the point. It reads the raw column, where a
+				// Legend may still be a bare slug.
 				...legendSlugsFromJson(version?.legends).map((slug) => ({ cardSlug: slug, quantity: 1 })),
 				...(version?.entries ?? []),
 				...(version?.sideboard ?? [])

@@ -6,6 +6,7 @@
 	import CardImage from '#lib/components/CardImage.svelte';
 	import Meta from '#lib/components/Meta.svelte';
 	import { cardBySlug } from '#lib/decks/deck-state.svelte.js';
+	import { deckPrinting } from '#lib/decks/printing.js';
 	import {
 		deckSizeStatus,
 		LEGEND_SLOTS,
@@ -67,13 +68,14 @@
 					<li class="overflow-hidden rounded-lg border border-edge bg-shell">
 						<a href={deckPath(deck)} class="flex gap-1 bg-void p-2">
 							{#each legendSlots as slot (slot)}
-								{@const slug = deck.legendSlugs[slot]}
-								{@const legend = slug ? cardBySlug(slug) : null}
-								{#if legend}
+								{@const ref = deck.legends[slot]}
+								{@const legend = ref ? cardBySlug(ref.cardSlug) : null}
+								{#if ref && legend}
+									{@const printing = deckPrinting(legend, ref.printingId)}
 									<div class="card-frame flex-1 overflow-hidden rounded">
 										<CardImage
-											printingId={legend.printings[0].id}
-											thumbhash={legend.printings[0].thumbhash}
+											printingId={printing.id}
+											thumbhash={printing.thumbhash}
 											color={legend.color}
 											alt={legend.name}
 											sizes="200px"
@@ -114,13 +116,14 @@
 					<li class="flex items-center gap-4 rounded-lg border border-edge bg-shell p-4">
 						<div class="flex shrink-0 gap-2">
 							{#each legendSlots as slot (slot)}
-								{@const slug = deck.legendSlugs[slot]}
-								{@const legend = slug ? cardBySlug(slug) : null}
-								{#if legend}
+								{@const ref = deck.legends[slot]}
+								{@const legend = ref ? cardBySlug(ref.cardSlug) : null}
+								{#if ref && legend}
+									{@const printing = deckPrinting(legend, ref.printingId)}
 									<div class="size-20 overflow-hidden rounded-md border border-edge">
 										<CardImage
-											printingId={legend.printings[0].id}
-											thumbhash={legend.printings[0].thumbhash}
+											printingId={printing.id}
+											thumbhash={printing.thumbhash}
 											color={legend.color}
 											alt={legend.name}
 											sizes="80px"

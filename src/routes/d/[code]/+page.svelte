@@ -77,8 +77,28 @@
 		});
 	}
 
-	function cardPrinting(slug: string) {
-		return dataset.bySlug.get(slug)?.printings[0];
+	type HistoryVersion = (typeof data.history)[number];
+
+	/**
+	 * The Printing a saved version chose for a card, in whichever pile it sits — a card keeps one
+	 * Printing across both. `undefined` means that version followed the Default.
+	 */
+	function printingIdIn(version: HistoryVersion | undefined, slug: string): string | undefined {
+		if (version === undefined) return undefined;
+		return (
+			version.entries.find((entry) => entry.cardSlug === slug)?.printingId ??
+			version.sideboard.find((entry) => entry.cardSlug === slug)?.printingId ??
+			version.legends.find((legend) => legend.cardSlug === slug)?.printingId
+		);
+	}
+
+	/**
+	 * The version a given one was diffed against — the "before" side of its diff. Looked up in the
+	 * full history, not `visibleHistory`, which drops the no-op saves the diff was still taken across.
+	 */
+	function previousVersion(version: HistoryVersion): HistoryVersion | undefined {
+		const index = data.history.findIndex((entry) => entry.savedAt === version.savedAt);
+		return index > 0 ? data.history[index - 1] : undefined;
 	}
 	function versionHasChanges(version: (typeof data.history)[number]) {
 		return (
@@ -768,10 +788,11 @@
 					{#snippet historyThumb(
 						slug: string,
 						quantity: number | null,
-						tone: 'red' | 'green' | 'neutral'
+						tone: 'red' | 'green' | 'neutral',
+						printingId: string | undefined
 					)}
-						{@const printing = cardPrinting(slug)}
 						{@const card = dataset.bySlug.get(slug)}
+						{@const printing = card && deckPrinting(card, printingId)}
 						<div
 							class="relative w-24 shrink-0"
 							onmouseenter={() => card && (focused = card)}
@@ -811,7 +832,12 @@
 					     because moving a card between the piles is invisible in a merged diff (the
 					     combined quantity doesn't change). Renders nothing when that section didn't
 					     change, so an unchanged sideboard costs no vertical space. -->
-					{#snippet entryDiffSection(label: string, cols: EntryDiffColumns)}
+					{#snippet entryDiffSection(
+						label: string,
+						cols: EntryDiffColumns,
+						version: HistoryVersion
+					)}
+						{@const before = previousVersion(version)}
 						{#if cols.changed.length > 0 || cols.removed.length > 0 || cols.added.length > 0}
 							<p class="mb-1 text-xs font-medium tracking-wide text-muted uppercase">{label}</p>
 							<div
@@ -820,18 +846,38 @@
 							>
 								<div class="flex flex-wrap gap-2 border-r border-edge/50 p-2">
 									{#each cols.changed as row (row.left.slug)}
-										{@render historyThumb(row.left.slug, row.left.quantity, 'neutral')}
+										{@render historyThumb(
+											row.left.slug,
+											row.left.quantity,
+											'neutral',
+											printingIdIn(before, row.left.slug)
+										)}
 									{/each}
 									{#each cols.removed as item (item.slug)}
-										{@render historyThumb(item.slug, item.quantity, 'red')}
+										{@render historyThumb(
+											item.slug,
+											item.quantity,
+											'red',
+											printingIdIn(before, item.slug)
+										)}
 									{/each}
 								</div>
 								<div class="flex flex-wrap gap-2 p-2">
 									{#each cols.changed as row (row.right.slug)}
-										{@render historyThumb(row.right.slug, row.right.quantity, row.tone)}
+										{@render historyThumb(
+											row.right.slug,
+											row.right.quantity,
+											row.tone,
+											printingIdIn(version, row.right.slug)
+										)}
 									{/each}
 									{#each cols.added as item (item.slug)}
-										{@render historyThumb(item.slug, item.quantity, 'green')}
+										{@render historyThumb(
+											item.slug,
+											item.quantity,
+											'green',
+											printingIdIn(version, item.slug)
+										)}
 									{/each}
 								</div>
 							</div>
@@ -870,21 +916,31 @@
 												<div class="flex flex-wrap gap-2 border-r border-edge/50 p-2">
 													{#each legendRows as row, i (i)}
 														{#if row.left}
-															{@render historyThumb(row.left, null, 'red')}
+															{@render historyThumb(
+																row.left,
+																null,
+																'red',
+																printingIdIn(previousVersion(version), row.left)
+															)}
 														{/if}
 													{/each}
 												</div>
 												<div class="flex flex-wrap gap-2 p-2">
 													{#each legendRows as row, i (i)}
 														{#if row.right}
-															{@render historyThumb(row.right, null, 'green')}
+															{@render historyThumb(
+																row.right,
+																null,
+																'green',
+																printingIdIn(version, row.right)
+															)}
 														{/if}
 													{/each}
 												</div>
 											</div>
 										{/if}
-										{@render entryDiffSection('Main Deck', cols)}
-										{@render entryDiffSection('Sideboard', sideCols)}
+										{@render entryDiffSection('Main Deck', cols, version)}
+										{@render entryDiffSection('Sideboard', sideCols, version)}
 									</div>
 								{/if}
 							</li>

@@ -151,7 +151,7 @@
 	// other one just in case.
 	// svelte-ignore state_referenced_locally
 	const deckView = cookieState('deck-cards-view', data.deckView);
-	let hovered = $state<{ card: Card; left: number; top: number } | null>(null);
+	let hovered = $state<{ card: Card; printingId?: string; left: number; top: number } | null>(null);
 
 	// Same density control as the card database's own grid, just a different default: this
 	// panel is denser to begin with, so 8 (not 6) starts already-comfortable. Persisted
@@ -253,7 +253,8 @@
 
 	function onRowEnter(card: Card, event: MouseEvent & { currentTarget: HTMLElement }) {
 		const rect = event.currentTarget.getBoundingClientRect();
-		hovered = { card, left: rect.left, top: rect.top };
+		// The deck's own art for it, if it chose any — `undefined` for a card not (yet) in the deck.
+		hovered = { card, printingId: deck.printingIdOf(card), left: rect.left, top: rect.top };
 	}
 
 	/** Same staleness risk as `toggleLegend` — a removed row's own preview must not linger. */
