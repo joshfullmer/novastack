@@ -48,3 +48,62 @@ Remaining surfaces, none of them done:
   middle-click, open-in-new-tab, or keyboard activation, which is exactly why it's a link today.
 - `/collection/binders/[id]` — a filled Pocket is a drag handle with a clear button; clicking the
   art does nothing, and whatever lands there must not eat the drag gesture.
+
+## Prices: launch day, 2026-11-06
+
+English retail goes on sale on both marketplaces, and the price join needs a human look afterwards.
+Retail is already mapped, with no price, so it should light up by itself — but check:
+
+- **Cardmarket has no retail expansion yet** (0 cards), so `CARDMARKET_EXPANSIONS` has none for it.
+  Add them once they exist; until then a retail printing has no Cardmarket quote at all.
+- **Run `pnpm prices` and read the report.** TCGplayer retail numbers that don't join today
+  (`005a`/`005b` against its `005`, the high numbers 143–167, `EOR01`/`NCB01` entries that aren't
+  listed yet) may start to. `tcgplayer-beta-complete` guards beta only, so a retail gap will not
+  fail a run — only the report shows it.
+- **There is still no French run** on either marketplace; don't borrow the English price.
+- Optional, and the owner's to do: apply to TCGplayer's Impact affiliate programme so the buy
+  links earn something (`docs/research/prices.md` §2.2).
+
+## Ideas — not started
+
+From a scan of the other Cyberpunk TCG sites and of Magic/sibling-TCG deck sites (2026-10-07).
+Context worth keeping: the sim and cyberdecktools already cover prices, ranked play, tournaments,
+Draw Starting Hand / Draw %, and a Dice Play companion, so head-on parity with those is not the
+play. Melee is the official organized-play platform and does **no validation** for Cyberpunk lists.
+
+- **Format-aware legality (Standard / Wild / Pre-Release).** The sim's tournaments already run on
+  formats and we have no format concept. M-sized; needs a curated rotation table, because the source
+  API exposes no cycle data (`CONTEXT.md`, "Cycle").
+- **Tournament-readiness check** for a Melee submission, plus a printable decklist form (SWUDB has a
+  "Tournament Deck Form"). Client-side and deterministic; builds on the Melee export.
+- **Deck compare / diff.** Two decks side by side: in A only, in B only, a similarity score. The
+  version-diff logic already exists (`#lib/decks/version-diff.ts`).
+- **Sample hand with odds** ("card X by turn N"). Small, but the sim has the basics, so low
+  differentiation on its own.
+- **Function tags** (removal, draw, …) searchable in the query language and shown as deck
+  composition. About 150 cards, so hand-curating is tractable.
+- **Community meta layer** — "played in X% of public decks with this Legend", average lists. Needs
+  deck volume first; show the sample size and hide anything under about five decks. A cron
+  precomputes it into a table.
+- **Discord bot** (`/card`, `/deck <link>`) on a Workers HTTP interactions endpoint, reusing the
+  query engine and the Discord login. Slash commands only: inline `[[card]]` lookups need a
+  persistent gateway connection, which fits Workers badly.
+- **Teams / co-owned decks**, as Piltover Archive has. Only worth it with a user base.
+
+Ruled out for now: a ranked/tournament platform or sim (Melee and the sim own those), scanning and
+mobile apps, and server-rendered OG deck images (Workers CPU limits).
+
+## Imports — what was not verified
+
+- The "Import it" hint on an empty `/collection`, and printing choices surviving a deck import,
+  were never seen in a browser (the dev user owns cards, and lacks `choose-printing`).
+- The official-builder and Melee text formats were read out of their sites' code, not from live
+  exports; the sim's `A027` / `MS01-131A` code form is untested.
+- No e2e for either import, or for prices: the suite has no signed-in flow.
+
+## Housekeeping
+
+- Mobile was not checked for the price row on the deck's Collection tab, the worth panel wrapping,
+  or its popover.
+- The README body still describes the project as it was at stage 1 ("133 card pages", …).
+- `pnpm lint` fails on `main` with 10 Prettier warnings in files unrelated to recent work.
