@@ -103,10 +103,5 @@ mobile apps, and server-rendered OG deck images (Workers CPU limits).
 
 ## Housekeeping
 
-- **Two mobile layout problems found while checking the price UI (390px), neither caused by it:**
-  - The deck view's header row ("8 cards · 1/7 sideboard · Gallery | List") is about 24px wider than
-    the screen, so the whole page scrolls sideways. It wants `flex-wrap`.
-  - On the owner's wantlist rows, the thumbnail, stepper and Remove leave the card name about 60px,
-    so names read "Kirosh…" and "Mandi…". The controls could drop to a second line below `sm`.
 - The README body still describes the project as it was at stage 1 ("133 card pages", …).
 - `pnpm lint` fails on `main` with 10 Prettier warnings in files unrelated to recent work.

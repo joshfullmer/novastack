@@ -219,7 +219,9 @@
 								</div>
 							</div>
 
-							<div class="min-w-0 flex-1">
+							<!-- `basis-40` is a floor, not a size: below it the controls wrap to their own line
+							     instead of squeezing the name to a few letters on a phone. -->
+							<div class="min-w-0 grow basis-40">
 								<p class="truncate text-sm font-medium text-bright">{row.card.name}</p>
 								<p class="font-mono text-[0.7rem] text-muted">
 									{setLabel(row.printing.setId)} · {row.printing.collectorNumber}{row.printing
@@ -239,37 +241,39 @@
 							{#if data.isOwner}
 								<!-- Absolute quantities: each button submits the number to end up at, so a
 								     double click can't compound and zero is simply "Remove". -->
-								<div class="flex shrink-0 items-center gap-1">
-									{#each [entry.quantity - 1, entry.quantity + 1] as next, index (index)}
-										<form method="POST" action="?/want" use:enhance class="contents">
-											<input type="hidden" name="printingId" value={entry.printingId} />
-											<input type="hidden" name="quantity" value={next} />
-											<button
-												type="submit"
-												disabled={next > 999}
-												aria-label={index === 0
-													? `Want one fewer ${row.card.name}`
-													: `Want one more ${row.card.name}`}
-												class="grid size-7 place-items-center rounded border border-edge text-sm
+								<div class="ml-auto flex shrink-0 items-center gap-4">
+									<div class="flex shrink-0 items-center gap-1">
+										{#each [entry.quantity - 1, entry.quantity + 1] as next, index (index)}
+											<form method="POST" action="?/want" use:enhance class="contents">
+												<input type="hidden" name="printingId" value={entry.printingId} />
+												<input type="hidden" name="quantity" value={next} />
+												<button
+													type="submit"
+													disabled={next > 999}
+													aria-label={index === 0
+														? `Want one fewer ${row.card.name}`
+														: `Want one more ${row.card.name}`}
+													class="grid size-7 place-items-center rounded border border-edge text-sm
 													text-muted transition-colors hover:border-neon-dim hover:text-neon
 													disabled:opacity-30">{index === 0 ? '−' : '+'}</button
-											>
-											{#if index === 0}
-												<span class="w-8 text-center font-mono text-sm text-bright tabular-nums"
-													>{entry.quantity}</span
 												>
-											{/if}
-										</form>
-									{/each}
-								</div>
+												{#if index === 0}
+													<span class="w-8 text-center font-mono text-sm text-bright tabular-nums"
+														>{entry.quantity}</span
+													>
+												{/if}
+											</form>
+										{/each}
+									</div>
 
-								<form method="POST" action="?/want" use:enhance class="shrink-0">
-									<input type="hidden" name="printingId" value={entry.printingId} />
-									<input type="hidden" name="quantity" value="0" />
-									<button type="submit" class="text-xs text-muted hover:text-card-red"
-										>Remove</button
-									>
-								</form>
+									<form method="POST" action="?/want" use:enhance class="shrink-0">
+										<input type="hidden" name="printingId" value={entry.printingId} />
+										<input type="hidden" name="quantity" value="0" />
+										<button type="submit" class="text-xs text-muted hover:text-card-red"
+											>Remove</button
+										>
+									</form>
+								</div>
 							{:else}
 								<span class="shrink-0 font-mono text-sm text-bright tabular-nums"
 									>×{entry.quantity}</span

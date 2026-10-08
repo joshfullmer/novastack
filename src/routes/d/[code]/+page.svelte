@@ -679,8 +679,11 @@
 					</div>
 				</div>
 
-				<div class="mb-3 flex items-center justify-between">
-					<div class="flex items-center gap-4">
+				<!-- Wraps below `sm`: the tabs and the counts-plus-view-toggle do not both fit a phone, and
+				     unwrapped this row pushed the whole page 24px past the screen. Each group is
+				     `whitespace-nowrap` so it is the *group* that moves, not the words inside it. -->
+				<div class="mb-3 flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
+					<div class="flex items-center gap-4 whitespace-nowrap">
 						<button
 							type="button"
 							onclick={() => (mainTab = 'deck')}
@@ -703,7 +706,7 @@
 							class:text-muted={mainTab !== 'history'}>History</button
 						>
 					</div>
-					<div class="flex items-center gap-3">
+					<div class="flex items-center gap-3 whitespace-nowrap">
 						<span
 							class="text-sm text-muted tabular-nums"
 							title="{MIN_DECK_SIZE}–{MAX_DECK_SIZE} cards"
