@@ -176,7 +176,11 @@ pnpm prices         # writes static/prices.json
 Prices come from TCGplayer (market, USD, via TCGCSV's daily export — TCGplayer's own API no longer
 issues keys) and Cardmarket (trend, EUR, from its public price-guide files). They are joined onto
 Printing ids and written to one static file the app fetches same-origin; nothing runs on a Worker.
-TCGCSV asks for **one pull per day**, so this is not something to loop. The file carries each
+A **Daily prices** workflow (`.github/workflows/prices.yml`) runs it at 01:30 UTC — after both
+sources have rebuilt — and commits `static/prices.json` straight to `main` when it changed, which
+Workers Builds then deploys. It can also be run by hand from the Actions tab. TCGCSV asks for **one
+pull per day** and the workflow is that pull, so don't also run this locally on a day it has run
+unless you need to. The file carries each
 source's own rebuild time, and a run that violates an invariant (a wrong marketplace id, a renumbered
 group) writes nothing and exits `2`, leaving the last file in place.
 

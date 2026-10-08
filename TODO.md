@@ -56,7 +56,7 @@ Retail is already mapped, with no price, so it should light up by itself — but
 
 - **Cardmarket has no retail expansion yet** (0 cards), so `CARDMARKET_EXPANSIONS` has none for it.
   Add them once they exist; until then a retail printing has no Cardmarket quote at all.
-- **Run `pnpm prices` and read the report.** TCGplayer retail numbers that don't join today
+- **Read the Daily prices run's log** (or run `pnpm prices` yourself) **and its report.** TCGplayer retail numbers that don't join today
   (`005a`/`005b` against its `005`, the high numbers 143–167, `EOR01`/`NCB01` entries that aren't
   listed yet) may start to. `tcgplayer-beta-complete` guards beta only, so a retail gap will not
   fail a run — only the report shows it.

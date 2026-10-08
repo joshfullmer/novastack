@@ -1,0 +1,85 @@
+name: Daily prices
+
+# Refreshes `static/prices.json` from TCGplayer (via TCGCSV) and Cardmarket, and commits it straight
+# to `main` when it changed. Workers Builds then deploys the push like any other, which is how a
+# static asset gets new content.
+#
+# Why a commit to `main` rather than a PR (as the weekly ingest does): prices move daily, and a PR a
+# day to merge would defeat the point. Why a commit at all rather than a Worker cron writing to R2:
+# the file stays a plain static asset, with no Worker in front of the site's hottest path and no new
+# bindings (`docs/research/prices.md` §5).
+#
+# 01:30 UTC because both sources have rebuilt by then — TCGCSV at about 20:00 UTC, Cardmarket at
+# about 00:50 UTC — so one pull sees both fresh. TCGCSV asks for one pull per 24 hours; this is that
+# pull, so don't add a second schedule.
+#
+# A failure is the interface: `pnpm prices` exits 2 and writes nothing when an invariant is
+# violated (a wrong marketplace id, a renumbered group) or a source can't be reached, so the last
+# good file stays live and GitHub emails whoever last edited this schedule.
+
+on:
+  schedule:
+    - cron: '30 1 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+# One run at a time. A manual dispatch during the scheduled run would be a second pull in a day.
+concurrency:
+  group: prices
+  cancel-in-progress: false
+
+jobs:
+  prices:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      # Writes `static/prices.json`, or exits 2 and writes nothing — see the header.
+      - name: Refresh prices
+        run: pnpm prices
+
+      # Asserts against the file just written: it parses, only prices real printings, never prices a
+      # French one, and is byte-for-byte what `pnpm prices` writes. A run that produced something the
+      # app could not read must fail here, before anything is committed.
+      - name: Verify the new file
+        run: pnpm exec vitest run src/lib/prices
+
+      # Applied onto the latest `main` rather than rebased: only this file changes, so if someone
+      # pushed between checkout and now, re-apply it on top and try again instead of conflicting.
+      - name: Commit and push if it changed
+        run: |
+          cp static/prices.json "$RUNNER_TEMP/prices.json"
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+
+          for attempt in 1 2 3; do
+            git fetch --depth=1 origin main
+            git reset --hard origin/main
+            cp "$RUNNER_TEMP/prices.json" static/prices.json
+
+            if git diff --quiet -- static/prices.json; then
+              echo 'Prices unchanged — nothing to commit.'
+              exit 0
+            fi
+
+            git add static/prices.json
+            git commit -m 'chore(prices): daily refresh'
+            if git push origin HEAD:main; then
+              exit 0
+            fi
+            echo "Push rejected (attempt $attempt) — main moved; re-applying on top of it."
+          done
+
+          echo '::error::Could not push the refreshed prices after 3 attempts'
+          exit 1
