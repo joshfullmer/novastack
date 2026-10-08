@@ -27,9 +27,12 @@
 	import { inGoal, setProgress } from '#lib/collection/goal.js';
 	import { SvelteSet } from 'svelte/reactivity';
 	import CardImage from '#lib/components/CardImage.svelte';
+	import CollectionWorth from '#lib/components/CollectionWorth.svelte';
 	import Meta from '#lib/components/Meta.svelte';
 	import QuantityStepper from '#lib/components/QuantityStepper.svelte';
 	import QueryEditor from '#lib/components/filters/QueryEditor.svelte';
+	import { costOfPrintings } from '#lib/prices/cost.js';
+	import { prices } from '#lib/prices/state.svelte.js';
 	import CardDetailOverlay from '#lib/components/CardDetailOverlay.svelte';
 
 	let { data } = $props();
@@ -53,6 +56,16 @@
 	const CARD_PARAM = 'card';
 
 	const goal = $derived(collection.goal);
+
+	// What everything you hold is worth at market, every owned Printing counted whether or not it is
+	// In Goal (Off Goal is uncounted for Completion, not for ownership). Each Printing is priced at
+	// itself, so a retail copy waits for its listing and a French one has none at all — the "N of M"
+	// is what keeps that from reading as a complete figure.
+	$effect(() => void prices.load());
+	const ownedEntries = $derived(
+		Object.entries(collection.all).map(([printingId, quantity]) => ({ printingId, quantity }))
+	);
+	const value = $derived(costOfPrintings(ownedEntries, (id) => prices.quote(id)));
 	const ownedOf = (printingId: string) => collection.quantityOf(printingId);
 
 	const showAll = $derived(currentUrl().searchParams.has(ALL_PARAM));
@@ -294,19 +307,32 @@
 	path="/collection"
 />
 
-<div class="mb-6">
-	<p class="text-xs font-medium tracking-widest text-neon-dim uppercase">Collection</p>
-	<h1 class="mt-1 text-4xl font-bold tracking-tight text-bright">What you own</h1>
-	<p class="mt-2 text-sm text-muted tabular-nums">
-		{shown} printings shown · always private
-	</p>
-	{#if collection.status === 'ready' && collection.distinctPrintings === 0}
-		<!-- Only someone with nothing recorded sees this: it is the one moment an import is the answer,
-		     and it keeps the link out of everyone else's way. -->
-		<p class="mt-1 text-sm text-muted">
-			Have a spreadsheet or an export?
-			<a href="/collection/import" class="text-neon hover:underline">Import it</a>.
+<!-- The title on the left and, on the right, what the Collection is worth — beside the header rather
+     than under it, so it is the first thing the eye lands on after the title. It wraps below on a
+     narrow screen. -->
+<div class="mb-6 flex flex-wrap items-start justify-between gap-x-8 gap-y-5">
+	<div class="min-w-0">
+		<p class="text-xs font-medium tracking-widest text-neon-dim uppercase">Collection</p>
+		<h1 class="mt-1 text-4xl font-bold tracking-tight text-bright">What you own</h1>
+		<p class="mt-2 text-sm text-muted tabular-nums">
+			{shown} printings shown · always private
 		</p>
+		{#if collection.status === 'ready' && collection.distinctPrintings === 0}
+			<!-- Only someone with nothing recorded sees this: it is the one moment an import is the answer,
+			     and it keeps the link out of everyone else's way. -->
+			<p class="mt-1 text-sm text-muted">
+				Have a spreadsheet or an export?
+				<a href="/collection/import" class="text-neon hover:underline">Import it</a>.
+			</p>
+		{/if}
+	</div>
+
+	{#if collection.status === 'ready'}
+		<CollectionWorth
+			totals={value}
+			of={collection.distinctPrintings}
+			printingIds={ownedEntries.map((entry) => entry.printingId)}
+		/>
 	{/if}
 </div>
 

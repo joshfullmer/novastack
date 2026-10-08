@@ -31,8 +31,9 @@
 	import type { Card } from '#lib/cards/schema.js';
 	import type { NeededCard } from '#lib/collection/missing.js';
 	import type { WantlistSummary } from '#lib/collection/wantlists.js';
-	import { costToComplete, MARKETPLACE_INFO, MARKETPLACES } from '#lib/prices/cost.js';
+	import { costToComplete, MARKETPLACE_INFO } from '#lib/prices/cost.js';
 	import { formatMoney } from '#lib/prices/format.js';
+	import { priceSource } from '#lib/prices/source.svelte.js';
 	import { prices } from '#lib/prices/state.svelte.js';
 	import { COLOR_TEXT } from './color.js';
 	import CostTotals from './CostTotals.svelte';
@@ -70,9 +71,8 @@
 	const shortPrintingIds = $derived(
 		cost.rows.flatMap((row) => row.card.printings.map((printing) => printing.id))
 	);
-	const anyPriced = $derived(
-		MARKETPLACES.some((marketplace) => cost.totals[marketplace].priced > 0)
-	);
+	// Only the chosen marketplace: a total in the other one's currency is not the one being asked for.
+	const anyPriced = $derived(cost.totals[priceSource.value].priced > 0);
 
 	/** Wantlist menu state, carried over from `MissingPanel`. `null` until fetched, so "none yet"
 	 * stays distinguishable from "not asked". */
@@ -348,28 +348,22 @@
 					     deck is actually short of (Card level, like the headline). The tooltip names the
 					     printing, because "cheapest" can be a beta copy you did not have in mind. -->
 					{#if offers}
-						<span class="flex shrink-0 items-baseline gap-2 text-xs">
-							{#each MARKETPLACES as marketplace (marketplace)}
-								{@const offer = offers[marketplace]}
-								{#if offer}
-									<a
-										href={MARKETPLACE_INFO[marketplace].url(offer.productId)}
-										target="_blank"
-										rel="noopener noreferrer"
-										title="{MARKETPLACE_INFO[marketplace].name}, each — {printTreatment(
-											offer.printing
-										) === 'beta'
-											? 'beta'
-											: 'retail'} printing #{offer.printing.collectorNumber}"
-										class="font-mono text-muted tabular-nums transition-colors hover:text-neon"
-										>{formatMoney(offer.amount, MARKETPLACE_INFO[marketplace].currency)}<span
-											class="sr-only"
-											>, {MARKETPLACE_INFO[marketplace].name}, opens in a new tab</span
-										></a
-									>
-								{/if}
-							{/each}
-						</span>
+						{@const offer = offers[priceSource.value]}
+						{#if offer}
+							{@const info = MARKETPLACE_INFO[priceSource.value]}
+							<a
+								href={info.url(offer.productId)}
+								target="_blank"
+								rel="noopener noreferrer"
+								title="{info.name}, each — {printTreatment(offer.printing) === 'beta'
+									? 'beta'
+									: 'retail'} printing #{offer.printing.collectorNumber}"
+								class="shrink-0 font-mono text-xs text-muted tabular-nums transition-colors hover:text-neon"
+								>{formatMoney(offer.amount, info.currency)}<span class="sr-only"
+									>, {info.name}, opens in a new tab</span
+								></a
+							>
+						{/if}
 					{/if}
 
 					<span

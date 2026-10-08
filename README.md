@@ -180,6 +180,11 @@ TCGCSV asks for **one pull per day**, so this is not something to loop. The file
 source's own rebuild time, and a run that violates an invariant (a wrong marketplace id, a renumbered
 group) writes nothing and exits `2`, leaving the last file in place.
 
+The app shows one marketplace at a time — TCGplayer (USD) or Cardmarket (EUR), chosen with the
+switch in any price note and remembered in `localStorage` (`src/lib/prices/source.svelte.ts`);
+they are different measures in different currencies, so nothing is ever added up across them or
+converted.
+
 Not every Printing has a price, and that is honest rather than a gap to fill: English retail is
 presale until 2026-11-06, and neither marketplace lists a French run. Cardmarket has no collector
 numbers, so a card with several arts in one expansion (every Legend) cannot be told apart by name

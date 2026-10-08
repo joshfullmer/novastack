@@ -29,13 +29,13 @@ import type { Quote } from './schema.ts';
 export type Marketplace = 'tcgplayer' | 'cardmarket';
 export const MARKETPLACES: readonly Marketplace[] = ['tcgplayer', 'cardmarket'];
 
-/** What each marketplace is called, what it prices in, and where its product pages are. */
+/** What each marketplace is called, what it prices in and how, and where its product pages are. */
 export const MARKETPLACE_INFO: Record<
 	Marketplace,
-	{ name: string; currency: Currency; url: (productId: number) => string }
+	{ name: string; currency: Currency; measure: string; url: (productId: number) => string }
 > = {
-	tcgplayer: { name: 'TCGplayer', currency: 'USD', url: tcgplayerUrl },
-	cardmarket: { name: 'Cardmarket', currency: 'EUR', url: cardmarketUrl }
+	tcgplayer: { name: 'TCGplayer', currency: 'USD', measure: 'market price', url: tcgplayerUrl },
+	cardmarket: { name: 'Cardmarket', currency: 'EUR', measure: 'trend price', url: cardmarketUrl }
 };
 
 export type Offer = {
@@ -46,11 +46,14 @@ export type Offer = {
 	amount: number;
 };
 
-/** A quote's price on one marketplace, or `null` if it is not listed there or has no market yet. */
-function listingOf(
+/**
+ * A quote's listing on one marketplace: the product to link to, and its price if it has one yet.
+ * `null` only when the marketplace does not list the Printing at all.
+ */
+export function listingOn(
 	quote: Quote | undefined,
 	marketplace: Marketplace
-): { productId: number; amount: number } | null {
+): { productId: number; amount: number | null } | null {
 	const listing =
 		marketplace === 'tcgplayer'
 			? quote?.tcgplayer && { productId: quote.tcgplayer.productId, amount: quote.tcgplayer.market }
@@ -58,6 +61,15 @@ function listingOf(
 					productId: quote.cardmarket.productId,
 					amount: quote.cardmarket.trend
 				};
+	return listing || null;
+}
+
+/** A listing that has a price — the cases a total can count. */
+function listingOf(
+	quote: Quote | undefined,
+	marketplace: Marketplace
+): { productId: number; amount: number } | null {
+	const listing = listingOn(quote, marketplace);
 	return listing && listing.amount !== null
 		? { productId: listing.productId, amount: listing.amount }
 		: null;
