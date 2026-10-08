@@ -37,7 +37,6 @@
 	const marketplace = $derived(priceSource.value);
 	const tally = $derived(totals[marketplace]);
 	const { name, currency } = $derived(MARKETPLACE_INFO[marketplace]);
-	const plural = $derived(count === 1 ? '' : 's');
 </script>
 
 <section
@@ -57,14 +56,8 @@
 		<p class="text-xs font-medium tracking-widest text-neon uppercase">Collection worth</p>
 
 		<InfoPopover label="About this figure" anchorToHost>
-			<p class="font-medium text-body">{tally.priced} of {count} printing{plural} priced</p>
-			<p class="mt-1.5">
-				A printing with no market price yet isn't counted. That is every English retail printing
-				until its release on 2026-11-06, so for now this is a floor, not the value of everything you
-				own.
-			</p>
-			<p class="mt-1.5">Each printing is priced as itself, times the copies you hold.</p>
-			<PriceNote {printingIds} class="mt-3 border-t border-edge pt-3" />
+			<p>Printings with no market price yet aren't counted.</p>
+			<PriceNote {printingIds} class="mt-2 border-t border-edge pt-2" />
 		</InfoPopover>
 	</div>
 
