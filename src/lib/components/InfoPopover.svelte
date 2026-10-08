@@ -14,6 +14,9 @@
 	 */
 	import type { Snippet } from 'svelte';
 
+	/** The least space to leave between the panel and the screen's edge, in pixels. */
+	const EDGE_MARGIN = 8;
+
 	let {
 		label,
 		children,
@@ -26,6 +29,18 @@
 	let open = $state(false);
 	let root = $state<HTMLElement>();
 	let button = $state<HTMLButtonElement>();
+
+	/**
+	 * Right-aligned by default, which is right when the host sits at the right of a wide header. When
+	 * the host has wrapped to the left of a narrow one, that would push the panel off the screen's
+	 * left edge, so it is measured as it mounts and hung from the left instead. It cannot be decided
+	 * in CSS, because which side the host ends up on depends on where it wrapped.
+	 */
+	function keepOnScreen(node: HTMLElement) {
+		if (node.getBoundingClientRect().left >= EDGE_MARGIN) return;
+		node.style.right = 'auto';
+		node.style.left = '0';
+	}
 
 	function onWindowClick(event: MouseEvent) {
 		if (open && root && !root.contains(event.target as Node)) open = false;
@@ -54,9 +69,10 @@
 	>
 	{#if open}
 		<div
+			{@attach keepOnScreen}
 			id={panelId}
-			class="absolute top-full right-0 z-30 mt-2 w-72 rounded-lg border border-edge bg-shell p-3
-				text-xs text-muted shadow-lg shadow-black/50 {className}"
+			class="absolute top-full right-0 z-30 mt-2 w-72 max-w-[calc(100vw-1rem)] rounded-lg border
+				border-edge bg-shell p-3 text-xs text-muted shadow-lg shadow-black/50 {className}"
 		>
 			{@render children()}
 		</div>
