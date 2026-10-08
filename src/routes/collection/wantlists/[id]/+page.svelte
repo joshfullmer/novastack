@@ -28,8 +28,13 @@
 	import { test } from '#lib/filters/predicate.js';
 	import { parseQuery } from '#lib/query/index.js';
 	import CardImage from '#lib/components/CardImage.svelte';
+	import CostTotals from '#lib/components/CostTotals.svelte';
 	import Meta from '#lib/components/Meta.svelte';
+	import PriceLinks from '#lib/components/PriceLinks.svelte';
+	import PriceNote from '#lib/components/PriceNote.svelte';
 	import QueryEditor from '#lib/components/filters/QueryEditor.svelte';
+	import { costOfPrintings } from '#lib/prices/cost.js';
+	import { prices } from '#lib/prices/state.svelte.js';
 
 	let { data, form } = $props();
 
@@ -46,6 +51,9 @@
 	);
 
 	const copies = $derived(data.entries.reduce((sum, entry) => sum + entry.quantity, 0));
+
+	$effect(() => void prices.load());
+	const totals = $derived(costOfPrintings(data.entries, (id) => prices.quote(id)));
 	/** Already on the list, so the search panel can offer "+1" rather than a duplicate. */
 	const wantedIds = $derived(new Set(data.entries.map((entry) => entry.printingId)));
 
@@ -131,6 +139,11 @@
 			{copies === 1 ? 'copy' : 'copies'}
 			{#if !data.isOwner}· kept by {data.wantlist.ownerName}{/if}
 		</p>
+		<!-- What the list costs, for anyone who can see it: a shared wantlist is a shopping list, and
+		     the person reading it is the one deciding what to buy. Each entry is priced at the very
+		     Printing it names, so there is no "cheapest" to choose (`costOfPrintings`). -->
+		<CostTotals {totals} of={data.entries.length} noun="printing" class="mt-2" />
+		<PriceNote printingIds={data.entries.map((entry) => entry.printingId)} class="mt-1" />
 	</div>
 
 	{#if data.isOwner}
@@ -220,6 +233,7 @@
 								{#if entry.note}
 									<p class="mt-0.5 truncate text-xs text-muted/80">{entry.note}</p>
 								{/if}
+								<PriceLinks printingId={entry.printingId} class="mt-1" />
 							</div>
 
 							{#if data.isOwner}

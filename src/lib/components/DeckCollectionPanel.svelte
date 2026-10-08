@@ -35,6 +35,7 @@
 	import { formatMoney } from '#lib/prices/format.js';
 	import { prices } from '#lib/prices/state.svelte.js';
 	import { COLOR_TEXT } from './color.js';
+	import CostTotals from './CostTotals.svelte';
 	import PriceNote from './PriceNote.svelte';
 
 	let {
@@ -70,7 +71,7 @@
 		cost.rows.flatMap((row) => row.card.printings.map((printing) => printing.id))
 	);
 	const anyPriced = $derived(
-		MARKETPLACES.some((marketplace) => cost.totals[marketplace].pricedCards > 0)
+		MARKETPLACES.some((marketplace) => cost.totals[marketplace].priced > 0)
 	);
 
 	/** Wantlist menu state, carried over from `MissingPanel`. `null` until fetched, so "none yet"
@@ -250,24 +251,7 @@
 		     floor, not a price, and the number of cards left out is the thing that says so. -->
 		{#if !summary.complete && anyPriced}
 			<div class="border-b border-edge px-3 py-2">
-				<p class="flex flex-wrap items-baseline gap-x-4 gap-y-1 text-xs">
-					<span class="text-muted">To buy</span>
-					{#each MARKETPLACES as marketplace (marketplace)}
-						{@const tally = cost.totals[marketplace]}
-						{#if tally.pricedCards > 0}
-							<span class="text-muted">
-								{MARKETPLACE_INFO[marketplace].name}
-								<span class="font-mono text-sm text-bright tabular-nums"
-									>{formatMoney(tally.total, MARKETPLACE_INFO[marketplace].currency)}</span
-								>
-								<span class="text-muted/70 tabular-nums"
-									>· {tally.pricedCards} of {cost.rows.length}
-									{cost.rows.length === 1 ? 'card' : 'cards'}</span
-								>
-							</span>
-						{/if}
-					{/each}
-				</p>
+				<CostTotals totals={cost.totals} of={cost.rows.length} noun="card" />
 				<p class="mt-1 text-xs text-muted/70">
 					The cheapest English printing of each card, beta included until retail is on sale.
 				</p>

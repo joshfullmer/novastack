@@ -46,11 +46,11 @@ export type Offer = {
 	amount: number;
 };
 
-function offerFor(
-	printing: Printing,
+/** A quote's price on one marketplace, or `null` if it is not listed there or has no market yet. */
+function listingOf(
 	quote: Quote | undefined,
 	marketplace: Marketplace
-): Offer | null {
+): { productId: number; amount: number } | null {
 	const listing =
 		marketplace === 'tcgplayer'
 			? quote?.tcgplayer && { productId: quote.tcgplayer.productId, amount: quote.tcgplayer.market }
@@ -58,10 +58,18 @@ function offerFor(
 					productId: quote.cardmarket.productId,
 					amount: quote.cardmarket.trend
 				};
-
 	return listing && listing.amount !== null
-		? { printing, productId: listing.productId, amount: listing.amount }
+		? { productId: listing.productId, amount: listing.amount }
 		: null;
+}
+
+function offerFor(
+	printing: Printing,
+	quote: Quote | undefined,
+	marketplace: Marketplace
+): Offer | null {
+	const listing = listingOf(quote, marketplace);
+	return listing && { printing, ...listing };
 }
 
 /**
@@ -118,15 +126,31 @@ export type CostRow = {
 	offers: Record<Marketplace, Offer | null>;
 };
 
+/**
+ * One marketplace's total over a list of things to buy. "Items" are whatever the list is made of —
+ * cards for a deck's shortfall, Printings for a Wantlist — and the same arithmetic serves both.
+ */
 export type MarketplaceTotal = {
-	/** `Σ copies × amount` over the cards this marketplace prices, in minor units. */
+	/** `Σ copies × amount` over the items this marketplace prices, in minor units. */
 	total: number;
-	/** Distinct cards it prices, and the copies of them. */
-	pricedCards: number;
+	/** Distinct items it prices, and the copies of them. */
+	priced: number;
 	pricedCopies: number;
-	/** Distinct short cards it has no price for — left out of `total`, and said so. */
-	unpricedCards: number;
+	/** Distinct items it has no price for — left out of `total`, and said so. */
+	unpriced: number;
 };
+
+const emptyTotal = (): MarketplaceTotal => ({ total: 0, priced: 0, pricedCopies: 0, unpriced: 0 });
+
+function tally(total: MarketplaceTotal, amount: number | null, copies: number): void {
+	if (amount === null) {
+		total.unpriced += 1;
+		return;
+	}
+	total.total += amount * copies;
+	total.priced += 1;
+	total.pricedCopies += copies;
+}
 
 export type CostReport = {
 	rows: CostRow[];
@@ -148,30 +172,40 @@ export function costToComplete(
 			}
 		}));
 
-	const empty = (): MarketplaceTotal => ({
-		total: 0,
-		pricedCards: 0,
-		pricedCopies: 0,
-		unpricedCards: 0
-	});
 	const totals: Record<Marketplace, MarketplaceTotal> = {
-		tcgplayer: empty(),
-		cardmarket: empty()
+		tcgplayer: emptyTotal(),
+		cardmarket: emptyTotal()
 	};
-
 	for (const row of rows) {
 		for (const marketplace of MARKETPLACES) {
-			const offer = row.offers[marketplace];
-			const tally = totals[marketplace];
-			if (offer === null) {
-				tally.unpricedCards += 1;
-			} else {
-				tally.total += offer.amount * row.copies;
-				tally.pricedCards += 1;
-				tally.pricedCopies += row.copies;
-			}
+			tally(totals[marketplace], row.offers[marketplace]?.amount ?? null, row.copies);
 		}
 	}
 
 	return { rows, totals };
+}
+
+/**
+ * What a list of *specific* Printings costs — a Wantlist, where each entry already names the
+ * Printing it wants, so there is no "cheapest" to choose and no Card-level rollup.
+ *
+ * Each entry is priced at its own Printing's quote, per marketplace. A Printing a marketplace has no
+ * price for is unpriced there; nothing is borrowed from a sibling Printing or the other marketplace.
+ */
+export function costOfPrintings(
+	entries: readonly { printingId: string; quantity: number }[],
+	quoteOf: (printingId: string) => Quote | undefined
+): Record<Marketplace, MarketplaceTotal> {
+	const totals: Record<Marketplace, MarketplaceTotal> = {
+		tcgplayer: emptyTotal(),
+		cardmarket: emptyTotal()
+	};
+	for (const { printingId, quantity } of entries) {
+		if (quantity <= 0) continue;
+		const quote = quoteOf(printingId);
+		for (const marketplace of MARKETPLACES) {
+			tally(totals[marketplace], listingOf(quote, marketplace)?.amount ?? null, quantity);
+		}
+	}
+	return totals;
 }

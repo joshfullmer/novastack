@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { makeCard, makePrinting } from '../cards/fixtures.ts';
 import type { Card } from '../cards/schema.ts';
-import { cheapestOffer, costToComplete } from './cost.ts';
+import { cheapestOffer, costOfPrintings, costToComplete } from './cost.ts';
 import type { Quote } from './schema.ts';
 
 const tcg = (productId: number, market: number | null): Quote => ({
@@ -138,14 +138,14 @@ describe('costToComplete', () => {
 
 	it('counts what a marketplace does not price as unpriced there, and leaves it out of the total', () => {
 		expect(report.totals.tcgplayer).toMatchObject({
-			pricedCards: 2,
+			priced: 2,
 			pricedCopies: 4,
-			unpricedCards: 1
+			unpriced: 1
 		});
 		expect(report.totals.cardmarket).toMatchObject({
-			pricedCards: 1,
+			priced: 1,
 			pricedCopies: 3,
-			unpricedCards: 2
+			unpriced: 2
 		});
 	});
 
@@ -161,9 +161,45 @@ describe('costToComplete', () => {
 		expect(none.rows).toEqual([]);
 		expect(none.totals.tcgplayer).toEqual({
 			total: 0,
-			pricedCards: 0,
+			priced: 0,
 			pricedCopies: 0,
-			unpricedCards: 0
+			unpriced: 0
 		});
+	});
+});
+
+describe('costOfPrintings', () => {
+	const quotes = lookup({
+		a: { ...tcg(1, 100), ...cm(11, 80) },
+		b: tcg(2, 2500), // TCGplayer only
+		c: tcg(3, null), // a product with no market yet
+		d: cm(14, 5) // Cardmarket only
+	});
+
+	const totals = costOfPrintings(
+		[
+			{ printingId: 'a', quantity: 3 },
+			{ printingId: 'b', quantity: 1 },
+			{ printingId: 'c', quantity: 2 },
+			{ printingId: 'd', quantity: 4 },
+			{ printingId: 'unknown', quantity: 1 }
+		],
+		quotes
+	);
+
+	it('prices each entry at its own printing, times the copies wanted', () => {
+		expect(totals.tcgplayer.total).toBe(100 * 3 + 2500 * 1);
+		expect(totals.cardmarket.total).toBe(80 * 3 + 5 * 4);
+	});
+
+	it('counts what a marketplace cannot price as unpriced there — never borrowed, never free', () => {
+		expect(totals.tcgplayer).toMatchObject({ priced: 2, pricedCopies: 4, unpriced: 3 });
+		expect(totals.cardmarket).toMatchObject({ priced: 2, pricedCopies: 7, unpriced: 3 });
+	});
+
+	it('skips an entry wanted zero times, and is all zeroes for none', () => {
+		const none = costOfPrintings([{ printingId: 'a', quantity: 0 }], quotes);
+		expect(none.tcgplayer).toEqual({ total: 0, priced: 0, pricedCopies: 0, unpriced: 0 });
+		expect(costOfPrintings([], quotes).cardmarket.total).toBe(0);
 	});
 });
