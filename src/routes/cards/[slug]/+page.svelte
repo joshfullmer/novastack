@@ -298,21 +298,31 @@
 							</div>
 						</dl>
 					</button>
-					<!-- Outside the chooser button for the same reason as the stepper below: a link nested
-					     in a button is invalid markup, and clicking it would also select the printing. -->
-					<PriceLinks printingId={entry.id} class="mt-2" />
-					{#if manageCollection.enabled && collection.status !== 'idle' && collection.status !== 'loading'}
-						<!-- Outside the chooser `<button>` on purpose: a stepper nested in a button is
-						     invalid markup, and its clicks would also select the printing. -->
-						<div data-collection-ui class="mt-2 flex items-center gap-2">
-							<span class="text-xs text-muted">In collection</span>
-							<QuantityStepper
-								printingId={entry.id}
-								label="{card.name} {entry.collectorNumber}"
-								expanded
-							/>
-						</div>
-					{/if}
+					<!-- Both rows sit outside the chooser `<button>` on purpose: a stepper or a link nested in a
+					     button is invalid markup, and its clicks would also select the printing.
+
+					     The collection row comes first and the price second, deliberately. Not every
+					     printing has a price (the French run, anything unlisted), so a price row above it
+					     would leave the stepper at a different height from one tile to the next.
+
+					     They share one wrapper element on purpose. With `PriceLinks` — whose root is a bare
+					     `{#if}` — as the last child of the `<li>` straight after the stepper's own `{#if}`,
+					     Svelte lost the block boundary on hydration and threw `hydration_mismatch`, which
+					     swaps the whole page for the 500 page. A real element between them and the `<li>`
+					     keeps the boundary. -->
+					<div class="flex flex-col">
+						{#if manageCollection.enabled && collection.status !== 'idle' && collection.status !== 'loading'}
+							<div data-collection-ui class="mt-2 flex items-center gap-2">
+								<span class="text-xs text-muted">In collection</span>
+								<QuantityStepper
+									printingId={entry.id}
+									label="{card.name} {entry.collectorNumber}"
+									expanded
+								/>
+							</div>
+						{/if}
+						<PriceLinks printingId={entry.id} class="mt-2" />
+					</div>
 				</li>
 			{/each}
 		</ul>
