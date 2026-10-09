@@ -144,6 +144,9 @@
 	 */
 	let addTarget = $state<'deck' | 'sideboard'>('deck');
 	const targetingSideboard = $derived(tab === 'main' && addTarget === 'sideboard');
+	// View state, like `addTarget`. Collapsing hides the sideboard's cards, not its `n/7` count —
+	// on a phone the bottom sheet is short, and a gallery of 7 tiles can push the main deck off it.
+	let sideboardOpen = $state(true);
 	// Shared with the read-only view (`/decks/[id]`) — "how I like browsing a deck's cards" is
 	// one preference, not two. Server-rendered from a cookie (`data.deckView`, read in
 	// `+page.server.ts`) rather than `localStorage`: this page isn't prerendered, so the server
@@ -766,8 +769,16 @@
 		onmouseleave={() => (hovered = null)}
 		role="group"
 	>
-		<div class="flex items-center justify-between px-4 py-2.5">
-			<span class="text-sm font-medium text-bright">Sideboard</span>
+		<button
+			type="button"
+			onclick={() => (sideboardOpen = !sideboardOpen)}
+			aria-expanded={sideboardOpen}
+			class="flex w-full items-center justify-between px-4 py-2.5 text-left"
+		>
+			<span class="flex items-center gap-2 text-sm font-medium text-bright">
+				<span class="text-xs text-muted" aria-hidden="true">{sideboardOpen ? '▼' : '▶'}</span>
+				Sideboard
+			</span>
 			<span
 				class="text-sm font-medium tabular-nums {deck.sideboardStatus === 'legal'
 					? 'text-neon'
@@ -776,8 +787,10 @@
 			>
 				{deck.sideboardCards}/{SIDEBOARD_SIZE}
 			</span>
-		</div>
-		{#if deck.sideboard.length === 0}
+		</button>
+		{#if !sideboardOpen}
+			<!-- Collapsed: header only. -->
+		{:else if deck.sideboard.length === 0}
 			<p class="border-t border-edge/50 px-4 py-2.5 text-xs text-muted">
 				Empty — legal, but you'll want {SIDEBOARD_SIZE} to play constructed. Switch the toggle above the
 				grid to <span class="text-body">Sideboard</span> to add them.
