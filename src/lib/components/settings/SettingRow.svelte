@@ -36,7 +36,7 @@
 			<p id="{id}-description" class="mt-0.5 text-sm text-muted">{description}</p>
 		{/if}
 	</div>
-	<div class="min-w-0 {align === 'end' ? 'flex md:justify-end' : ''}">
+	<div class="min-w-0 {align === 'end' ? 'flex items-start md:justify-end' : ''}">
 		{@render children()}
 	</div>
 </div>
