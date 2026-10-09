@@ -187,14 +187,29 @@ function cardmarketPrice(row: CardmarketPriceRow | undefined): number | null {
  * What can: the arts of a card are consistently priced against each other on both marketplaces —
  * the standard art is cheap and the Iconic Legend is not — so the Printings in collector-number
  * order and the products in `idProduct` order should rank the same way by price. Pairing them that
- * way is accepted **only if** every pair's order agrees, strictly, between Cardmarket's trend and
- * TCGplayer's market price. A pairing the prices contradict is dropped, and so is one that cannot
- * be checked (a missing price) or cannot discriminate (two equal prices): left unjoined, as before.
+ * way is accepted only if the prices do not contradict it. Each pair of arts is judged by how far
+ * apart its two prices are, on each marketplace:
  *
- * It is corroboration and not proof — arts priced a cent apart can swap without the check noticing,
- * at the cost of a cent and a link to the sibling art — but it is what stops the cheapest art of a
- * Legend being invisible, which made a deck's Cardmarket total an order of magnitude too high.
- * Measured agreement before this was written: 30 of 30 two-way ties (`docs/research/prices.md` §4.3).
+ * - **Decisively apart on both** (at least `DECISIVE_GAP` times): their order must agree, strictly.
+ *   This is what identifies the Iconic Legend, and a pairing that swaps it with a standard art
+ *   fails here.
+ * - **Close on both**: skipped. The order of two arts priced within a few cents of each other is
+ *   noise — on 2026-10-07 TCGplayer put `V: Streetkid`'s two standard arts the one way round and
+ *   Cardmarket the other — and so is not evidence either way. Mixing them up costs about the gap
+ *   between them, and a link to the sibling art.
+ * - **Decisively apart on one side only**: reject. One marketplace sees a big gap that the other
+ *   cannot confirm, so a mixed-up pairing would cost the whole gap. That is the case worth being
+ *   afraid of, and nothing here guesses it.
+ *
+ * A missing price on either side also rejects: it cannot be checked. Rejected groups are left
+ * unjoined, as before.
+ *
+ * It is corroboration and not proof, and strict agreement used to be required of *every* pair. That
+ * dropped the Iconic Legend of `V: Streetkid` — €120 on Cardmarket, unmistakable on both sides —
+ * along with its two cheap arts, because those two disagreed with each other by a few cents; and
+ * with any art of a card unjoined, the card as a whole was unpriced on Cardmarket
+ * (`pricesAreComplete` in `cost.ts`). Measured agreement before either rule: 30 of 30 two-way ties
+ * (`docs/research/prices.md` §4.3).
  */
 function pairTies(
 	printings: readonly Printing[],
@@ -219,10 +234,22 @@ function pairTies(
 		for (let j = i + 1; j < pairs.length; j += 1) {
 			const [ti, tj, ci, cj] = [tcg[i], tcg[j], cm[i], cm[j]];
 			if (ti === null || tj === null || ci === null || cj === null) return null;
-			if (ti === tj || ci === cj || Math.sign(ti - tj) !== Math.sign(ci - cj)) return null;
+
+			const decisiveOnTcgplayer = isDecisive(ti, tj);
+			const decisiveOnCardmarket = isDecisive(ci, cj);
+			if (!decisiveOnTcgplayer && !decisiveOnCardmarket) continue;
+			if (decisiveOnTcgplayer !== decisiveOnCardmarket) return null;
+			if (Math.sign(ti - tj) !== Math.sign(ci - cj)) return null;
 		}
 	}
 	return pairs;
+}
+
+/** How many times apart two prices must be before their order is evidence rather than noise. */
+const DECISIVE_GAP = 3;
+
+function isDecisive(a: number, b: number): boolean {
+	return Math.max(a, b) >= DECISIVE_GAP * Math.min(a, b);
 }
 
 export function mapCardmarket(

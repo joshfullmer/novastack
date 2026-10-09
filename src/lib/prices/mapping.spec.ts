@@ -376,6 +376,88 @@ describe('mapCardmarket tie-break', () => {
 	});
 });
 
+describe('mapCardmarket tie-break: noise between near-equal arts', () => {
+	// V: Streetkid on 2026-10-07: two standard arts a few cents apart and an Iconic Legend at ~$125.
+	const trio = cardWith(
+		'V Streetkid',
+		{ collectorNumber: 'β005a' },
+		{ collectorNumber: 'β005b' },
+		{ collectorNumber: 'β144' }
+	);
+	const [a, b, iconic] = trio.printings;
+	const products = [905092, 905093, 905232].map((id) => cmProduct(id, 'V Streetkid'));
+	const market = (cents: [number, number, number]) => (id: string) =>
+		new Map([a, b, iconic].map((p, i) => [p.id, cents[i]])).get(id) ?? null;
+
+	it('still joins the Iconic Legend when the two cheap arts disagree with each other', () => {
+		// TCGplayer: 005a $0.31 < 005b $0.35. Cardmarket: 905092 €0.15 > 905093 €0.08. A coin flip
+		// between two near-equal arts — which used to throw the whole group out, Iconic included.
+		const { quotes, report } = mapCardmarket(
+			[trio],
+			{
+				products,
+				prices: [cmRow(905092, 0, 0.15), cmRow(905093, 0, 0.08), cmRow(905232, 0, 120.26)]
+			},
+			market([31, 35, 12505])
+		);
+		expect(quotes.get(iconic.id)).toEqual({ productId: 905232, trend: 12026 });
+		expect(quotes.size).toBe(3);
+		expect(report.paired).toBe(3);
+	});
+
+	it('still rejects a pairing that puts the Iconic Legend on the wrong art', () => {
+		// Same products, but TCGplayer says the *cheap* art is the expensive one.
+		const { quotes } = mapCardmarket(
+			[trio],
+			{
+				products,
+				prices: [cmRow(905092, 0, 0.15), cmRow(905093, 0, 0.08), cmRow(905232, 0, 120.26)]
+			},
+			market([12505, 35, 31])
+		);
+		expect(quotes.size).toBe(0);
+	});
+
+	it('rejects a gap one marketplace sees and the other cannot confirm', () => {
+		// Cardmarket separates the arts by 100x; TCGplayer has them a cent apart. Swapped, that would
+		// cost the whole gap, and nothing on TCGplayer can say which way round they go.
+		const two = cardWith('Adam', { collectorNumber: 'β001' }, { collectorNumber: 'β002' });
+		const [x, y] = two.printings;
+		const { quotes } = mapCardmarket(
+			[two],
+			{
+				products: [cmProduct(1, 'Adam'), cmProduct(2, 'Adam')],
+				prices: [cmRow(1, 0.1), cmRow(2, 10)]
+			},
+			(id) => (id === x.id ? 31 : id === y.id ? 32 : null)
+		);
+		expect(quotes.size).toBe(0);
+	});
+
+	it('accepts arts that are close on both, since a mix-up there costs only the gap', () => {
+		const two = cardWith('Adam', { collectorNumber: 'β001' }, { collectorNumber: 'β002' });
+		const [x, y] = two.printings;
+		const { quotes } = mapCardmarket(
+			[two],
+			{
+				products: [cmProduct(1, 'Adam'), cmProduct(2, 'Adam')],
+				prices: [cmRow(1, 0.15), cmRow(2, 0.08)]
+			},
+			(id) => (id === x.id ? 31 : id === y.id ? 35 : null)
+		);
+		expect(quotes.size).toBe(2);
+	});
+
+	it('still cannot judge a pair with a missing price', () => {
+		const { quotes } = mapCardmarket(
+			[trio],
+			{ products, prices: [cmRow(905092, 0, 0.15), cmRow(905093, 0, 0), cmRow(905232, 0, 120.26)] },
+			market([31, 35, 12505])
+		);
+		expect(quotes.size).toBe(0);
+	});
+});
+
 describe('buildPrices', () => {
 	const card = cardWith('Chrome Fang', { collectorNumber: 'β012' });
 	const built = buildPrices(

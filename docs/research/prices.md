@@ -415,6 +415,16 @@ name tie had hidden, was EUR 0.07-0.42; the deck's Cardmarket total read EUR 37 
 USD 2.71. The UI additionally refuses to call a card's Cardmarket price "the cheapest" while any
 English printing in a Cardmarket-covered run has no Cardmarket quote (`#lib/prices/cost.ts`).
 
+**Update, 2026-10-09 (rule loosened).** Requiring _every_ pair to agree strictly dropped the Iconic
+Legend of `V: Streetkid` (Cardmarket 905232, EUR 120.26; TCGplayer USD 125): its two standard arts
+differ by a few cents and the two marketplaces ordered them oppositely (TCGplayer 005a < 005b,
+Cardmarket 905092 EUR 0.15 > 905093 EUR 0.08), so the whole three-way group was rejected and the card
+had no Cardmarket price at all. A pair is now judged by its gap: **decisive on both** (3x apart or
+more) must agree, **close on both** is skipped as noise, and **decisive on one side only** or a
+missing price rejects. Joins go 255 to 258 of 720 on the 2026-10-07 source files; the only printings
+still unjoined are two `PRM01` promos Cardmarket lists fewer products for than we have printings.
+The CM/TCG price ratio over all 224 joined printings is unchanged (median 0.65, range 0.02-2.00).
+
 ### 4.4 Failure modes (what will actually bite)
 
 - **Retail has no price until after 2026-11-06.** Both marketplaces list it as presale; Cardmarket has
