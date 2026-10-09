@@ -8,7 +8,9 @@
  *
  * The flash this would otherwise cause is handled pre-paint in `app.html`, which reads the same
  * key and sets `data-manage-collection="off"` on `<html>` before `<body>` is parsed; `layout.css`
- * hides `[data-collection-ui]` from there. This module is the *behavioural* half — it also lets
+ * hides `[data-collection-ui]` from there. The one control for it is on the Account page ("On this
+ * device"), the home for a set-and-forget setting; it used to be a pill on set pages alone, which left
+ * `/cards` and a card's page with no way back once it was off. This module is the *behavioural* half — it also lets
  * the page skip fetching the Collection at all when the controls are off, which CSS cannot do.
  */
 import { browser } from '$app/env';

@@ -1,10 +1,19 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
 	import { page } from '$app/state';
+	import { onMount } from 'svelte';
+	import { manageCollection } from '#lib/collection/manage-pref.svelte.js';
 	import DiscordSignInButton from '#lib/components/DiscordSignInButton.svelte';
 	import type { ActionData, PageData } from './$types';
 
 	let { data, form }: { data: PageData; form: ActionData } = $props();
+
+	// The switch is drawn "on" until mounted. The preference lives in `localStorage`, which the server
+	// can't read, so the server HTML is always the default (on) and the real value is applied once
+	// the page is hydrated — rather than hydrating a state the server never rendered.
+	let mounted = $state(false);
+	onMount(() => (mounted = true));
+	const collectionControls = $derived(mounted ? manageCollection.enabled : true);
 
 	// Set by better-auth's OAuth callback after a `linkDiscord` redirect (see
 	// social-sign-in.ts's `errorCallbackURL`) — `linkDiscord` itself never resolves as a normal
@@ -166,6 +175,38 @@
 				<a href="#password" class="text-neon hover:underline">Set a password</a> to change your email.
 			</p>
 		{/if}
+	</section>
+
+	<!-- A device setting, so it lives where settings do rather than in the page chrome of the three pages
+	     it affects: set once, and it holds for every page on this browser. Not on the account itself —
+	     it is stored in `localStorage` (`#lib/collection/manage-pref.svelte.ts`), because those pages are
+	     prerendered or edge-cached and cannot know who is looking. -->
+	<section class="mt-8 flex flex-col gap-3 border-t border-edge/60 pt-8">
+		<h2 class="text-sm font-medium text-bright">On this device</h2>
+		<div class="flex items-start justify-between gap-4">
+			<div>
+				<p id="collection-controls-label" class="text-sm text-body">Collection controls</p>
+				<p id="collection-controls-description" class="mt-0.5 text-sm text-muted">
+					The owned-count buttons on cards and sets. Turning them off only hides them; your
+					collection isn't touched.
+				</p>
+			</div>
+			<button
+				type="button"
+				role="switch"
+				aria-checked={collectionControls}
+				aria-labelledby="collection-controls-label"
+				aria-describedby="collection-controls-description"
+				onclick={() => manageCollection.toggle()}
+				class="flex h-6 w-11 shrink-0 items-center rounded-full p-0.5 transition-colors
+					{collectionControls ? 'bg-neon' : 'bg-raised ring-1 ring-edge ring-inset'}"
+			>
+				<span
+					class="size-5 rounded-full transition-transform
+						{collectionControls ? 'translate-x-5 bg-void' : 'translate-x-0 bg-muted'}"
+				></span>
+			</button>
+		</div>
 	</section>
 
 	<!-- Rare by nature — most people move a collection in once, if ever — so it lives here rather than

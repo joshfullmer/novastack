@@ -240,20 +240,6 @@
 					</div>
 				{/if}
 
-				<!-- Always rendered so the toggle itself never disappears; it is not
-					     `data-collection-ui`, or turning the controls off would hide the only way
-					     back on. -->
-				<button
-					type="button"
-					aria-pressed={manageCollection.enabled}
-					onclick={() => manageCollection.toggle()}
-					class="rounded-full border px-3 py-1 text-sm transition-colors {manageCollection.enabled
-						? 'border-neon bg-neon text-void'
-						: 'border-edge text-body hover:border-muted'}"
-				>
-					Manage collection
-				</button>
-
 				{#if collection.editable && manageCollection.enabled && ownedHere < results.length}
 					<button
 						data-collection-ui
