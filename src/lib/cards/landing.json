@@ -17,9 +17,9 @@
 		{
 			"color": "Green",
 			"name": "Hanako Arasaka: Daughter of the Emperor",
-			"printingId": "cc3ed2c4-6e6d-47aa-b358-152c56b24bad",
+			"printingId": "79307857-811d-4436-b1d9-1190d9376ea0",
 			"slug": "hanako-arasaka-daughter-of-the-emperor",
-			"thumbhash": "VyiKFAYPWsNoB4d2M5kwSGmAgYGICBiIAA=="
+			"thumbhash": "1feJDAIPWXh5B4Z2Zr+3V5mAgYGICBiIAA=="
 		},
 		{
 			"color": "Red",
@@ -52,7 +52,7 @@
 	],
 	"stats": {
 		"cards": 151,
-		"printings": 723,
+		"printings": 726,
 		"sets": 1
 	}
 }
