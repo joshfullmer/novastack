@@ -41,7 +41,10 @@ export const HEROES: readonly HeroChoice[] = [
 	// Blue — the box-topper art rather than the Legend's mainline printing.
 	{ slug: 'jackie-welles-pour-one-out-for-me', printing: { setId: 'PRM-WNC' } },
 	// Green
-	{ slug: 'hanako-arasaka-daughter-of-the-emperor', printing: { rarity: 'Iconic Legend' } },
+	{
+		slug: 'hanako-arasaka-daughter-of-the-emperor',
+		printing: { rarity: 'Iconic Legend', treatment: 'beta' }
+	},
 	// Red — the centre card
 	{ slug: 'v-streetkid', printing: { rarity: 'Iconic Legend', treatment: 'beta' } },
 	// Blue
@@ -55,5 +58,8 @@ export const HEROES: readonly HeroChoice[] = [
 		printing: { rarity: 'Iconic Legend', treatment: 'beta' }
 	},
 	// Blue
-	{ slug: 'judy-a-lvarez-braindance-maestro', printing: { rarity: 'Iconic Legend' } }
+	{
+		slug: 'judy-a-lvarez-braindance-maestro',
+		printing: { rarity: 'Iconic Legend', treatment: 'beta' }
+	}
 ];
