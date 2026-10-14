@@ -9893,8 +9893,14 @@
 			],
 			"ramProvided": null,
 			"ramRequired": 4,
-			"rawRulesText": "{Quick} 1 €$, {Spend} Discard 1. Defeat a spent rival Unit with cost equal to or less than the discarded card's cost.",
+			"rawRulesText": "(Equip to a friendly Unit or face-up Legend.)\n{Quick} 1 €$, {Spend} Discard 1. Defeat a spent rival Unit with cost equal to or less than the discarded card's cost.",
 			"rulesText": [
+				[
+					{
+						"kind": "reminder",
+						"text": "(Equip to a friendly Unit or face-up Legend.)"
+					}
+				],
 				[
 					{
 						"keyword": "Quick",
@@ -16632,7 +16638,7 @@
 			"sortOrder": 2500
 		}
 	],
-	"generatedAt": "2026-10-12T19:00:47.764Z",
+	"generatedAt": "2026-10-14T16:00:59.356Z",
 	"ramPerLegend": 2,
 	"sets": [
 		{
