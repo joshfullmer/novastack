@@ -123,6 +123,37 @@
 		searchQuery = '';
 	}
 
+	/**
+	 * `/` focuses the page's search, the same accelerator GitHub, MDN and most docs sites share:
+	 * the header box, or on `/cards` — where the header has none — `FilterBar`'s query row, which
+	 * stands in for it. The two are never on screen together, so one selector covers both.
+	 *
+	 * There is no `showSearch` or breakpoint check: the box is simply absent (route) or
+	 * `display: none` (below `lg`) when it isn't shown, and `focus()` refuses to land on either — so
+	 * "focus took" is the visibility test, and the key is only swallowed when it did. The same
+	 * property covers a modal `<dialog>` open over the page, which makes the header inert.
+	 *
+	 * Shift is deliberately not checked: on layouts where `/` is a shifted key (German, Nordic) the
+	 * shortcut would otherwise never fire. `isComposing` keeps an IME's own `/` out of it.
+	 */
+	function focusSearchOnSlash(event: KeyboardEvent) {
+		if (event.key !== '/' || event.ctrlKey || event.metaKey || event.altKey) return;
+		if (event.defaultPrevented || event.isComposing) return;
+
+		const target = event.target;
+		if (
+			target instanceof HTMLElement &&
+			(target.isContentEditable || target.matches('input, textarea, select'))
+		) {
+			return;
+		}
+
+		const input = document.querySelector<HTMLElement>('#nav-query, #grid-query');
+		input?.focus();
+		// Keeps the `/` from being typed into the box it just focused.
+		if (document.activeElement === input) event.preventDefault();
+	}
+
 	/** Below `sm` the full link row plus Discord/Account/Sign-out doesn't fit — it was overflowing
 	 * the viewport outright (no wrapping, no shrinking anywhere) rather than degrading gracefully.
 	 * Collapsed into a hamburger there instead of trying to cram it in. Also folds the desktop
@@ -137,6 +168,8 @@
 		mobileMenuOpen = false;
 	});
 </script>
+
+<svelte:window onkeydown={focusSearchOnSlash} />
 
 <header
 	bind:offsetHeight={height}
@@ -253,7 +286,7 @@
 				<label for="nav-query" class="sr-only">Search cards</label>
 				<!-- `QueryEditor`'s own input carries no `name` — see `/`'s copy of this pattern. -->
 				<input type="hidden" name={PARAM.query} value={searchQuery} />
-				<div class="min-w-0 flex-1 text-sm">
+				<div class="group relative min-w-0 flex-1 text-sm">
 					<QueryEditor
 						id="nav-query"
 						value={searchQuery}
@@ -262,6 +295,16 @@
 						size="dense"
 						onSource={(next) => (searchQuery = next)}
 					/>
+					<!-- The `/` shortcut's hint. Decorative (`aria-hidden`; the box has no use for it once a
+						screen reader is already in it) and click-through, and gone the moment it stops being
+						true — focused, or text in the way. -->
+					{#if searchQuery === ''}
+						<kbd
+							aria-hidden="true"
+							class="pointer-events-none absolute top-1/2 right-2 -translate-y-1/2 rounded border
+								border-edge px-1.5 font-mono text-xs leading-5 text-muted group-focus-within:hidden">/</kbd
+						>
+					{/if}
 				</div>
 			</form>
 		{/if}

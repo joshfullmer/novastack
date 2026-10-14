@@ -157,6 +157,7 @@
 					value={source}
 					placeholder="Search, or write a query — try t:legend c:red"
 					{warnings}
+					autofocus
 					{onSource}
 				/>
 			</div>

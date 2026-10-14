@@ -162,7 +162,7 @@
 		value: string;
 		placeholder?: string;
 		warnings?: readonly ParseWarning[];
-		/** Focuses on mount. Only for a page whose whole point *is* the query box — see `/`. */
+		/** Focuses on mount. Only for a page whose whole point *is* the query box — `/` and `/cards`. */
 		autofocus?: boolean;
 		/** `dense` for a box that has to fit inside existing chrome (`Nav`). A named variant rather
 		 * than caller-supplied padding classes: the overlay and the real input have to agree on the
@@ -470,8 +470,8 @@
 	</div>
 	<!-- Autofocus is opt-in per caller, and the real attribute rather than a `focus()` effect, so
 		the field is already focused in the SSR'd HTML instead of only after hydration. The a11y rule
-		exists because a stolen focus disorients — `/` is the exception it allows for: a landing page
-		whose single purpose is this box, with nothing above it to skip past. -->
+		exists because a stolen focus disorients — `/` and `/cards` are the exceptions it allows for:
+		pages whose single purpose is this box, with nothing above it but the header to skip past. -->
 	<!-- svelte-ignore a11y_autofocus -->
 	<input
 		{id}
