@@ -3,7 +3,7 @@
 An unofficial, art-forward card database for the Cyberpunk TCG, built from card data on
 `api.netdeck.gg`: browse and filter every card, build and share decks, and track a collection —
 binders, wantlists, a collecting goal, and what a deck is missing. Decks and collections import
-and export (sim, official-builder and Melee text; CSV).
+and export (official-builder, Melee and JSON text; CSV).
 
 **Unofficial fan project. Not associated with or endorsed by the publisher.** Card names, art and
 rules text belong to their respective owners.

@@ -23,6 +23,7 @@
 	import { dataset } from '#lib/cards/index.js';
 	import { splitCardName } from '#lib/cards/derive.js';
 	import Meta from '#lib/components/Meta.svelte';
+	import DeckExportDialog from '#lib/components/DeckExportDialog.svelte';
 	import DeckCollectionPanel from '#lib/components/DeckCollectionPanel.svelte';
 	import DeckPrice from '#lib/components/DeckPrice.svelte';
 	import type { Card } from '#lib/cards/schema.js';
@@ -35,7 +36,7 @@
 	} from '#lib/decks/legality.js';
 	import { createDeckState } from '#lib/decks/deck-state.svelte.js';
 	import { composeDeckImage } from '#lib/decks/deck-image.js';
-	import { deckToJson, deckToMeleeFormat, deckToSimFormat } from '#lib/decks/export.js';
+	import { deckToJson, deckToMeleeFormat, deckToOfficialFormat } from '#lib/decks/export.js';
 	import { groupDeckEntries } from '#lib/decks/grouping.js';
 	import { deckPrinting } from '#lib/decks/printing.js';
 	import { rarityTint } from '#lib/decks/rarity-tone.js';
@@ -212,20 +213,14 @@
 	);
 
 	// Text and image export (`docs/spec/deckbuilder.md` §6) — both built from what's already on
-	// the page; no server route. Text has two formats behind one dropdown: a line list matching
-	// cyberpunk-tcg-sim.online's own import format, and a standardized JSON alternative. Image
-	// export opens a preview dialog rather than downloading straight away, so the user can also
-	// just right-click-copy the composited image.
-	// Widths match each panel's own `w-56`/`w-40` — `menuPosition` needs them to clamp against,
-	// since the panels are now positioned via inline `style`, not `absolute right-0`/`left-0`
+	// the page; no server route. Text export lives in `DeckExportDialog`. Image export opens a
+	// preview dialog rather than downloading straight away, so the user can also just
+	// right-click-copy the composited image.
+	// Width matches the row menu's own `w-40` — `menuPosition` needs it to clamp against,
+	// since the panel is positioned via inline `style`, not `absolute right-0`/`left-0`
 	// (which broke down once the trigger wasn't guaranteed to be the row's rightmost item, or the
 	// row wasn't guaranteed wider than the panel — see `#lib/menu-position.js`).
-	const EXPORT_MENU_WIDTH = 224;
 	const ROW_MENU_WIDTH = 160;
-
-	let exportMenuOpen = $state(false);
-	let exportMenuPos = $state<{ top: number; left: number } | null>(null);
-	let exportStatus = $state<'idle' | 'copied' | 'copy-failed'>('idle');
 
 	let imageDialogEl: HTMLDialogElement;
 	let imagePreviewUrl = $state<string | null>(null);
@@ -238,53 +233,6 @@
 		a.download = filename;
 		a.click();
 		URL.revokeObjectURL(url);
-	}
-
-	async function copyExport(text: string) {
-		exportMenuOpen = false;
-		try {
-			await navigator.clipboard.writeText(text);
-			exportStatus = 'copied';
-		} catch {
-			exportStatus = 'copy-failed';
-		}
-		setTimeout(() => (exportStatus = 'idle'), 1500);
-	}
-
-	function downloadExport(text: string, mimeType: string, extension: string) {
-		exportMenuOpen = false;
-		downloadBlob(new Blob([text], { type: mimeType }), `${data.deckName}.${extension}`);
-	}
-
-	function copySimFormat() {
-		copyExport(deckToSimFormat(data.deckName, deck.legends, mainGroups, deck.sideboard));
-	}
-	function downloadSimFormat() {
-		downloadExport(
-			deckToSimFormat(data.deckName, deck.legends, mainGroups, deck.sideboard),
-			'text/plain',
-			'txt'
-		);
-	}
-	function copyMelee() {
-		copyExport(deckToMeleeFormat(deck.legends, mainGroups, deck.sideboard));
-	}
-	function downloadMelee() {
-		downloadExport(
-			deckToMeleeFormat(deck.legends, mainGroups, deck.sideboard),
-			'text/plain',
-			'txt'
-		);
-	}
-	function copyJson() {
-		copyExport(deckToJson(data.deckName, deck.legends, mainGroups, deck.sideboard));
-	}
-	function downloadJson() {
-		downloadExport(
-			deckToJson(data.deckName, deck.legends, mainGroups, deck.sideboard),
-			'application/json',
-			'json'
-		);
 	}
 
 	async function openImageDialog() {
@@ -494,79 +442,15 @@
 						</div>
 					</div>
 					<div class="flex w-full shrink-0 items-center gap-2 sm:w-auto">
-						<div class="relative">
-							<button
-								type="button"
-								onclick={(event) => {
-									if (exportMenuOpen) {
-										exportMenuOpen = false;
-									} else {
-										exportMenuPos = menuPosition(event.currentTarget, EXPORT_MENU_WIDTH);
-										exportMenuOpen = true;
-									}
-								}}
-								class="rounded-md border border-edge px-3 py-1.5 text-sm text-body
-									hover:border-neon hover:text-neon"
-							>
-								{exportStatus === 'copied'
-									? 'Copied!'
-									: exportStatus === 'copy-failed'
-										? 'Copy failed'
-										: 'Export text ▾'}
-							</button>
-							{#if exportMenuOpen && exportMenuPos}
-								<button
-									type="button"
-									aria-label="Close export menu"
-									onclick={() => (exportMenuOpen = false)}
-									class="fixed inset-0 z-10 cursor-default"
-								></button>
-								<div
-									class="fixed z-20 rounded-md border border-edge bg-shell p-1 text-sm shadow-lg"
-									style="top: {exportMenuPos.top}px; left: {exportMenuPos.left}px;
-										width: {EXPORT_MENU_WIDTH}px;"
-								>
-									<button
-										type="button"
-										onclick={copySimFormat}
-										class="block w-full rounded px-2 py-1.5 text-left text-body hover:bg-raised"
-										>Copy sim-format list</button
-									>
-									<button
-										type="button"
-										onclick={downloadSimFormat}
-										class="block w-full rounded px-2 py-1.5 text-left text-body hover:bg-raised"
-										>Download sim-format (.txt)</button
-									>
-									<div class="my-1 border-t border-edge"></div>
-									<button
-										type="button"
-										onclick={copyMelee}
-										class="block w-full rounded px-2 py-1.5 text-left text-body hover:bg-raised"
-										>Copy Melee list</button
-									>
-									<button
-										type="button"
-										onclick={downloadMelee}
-										class="block w-full rounded px-2 py-1.5 text-left text-body hover:bg-raised"
-										>Download Melee (.txt)</button
-									>
-									<div class="my-1 border-t border-edge"></div>
-									<button
-										type="button"
-										onclick={copyJson}
-										class="block w-full rounded px-2 py-1.5 text-left text-body hover:bg-raised"
-										>Copy JSON</button
-									>
-									<button
-										type="button"
-										onclick={downloadJson}
-										class="block w-full rounded px-2 py-1.5 text-left text-body hover:bg-raised"
-										>Download JSON (.json)</button
-									>
-								</div>
-							{/if}
-						</div>
+						<DeckExportDialog
+							deckName={data.deckName}
+							textFor={(id) =>
+								id === 'default'
+									? deckToOfficialFormat(data.deckName, deck.legends, mainGroups, deck.sideboard)
+									: id === 'melee'
+										? deckToMeleeFormat(deck.legends, mainGroups, deck.sideboard)
+										: deckToJson(data.deckName, deck.legends, mainGroups, deck.sideboard)}
+						/>
 						<button
 							type="button"
 							onclick={openImageDialog}

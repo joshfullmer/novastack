@@ -1,12 +1,12 @@
 /**
- * `deckToSimFormat`'s shape was verified live against cyberpunk-tcg-sim.online (see export.ts's
- * own doc comment) — these tests pin that shape, not re-derive it. `deckToMeleeFormat`'s was read
- * out of the official site's bundle.
+ * `deckToOfficialFormat`'s shape was taken from a real export from the official deckbuilder;
+ * `deckToMeleeFormat`'s was confirmed against live Melee submissions — these tests pin those shapes,
+ * not re-derive them.
  */
 import { describe, expect, it } from 'vitest';
 import { makeCard, makePrinting } from '#lib/cards/fixtures.js';
 import type { DeckEntryGroup } from './grouping.js';
-import { deckToJson, deckToMeleeFormat, deckToSimFormat } from './export.js';
+import { deckToJson, deckToMeleeFormat, deckToOfficialFormat } from './export.js';
 
 const dexter = makeCard({
 	name: 'Dexter DeShawn — Off the Grid',
@@ -41,31 +41,8 @@ const mainGroups: DeckEntryGroup[] = [
 	}
 ];
 
-describe('deckToSimFormat', () => {
-	it("matches the sim's own export shape: bare Collector Number, name, # Legends / # Main Deck", () => {
-		expect(deckToSimFormat('Custom Deck 1', [dexter], mainGroups, [])).toBe(
-			[
-				'# Name: Custom Deck 1',
-				'',
-				'# Legends',
-				'1x 002 Dexter DeShawn — Off the Grid',
-				'',
-				'# Main Deck',
-				'3x 008 Chrome Fang'
-			].join('\n')
-		);
-	});
-
-	it('uses card.printings[0], never a Category prefix — MS01-002 is what broke import upstream', () => {
-		const text = deckToSimFormat('Deck', [dexter], [], []);
-		expect(text).toContain('1x 002 Dexter DeShawn — Off the Grid');
-		expect(text).not.toContain('MS01');
-		expect(text).not.toContain('-002');
-	});
-});
-
 describe('deckToJson', () => {
-	it('carries the same bare import code as the sim format', () => {
+	it('identifies cards by the bare Collector Number of their Default Printing', () => {
 		const json = JSON.parse(deckToJson('Custom Deck 1', [dexter], mainGroups, []));
 		expect(json).toEqual({
 			name: 'Custom Deck 1',
@@ -73,6 +50,12 @@ describe('deckToJson', () => {
 			main: [{ name: 'Chrome Fang', id: '008', quantity: 3 }],
 			sideboard: []
 		});
+	});
+
+	it('never prefixes the id with a Category — MS01-002 is what broke import upstream', () => {
+		const text = deckToJson('Deck', [dexter], [], []);
+		expect(text).not.toContain('MS01');
+		expect(text).not.toContain('-002');
 	});
 
 	it('carries the sideboard as its own section', () => {
@@ -83,34 +66,60 @@ describe('deckToJson', () => {
 	});
 });
 
-describe('the sim format and the sideboard', () => {
-	it("appends a # Sideboard section, as the sim's own export does", () => {
-		// Checked live against the sim on 2026-10-06: `# Name`, a blank line, `# Sideboard`, then
-		// the same `{quantity}x {number} {name}` lines.
+describe('deckToOfficialFormat', () => {
+	const unit = (name: string, subtitle: string | null = null) =>
+		makeCard({ name, subtitle, cardType: 'Unit' });
+	const vStreetkid = makeCard({ name: 'V - Streetkid', subtitle: 'Streetkid', cardType: 'Legend' });
+	const groups: DeckEntryGroup[] = [
+		{
+			cardType: 'Unit',
+			label: 'Units',
+			entries: [
+				{ card: chromeFang, quantity: 3 },
+				{ card: unit('Royce: Don’t Call Me Simon', 'Don’t Call Me Simon'), quantity: 3 }
+			],
+			quantity: 6
+		},
+		{
+			cardType: 'Gear',
+			label: 'Gear',
+			entries: [{ card: kiroshi, quantity: 3 }],
+			quantity: 3
+		}
+	];
+
+	it("matches the official builder's own export: counted `// Type (n)` sections, `Name: Subtitle`", () => {
 		expect(
-			deckToSimFormat('Deck', [dexter], mainGroups, [
-				{ card: kiroshi, quantity: 2 },
-				{ card: chromeFang, quantity: 1 }
+			deckToOfficialFormat('New Deck', [dexterColon, vStreetkid], groups, [
+				{ card: kiroshi, quantity: 1 },
+				{ card: chromeFang, quantity: 2 }
 			])
 		).toBe(
 			[
-				'# Name: Deck',
+				'# New Deck',
 				'',
-				'# Legends',
-				'1x 002 Dexter DeShawn — Off the Grid',
+				'// Legends (2)',
+				'1 Dexter DeShawn: Off the Grid',
+				'1 V: Streetkid',
 				'',
-				'# Main Deck',
-				'3x 008 Chrome Fang',
+				'// Units (6)',
+				'3 Chrome Fang',
+				'3 Royce: Don’t Call Me Simon',
 				'',
-				'# Sideboard',
-				'2x 061 Kiroshi Optics',
-				'1x 008 Chrome Fang'
+				'// Gears (3)',
+				'3 Kiroshi Optics',
+				'',
+				'// Sideboard (3)',
+				'1 Kiroshi Optics',
+				'2 Chrome Fang'
 			].join('\n')
 		);
 	});
 
-	it('leaves no trace of a sideboard when there is none', () => {
-		expect(deckToSimFormat('Deck', [dexter], mainGroups, [])).not.toContain('Sideboard');
+	it('omits Legends and Sideboard when empty', () => {
+		expect(deckToOfficialFormat('Deck', [], mainGroups, [])).toBe(
+			'# Deck\n\n// Units (3)\n3 Chrome Fang'
+		);
 	});
 });
 

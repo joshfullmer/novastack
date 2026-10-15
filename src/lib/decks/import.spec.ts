@@ -1,6 +1,6 @@
 /**
- * Real strings from the three text formats this has to read — the sim's own export (checked live
- * 2026-10-06), the official deck builder's `cyberpunk-text`, and Melee's. The official and Melee
+ * Real strings from the three text formats this has to read — the numbered list (what earlier
+ * versions of our own export wrote), the official deck builder's `cyberpunk-text`, and Melee's. The official and Melee
  * shapes were read out of cyberpunktcg.com's bundle rather than a live export, so these strings
  * are the contract, not a recording.
  */
@@ -15,7 +15,7 @@ const names = (entries: readonly { card: { name: string }; quantity: number }[])
 	entries.map((entry) => `${entry.quantity} ${entry.card.name}`);
 
 describe('the three formats', () => {
-	it("reads the sim's own export: # Name, # Legends, # Main Deck, # Sideboard, a code before the name", () => {
+	it('reads the numbered list: # Name, # Legends, # Main Deck, # Sideboard, a code before the name', () => {
 		const result = run(
 			[
 				'# Name: Custom Deck 1',

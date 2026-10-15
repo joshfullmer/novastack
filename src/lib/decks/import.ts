@@ -5,8 +5,9 @@
  * **One tolerant reader for three formats**, because they differ in dressing, not in substance —
  * every one is `{quantity} {name}` lines under section headers:
  *
- * - **the sim's own export** — `# Name: …`, `# Legends`, `# Main Deck`, `# Sideboard`, and
- *   `1x 002 Name` with a collector code before the name (`export.ts`);
+ * - **the numbered list** — `# Name: …`, `# Legends`, `# Main Deck`, `# Sideboard`, and
+ *   `1x 002 Name` with a collector code before the name, as earlier versions of our own
+ *   export wrote it;
  * - **the official deck builder's** — `# Deck Name`, `// Legends (3)`, `// Units (24)`,
  *   `// Sideboard (7)`, and `3 Chrome Fang` with no `x` and no code;
  * - **Melee's** — bare `MainDeck` / `Legends` / `Sideboard` headers.
@@ -38,8 +39,8 @@
  * sideboard. A Legend under the sideboard is reported, not moved — rules §3.4.4 say it never
  * belongs there, and quietly relocating it would be a guess about what the author meant.
  *
- * Imported lines never carry a Printing: a pasted list names Cards, and the sim's codes are the
- * Default Printing anyway. Keeping the printings a draft already had is the caller's job
+ * Imported lines never carry a Printing: a pasted list names Cards, and a collector code is the
+ * Default Printing's anyway. Keeping the printings a draft already had is the caller's job
  * (`replaceWith` in `deck-state.svelte.ts`).
  */
 import { normalizeForSearch } from '#lib/cards/dataset.js';

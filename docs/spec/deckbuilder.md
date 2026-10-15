@@ -294,51 +294,41 @@ grid's own inner scroll and then discovering an outer page scroll was also neede
   owner most recently saved is what a viewer sees. Version history (§3.2) already answers "what
   did this look like before" for anyone who needs it; the link itself carries no separate version
   concept.
-- **Plain-text export**, both copy-to-clipboard and file download, three formats behind one
-  dropdown (`#lib/decks/export.ts`):
+- **Text export**, both copy-to-clipboard and file download, in one dialog (`DeckExportDialog`):
+  a tab per format, a live preview of exactly what gets copied, and Copy / Download
+  (`#lib/decks/export.ts`):
 
-  **Sim format** — matches cyberpunk-tcg-sim.online's own import/export shape, verified live
-  against the sim (2026-09-23), not assumed:
+  **Default** — the official deckbuilder's own export shape, taken from a real export, and the
+  format to use everywhere except Melee:
 
   ```
-  # Name: Custom Deck 1
+  # New Deck
 
-  # Legends
-  1x 002 Dexter DeShawn — Off the Grid
-
-  # Main Deck
-  3x 008 Chrome Fang
+  // Legends (3)
+  1 V: Streetkid
   ...
+
+  // Units (15)
+  3 Chrome Fang
+  ...
+
+  // Sideboard (7)
+  1 La Llorona: Ghost of the Past
   ```
 
-  The code is the bare Collector Number of the card's Default Printing (`printings[0]`) —
-  **not** `<Category>-<CollectorNumber>` as an earlier version of this spec and `export.ts`
-  assumed. That was never checked against the sim and was wrong: the sim ignores whatever comes
-  before a `-`, so a `MS01-`-style prefix doesn't scope a match to one Set, it silently widens it
-  to a search across the sim's whole card pool by number alone — which is why real imports like
-  `MS01-002` were colliding with five unrelated cards. The bare number alone still collides
-  (Collector Numbers restart at `001` per Set), which is exactly why the sim's own export pairs
-  the number with the card's name on every line; this format does the same.
+  Sections are `Legends`, then one `{Type}s` per card type in deck order, then `Sideboard`; each
+  heading's count is copies, not distinct cards; empty sections are omitted. Lines are
+  `{quantity} {name}` with subtitled cards written `Name: Subtitle`.
 
-  Checked against the sim's own `/api/cards/catalog` that `card.printings[0]` always matches the
-  sim's own "primary" printing, in both Set and Collector Number, for every card the sim carries
-  (everything but our one not-tournament-legal promo stub, which the sim excludes too) — a
-  checked fact about today's data, not a documented contract, worth re-verifying if a future
-  export mismatch is reported.
-
-  **The Sim format carries the sideboard** under its own `# Sideboard` header, after Main Deck, with
-  the same line shape and no header when empty — checked live against the sim on 2026-10-06, which
-  by then had a Sideboard target and emitted exactly that (`docs/research/sideboards.md` §6.2).
-
-  **Melee** — the paste for a Melee decklist submission, the tournament software. Read out of the
-  official site's own bundle (`cyberpunk-melee`), not from a live export: bare `MainDeck` /
-  `Legends` / `Sideboard` headers, `{quantity} {name}` lines (no `x`, no collector number), the
-  latter two omitted when empty, Legends and subtitled cards written `Name | Subtitle` (pipe, confirmed against live Melee
-  submissions).
+  **Melee** — the paste for a Melee decklist submission, the tournament software: bare
+  `MainDeck` / `Legends` / `Sideboard` headers, `{quantity} {name}` lines (no `x`, no collector
+  number), the latter two omitted when empty, and subtitled cards written `Name | Subtitle`
+  (pipe, confirmed against live Melee submissions).
 
   **JSON** — a standardized alternative for anything that wants structure instead of a line
-  format, using the same bare import code; it was never claimed to match the sim and isn't meant
-  to, so it carries a `sideboard` key unconditionally, `[]` included.
+  format. Each `id` is the bare Collector Number of the card's Default Printing (`printings[0]`),
+  never a `<Category>-<CollectorNumber>` string; it carries a `sideboard` key unconditionally,
+  `[]` included.
 
 - **Image export, client-side canvas, no new backend surface.** Composited entirely in the
   browser from the deck's already-mirrored, same-origin static card art (`drawImage()` into a
@@ -377,12 +367,12 @@ grid's own inner scroll and then discovering an outer page scroll was also neede
   the editor already holds, previews the result live, and **Replace draft** swaps it in. Nothing is
   written until the existing Save, so Save stays the only write path and "Discard changes" is the
   undo. Importing never renames the deck.
-- **One tolerant parser for every format in circulation** (`#lib/decks/import.ts`): the sim's
-  `# Legends` / `# Main Deck` / `# Sideboard` with `{qty}x {number} {name}` lines, the official
+- **One tolerant parser for every format in circulation** (`#lib/decks/import.ts`): the numbered
+  list's `# Legends` / `# Main Deck` / `# Sideboard` with `{qty}x {number} {name}` lines, the official
   builder's `// Legends (3)` / `// Units (24)` / `// Sideboard (7)` with `{qty} {name}` lines, and
   Melee's bare `MainDeck` / `Legends` / `Sideboard`. The official and Melee shapes were read out of
   the official site's bundle (`cyberpunktcg.com`), not from live exports. `#` is a section in the
-  sim format and a deck name in the official one, so known section words win.
+  numbered list and a deck name in the official one, so known section words win.
 - **Name is the key; the collector number is only a fallback.** Resolution is by a punctuation-
   and diacritic-insensitive name key, which is unique across all cards today and makes the
   `:` / `-` / `—` Legend separators interchangeable (the separator has already changed twice). A

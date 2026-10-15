@@ -189,7 +189,7 @@ for all of them.
 | `routes/decks/[id]/+page.server.ts`            | parse the new field (2 `v.parse` sites)                                                                                              |
 | `routes/decks/[id]/edit/+page.server.ts`       | same, plus the save action's payload parse                                                                                           |
 | `lib/decks/version-diff.ts`                    | sideboard diffs for Change History, or an explicit decision not to                                                                   |
-| `lib/decks/export.ts`                          | `deckToSimFormat` and `deckToJson` carry the sideboard; `deckToMeleeFormat` added (§6.2)                                             |
+| `lib/decks/export.ts`                          | `deckToJson` carries the sideboard; the text exports add a Sideboard section (§6.2)                                                  |
 | `lib/decks/deck-image.ts`                      | a sideboard strip; netdeck's own composer has one                                                                                    |
 | `routes/explore/+page.server.ts`               | sideboard folded into `missingFor` (§6.1); leave `cardCount` main-only                                                               |
 | `routes/decks/+page.server.ts`, `folders/[id]` | `cardCount` stays main-only; optional `+7` indicator                                                                                 |
@@ -205,14 +205,12 @@ the export format changes.
    any other — the same reasoning that already makes Legends count (`MissingPanel` and `explore`'s
    `missingFor`, the two call sites). Accepted consequence: any deck that gains a sideboard reports
    a larger Missing count than it did yesterday, and Explore's Buildable tab gets stricter for it.
-2. **The sim text export carries the sideboard under `# Sideboard`.** _Assumed 2026-09-25 that the
-   sim had no sideboard support, so the export omitted it; **resolved 2026-10-06**: it has one._
-   The sim's builder now has a Sideboard target ("0 / 7 — Optional reserve cards; Legends are not
-   allowed"), and its own Text export of a 2-card sideboard is `# Name: …`, a blank line,
-   `# Sideboard`, then the usual `{quantity}x {number} {name}` lines; an empty section has no
-   header. `deckToSimFormat` now emits exactly that, and pasting our output back into the sim's
-   Import Deck dialog round-trips the sideboard (checked live, including a colon-form Legend name).
-   `deckToJson` carries it too, as before.
+2. **The text exports carry the sideboard.** _Decided 2026-10-06; the exports themselves were
+   reworked 2026-10-15._ The numbered-list export emitted `# Name: …`, a blank line, `# Sideboard`,
+   then the usual `{quantity}x {number} {name}` lines, with no header when empty, and a pasted
+   sideboard round-tripped through it. That export has since been replaced: the default text format
+   is now the official deckbuilder's own shape, which carries the sideboard as `// Sideboard (n)`,
+   and Melee's carries it as `Sideboard`. `deckToJson` carries it too, as before.
 
 3. **Change History granularity.** Sideboard swaps are the _most_ frequently edited part of a
    competitive list. Either diff them as a third section, or say in the code why they're excluded.
@@ -224,8 +222,8 @@ the export format changes.
 
 One wayfinder session, roughly: the domain + storage + editor changes are a few hours of real work,
 and the long tail is the table in §5 — each row is small but none are optional if the feature is to
-read as finished. Both of the decisions that could have expanded it are now settled (§6) — the sim
-format is explicitly deferred rather than blocking, so nothing in §5 waits on an external answer.
+read as finished. Both of the decisions that could have expanded it are now settled (§6), so
+nothing in §5 waits on an external answer.
 
 ## Provenance
 

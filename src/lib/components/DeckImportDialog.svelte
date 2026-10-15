@@ -63,8 +63,8 @@
 >
 	<h2 class="text-sm font-medium text-bright">Import a decklist</h2>
 	<p class="mt-1 text-xs text-muted">
-		Paste a list from the sim, the official deck builder or Melee. It replaces this draft — nothing
-		is saved until you press Save deck, and Discard changes undoes it.
+		Paste a list from the official deck builder or Melee. It replaces this draft — nothing is saved
+		until you press Save deck, and Discard changes undoes it.
 	</p>
 
 	<textarea

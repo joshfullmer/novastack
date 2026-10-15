@@ -98,7 +98,7 @@ mobile apps, and server-rendered OG deck images (Workers CPU limits).
 - The "Import it" hint on an empty `/collection`, and printing choices surviving a deck import,
   were never seen in a browser (the dev user owns cards, and lacks `choose-printing`).
 - The official-builder and Melee text formats were read out of their sites' code, not from live
-  exports; the sim's `A027` / `MS01-131A` code form is untested.
+  exports; the `A027` / `MS01-131A` code form is untested.
 - No e2e for either import, or for prices: the suite has no signed-in flow.
 
 ## Housekeeping
