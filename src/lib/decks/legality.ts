@@ -7,7 +7,7 @@
  */
 import { legendBaseName } from '#lib/cards/derive.js';
 import type { Card } from '#lib/cards/schema.js';
-import type { Color } from '#lib/cards/vocabulary.js';
+import { COLORS, type Color } from '#lib/cards/vocabulary.js';
 import { admits, EMPTY_BUDGET, type ColorBudget } from '#lib/filters/budget.js';
 
 export const LEGEND_SLOTS = 3;
@@ -76,6 +76,38 @@ export function budgetFromLegends(legends: readonly Card[]): ColorBudget {
 	const budget: Record<Color, number> = { ...EMPTY_BUDGET };
 	for (const legend of legends) budget[legend.color] += legend.ramProvided ?? 0;
 	return budget;
+}
+
+/**
+ * Whether `candidate` can still be one of a deck's Legends given the cards already in it — i.e.
+ * the free slots left after choosing it can cover every color the entries need, at the RAM the
+ * costliest card of that color requires. Cards go in before Legends do, so this is "can this
+ * Legend still end up in a legal deck," not "does the budget already afford the cards": a Legend
+ * of a color the deck doesn't use yet stays eligible while there's a slot to spare.
+ *
+ * Uses the same threshold rule as `admits` (a present color needs a budget above 0 and at least
+ * its highest `ramRequired`); open slots are assumed to provide `ramPerLegend` each.
+ */
+export function canCompleteWithLegend(
+	chosen: readonly Card[],
+	candidate: Card,
+	entries: readonly DeckEntry[],
+	ramPerLegend: number
+): boolean {
+	const budget = budgetFromLegends([...chosen, candidate]);
+	const openSlots = LEGEND_SLOTS - chosen.length - 1;
+	if (openSlots < 0) return false;
+
+	let slotsNeeded = 0;
+	for (const color of COLORS) {
+		const required = entries
+			.filter((entry) => entry.card.color === color)
+			.map((entry) => Math.max(entry.card.ramRequired ?? 0, 1));
+		if (required.length === 0) continue;
+		const shortfall = Math.max(...required) - budget[color];
+		if (shortfall > 0) slotsNeeded += Math.ceil(shortfall / ramPerLegend);
+	}
+	return slotsNeeded <= openSlots;
 }
 
 /** Never blocks — a deck under construction is supposed to sit outside 40–50 most of the time. */

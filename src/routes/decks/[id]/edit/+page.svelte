@@ -31,7 +31,9 @@
 		MAX_COPIES,
 		MAX_DECK_SIZE,
 		MIN_DECK_SIZE,
-		SIDEBOARD_SIZE
+		SIDEBOARD_SIZE,
+		canCompleteWithLegend,
+		combinedEntries
 	} from '#lib/decks/legality.js';
 	import DeckEntryManager from '#lib/components/DeckEntryManager.svelte';
 	import DeckImportDialog from '#lib/components/DeckImportDialog.svelte';
@@ -185,26 +187,25 @@
 		return sortMatches(dataset, evaluate(dataset, predicate), DEFAULT_SORT);
 	}
 
-	/**
-	 * Colors actually present in the deck so far. Building order is deliberately free — cards go
-	 * in before Legends do — so the Legends tab filters to "relevant to what's already in the
-	 * deck" instead of "affordable," and an empty deck imposes no filter at all.
-	 */
-	const neededColors = $derived(new Set(deck.entries.map((entry) => entry.card.color)));
+	/** Sideboard cards are bound by the same Legends' RAM as the main deck — see `combinedEntries`. */
+	const combinedCards = $derived(combinedEntries(deck.entries, deck.sideboard));
 
 	/** Each tab's search runs through the same query language and default sort as `/cards`,
 	 * plus its own intrinsic filter. */
 	const visibleMatches = $derived.by(() => {
 		if (tab === 'legends') {
-			return matchesFor(searchLegends)
-				.filter((match) => match.card.cardType === 'Legend')
-				.filter((match) => isChosenLegend(match.card) || deck.legends.length < LEGEND_SLOTS)
-				.filter(
-					(match) =>
-						neededColors.size === 0 ||
-						isChosenLegend(match.card) ||
-						neededColors.has(match.card.color)
-				);
+			return (
+				matchesFor(searchLegends)
+					.filter((match) => match.card.cardType === 'Legend')
+					.filter((match) => isChosenLegend(match.card) || deck.legends.length < LEGEND_SLOTS)
+					// Cards go in before Legends do, so rather than "affordable now" this keeps every
+					// Legend that can still lead to a legal deck given what's already in it.
+					.filter(
+						(match) =>
+							isChosenLegend(match.card) ||
+							canCompleteWithLegend(deck.legends, match.card, combinedCards, dataset.ramPerLegend)
+					)
+			);
 		}
 		// No Legends yet → build freely, capped only by the copy limit. Once at least one
 		// Legend is chosen, the grid narrows to what its RAM budget actually supports. A card

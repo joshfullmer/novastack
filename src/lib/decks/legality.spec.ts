@@ -10,6 +10,7 @@ import {
 	MIN_DECK_SIZE,
 	SIDEBOARD_SIZE,
 	budgetFromLegends,
+	canCompleteWithLegend,
 	combinedEntries,
 	copiesOf,
 	deckIssues,
@@ -316,5 +317,49 @@ describe('deckIssues', () => {
 			'legend-names',
 			'not-legal'
 		]);
+	});
+});
+
+describe('canCompleteWithLegend', () => {
+	const unit = (color: 'Red' | 'Green' | 'Blue' | 'Yellow', ramRequired = 0): DeckEntry => ({
+		card: makeCard({ color, cardType: 'Unit', ramRequired }),
+		quantity: 1
+	});
+	const legendOf = (color: 'Red' | 'Green' | 'Blue' | 'Yellow') =>
+		makeCard({ color, cardType: 'Legend', ramProvided: 2 });
+
+	it('keeps every Legend eligible for an empty deck', () => {
+		expect(canCompleteWithLegend([], legendOf('Green'), [], 2)).toBe(true);
+	});
+
+	it('keeps a color the deck does not use eligible while a slot is spare', () => {
+		expect(canCompleteWithLegend([], legendOf('Green'), [unit('Red')], 2)).toBe(true);
+	});
+
+	it('drops a Legend that would leave too few slots for the deck’s colors', () => {
+		const entries = [unit('Red'), unit('Blue'), unit('Yellow')];
+		expect(canCompleteWithLegend([], legendOf('Green'), entries, 2)).toBe(false);
+		expect(canCompleteWithLegend([], legendOf('Red'), entries, 2)).toBe(true);
+	});
+
+	it('counts the chosen Legends toward the colors the deck needs', () => {
+		const entries = [unit('Red'), unit('Blue')];
+		expect(
+			canCompleteWithLegend([legendOf('Red'), legendOf('Blue')], legendOf('Green'), entries, 2)
+		).toBe(true);
+		expect(
+			canCompleteWithLegend([legendOf('Green'), legendOf('Green')], legendOf('Red'), entries, 2)
+		).toBe(false);
+	});
+
+	it('reserves slots for a color whose costliest card needs more than one Legend', () => {
+		const entries = [unit('Red', 4), unit('Blue')];
+		expect(canCompleteWithLegend([], legendOf('Green'), entries, 2)).toBe(false);
+		expect(canCompleteWithLegend([], legendOf('Red'), entries, 2)).toBe(true);
+	});
+
+	it('is false when every slot is already taken', () => {
+		const chosen = [legendOf('Red'), legendOf('Red'), legendOf('Red')];
+		expect(canCompleteWithLegend(chosen, legendOf('Blue'), [], 2)).toBe(false);
 	});
 });
