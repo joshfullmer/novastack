@@ -122,7 +122,7 @@ describe('deckToMeleeFormat', () => {
 				'3 Chrome Fang',
 				'',
 				'Legends',
-				'1 Dexter DeShawn — Off the Grid',
+				'1 Dexter DeShawn | Off the Grid',
 				'',
 				'Sideboard',
 				'2 Kiroshi Optics'
@@ -130,14 +130,14 @@ describe('deckToMeleeFormat', () => {
 		);
 	});
 
-	it('writes subtitled names with an em dash, whatever separator card.name uses', () => {
+	it('writes subtitled names with a pipe, whatever separator card.name uses', () => {
 		const hyphenated = makeCard({
 			name: 'V - Streetkid',
 			subtitle: 'Streetkid',
 			cardType: 'Legend'
 		});
 		expect(deckToMeleeFormat([dexterColon, hyphenated], [], [])).toContain(
-			'1 Dexter DeShawn — Off the Grid\n1 V — Streetkid'
+			'1 Dexter DeShawn | Off the Grid\n1 V | Streetkid'
 		);
 	});
 

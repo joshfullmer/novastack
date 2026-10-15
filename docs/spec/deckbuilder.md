@@ -333,7 +333,8 @@ grid's own inner scroll and then discovering an outer page scroll was also neede
   **Melee** — the paste for a Melee decklist submission, the tournament software. Read out of the
   official site's own bundle (`cyberpunk-melee`), not from a live export: bare `MainDeck` /
   `Legends` / `Sideboard` headers, `{quantity} {name}` lines (no `x`, no collector number), the
-  latter two omitted when empty, Legends and subtitled cards written `Name — Subtitle`.
+  latter two omitted when empty, Legends and subtitled cards written `Name | Subtitle` (pipe, confirmed against live Melee
+  submissions).
 
   **JSON** — a standardized alternative for anything that wants structure instead of a line
   format, using the same bare import code; it was never claimed to match the sim and isn't meant

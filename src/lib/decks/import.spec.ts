@@ -73,14 +73,14 @@ describe('the three formats', () => {
 		expect(names(result.sideboard)).toEqual(['1 Kiroshi Optics']);
 	});
 
-	it("reads Melee's: bare headers, em-dash Legends, no deck name", () => {
+	it("reads Melee's: bare headers, pipe-separated Legends, no deck name", () => {
 		const result = run(
 			[
 				'MainDeck',
 				'3 Chrome Fang',
 				'',
 				'Legends',
-				'1 V — Streetkid',
+				'1 V | Streetkid',
 				'',
 				'Sideboard',
 				'2 Kiroshi Optics'

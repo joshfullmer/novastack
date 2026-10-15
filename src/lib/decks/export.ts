@@ -40,8 +40,9 @@
  * live export — Share needs an account — so a mismatch report is the cue to re-check it: bare
  * `MainDeck` / `Legends` / `Sideboard` headers, `{quantity} {name}` lines with no `x` and no
  * collector number, sections in that order, separated by a blank line. `MainDeck` is always
- * present; the other two only when non-empty. Names are `Name — Subtitle` with an em dash,
- * rebuilt from `subtitle` rather than taken from `card.name`, whose separator has changed twice.
+ * present; the other two only when non-empty. Names are `Name | Subtitle` with a pipe
+ * (confirmed against live Melee submissions), rebuilt from `subtitle` rather than taken from
+ * `card.name`, whose separator has changed twice.
  *
  * `deckToJson` is the standardized alternative for anything that wants structure instead of a
  * line format; it uses the same `importCode`, but that's incidental — it was never claimed to
@@ -76,11 +77,11 @@ export function deckToSimFormat(
 	].join('\n');
 }
 
-/** `Name — Subtitle`, the separator Melee's own export uses, whatever `card.name` happens to use. */
+/** `Name | Subtitle`, the separator Melee uses, whatever `card.name` happens to use. */
 function meleeName(card: Card): string {
 	if (card.subtitle === null) return card.name;
 	const base = card.name.slice(0, card.name.length - card.subtitle.length);
-	return `${base.replace(/\s*[:\u2013\u2014-]\s*$/, '')} \u2014 ${card.subtitle}`;
+	return `${base.replace(/\s*[:\u2013\u2014-]\s*$/, '')} | ${card.subtitle}`;
 }
 
 export function deckToMeleeFormat(
