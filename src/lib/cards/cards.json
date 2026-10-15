@@ -6096,6 +6096,17 @@
 					"thumbhash": "UQiKHAgPnyd1d4l3SAtW0HCroFBVBQpVAA=="
 				},
 				{
+					"artist": "Atomhawk",
+					"collectorNumber": "159",
+					"id": "41e87b8f-9d0a-4955-a9ec-d1f2fd49f532",
+					"key": "MS01-WNC-159",
+					"locale": "en",
+					"rarity": "Iconic Other",
+					"setId": "MS01-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/41e87b8f-9d0a-4955-a9ec-d1f2fd49f532/render-42568de1-df25-496c-b53c-05462f181458.webp",
+					"thumbhash": "DiiGDAgPavhleqaXhI73xnyPgYGICBiIAA=="
+				},
+				{
 					"artist": "Łukasz Poller",
 					"collectorNumber": "β011",
 					"id": "975957a0-9c72-4a67-8260-f86c1c70bfb5",
@@ -6127,6 +6138,17 @@
 					"setId": "MS01-WNC",
 					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/5fcbe583-4a7e-4024-b6ad-e52a147d2c52/render-82607bcc-5e3f-48f4-8dcd-8e5a10466145.webp",
 					"thumbhash": "UQiKHAgPnyd1d4l3RwtW0HCroFBVBQpVAA=="
+				},
+				{
+					"artist": "Atomhawk",
+					"collectorNumber": "159",
+					"id": "e1c5b85a-696a-4048-8273-07e907fe05fc",
+					"key": "MS01-WNC-159-FR",
+					"locale": "fr",
+					"rarity": "Iconic Other",
+					"setId": "MS01-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/e1c5b85a-696a-4048-8273-07e907fe05fc/render-d06e63a3-6653-4190-83df-19ee97b9834e.webp",
+					"thumbhash": "DiiGDAgPWfhliqaog473xnyPgYGICBiIAA=="
 				}
 			],
 			"ramProvided": null,
@@ -16638,7 +16660,7 @@
 			"sortOrder": 2500
 		}
 	],
-	"generatedAt": "2026-10-14T16:00:59.356Z",
+	"generatedAt": "2026-10-15T07:04:54.296Z",
 	"ramPerLegend": 2,
 	"sets": [
 		{
@@ -16649,7 +16671,7 @@
 			"kind": "base",
 			"name": "Welcome to Night City",
 			"printed": "MS01 - WNC [A]",
-			"printingCount": 494,
+			"printingCount": 496,
 			"setCode": "WNC"
 		},
 		{
@@ -16776,7 +16798,7 @@
 	],
 	"stats": {
 		"cards": 151,
-		"printings": 731,
+		"printings": 733,
 		"sets": 1
 	}
 }

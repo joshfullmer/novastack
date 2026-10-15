@@ -3,9 +3,9 @@
 		{
 			"color": "Red",
 			"name": "Johnny Silverhand: Never Stop Fighting",
-			"printingId": "7b113940-7325-4304-b07a-61719b47a49c",
+			"printingId": "41e87b8f-9d0a-4955-a9ec-d1f2fd49f532",
 			"slug": "johnny-silverhand-never-stop-fighting",
-			"thumbhash": "UUiGJAYPafh3OKeEAoiEkFyJgYGICBiIAA=="
+			"thumbhash": "DiiGDAgPavhleqaXhI73xnyPgYGICBiIAA=="
 		},
 		{
 			"color": "Blue",
@@ -52,7 +52,7 @@
 	],
 	"stats": {
 		"cards": 151,
-		"printings": 731,
+		"printings": 733,
 		"sets": 1
 	}
 }
