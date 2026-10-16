@@ -83,9 +83,9 @@ describe('printing runs', () => {
 });
 
 describe('the real dataset', () => {
-	it('has seventeen runs, and defaults to the English retail ones', () => {
-		expect(PRINTING_RUNS).toHaveLength(17);
-		expect([...DEFAULT_GOAL]).toHaveLength(12);
+	it('has eighteen runs, and defaults to the English retail ones', () => {
+		expect(PRINTING_RUNS).toHaveLength(18);
+		expect([...DEFAULT_GOAL]).toHaveLength(13);
 		// Every Set is included by default; only treatment and locale narrow it.
 		expect([...DEFAULT_GOAL].every((key) => key.endsWith('|retail|en'))).toBe(true);
 	});

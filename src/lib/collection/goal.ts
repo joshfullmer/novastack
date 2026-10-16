@@ -44,8 +44,8 @@ export function runOf(printing: Printing): string {
  * Every Run the data actually contains, in set order then treatment then locale.
  *
  * Derived rather than curated, so a combination that was never printed is never offered: there is
- * no French beta run, and nothing here invents one. Seventeen exist today, unevenly — the Base Set
- * has three and eight Sets have one apiece, which is why the editor can show most Sets as a single
+ * no French beta run, and nothing here invents one. Eighteen exist today, unevenly — the Base Set
+ * has three and nine Sets have one apiece, which is why the editor can show most Sets as a single
  * choice rather than a grid of toggles.
  */
 export function printingRunsOf(cards: readonly Card[], setOrder: readonly string[]): PrintingRun[] {

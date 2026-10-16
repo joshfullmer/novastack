@@ -2580,6 +2580,17 @@
 				},
 				{
 					"artist": "Łukasz Wiktorzak",
+					"collectorNumber": "003",
+					"id": "6d3d7780-b1e1-4c7a-a085-6de0b94ac9e8",
+					"key": "JDG-WNC-003",
+					"locale": "en",
+					"rarity": "Uncommon",
+					"setId": "JDG-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/6d3d7780-b1e1-4c7a-a085-6de0b94ac9e8/render-mswzdud1.webp",
+					"thumbhash": "kOeFDAAPlOZkSeiQtweICXKMgYGICBiIAA=="
+				},
+				{
+					"artist": "Łukasz Wiktorzak",
 					"collectorNumber": "111",
 					"id": "f4b89dfe-df2f-4240-ab63-a11b633ad050",
 					"key": "MS01-WNC-111-FR",
@@ -8101,6 +8112,17 @@
 				},
 				{
 					"artist": "Olgierd Ciszak",
+					"collectorNumber": "002",
+					"id": "fb9ce825-c8cd-41a5-83cf-9372c16e4172",
+					"key": "JDG-WNC-002",
+					"locale": "en",
+					"rarity": "Common",
+					"setId": "JDG-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/fb9ce825-c8cd-41a5-83cf-9372c16e4172/render-mswzdkc0.webp",
+					"thumbhash": "UreJDAIPb9hoh5eFA0rqgbCEgYGICBiIAA=="
+				},
+				{
+					"artist": "Olgierd Ciszak",
 					"collectorNumber": "082",
 					"id": "d19ac8c6-3520-40cb-80f6-e60066362b7d",
 					"key": "MS01-WNC-082-FR",
@@ -10264,6 +10286,17 @@
 					"thumbhash": "TuiFDAQPqKZZB2hjCEZXBIeCgYGICBiIAA=="
 				},
 				{
+					"artist": "Pandart Studio",
+					"collectorNumber": "154",
+					"id": "4337408e-5b98-4860-88f1-5d8ce63cf136",
+					"key": "MS01-WNC-154",
+					"locale": "en",
+					"rarity": "Iconic Legend",
+					"setId": "MS01-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/4337408e-5b98-4860-88f1-5d8ce63cf136/render-mpvmr5we.webp",
+					"thumbhash": "lgiGDAIPgLySWou0VAd2N3KAgYGICBiIAA=="
+				},
+				{
 					"artist": "Łukasz Poller",
 					"collectorNumber": "β075",
 					"id": "2cfe57a5-cafe-4611-90fd-c72f33250933",
@@ -10297,6 +10330,17 @@
 					"thumbhash": "TuiFDAQPqKZpB2hjB0ZXBIeBgHB3CAiHAA=="
 				},
 				{
+					"artist": "Pandart Studio",
+					"collectorNumber": "046",
+					"id": "b58d604c-76c5-4928-9406-17f44cc4b187",
+					"key": "EOR01-WNC-046",
+					"locale": "en",
+					"rarity": "Nova Rare",
+					"setId": "EOR01-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/b58d604c-76c5-4928-9406-17f44cc4b187/render-mtcqc21d.webp",
+					"thumbhash": "lgiGDAQPgLySWou0VAdmR3KAgYGICBiIAA=="
+				},
+				{
 					"artist": "Łukasz Poller",
 					"collectorNumber": "075",
 					"id": "7e20652d-4525-4c71-9fca-7e22156748e4",
@@ -10306,6 +10350,17 @@
 					"setId": "MS01-WNC",
 					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/7e20652d-4525-4c71-9fca-7e22156748e4/render-dbe5f48a-8242-4b66-877d-560a86b3cb40.webp",
 					"thumbhash": "TuiFDAQPmKZpB1hkB0ZXBIeCgYGICBiIAA=="
+				},
+				{
+					"artist": "Pandart Studio",
+					"collectorNumber": "154",
+					"id": "3837e490-0121-402e-8a5a-6a01a98c1842",
+					"key": "MS01-WNC-154-FR",
+					"locale": "fr",
+					"rarity": "Iconic Legend",
+					"setId": "MS01-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/3837e490-0121-402e-8a5a-6a01a98c1842/render-3d029fbe-e844-4338-8708-6800470d0c09.webp",
+					"thumbhash": "lgiGDAIPgLySWou0VAd2NnKAgYGICBiIAA=="
 				}
 			],
 			"ramProvided": 2,
@@ -13133,6 +13188,17 @@
 					"setId": "NCB01-WNC",
 					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/9f7b3df5-721c-410f-8dec-5ce3bc4377c0/render-mrw56w7o.webp",
 					"thumbhash": "2geKFAQPTyV4R7R4GA/iiwCNgYGICBiIAA=="
+				},
+				{
+					"artist": "Luca Claretti",
+					"collectorNumber": "001",
+					"id": "534faf6c-78ff-4256-8c1b-a77438b7f979",
+					"key": "JDG-WNC-001",
+					"locale": "en",
+					"rarity": "Common",
+					"setId": "JDG-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/534faf6c-78ff-4256-8c1b-a77438b7f979/render-mswzdkta.webp",
+					"thumbhash": "2geKFAQPTyV4R7RoGA/iiwCNgYGICBiIAA=="
 				},
 				{
 					"artist": "Luca Claretti",
@@ -16660,7 +16726,7 @@
 			"sortOrder": 2500
 		}
 	],
-	"generatedAt": "2026-10-15T07:04:54.296Z",
+	"generatedAt": "2026-10-16T21:20:43.716Z",
 	"ramPerLegend": 2,
 	"sets": [
 		{
@@ -16671,7 +16737,7 @@
 			"kind": "base",
 			"name": "Welcome to Night City",
 			"printed": "MS01 - WNC [A]",
-			"printingCount": 496,
+			"printingCount": 498,
 			"setCode": "WNC"
 		},
 		{
@@ -16752,14 +16818,14 @@
 			"setCode": "WNC"
 		},
 		{
-			"cardCount": 29,
+			"cardCount": 30,
 			"category": "EOR01",
 			"cycle": null,
 			"id": "EOR01-WNC",
 			"kind": "derivative",
 			"name": "Edgerunner Open Season 1",
 			"printed": "EOR01 - WNC",
-			"printingCount": 48,
+			"printingCount": 49,
 			"setCode": "WNC"
 		},
 		{
@@ -16794,11 +16860,22 @@
 			"printed": "NCS01 - WNC",
 			"printingCount": 5,
 			"setCode": "WNC"
+		},
+		{
+			"cardCount": 3,
+			"category": "JDG",
+			"cycle": null,
+			"id": "JDG-WNC",
+			"kind": "derivative",
+			"name": "Judge Promos",
+			"printed": "JDG - WNC",
+			"printingCount": 3,
+			"setCode": "WNC"
 		}
 	],
 	"stats": {
 		"cards": 151,
-		"printings": 733,
+		"printings": 739,
 		"sets": 1
 	}
 }

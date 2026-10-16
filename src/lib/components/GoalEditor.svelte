@@ -4,7 +4,7 @@
 	 * what "Complete" means for them (`CONTEXT.md`).
 	 *
 	 * Grouped by Set, because that is how a collector thinks about it ("base set French, Heist
-	 * retail"). Eight of the twelve Sets have exactly one Run, so they render as a single chip:
+	 * retail"). Nine of the thirteen Sets have exactly one Run, so they render as a single chip:
 	 * presenting a treatment axis there would invent a decision the data doesn't offer.
 	 *
 	 * **A chip carries its treatment label only when its Set has more than one treatment.** Night
