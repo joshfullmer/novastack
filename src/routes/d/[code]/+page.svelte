@@ -14,8 +14,9 @@
 	 */
 	import { resolve } from '$app/paths';
 	import { enhance } from '$app/forms';
+	import { page } from '$app/state';
 	import { menuPosition } from '#lib/menu-position.js';
-	import { SvelteSet } from 'svelte/reactivity';
+	import { SvelteSet, SvelteURLSearchParams } from 'svelte/reactivity';
 	import CardImage from '#lib/components/CardImage.svelte';
 	import CardMetaBadges from '#lib/components/CardMetaBadges.svelte';
 	import CardStats from '#lib/components/CardStats.svelte';
@@ -64,9 +65,40 @@
 	// svelte-ignore state_referenced_locally
 	const deckView = cookieState('deck-cards-view', data.deckView);
 
-	// Main Deck / History — a tab, not a stacked section, so Change History (below) never
-	// competes with the deck's own card list for vertical space.
-	let mainTab = $state<'deck' | 'collection' | 'history'>('deck');
+	// Main Deck / Collection / History — a tab, not a stacked section, so Change History (below)
+	// never competes with the deck's own card list for vertical space. It lives in `?tab=`, so a
+	// reload, Back and a shared link all land on the same tab; the Main Deck is the absence of the
+	// param. `page.url`, not `currentUrl()`: these are ordinary navigations, not shallow ones, and
+	// no `load` reads the URL, so switching tabs refetches nothing.
+	const TABS = [
+		{ id: 'deck', label: 'Main Deck' },
+		{ id: 'collection', label: 'Collection' },
+		{ id: 'history', label: 'History' }
+	] as const;
+	type MainTab = (typeof TABS)[number]['id'];
+
+	const mainTab = $derived<MainTab>(
+		TABS.find((tab) => tab.id === page.url.searchParams.get('tab'))?.id ?? 'deck'
+	);
+
+	/**
+	 * A form action's URL, with the current query string carried along. An action URL *replaces* the
+	 * page's query, so a bare `?/toggleLike` sent you back to the Main Deck from any other tab. Only
+	 * for actions that stay on the page — `duplicate`, `copy` and `delete` redirect away.
+	 */
+	function actionHref(name: string) {
+		const query = page.url.search.slice(1);
+		return query ? `?/${name}&${query}` : `?/${name}`;
+	}
+
+	/** Keeps whatever else is in the query string; only `tab` changes. */
+	function tabHref(tab: MainTab) {
+		const params = new SvelteURLSearchParams(page.url.search);
+		if (tab === 'deck') params.delete('tab');
+		else params.set('tab', tab);
+		const query = params.toString();
+		return query ? `?${query}` : page.url.pathname;
+	}
 
 	function cardLabel(slug: string) {
 		return dataset.bySlug.get(slug)?.name ?? slug;
@@ -350,7 +382,7 @@
 						{#if renaming}
 							<form
 								method="POST"
-								action="?/rename"
+								action={actionHref('rename')}
 								use:enhance={() => {
 									renaming = false;
 								}}
@@ -383,7 +415,7 @@
 							<span>by {data.ownerName}</span>
 							<span>·</span>
 							{#if data.isOwner}
-								<form method="POST" action="?/visibility" use:enhance>
+								<form method="POST" action={actionHref('visibility')} use:enhance>
 									<select
 										name="visibility"
 										value={data.visibility}
@@ -415,7 +447,7 @@
 									{data.likeCount}
 								</span>
 							{:else}
-								<form method="POST" action="?/toggleLike" use:enhance>
+								<form method="POST" action={actionHref('toggleLike')} use:enhance>
 									<input type="hidden" name="liked" value={data.viewerHasLiked} />
 									<button
 										type="submit"
@@ -603,27 +635,16 @@
 				     `whitespace-nowrap` so it is the *group* that moves, not the words inside it. -->
 				<div class="mb-3 flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
 					<div class="flex items-center gap-4 whitespace-nowrap">
-						<button
-							type="button"
-							onclick={() => (mainTab = 'deck')}
-							class="text-sm font-medium transition-colors"
-							class:text-bright={mainTab === 'deck'}
-							class:text-muted={mainTab !== 'deck'}>Main Deck</button
-						>
-						<button
-							type="button"
-							onclick={() => (mainTab = 'collection')}
-							class="text-sm font-medium transition-colors hover:text-bright"
-							class:text-bright={mainTab === 'collection'}
-							class:text-muted={mainTab !== 'collection'}>Collection</button
-						>
-						<button
-							type="button"
-							onclick={() => (mainTab = 'history')}
-							class="text-sm font-medium transition-colors hover:text-bright"
-							class:text-bright={mainTab === 'history'}
-							class:text-muted={mainTab !== 'history'}>History</button
-						>
+						{#each TABS as tab (tab.id)}
+							<a
+								href={tabHref(tab.id)}
+								data-sveltekit-reset="false"
+								aria-current={mainTab === tab.id ? 'page' : undefined}
+								class="text-sm font-medium transition-colors hover:text-bright"
+								class:text-bright={mainTab === tab.id}
+								class:text-muted={mainTab !== tab.id}>{tab.label}</a
+							>
+						{/each}
 					</div>
 					<div class="flex items-center gap-3 whitespace-nowrap">
 						<span
