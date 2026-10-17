@@ -434,6 +434,38 @@ describe('mapCardmarket tie-break: noise between near-equal arts', () => {
 		expect(quotes.size).toBe(0);
 	});
 
+	it('accepts a gap one side calls decisive when the other confirms it just under the line', () => {
+		// Towerfall, WNC beta, 2026-10-17: TCGplayer $9.50 / $32.50 (3.4x), Cardmarket €9.99 / €28.99
+		// (2.9x). Same order, both well apart; only the 3x cut-off told them apart.
+		const two = cardWith('Towerfall', { collectorNumber: 'β138' }, { collectorNumber: 'β167' });
+		const [x, y] = two.printings;
+		const { quotes, report } = mapCardmarket(
+			[two],
+			{
+				products: [cmProduct(905226, 'Towerfall'), cmProduct(905256, 'Towerfall')],
+				prices: [cmRow(905226, 9.99), cmRow(905256, 28.99)]
+			},
+			(id) => (id === x.id ? 950 : id === y.id ? 3250 : null)
+		);
+		expect(quotes.get(x.id)).toEqual({ productId: 905226, trend: 999 });
+		expect(quotes.get(y.id)).toEqual({ productId: 905256, trend: 2899 });
+		expect(report.paired).toBe(2);
+	});
+
+	it('still rejects a one-sided gap the other side confirms, but in the opposite order', () => {
+		const two = cardWith('Towerfall', { collectorNumber: 'β138' }, { collectorNumber: 'β167' });
+		const [x, y] = two.printings;
+		const { quotes } = mapCardmarket(
+			[two],
+			{
+				products: [cmProduct(905226, 'Towerfall'), cmProduct(905256, 'Towerfall')],
+				prices: [cmRow(905226, 28.99), cmRow(905256, 9.99)]
+			},
+			(id) => (id === x.id ? 950 : id === y.id ? 3250 : null)
+		);
+		expect(quotes.size).toBe(0);
+	});
+
 	it('accepts arts that are close on both, since a mix-up there costs only the gap', () => {
 		const two = cardWith('Adam', { collectorNumber: 'β001' }, { collectorNumber: 'β002' });
 		const [x, y] = two.printings;

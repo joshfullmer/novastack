@@ -197,9 +197,11 @@ function cardmarketPrice(row: CardmarketPriceRow | undefined): number | null {
  *   noise — on 2026-10-07 TCGplayer put `V: Streetkid`'s two standard arts the one way round and
  *   Cardmarket the other — and so is not evidence either way. Mixing them up costs about the gap
  *   between them, and a link to the sibling art.
- * - **Decisively apart on one side only**: reject. One marketplace sees a big gap that the other
- *   cannot confirm, so a mixed-up pairing would cost the whole gap. That is the case worth being
- *   afraid of, and nothing here guesses it.
+ * - **Decisively apart on one side only**: reject, unless the other side still *confirms* it —
+ *   at least `CONFIRMING_GAP` times apart, in the same order. One marketplace sees a big gap that
+ *   the other cannot confirm, so a mixed-up pairing would cost the whole gap. That is the case
+ *   worth being afraid of, and a gap of 1.03x against 100x is not confirmation. A gap of 2.9x
+ *   against 3.4x is: it is the same story told a hair under the line (`Towerfall`, 2026-10-17).
  *
  * A missing price on either side also rejects: it cannot be checked. Rejected groups are left
  * unjoined, as before.
@@ -235,10 +237,13 @@ function pairTies(
 			const [ti, tj, ci, cj] = [tcg[i], tcg[j], cm[i], cm[j]];
 			if (ti === null || tj === null || ci === null || cj === null) return null;
 
-			const decisiveOnTcgplayer = isDecisive(ti, tj);
-			const decisiveOnCardmarket = isDecisive(ci, cj);
+			const decisiveOnTcgplayer = isApart(ti, tj, DECISIVE_GAP);
+			const decisiveOnCardmarket = isApart(ci, cj, DECISIVE_GAP);
 			if (!decisiveOnTcgplayer && !decisiveOnCardmarket) continue;
-			if (decisiveOnTcgplayer !== decisiveOnCardmarket) return null;
+			if (decisiveOnTcgplayer !== decisiveOnCardmarket) {
+				const [low, high] = decisiveOnTcgplayer ? [ci, cj] : [ti, tj];
+				if (!isApart(low, high, CONFIRMING_GAP)) return null;
+			}
 			if (Math.sign(ti - tj) !== Math.sign(ci - cj)) return null;
 		}
 	}
@@ -248,8 +253,11 @@ function pairTies(
 /** How many times apart two prices must be before their order is evidence rather than noise. */
 const DECISIVE_GAP = 3;
 
-function isDecisive(a: number, b: number): boolean {
-	return Math.max(a, b) >= DECISIVE_GAP * Math.min(a, b);
+/** How far apart the other marketplace must have them to back a gap only one side calls decisive. */
+const CONFIRMING_GAP = 2;
+
+function isApart(a: number, b: number, gap: number): boolean {
+	return Math.max(a, b) >= gap * Math.min(a, b);
 }
 
 export function mapCardmarket(

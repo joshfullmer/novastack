@@ -425,6 +425,14 @@ missing price rejects. Joins go 255 to 258 of 720 on the 2026-10-07 source files
 still unjoined are two `PRM01` promos Cardmarket lists fewer products for than we have printings.
 The CM/TCG price ratio over all 224 joined printings is unchanged (median 0.65, range 0.02-2.00).
 
+**Update, 2026-10-17 (one-sided gaps can be confirmed).** `Towerfall` in WNC beta stayed unjoined on
+Cardmarket: TCGplayer had its two arts 3.4x apart ($9.50 / $32.50) and Cardmarket 2.9x (EUR 9.99 /
+28.99), so the 3x cut-off called it "decisive on one side only". A one-sided gap is now accepted when the
+other marketplace has the same order at least 2x apart; 1.03x against 100x is still rejected. Run over
+the 2026-10-17 source files with every threshold from 2x to 3x, Towerfall was the only group that
+changed and the 61 existing pairings were identical. `Rebecca: Having a Moment` (`PRM01`, two
+printings, one Cardmarket product) stays unjoined: no rule can pair unequal counts.
+
 ### 4.4 Failure modes (what will actually bite)
 
 - **Retail has no price until after 2026-11-06.** Both marketplaces list it as presale; Cardmarket has
