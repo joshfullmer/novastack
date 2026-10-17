@@ -392,16 +392,34 @@
 							onclick={() => step(row, -1)}
 							disabled={row.owned === 0}
 							aria-label="One fewer {row.card.name} owned"
-							class="size-5 rounded border border-edge text-muted transition-colors
-								hover:border-card-red hover:text-card-red disabled:opacity-30">−</button
+							class="grid size-5 place-items-center rounded border border-edge text-muted
+								transition-colors hover:border-card-red hover:text-card-red disabled:opacity-30"
 						>
+							<svg viewBox="0 0 12 12" class="size-3" aria-hidden="true">
+								<path
+									d="M2.5 6h7"
+									stroke="currentColor"
+									stroke-width="1.5"
+									stroke-linecap="round"
+								/>
+							</svg>
+						</button>
 						<button
 							type="button"
 							onclick={() => step(row, 1)}
 							aria-label="One more {row.card.name} owned"
-							class="size-5 rounded border border-edge text-muted transition-colors
-								hover:border-neon-dim hover:text-neon">+</button
+							class="grid size-5 place-items-center rounded border border-edge text-muted
+								transition-colors hover:border-neon-dim hover:text-neon"
 						>
+							<svg viewBox="0 0 12 12" class="size-3" aria-hidden="true">
+								<path
+									d="M6 2.5v7M2.5 6h7"
+									stroke="currentColor"
+									stroke-width="1.5"
+									stroke-linecap="round"
+								/>
+							</svg>
+						</button>
 					</span>
 				</li>
 			{/each}
