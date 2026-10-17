@@ -334,14 +334,15 @@ grid's own inner scroll and then discovering an outer page scroll was also neede
   browser from the deck's already-mirrored, same-origin static card art (`drawImage()` into a
   `<canvas>`, then `toBlob()` for download) — zero new Worker cost. A dialog (`DeckImageDialog`)
   shows a live preview with a tab per layout and a **Stats** toggle; it composes only while open,
-  so the display font and the card art aren't fetched for a visitor who never asks
+  so the card art isn't fetched for a visitor who never asks
   (`#lib/decks/deck-image.ts`).
 
   **One look, two layouts.** Both are 1600×1000 and grow taller only when the cards can't fit at a
   legible size. The ground is near-black with the deck's Legend colors as _accents_ — pips, tile
   borders, a soft glow per Legend. The earlier Legend-tinted gradient under a 55% scrim read as
-  muddy, and a dark ground is what lets the cards' own colors carry. Titles and numbers are set in
-  Rajdhani (the site itself ships no web font), a card's quantity is a chamfered `×N` badge
+  muddy, and a dark ground is what lets the cards' own colors carry. All text is set in
+  Monaspace Krypton — the same face the site now uses for its mono text (`--font-mono`) — and a
+  card's quantity is a chamfered `×N` badge
   bottom-left (bottom-right sat on a Unit's printed Power), and a slim footer holds the wordmark
   and a small white QR. There is deliberately **no URL text**: nobody types a link off an image,
   and the QR is the one link-back that works from one.

@@ -1,4 +1,9 @@
 @import 'tailwindcss';
+/* The one web font: Monaspace Krypton, latin only, for the site's mono text and the deck image. */
+@import '@fontsource/monaspace-krypton/latin-400.css';
+@import '@fontsource/monaspace-krypton/latin-500.css';
+@import '@fontsource/monaspace-krypton/latin-600.css';
+@import '@fontsource/monaspace-krypton/latin-700.css';
 @plugin '@tailwindcss/typography';
 
 /*
@@ -8,7 +13,7 @@
  */
 @theme {
 	--font-sans: 'Inter var', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
-	--font-mono: ui-monospace, 'SF Mono', 'JetBrains Mono', monospace;
+	--font-mono: 'Monaspace Krypton', ui-monospace, 'SF Mono', 'JetBrains Mono', monospace;
 
 	/* Surfaces, darkest first. */
 	--color-void: oklch(14% 0.012 275);

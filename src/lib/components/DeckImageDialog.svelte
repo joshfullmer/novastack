@@ -2,7 +2,7 @@
 	/**
 	 * Export as an image: a tab per layout, a live preview of exactly what gets downloaded, and a
 	 * Stats toggle. The composition lives in `#lib/decks/deck-image.ts` — `docs/spec/deckbuilder.md`
-	 * §6. Composed only while the dialog is open, so the display font and card art aren't fetched
+	 * §6. Composed only while the dialog is open, so the card art isn't fetched
 	 * for a visitor who never asks for the image.
 	 */
 	import { composeDeckImage, type DeckImageLayout } from '#lib/decks/deck-image.js';

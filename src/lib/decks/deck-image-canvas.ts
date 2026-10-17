@@ -8,9 +8,6 @@ import QRCode from 'qrcode';
 import { cardImageUrl } from '#lib/cards/schema.js';
 import type { Card } from '#lib/cards/schema.js';
 import type { Color } from '#lib/cards/vocabulary.js';
-import rajdhani500 from '@fontsource/rajdhani/files/rajdhani-latin-500-normal.woff2?url';
-import rajdhani600 from '@fontsource/rajdhani/files/rajdhani-latin-600-normal.woff2?url';
-import rajdhani700 from '@fontsource/rajdhani/files/rajdhani-latin-700-normal.woff2?url';
 import type { DeckEntryGroup } from './grouping.js';
 import type { DeckEntry } from './legality.js';
 import { deckPrinting } from './printing.js';
@@ -44,7 +41,17 @@ export const PAD = 56;
 /** Every mirrored card image is this exact ratio, height over width — see `#lib/cards/vocabulary.js`. */
 export const ASPECT = 1024 / 733;
 
-export const DISPLAY = "'Rajdhani', system-ui, sans-serif";
+const FAMILY = "'Monaspace Krypton', ui-monospace, monospace";
+
+/**
+ * Every size in the layouts was set against a condensed face; Krypton's 0.6em advance is much wider,
+ * so each is scaled to keep line lengths (and the title, stats and labels) from colliding.
+ */
+const SCALE = 0.78;
+
+/** A font shorthand in the image's one face — the same Monaspace Krypton the site's mono text uses. */
+export const fontOf = (weight: 500 | 600 | 700, size: number) =>
+	`${weight} ${size * SCALE}px ${FAMILY}`;
 
 const QR_SIZE = 64;
 /** Where a layout's body must stop: above the footer's hairline, with room to breathe. */
@@ -63,27 +70,12 @@ export function themeColor(name: string): string {
 
 export const colorOf = (color: Color) => themeColor(COLOR_VAR[color]);
 
-let fontsReady: Promise<unknown> | undefined;
-/** The display face is only fetched when someone opens the image dialog, never with the page. */
-export function loadFonts() {
-	fontsReady ??= Promise.all(
-		(
-			[
-				['500', rajdhani500],
-				['600', rajdhani600],
-				['700', rajdhani700]
-			] as const
-		).map(async ([weight, url]) => {
-			const face = new FontFace('Rajdhani', `url(${url})`, { weight });
-			document.fonts.add(await face.load());
-		})
-	).catch((error: unknown) => {
-		// Retry on the next open rather than caching a failure for the page's lifetime.
-		fontsReady = undefined;
-		throw error;
-	});
-	return fontsReady;
-}
+/**
+ * The face is the site's own (`layout.css` declares it), so this only makes sure the weights the
+ * canvas draws with are fetched before the first `fillText` — canvas never triggers a font load.
+ */
+export const loadFonts = () =>
+	Promise.all(([500, 600, 700] as const).map((weight) => document.fonts.load(fontOf(weight, 16))));
 
 const imageCache = new Map<string, Promise<HTMLImageElement>>();
 function loadImage(src: string): Promise<HTMLImageElement> {
@@ -293,7 +285,7 @@ function drawWordmark(ctx: CanvasRenderingContext2D, x: number, centerY: number)
 	const markSize = 26;
 	const gap = 9;
 	drawMark(ctx, x + markSize / 2, centerY, markSize);
-	ctx.font = `700 24px ${DISPLAY}`;
+	ctx.font = fontOf(700, 24);
 	ctx.letterSpacing = '1px';
 	ctx.textBaseline = 'middle';
 	const nova = ctx.measureText('nova').width;
@@ -336,7 +328,7 @@ export async function drawFooter(
 	ctx.drawImage(qr, qrX, top, QR_SIZE, QR_SIZE);
 	ctx.restore();
 	text(ctx, 'SCAN TO OPEN', qrX - 14, top + QR_SIZE / 2 + 1, {
-		font: `600 14px ${DISPLAY}`,
+		font: fontOf(600, 14),
 		color: themeColor('muted'),
 		align: 'right',
 		baseline: 'middle',
@@ -361,7 +353,7 @@ export function drawSectionLabel(
 
 	const baseline = y + 8 + size * 0.82;
 	const heading = label.toUpperCase();
-	const font = `700 ${size}px ${DISPLAY}`;
+	const font = fontOf(700, size);
 	ctx.font = font;
 	ctx.letterSpacing = '1.5px';
 	const headingWidth = ctx.measureText(heading).width;
@@ -436,7 +428,7 @@ function drawQuantityBadge(
 	chamferedSquare(ctx, x + 1, y + 1, size - 2, size * 0.3);
 	ctx.stroke();
 	text(ctx, `×${quantity}`, x + size / 2, y + size / 2 + 1, {
-		font: `700 ${Math.round(size * 0.58)}px ${DISPLAY}`,
+		font: fontOf(700, Math.round(size * 0.58)),
 		color: themeColor('bright'),
 		align: 'center',
 		baseline: 'middle'
@@ -484,12 +476,12 @@ export function drawCurve(
 		ctx.fillStyle = bucket.quantity === max ? themeColor('neon') : themeColor('neon-dim');
 		ctx.fillRect(cx - barWidth / 2, y + chartHeight - barHeight, barWidth, barHeight);
 		text(ctx, String(bucket.quantity), cx, y + chartHeight - barHeight - 6, {
-			font: `600 ${labelSize}px ${DISPLAY}`,
+			font: fontOf(600, labelSize),
 			color: themeColor('body'),
 			align: 'center'
 		});
 		text(ctx, bucket.cost === null ? '—' : String(bucket.cost), cx, y + h - 2, {
-			font: `600 ${labelSize - 2}px ${DISPLAY}`,
+			font: fontOf(600, labelSize - 2),
 			color: themeColor('muted'),
 			align: 'center'
 		});

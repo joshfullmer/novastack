@@ -10,7 +10,6 @@ import type { DeckEntry } from './legality.js';
 import { costCurve, eddiableStat } from './stats.js';
 import {
 	ASPECT,
-	DISPLAY,
 	FOOTER_TOP,
 	HEIGHT,
 	PAD,
@@ -23,6 +22,7 @@ import {
 	drawFooter,
 	drawPips,
 	drawSectionLabel,
+	fontOf,
 	fitSize,
 	fitText,
 	makeCanvas,
@@ -69,20 +69,20 @@ export async function composeList(options: DeckImageOptions) {
 	paintBase(ctx, WIDTH, height, legends);
 
 	// Left: title, Legends, and (if on) stats.
-	ctx.font = `700 150px ${DISPLAY}`;
+	ctx.font = fontOf(700, 150);
 	const titleSize = Math.min(
 		150,
 		(150 * LEFT_WIDTH) / Math.max(1, ctx.measureText(deckName).width)
 	);
 	text(ctx, deckName, PAD, PAD + titleSize * 0.8, {
-		font: `700 ${titleSize}px ${DISPLAY}`,
+		font: fontOf(700, titleSize),
 		color: themeColor('bright'),
 		spacing: '1px'
 	});
 	const metaY = PAD + titleSize * 0.8 + 38;
 	const pipsWidth = drawPips(ctx, PAD + 2, metaY - 18, legends, 18);
 	text(ctx, `by ${ownerName}  ·  ${totalCards} cards`, PAD + pipsWidth + 18, metaY, {
-		font: `600 24px ${DISPLAY}`,
+		font: fontOf(600, 24),
 		color: themeColor('muted'),
 		spacing: '0.5px'
 	});
@@ -96,7 +96,7 @@ export async function composeList(options: DeckImageOptions) {
 
 		const { name, subtitle } = splitCardName(legend.card);
 		const center = x + LEGEND_WIDTH / 2;
-		const nameFont = `700 24px ${DISPLAY}`;
+		const nameFont = fontOf(700, 24);
 		ctx.font = nameFont;
 		text(ctx, fitText(ctx, name, LEGEND_WIDTH), center, legendTop + legendHeight + 32, {
 			font: nameFont,
@@ -104,7 +104,7 @@ export async function composeList(options: DeckImageOptions) {
 			align: 'center'
 		});
 		if (subtitle) {
-			const subtitleFont = `600 17px ${DISPLAY}`;
+			const subtitleFont = fontOf(600, 17);
 			ctx.font = subtitleFont;
 			text(ctx, fitText(ctx, subtitle, LEGEND_WIDTH), center, legendTop + legendHeight + 54, {
 				font: subtitleFont,
@@ -125,19 +125,20 @@ export async function composeList(options: DeckImageOptions) {
 			.map((group) => `${group.quantity} ${group.label}`)
 			.join('  ·  ');
 		text(ctx, typeLine, PAD, statsTop, {
-			font: `600 32px ${DISPLAY}`,
+			font: fontOf(600, 32),
 			color: themeColor('body')
 		});
-		text(ctx, `${percent}% EDDIABLE`, PAD + LEFT_WIDTH, statsTop, {
-			font: `600 20px ${DISPLAY}`,
+		text(ctx, `${percent}% EDDIABLE`, PAD + LEFT_WIDTH, statsTop + 34, {
+			font: fontOf(600, 20),
 			color: themeColor('neon'),
 			align: 'right',
 			spacing: '1.5px'
 		});
 		// The curve takes whatever height is left above the footer, and is skipped if that's too little.
-		const room = FOOTER_TOP - (statsTop + 20) - 20;
+		const curveTop = statsTop + 54;
+		const room = FOOTER_TOP - curveTop - 20;
 		if (room > 90) {
-			drawCurve(ctx, costCurve(mainEntries), PAD, statsTop + 20, LEFT_WIDTH, Math.min(130, room));
+			drawCurve(ctx, costCurve(mainEntries), PAD, curveTop, LEFT_WIDTH, Math.min(130, room));
 		}
 	}
 
@@ -202,14 +203,14 @@ function drawRow(
 	ctx.fillRect(x, y, h, h);
 	const { cost } = entry.card;
 	text(ctx, cost === null ? '–' : String(cost), x + h / 2, y + h / 2 + 1, {
-		font: `700 ${Math.round(h * 0.6)}px ${DISPLAY}`,
+		font: fontOf(700, Math.round(h * 0.6)),
 		color: entry.card.color === 'Red' ? themeColor('bright') : themeColor('void'),
 		align: 'center',
 		baseline: 'middle'
 	});
 
 	const quantityText = `${entry.quantity}×`;
-	const quantityFont = `700 ${Math.round(h * 0.56)}px ${DISPLAY}`;
+	const quantityFont = fontOf(700, Math.round(h * 0.56));
 	ctx.font = quantityFont;
 	const quantityWidth = ctx.measureText(quantityText).width;
 	text(ctx, quantityText, x + w - 12, y + h / 2 + 1, {
@@ -219,7 +220,7 @@ function drawRow(
 		baseline: 'middle'
 	});
 
-	const nameFont = `600 ${Math.round(h * 0.46)}px ${DISPLAY}`;
+	const nameFont = fontOf(600, Math.round(h * 0.46));
 	ctx.font = nameFont;
 	const name = fitText(ctx, entry.card.name, w - h - 12 - quantityWidth - 28);
 	text(ctx, name, x + h + 12, y + h / 2 + 1, {

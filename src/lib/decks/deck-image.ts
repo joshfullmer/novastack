@@ -4,9 +4,10 @@
  * surface: server-rendered images at a stable URL were considered and rejected in the spec (a
  * `satori` + `resvg-wasm` rendering pipeline for a capability client-side canvas already covers).
  *
- * Two layouts, one look: a near-black base with the deck's Legend colors as accents, a display
- * face for titles and numbers, and a slim footer with the wordmark and a QR code. `spread` shows
- * the deck as art (`deck-image-spread.ts`); `list` shows it as a decklist (`deck-image-list.ts`).
+ * Two layouts, one look: a near-black base with the deck's Legend colors as accents, the site's mono
+ * face (Monaspace Krypton) for all text, and a slim footer with the wordmark and a QR code.
+ * `spread` shows the deck as art (`deck-image-spread.ts`); `list` shows it as a decklist
+ * (`deck-image-list.ts`).
  * Both are 1600×1000 and grow taller only when the cards can't fit at a legible size.
  */
 import { loadFonts, type DeckImageOptions } from './deck-image-canvas.js';

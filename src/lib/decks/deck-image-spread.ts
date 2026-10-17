@@ -12,7 +12,6 @@ import type { DeckEntry } from './legality.js';
 import { costCurve, eddiableStat } from './stats.js';
 import {
 	ASPECT,
-	DISPLAY,
 	FOOTER_TOP,
 	HEIGHT,
 	PAD,
@@ -24,6 +23,7 @@ import {
 	drawFooter,
 	drawPips,
 	drawSectionLabel,
+	fontOf,
 	fitSize,
 	makeCanvas,
 	paintBase,
@@ -157,12 +157,12 @@ export async function composeSpread(options: DeckImageOptions) {
 
 		const eddiableX = WIDTH - PAD - curveWidth - 56;
 		text(ctx, `${percent}%`, eddiableX, PAD + 52, {
-			font: `700 60px ${DISPLAY}`,
+			font: fontOf(700, 60),
 			color: themeColor('bright'),
 			align: 'right'
 		});
 		text(ctx, `EDDIABLE · ${eddiable.eddiableQuantity} cards`, eddiableX, PAD + 80, {
-			font: `600 16px ${DISPLAY}`,
+			font: fontOf(600, 16),
 			color: themeColor('muted'),
 			align: 'right',
 			spacing: '1.5px'
@@ -173,20 +173,20 @@ export async function composeSpread(options: DeckImageOptions) {
 		const typeLine = filled.map((group) => `${group.quantity} ${group.label}`).join('   ·   ');
 		const typeRight = eddiableX - 262;
 		text(ctx, typeLine, typeRight, PAD + 62, {
-			font: `600 34px ${DISPLAY}`,
+			font: fontOf(600, 34),
 			color: themeColor('body'),
 			align: 'right'
 		});
 		titleRight = typeRight - ctx.measureText(typeLine).width - 40;
 	}
 
-	ctx.font = `700 92px ${DISPLAY}`;
+	ctx.font = fontOf(700, 92);
 	const titleSize = Math.min(
 		92,
 		(92 * (titleRight - PAD)) / Math.max(1, ctx.measureText(deckName).width)
 	);
 	text(ctx, deckName, PAD, PAD + 70, {
-		font: `700 ${titleSize}px ${DISPLAY}`,
+		font: fontOf(700, titleSize),
 		color: themeColor('bright'),
 		spacing: '1px'
 	});
@@ -194,7 +194,7 @@ export async function composeSpread(options: DeckImageOptions) {
 	const subtitle = [`by ${ownerName}`, `${totalCards} cards`, `${legends.length} Legends`];
 	if (sideboardCards > 0) subtitle.push(`${sideboardCards} sideboard`);
 	text(ctx, subtitle.join('  ·  '), PAD + pipsWidth + 18, PAD + 114, {
-		font: `600 22px ${DISPLAY}`,
+		font: fontOf(600, 22),
 		color: themeColor('muted'),
 		spacing: '0.5px'
 	});
