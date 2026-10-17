@@ -26,7 +26,9 @@ export const load: PageServerLoad = ({ params, url, setHeaders }) => {
 	// change: an ingest re-run can fix errata in a card's text. `s-maxage` lets Cloudflare's edge
 	// cache it instead of hitting the Worker on every view; `stale-while-revalidate` means a
 	// redeploy reaches visitors within the hour rather than needing a manual purge.
-	setHeaders({ 'cache-control': 'public, max-age=300, s-maxage=3600, stale-while-revalidate=86400' });
+	setHeaders({
+		'cache-control': 'public, max-age=300, s-maxage=3600, stale-while-revalidate=86400'
+	});
 
 	return { card, printing };
 };

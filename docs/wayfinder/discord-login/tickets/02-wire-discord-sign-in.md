@@ -31,7 +31,7 @@ Wired `socialProviders.discord` in `auth.ts` with `DISCORD_CLIENT_ID`/`DISCORD_C
 so this needed the same narrowing as the file's existing CLI-only `null!`). Also set
 `account.accountLinking.disableImplicitLinking: true` — this is what actually implements the
 map's "explicit only" linking decision; confirmed by reading
-`oauth2/link-account.mjs` that better-auth auto-links by email match *by default*, and that this
+`oauth2/link-account.mjs` that better-auth auto-links by email match _by default_, and that this
 flag (not `enabled: false`, which would also block ticket 04's explicit `linkSocial`) is the
 correct scalpel.
 
@@ -41,6 +41,7 @@ form action, with a `DiscordSignInButton.svelte` component (reuses the existing 
 on both pages.
 
 Confirmed by reading source rather than assuming:
+
 - `getUserInfo` in `@better-auth/core`'s `discord.ts` maps `emailVerified: profile.verified` and
   `image: profile.image_url` (a computed CDN URL handling both custom and default avatars, gif
   vs png) automatically — no `mapProfileToUser` needed.

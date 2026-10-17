@@ -69,14 +69,14 @@ export function carryForwardPrintings(
 	const printings = stored === null ? new Map<string, string>() : printingsBySlug(stored);
 
 	return {
-		entries: incoming.entries.map(
-			(entry): DeckEntryPayload => withCarriedPrinting(entry, printings)
+		entries: incoming.entries.map((entry): DeckEntryPayload =>
+			withCarriedPrinting(entry, printings)
 		),
-		sideboard: incoming.sideboard.map(
-			(entry): DeckEntryPayload => withCarriedPrinting(entry, printings)
+		sideboard: incoming.sideboard.map((entry): DeckEntryPayload =>
+			withCarriedPrinting(entry, printings)
 		),
-		legends: incoming.legends.map(
-			(legend): LegendEntryPayload => withCarriedPrinting(legend, printings)
+		legends: incoming.legends.map((legend): LegendEntryPayload =>
+			withCarriedPrinting(legend, printings)
 		)
 	};
 }

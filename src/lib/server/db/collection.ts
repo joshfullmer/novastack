@@ -32,9 +32,7 @@ export async function getQuantity(db: Db, userId: string, printingId: string): P
 	const [row] = await db
 		.select({ quantity: collectionItems.quantity })
 		.from(collectionItems)
-		.where(
-			and(eq(collectionItems.userId, userId), eq(collectionItems.printingId, printingId))
-		);
+		.where(and(eq(collectionItems.userId, userId), eq(collectionItems.printingId, printingId)));
 	return row?.quantity ?? 0;
 }
 
@@ -56,9 +54,7 @@ export async function setQuantity(
 	if (quantity <= 0) {
 		await db
 			.delete(collectionItems)
-			.where(
-				and(eq(collectionItems.userId, userId), eq(collectionItems.printingId, printingId))
-			);
+			.where(and(eq(collectionItems.userId, userId), eq(collectionItems.printingId, printingId)));
 		return 0;
 	}
 

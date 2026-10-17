@@ -61,7 +61,11 @@ describe('bulk collection writes stay under D1 limits', () => {
 		// it catches an off-by-one in the chunk arithmetic that a single size would miss.
 		for (const size of [1, 2, 32, 33, 34, 99, 100, 101, 150, 472]) {
 			for (const quantity of [1, 0]) {
-				const statements = buildSetQuantitiesStatements(db, 'user-1', quantitiesFor(size, quantity));
+				const statements = buildSetQuantitiesStatements(
+					db,
+					'user-1',
+					quantitiesFor(size, quantity)
+				);
 				for (const count of parameterCounts(statements)) {
 					expect(count, `size ${size}, quantity ${quantity}`).toBeLessThanOrEqual(
 						D1_MAX_BOUND_PARAMS
@@ -73,7 +77,8 @@ describe('bulk collection writes stay under D1 limits', () => {
 
 	it('mixes adds and removals in one batch', () => {
 		const mixed = new Map<string, number>();
-		for (let index = 0; index < 120; index += 1) mixed.set(`printing-${index}`, index % 2 === 0 ? 1 : 0);
+		for (let index = 0; index < 120; index += 1)
+			mixed.set(`printing-${index}`, index % 2 === 0 ? 1 : 0);
 
 		const statements = buildSetQuantitiesStatements(db, 'user-1', mixed);
 		const sql = statements.map((statement) => statement.toSQL().sql);

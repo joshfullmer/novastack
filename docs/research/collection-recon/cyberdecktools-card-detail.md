@@ -6,7 +6,7 @@ timings taken from `getAnimations()` and per-frame `getBoundingClientRect()` sam
 from looking at it. Screenshots: `cyberdecktools-card-detail.png` (open),
 `cyberdecktools-card-detail-midzoom.png` (~110ms into the zoom).
 
-Recorded because we're building the same interaction on `/collection` and the *feel* was the part
+Recorded because we're building the same interaction on `/collection` and the _feel_ was the part
 worth copying. What we take and what we don't is at the bottom.
 
 ## What it is
@@ -45,24 +45,24 @@ the hero's rect, on a dedicated `.card-preview-motion-surface` element.
 
 Sampled per frame, opening (tile was 175×339 at 612,1080):
 
-| t (ms) | box |
-| --- | --- |
-| 36 | 175×245 @ 612,1080 |
-| 85 | 286×400 @ 557,604 |
-| 134 | 364×508 @ 518,270 |
-| 210 | 404×564 @ 498,101 |
-| 309 | 418×583 @ 491,41 |
+| t (ms) | box                |
+| ------ | ------------------ |
+| 36     | 175×245 @ 612,1080 |
+| 85     | 286×400 @ 557,604  |
+| 134    | 364×508 @ 518,270  |
+| 210    | 404×564 @ 498,101  |
+| 309    | 418×583 @ 491,41   |
 
 Three animations run together, from `getAnimations({ subtree: true })`:
 
-| name | duration | easing |
-| --- | --- | --- |
-| `collection-scrim-in` | 240ms | linear |
-| `collection-panel-in` | 320ms | linear |
-| (WAAPI, the card) | 360ms | `cubic-bezier(0.2, 0.8, 0.2, 1)` |
+| name                  | duration | easing                           |
+| --------------------- | -------- | -------------------------------- |
+| `collection-scrim-in` | 240ms    | linear                           |
+| `collection-panel-in` | 320ms    | linear                           |
+| (WAAPI, the card)     | 360ms    | `cubic-bezier(0.2, 0.8, 0.2, 1)` |
 
 So: scrim first and quickest, card slowest on a decelerate curve, panel between them. The card is
-still visibly moving after the scrim has finished, which is what makes it read as *the card* opening
+still visibly moving after the scrim has finished, which is what makes it read as _the card_ opening
 rather than a dialog appearing.
 
 **Closing is the same animation reversed** — the card flies back to its tile (420×587 @ 490,30 →
@@ -72,13 +72,13 @@ that makes the overlay feel attached to the grid rather than dropped on top of i
 ## Behaviour
 
 - **Deep-linked.** Opening pushes `?card=printing:<uuid>`. Choosing another printing from "Other
-  printings" swaps the hero *and* the URL to that printing's id — every printing is its own link.
+  printings" swaps the hero _and_ the URL to that printing's id — every printing is its own link.
 - **Esc closes**, clears the param, restores scroll.
 - **Backdrop click closes** too, same clean-up.
 - **Scroll locked** while open (`body { overflow: hidden }`).
 - **Focus** moves to the close button on open.
 - **No prev/next.** ArrowRight/ArrowLeft do nothing; you close and click another card.
-- Quantity controls are "stepper + Add N copies + Remove N" — a *pending amount* you then commit,
+- Quantity controls are "stepper + Add N copies + Remove N" — a _pending amount_ you then commit,
   not a direct ±1 on the collection.
 - Signed out, everything writes to the browser and says so.
 

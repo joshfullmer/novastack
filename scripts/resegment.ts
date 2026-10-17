@@ -13,7 +13,11 @@
 import { readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import * as v from 'valibot';
-import { extractKeywords, splitRulesText, type SegmentContext } from '../src/lib/cards/rules-text.ts';
+import {
+	extractKeywords,
+	splitRulesText,
+	type SegmentContext
+} from '../src/lib/cards/rules-text.ts';
 import { SnapshotSchema, type Card, type Snapshot } from '../src/lib/cards/schema.ts';
 import { stableStringify } from './lib/stable-json.ts';
 
@@ -36,7 +40,10 @@ function buildContext(cards: readonly Card[]): SegmentContext {
 }
 
 async function main(): Promise<void> {
-	const snapshot: Snapshot = v.parse(SnapshotSchema, JSON.parse(await readFile(CARDS_PATH, 'utf8')));
+	const snapshot: Snapshot = v.parse(
+		SnapshotSchema,
+		JSON.parse(await readFile(CARDS_PATH, 'utf8'))
+	);
 	const ctx = buildContext(snapshot.cards);
 
 	let changed = 0;
