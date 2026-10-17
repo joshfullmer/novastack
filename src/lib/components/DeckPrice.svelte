@@ -10,8 +10,8 @@
 	 * - **Cheapest** prices every card at its cheapest priced English printing — the figure for
 	 *   *playing* the list, whatever art it's in.
 	 *
-	 * They only split when there is an art premium to show; otherwise there is one figure, "Whole deck"
-	 * (the cheapest). That is the case when the owner can't choose printings, when every choice the
+	 * They only split when there is an art premium to show; otherwise there is one figure, still
+	 * labelled "Cheapest". That is the case when the owner can't choose printings, when every choice the
 	 * deck made is the card's Default or cheapest printing, and when nothing was chosen at all. With a
 	 * real choice made, the gap between the two is what the art costs.
 	 *
@@ -64,7 +64,7 @@
 	);
 	const figures = $derived(
 		single
-			? [{ label: 'Whole deck', total: cost.cheapest }]
+			? [{ label: 'Cheapest', total: cost.cheapest }]
 			: [
 					{ label: 'As built', total: cost.built },
 					{ label: 'Cheapest', total: cost.cheapest }
