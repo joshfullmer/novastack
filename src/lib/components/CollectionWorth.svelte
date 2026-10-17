@@ -5,11 +5,12 @@
 	 * its place beside the title without taking over the page.
 	 *
 	 * Shows the marketplace the reader chose (`#lib/prices/source.svelte.ts`), in its own currency.
-	 * The figure carries one short line of honesty — how many of the printings it could price — and
-	 * everything else (why some have no price, which measure this is, the switch to the other
-	 * marketplace) is behind the (i). That line stays on the panel on purpose: before 2026-11-06
-	 * English retail has no market price, and a big `$0.84` over `1 of 5` has to read as a floor, not
-	 * as the whole shelf.
+	 * The figure carries one short line of honesty — how many of the printings it could price, when
+	 * that is not all of them — and everything else (why some have no price, which measure this is,
+	 * the switch to the other marketplace) is behind the (i). That line stays on the panel on
+	 * purpose: before 2026-11-06 English retail has no market price, and a big `$0.84` over `1/5`
+	 * has to read as a floor, not as the whole shelf. When every printing is priced it is dropped,
+	 * since there is no gap left to disclose.
 	 *
 	 * A marketplace that prices nothing for what you own reads `—`, not `$0.00`: nothing priced is not
 	 * a price of nothing.
@@ -68,6 +69,9 @@
 		{tally.priced > 0 ? formatMoney(tally.total, currency) : '—'}
 	</p>
 	<p class="mt-0.5 text-xs text-muted tabular-nums">
-		{name} · {tally.priced}/{count} priced
+		{name}
+		{#if tally.unpriced > 0}
+			<span>· {tally.priced}/{count} priced</span>
+		{/if}
 	</p>
 </section>

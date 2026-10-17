@@ -19,8 +19,9 @@
 	 * the Legends, main deck and sideboard together, the same set that tab uses. For the marketplace
 	 * the reader chose (`#lib/prices/source.svelte.ts`), in its own currency.
 	 *
-	 * Each figure carries its coverage — `38/40 priced` — because a total over some of the cards is a
-	 * floor. A figure with nothing priced reads `—`, never `$0.00`. Everything else is behind the (i).
+	 * A figure that leaves cards out carries its coverage — `38/40 priced` — because a total over some
+	 * of the cards is a floor; one over every card says nothing. A figure with nothing priced reads
+	 * `—`, never `$0.00`. Everything else is behind the (i).
 	 */
 	import type { NeededCard } from '#lib/collection/missing.js';
 	import { deckCost, MARKETPLACE_INFO, type MarketplaceTotal } from '#lib/prices/cost.js';
@@ -107,7 +108,9 @@
 					>
 						{total.priced > 0 ? formatMoney(total.total, currency) : '—'}
 					</p>
-					<p class="text-xs text-muted tabular-nums">{total.priced}/{cards} priced</p>
+					{#if total.unpriced > 0}
+						<p class="text-xs text-muted tabular-nums">{total.priced}/{cards} priced</p>
+					{/if}
 				</div>
 			{/each}
 		</div>

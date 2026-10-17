@@ -4,8 +4,9 @@
 	 * its own currency, saying how many of the items it covers.
 	 *
 	 * The coverage is what makes a total honest: `$3.20 · 5 of 7 cards` is a floor over the five it
-	 * could price, not the price of seven. Renders nothing when the chosen marketplace prices nothing
-	 * at all; the toggle in the price note is how to see the other.
+	 * could price, not the price of seven. It is said only when something was left out — a total over
+	 * every item is just the total. Renders nothing when the chosen marketplace prices nothing at
+	 * all; the toggle in the price note is how to see the other.
 	 */
 	import { MARKETPLACE_INFO, type Marketplace, type MarketplaceTotal } from '#lib/prices/cost.js';
 	import { formatMoney } from '#lib/prices/format.js';
@@ -35,9 +36,11 @@
 		<span class="font-mono text-sm text-bright tabular-nums"
 			>{formatMoney(tally.total, currency)}</span
 		>
-		<span class="text-muted/70 tabular-nums"
-			>· {tally.priced} of {count}
-			{noun}{count === 1 ? '' : 's'}</span
-		>
+		{#if tally.unpriced > 0}
+			<span class="text-muted/70 tabular-nums"
+				>· {tally.priced} of {count}
+				{noun}{count === 1 ? '' : 's'}</span
+			>
+		{/if}
 	</p>
 {/if}
