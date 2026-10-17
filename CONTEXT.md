@@ -179,6 +179,12 @@ Legends, and is bound by the same RAM and copy limits as the Main Deck â€” the â
 the two together. Exactly 7 for constructed play; zero is also legal (a deck simply without one).
 _Avoid_: side deck, sideboard deck, extra deck
 
+**Deck Image**:
+The shareable picture of a deck, composed in the browser. It comes in two **Layouts**: a **Spread**,
+which shows the deck's cards as art grouped by type, and a **List**, which shows it as a decklist
+of names, costs and copy counts.
+_Avoid_: deck screenshot, deck card, deck banner
+
 ### Visibility
 
 **Unlisted**:

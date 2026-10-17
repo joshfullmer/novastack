@@ -332,32 +332,38 @@ grid's own inner scroll and then discovering an outer page scroll was also neede
 
 - **Image export, client-side canvas, no new backend surface.** Composited entirely in the
   browser from the deck's already-mirrored, same-origin static card art (`drawImage()` into a
-  `<canvas>`, then `toBlob()`/`toDataURL()` for download) — zero new Worker cost. Composition
-  matches swudb.com's own "Deck image" feature, verified live: a header (deck name + owner), a
-  Legends strip standing in for its Leader+Base pair, the Main Deck as a thumbnail grid with
-  quantity badges, and a small novastack URL/QR-code watermark for attribution.
+  `<canvas>`, then `toBlob()` for download) — zero new Worker cost. A dialog (`DeckImageDialog`)
+  shows a live preview with a tab per layout and a **Stats** toggle; it composes only while open,
+  so the display font and the card art aren't fetched for a visitor who never asks
+  (`#lib/decks/deck-image.ts`).
 
-  **A deck with a sideboard splits into two columns instead**: the main deck keeps 6 columns on
-  the left, and the 7 run down a 2-column rail on the right — a darkened band bled to the right
-  edge, with a rule down its left side, holding the `SIDEBOARD` label and the cards. The band is
-  **sized to that content and stops**, rather than running to the bottom edge: it marks the
-  sideboard, so it ends where the sideboard does, and a full-height version both read as a page
-  region that happened to contain the 7 and left a long empty tail under a two-row rail. The
-  watermark sits below it, outside the band. Both grids share one cell size, so 6 + 2 adds back up
-  to the 8 columns the
-  full-width case uses and a deck's cards don't shrink just because it gained a sideboard; what
-  changes is the main deck's row count, which is the cheap axis (a 40–50 card deck is 15–20
-  _distinct_ entries). A sideboard-less deck exports exactly the image it always did.
+  **One look, two layouts.** Both are 1600×1000 and grow taller only when the cards can't fit at a
+  legible size. The ground is near-black with the deck's Legend colors as _accents_ — pips, tile
+  borders, a soft glow per Legend. The earlier Legend-tinted gradient under a 55% scrim read as
+  muddy, and a dark ground is what lets the cards' own colors carry. Titles and numbers are set in
+  Rajdhani (the site itself ships no web font), a card's quantity is a chamfered `×N` badge
+  bottom-left (bottom-right sat on a Unit's printed Power), and a slim footer holds the wordmark
+  and a small white QR. There is deliberately **no URL text**: nobody types a link off an image,
+  and the QR is the one link-back that works from one.
 
-  The band is what makes it work. A single `edge`-colored rule was tried first and was almost
-  invisible — the backdrop is a gradient tinted from the deck's own Legend colors, so a thin line
-  has nothing reliable to contrast against, while a band darkens whatever is behind it. Same
-  reasoning as the tinted panel the deck view uses (§5.1), so the two read as one idea.
+  - **Spread** — the deck as art. A Legends column on the left, then Units / Gear / Programs as
+    labelled columns that share one cell size, solved as the largest the columns allow while every
+    group still fits the height. The sideboard drops, smaller, under whichever column leaves it
+    the most room. For showing the cards off.
+  - **List** — the deck as a decklist. A big title and the Legends on the left, a two-column list
+    on the right: one row per distinct card with a cost chip in the card's color, its name over a
+    dim crop of its own art, and the copy count; the sideboard is the last section. For reading
+    the list.
+
+  **Stats** — type counts, the cost curve and the Eddiable share — are on by default and can be
+  switched off; whether they earn their space is not settled.
 
   **Server-rendered images at a stable, hotlinkable URL were considered and rejected.** The
   `satori` + `resvg-wasm` pattern (the standard Workers-compatible stack for this) would add real
   new infrastructure — a rendering pipeline and a Worker route — for a capability client-side
   canvas already covers, violating this spec's own §1.5 constraint on backend blast radius.
+  A link-preview (OG) image is the one case that genuinely needs a stable URL; it is tracked as
+  an idea in `TODO.md`, not part of this section.
 
 ### 6.1 Import
 

@@ -89,9 +89,20 @@ play. Melee is the official organized-play platform and does **no validation** f
   query engine and the Discord login. Slash commands only: inline `[[card]]` lookups need a
   persistent gateway connection, which fits Workers badly.
 - **Teams / co-owned decks**, as Piltover Archive has. Only worth it with a user base.
+- **Per-deck link-preview (OG) image.** Prototyped as a third deck-image design and set aside: a
+  Legends-only banner — three full-height Legend art strips fading into a dark panel carrying the
+  title, color pips, type counts and (at full size) a cost curve. Needs a re-layout to 1200×630,
+  and it must be **server-rendered** at a stable URL, which reverses `docs/spec/deckbuilder.md`
+  §6's rejection of `satori` + `resvg-wasm`. It is lighter than the old composite (3 images, no
+  card grid), but it needs Workers **Paid** ($5/mo) and a spike first, measuring: CPU per render,
+  Worker bundle size with resvg-wasm, and whether the mirrored WebP art decodes (satori/resvg may
+  not, which would add a WebP→PNG step). Cache the PNG by deck version; Discord fetches once. The
+  alternative is composing it in the owner's browser and uploading to R2 on save: one renderer
+  instead of two, but a write path, an R2 binding, and staleness. Today `/d/[code]` ships no
+  `image` at all (see the comment above `<Meta>`).
 
-Ruled out for now: a ranked/tournament platform or sim (Melee and the sim own those), scanning and
-mobile apps, and server-rendered OG deck images (Workers CPU limits).
+Ruled out for now: a ranked/tournament platform or sim (Melee and the sim own those), and scanning
+and mobile apps.
 
 ## Imports — what was not verified
 

@@ -25,6 +25,7 @@
 	import { splitCardName } from '#lib/cards/derive.js';
 	import Meta from '#lib/components/Meta.svelte';
 	import DeckExportDialog from '#lib/components/DeckExportDialog.svelte';
+	import DeckImageDialog from '#lib/components/DeckImageDialog.svelte';
 	import DeckCollectionPanel from '#lib/components/DeckCollectionPanel.svelte';
 	import DeckPrice from '#lib/components/DeckPrice.svelte';
 	import type { Card } from '#lib/cards/schema.js';
@@ -36,7 +37,6 @@
 		SIDEBOARD_SIZE
 	} from '#lib/decks/legality.js';
 	import { createDeckState } from '#lib/decks/deck-state.svelte.js';
-	import { composeDeckImage } from '#lib/decks/deck-image.js';
 	import { deckToJson, deckToMeleeFormat, deckToOfficialFormat } from '#lib/decks/export.js';
 	import { groupDeckEntries } from '#lib/decks/grouping.js';
 	import { deckPrinting } from '#lib/decks/printing.js';
@@ -244,56 +244,14 @@
 		eddiable.totalQuantity === 0 ? 0 : (eddiable.eddiableQuantity / eddiable.totalQuantity) * 100
 	);
 
-	// Text and image export (`docs/spec/deckbuilder.md` §6) — both built from what's already on
-	// the page; no server route. Text export lives in `DeckExportDialog`. Image export opens a
-	// preview dialog rather than downloading straight away, so the user can also just
-	// right-click-copy the composited image.
+	// Text and image export (`docs/spec/deckbuilder.md` §6) are `DeckExportDialog` and
+	// `DeckImageDialog` — both built from what's already on the page; no server route.
+
 	// Width matches the row menu's own `w-40` — `menuPosition` needs it to clamp against,
 	// since the panel is positioned via inline `style`, not `absolute right-0`/`left-0`
 	// (which broke down once the trigger wasn't guaranteed to be the row's rightmost item, or the
 	// row wasn't guaranteed wider than the panel — see `#lib/menu-position.js`).
 	const ROW_MENU_WIDTH = 160;
-
-	let imageDialogEl: HTMLDialogElement;
-	let imagePreviewUrl = $state<string | null>(null);
-	let imageBlob: Blob | null = null;
-
-	function downloadBlob(blob: Blob, filename: string) {
-		const url = URL.createObjectURL(blob);
-		const a = document.createElement('a');
-		a.href = url;
-		a.download = filename;
-		a.click();
-		URL.revokeObjectURL(url);
-	}
-
-	async function openImageDialog() {
-		const blob = await composeDeckImage({
-			deckName: data.deckName,
-			ownerName: data.ownerName,
-			legends: deck.legends.map((legend) => ({
-				card: legend,
-				printingId: deck.printingIdOf(legend)
-			})),
-			mainGroups,
-			sideboard: deck.sideboard,
-			shareUrl: window.location.href
-		});
-		if (!blob) return;
-		imageBlob = blob;
-		imagePreviewUrl = URL.createObjectURL(blob);
-		imageDialogEl.showModal();
-	}
-
-	function handleImageDialogClose() {
-		if (imagePreviewUrl) URL.revokeObjectURL(imagePreviewUrl);
-		imagePreviewUrl = null;
-		imageBlob = null;
-	}
-
-	function downloadPreviewImage() {
-		if (imageBlob) downloadBlob(imageBlob, `${data.deckName}.png`);
-	}
 
 	// Row operations (`docs/spec/deckbuilder.md` §8) reachable from the deck's own view, not
 	// just the `/decks` list — owner-only. Rename and visibility are inline, matching the
@@ -483,12 +441,17 @@
 										? deckToMeleeFormat(deck.legends, mainGroups, deck.sideboard)
 										: deckToJson(data.deckName, deck.legends, mainGroups, deck.sideboard)}
 						/>
-						<button
-							type="button"
-							onclick={openImageDialog}
-							class="rounded-md border border-edge px-3 py-1.5 text-sm text-body
-								hover:border-neon hover:text-neon">Deck image</button
-						>
+						<DeckImageDialog
+							deckName={data.deckName}
+							ownerName={data.ownerName}
+							legends={deck.legends.map((legend) => ({
+								card: legend,
+								printingId: deck.printingIdOf(legend)
+							}))}
+							{mainGroups}
+							sideboard={deck.sideboard}
+							shareUrl={`${page.url.origin}${page.url.pathname}`}
+						/>
 						{#if data.isOwner}
 							<a
 								href="/decks/{data.deckId}/edit"
@@ -1160,31 +1123,6 @@
 		</div>
 	</div>
 </div>
-
-<dialog
-	bind:this={imageDialogEl}
-	onclose={handleImageDialogClose}
-	class="w-full max-w-[84rem] rounded-lg border border-edge bg-shell p-4"
->
-	{#if imagePreviewUrl}
-		<img src={imagePreviewUrl} alt="{data.deckName} deck image" class="w-full rounded-md" />
-		<p class="mt-2 text-xs text-muted">Right-click the image to copy it, or download it below.</p>
-	{/if}
-	<div class="mt-4 flex justify-end gap-2">
-		<button
-			type="button"
-			onclick={() => imageDialogEl.close()}
-			class="rounded-md border border-edge px-3 py-1.5 text-sm text-body hover:border-neon
-				hover:text-neon">Close</button
-		>
-		<button
-			type="button"
-			onclick={downloadPreviewImage}
-			class="rounded-md bg-neon px-3 py-1.5 text-sm font-medium text-void hover:bg-neon-dim"
-			>Download image</button
-		>
-	</div>
-</dialog>
 
 <dialog
 	bind:this={deleteDialogEl}
