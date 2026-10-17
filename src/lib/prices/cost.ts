@@ -131,6 +131,24 @@ export function cheapestOffer(
 	return best;
 }
 
+/**
+ * The Offer a deck line is priced at **as built**: the Printing the deck chose for the card, or —
+ * when it chose none, or the one it chose has left the dataset — the cheapest, since nobody asked
+ * for any particular art. A chosen Printing nobody lists (a French copy) is **not** swapped for a
+ * cheaper one: that choice was made, so it is `null`. `deckCost`'s `built` figure is this, summed.
+ */
+export function builtOffer(
+	card: Card,
+	printingId: string | undefined,
+	quoteOf: (printingId: string) => Quote | undefined,
+	marketplace: Marketplace
+): Offer | null {
+	const chosen = card.printings.find((printing) => printing.id === printingId);
+	return chosen === undefined
+		? cheapestOffer(card, quoteOf, marketplace)
+		: offerFor(chosen, quoteOf(chosen.id), marketplace);
+}
+
 export type CostRow = {
 	card: Card;
 	/** Copies short — the Card-level `playableMissing`, not a Printing-scoped figure. */
@@ -280,10 +298,7 @@ export function deckCost(
 		for (const marketplace of MARKETPLACES) {
 			const offer = cheapestOffer(card, quoteOf, marketplace);
 			const cheapest = offer?.amount ?? null;
-			const built =
-				chosen === undefined
-					? cheapest
-					: (listingOf(quoteOf(chosen.id), marketplace)?.amount ?? null);
+			const built = builtOffer(card, printingId, quoteOf, marketplace)?.amount ?? null;
 			tally(totals[marketplace].built, built, quantity);
 			tally(totals[marketplace].cheapest, cheapest, quantity);
 

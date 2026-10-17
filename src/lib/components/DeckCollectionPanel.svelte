@@ -32,7 +32,7 @@
 	import type { Card } from '#lib/cards/schema.js';
 	import type { NeededCard } from '#lib/collection/missing.js';
 	import type { WantlistSummary } from '#lib/collection/wantlists.js';
-	import { costToComplete, MARKETPLACE_INFO } from '#lib/prices/cost.js';
+	import { builtOffer, costToComplete, MARKETPLACE_INFO } from '#lib/prices/cost.js';
 	import { formatMoney } from '#lib/prices/format.js';
 	import { priceSource } from '#lib/prices/source.svelte.js';
 	import { prices } from '#lib/prices/state.svelte.js';
@@ -74,6 +74,23 @@
 	);
 	// Only the chosen marketplace: a total in the other one's currency is not the one being asked for.
 	const anyPriced = $derived(cost.totals[priceSource.value].priced > 0);
+
+	// Every row's price, per copy, as built: the printing the deck chose, else the cheapest — the same
+	// rule as the deck's "As built" figure, so the column is what that figure is made of. Independent
+	// of what you own, which is why it also serves a signed-out reader.
+	const priceOffers = $derived(
+		new Map(
+			rows.map((row) => [
+				row.card.slug,
+				builtOffer(
+					row.card,
+					row.scope === 'printing' ? row.addTarget : undefined,
+					(id) => prices.quote(id),
+					priceSource.value
+				)
+			])
+		)
+	);
 
 	/** Wantlist menu state, carried over from `MissingPanel`. `null` until fetched, so "none yet"
 	 * stays distinguishable from "not asked". */
@@ -175,24 +192,25 @@
 </script>
 
 <!--
-	Signed out, the tab renders an invitation rather than a table of zeroes: every count would read
-	`0/3` and every control would be dead, which looks like a broken page rather than a feature
-	you don't have yet. `collection.editable` (the store has actually loaded) rather than "not
-	signed out", for the reason `MissingPanel` documented: the store can't know either way until
-	its fetch lands, and a confident "you own none of this" in the server HTML is wrong for the
-	first second of every load.
+	Signed out, the tab shows an invitation and the list as a price list — name and price, no counts
+	or controls — rather than a table of zeroes: every count would read `0/3` and every control
+	would be dead, which looks like a broken page rather than a feature you don't have yet. The
+	prices need no account, so they are not held back with the rest. `collection.editable` (the
+	store has actually loaded) rather than "not signed out", for the reason `MissingPanel`
+	documented: the store can't know either way until its fetch lands, and a confident "you own
+	none of this" in the server HTML is wrong for the first second of every load.
 -->
-{#if !collection.editable}
-	<p class="rounded-md border border-edge bg-surface px-3 py-2 text-sm text-muted">
-		{#if collection.signedOut}
-			<a href="/auth/login" class="text-neon hover:text-bright">Sign in</a> to track which of these cards
-			you own.
-		{:else}
-			Loading your collection…
-		{/if}
-	</p>
-{:else}
-	<div class="rounded-md border border-edge bg-surface">
+<div class="rounded-md border border-edge bg-surface">
+	{#if !collection.editable}
+		<p class="border-b border-edge px-3 py-2 text-sm text-muted">
+			{#if collection.signedOut}
+				<a href="/auth/login" class="text-neon hover:text-bright">Sign in</a> to track which of these
+				cards you own.
+			{:else}
+				Loading your collection…
+			{/if}
+		</p>
+	{:else}
 		<div class="flex flex-wrap items-baseline gap-x-4 gap-y-2 border-b border-edge px-3 py-2.5">
 			{#if summary.complete}
 				<p class="text-sm font-medium text-neon-dim">
@@ -319,57 +337,62 @@
 				{failure ?? collection.error}
 			</p>
 		{/if}
+	{/if}
 
-		<!-- A list, not a grid: the row is doing four jobs at once (name, owned, needed, controls),
+	<!-- A list, not a grid: the row is doing four jobs at once (name, owned, needed, controls),
 		     and three of the four are numbers you read against each other. -->
-		<ul role="list">
-			{#each rows as row (row.card.slug)}
-				{@const short = row.missing > 0}
-				{@const offers = row.playableMissing > 0 ? offersBySlug.get(row.card.slug) : undefined}
-				<li class="flex items-center gap-3 border-b border-edge/50 px-3 py-1.5 last:border-b-0">
-					<span
-						class="min-w-0 flex-1 truncate text-sm {COLOR_TEXT[row.card.color]}"
-						onmouseenter={() => onFocusCard?.(row.card)}
-						role="presentation"
-					>
-						{row.card.name}
-						{#if row.scope === 'printing' && row.ownedElsewhere > 0}
-							<!-- The disclosure that keeps a scoped `0/3` from reading as a bug: you *do* hold
+	<ul role="list">
+		{#each rows as row (row.card.slug)}
+			{@const short = row.missing > 0}
+			<li class="flex items-center gap-3 border-b border-edge/50 px-3 py-1.5 last:border-b-0">
+				<span
+					class="min-w-0 flex-1 truncate text-sm {COLOR_TEXT[row.card.color]}"
+					onmouseenter={() => onFocusCard?.(row.card)}
+					role="presentation"
+				>
+					{row.card.name}
+					{#if row.scope === 'printing' && row.ownedElsewhere > 0}
+						<!-- The disclosure that keeps a scoped `0/3` from reading as a bug: you *do* hold
 							     copies, just not the art this deck asked for. -->
-							<span class="text-[0.65rem] text-muted/70"
-								>· {row.ownedElsewhere} in other printings</span
-							>
-						{:else if row.scope === 'card' && row.printingsHeld > 1}
-							<!-- Explains a total that doesn't match any single printing's count, which is
+						<span class="text-[0.65rem] text-muted/70"
+							>· {row.ownedElsewhere} in other printings</span
+						>
+					{:else if row.scope === 'card' && row.printingsHeld > 1}
+						<!-- Explains a total that doesn't match any single printing's count, which is
 							     otherwise baffling on a card you hold in two languages. -->
-							<span class="text-[0.65rem] text-muted/70"
-								>· across {row.printingsHeld} printings</span
-							>
-						{/if}
-					</span>
-
-					<!-- The cheapest printing's price, per copy, linked to where to buy it. Only for a card the
-					     deck is actually short of (Card level, like the headline). The tooltip names the
-					     printing, because "cheapest" can be a beta copy you did not have in mind. -->
-					{#if offers}
-						{@const offer = offers[priceSource.value]}
-						{#if offer}
-							{@const info = MARKETPLACE_INFO[priceSource.value]}
-							<a
-								href={info.url(offer.productId)}
-								target="_blank"
-								rel="noopener noreferrer"
-								title="{info.name}, each — {printTreatment(offer.printing) === 'beta'
-									? 'beta'
-									: 'retail'} printing #{offer.printing.collectorNumber}"
-								class="shrink-0 font-mono text-xs text-muted tabular-nums transition-colors hover:text-neon"
-								>{formatMoney(offer.amount, info.currency)}<span class="sr-only"
-									>, {info.name}, opens in a new tab</span
-								></a
-							>
-						{/if}
+						<span class="text-[0.65rem] text-muted/70">· across {row.printingsHeld} printings</span>
 					{/if}
+				</span>
 
+				<!-- The price per copy, as built, linked to where to buy it. The tooltip names the printing,
+					     because it can be a beta copy, or the one the deck chose, that you did not have in
+					     mind. Not until the snapshot has loaded: before it every row would read `—`. -->
+				{#if prices.status === 'ready'}
+					{@const offer = priceOffers.get(row.card.slug)}
+					{@const info = MARKETPLACE_INFO[priceSource.value]}
+					{#if offer}
+						<a
+							href={info.url(offer.productId)}
+							target="_blank"
+							rel="noopener noreferrer"
+							title="{info.name}, each — {printTreatment(offer.printing) === 'beta'
+								? 'beta'
+								: 'retail'} printing #{offer.printing.collectorNumber}"
+							class="shrink-0 font-mono text-xs text-muted tabular-nums transition-colors hover:text-neon"
+							>{formatMoney(offer.amount, info.currency)}<span class="sr-only"
+								>, {info.name}, opens in a new tab</span
+							></a
+						>
+					{:else}
+						<span
+							class="shrink-0 font-mono text-xs text-muted/50"
+							title="No {info.name} price for this card"
+							>—<span class="sr-only">No {info.name} price</span></span
+						>
+					{/if}
+				{/if}
+
+				{#if collection.editable}
 					<span
 						class="shrink-0 text-xs tabular-nums {short ? 'text-card-red' : 'text-neon-dim'}"
 						title={row.scope === 'printing'
@@ -421,8 +444,8 @@
 							</svg>
 						</button>
 					</span>
-				</li>
-			{/each}
-		</ul>
-	</div>
-{/if}
+				{/if}
+			</li>
+		{/each}
+	</ul>
+</div>

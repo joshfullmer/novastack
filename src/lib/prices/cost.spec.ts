@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { makeCard, makePrinting } from '../cards/fixtures.ts';
 import type { Card } from '../cards/schema.ts';
-import { cheapestOffer, costOfPrintings, costToComplete, deckCost } from './cost.ts';
+import { builtOffer, cheapestOffer, costOfPrintings, costToComplete, deckCost } from './cost.ts';
 import type { Quote } from './schema.ts';
 
 const tcg = (productId: number, market: number | null): Quote => ({
@@ -108,6 +108,30 @@ describe('cheapestOffer when Cardmarket could not identify a printing', () => {
 		});
 		const quotes = lookup({ beta: cm(1, 50) });
 		expect(cheapestOffer(withRetail, quotes, 'cardmarket')?.amount).toBe(50);
+	});
+});
+
+describe('builtOffer', () => {
+	const card = threePrintings('chrome-fang');
+	const quotes = lookup({
+		'chrome-fang-retail': tcg(1, 500),
+		'chrome-fang-beta': tcg(2, 20)
+	});
+
+	it('prices the printing the deck chose, not the cheapest', () => {
+		const offer = builtOffer(card, 'chrome-fang-retail', quotes, 'tcgplayer');
+		expect(offer?.printing.id).toBe('chrome-fang-retail');
+		expect(offer?.amount).toBe(500);
+	});
+
+	it('falls back to the cheapest when the deck chose nothing, or the choice has left the dataset', () => {
+		expect(builtOffer(card, undefined, quotes, 'tcgplayer')?.printing.id).toBe('chrome-fang-beta');
+		expect(builtOffer(card, 'gone', quotes, 'tcgplayer')?.printing.id).toBe('chrome-fang-beta');
+	});
+
+	it('does not swap a chosen printing nobody prices for a cheaper one', () => {
+		expect(builtOffer(card, 'chrome-fang-fr', quotes, 'tcgplayer')).toBeNull();
+		expect(builtOffer(card, 'chrome-fang-retail', quotes, 'cardmarket')).toBeNull();
 	});
 });
 
