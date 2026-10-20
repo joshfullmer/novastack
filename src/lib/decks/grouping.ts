@@ -3,7 +3,7 @@
  * deckbuilder's Main Deck panel and a saved deck's read-only view, so their section order, labels,
  * and per-group card ordering can't drift apart.
  *
- * Group order follows `dataset.cardTypeOrder` (derived from the Base Set's own collector-number
+ * Group order follows `dataset.cardTypeOrder` (derived from the ordering reference's own collector-number
  * sequence — `Legend, Unit, Gear, Program`) rather than a hardcoded list, so it stays correct if
  * that derivation ever changes. Cards within a group sort by Cost → Color → Name (not
  * `DEFAULT_SORT`'s Color → Type → Cost → Name) — Type is already the group boundary, so

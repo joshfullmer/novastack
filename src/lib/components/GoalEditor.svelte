@@ -3,7 +3,7 @@
 	 * The Collecting Goal editor — which **Printing Runs** the viewer is collecting, and therefore
 	 * what "Complete" means for them (`CONTEXT.md`).
 	 *
-	 * Grouped by Set, because that is how a collector thinks about it ("base set French, Heist
+	 * Grouped by Set, because that is how a collector thinks about it ("Welcome to Night City French, Heist
 	 * retail"). Nine of the thirteen Sets have exactly one Run, so they render as a single chip:
 	 * presenting a treatment axis there would invent a decision the data doesn't offer.
 	 *

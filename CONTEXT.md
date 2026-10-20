@@ -27,25 +27,40 @@ _Avoid_: selected printing, primary printing, main printing
 **Set**:
 A named release that Printings belong to, identified by its printed Set Identifier — a main set, a
 starter deck, a demo deck, a box-topper set, a promo set, two prerelease sets, a tournament prize
-set. **Twelve today.** The source API reports sixteen, because it splits most Sets into separate
+set. **Thirteen today with cards, plus one Announced.** The source API reports eighteen, because it splits most Sets into separate
 retail and beta entries; that split is the API's own and does not exist on the cards — see Print
 Treatment. (The two prerelease Sets are the one exception: `PRR01` and `PRR02` really are distinct
 Sets, not a treatment pair — the API's `retail`/`beta` naming on them is coincidental, not the
 usual split. Checked against the printed card, not assumed.)
 _Avoid_: expansion, release, product
 
-**Base Set**:
-The primary release a Card belongs to, as opposed to a Derivative Set. There is exactly one
-today — Welcome to Night City — and it holds the overwhelming majority of Cards. The concept is
-provisional: a second genuine release changes what "base" means, and the ordering rules derived
-from it must be re-derived rather than carried forward.
+**Main Set**:
+A primary release — a Set of its own rather than a repackaging of another, printed with the `MS`
+Set Category (`MS01`, `MS02`). Main Sets are peers: none is "the base" of the others. Each holds the
+overwhelming majority of its own Cards and is the parent its Derivative Sets hang from. One today —
+Welcome to Night City — with Edgerunners: Burn Bright announced as the second.
+_Avoid_: base set, core set, expansion
+
+**Announced**:
+Said of a Main Set that has been revealed but has no Printings yet — Edgerunners: Burn Bright, until
+its first card is ingested. A state a Set is _in_, not a flag it carries: it ends by itself the
+moment a Printing exists. Only a Main Set can be Announced; a Derivative or Misc Set with no
+Printings is a mapping error, not a product awaiting cards.
 
 **Derivative Set**:
-A Set that repackages or supplements the Base Set rather than being a release of its own — a
+A Set that repackages or supplements one specific Main Set rather than being a release of its own — a
 starter deck, a demo deck, a box-topper set, or a promo set. Most Cards in a Derivative Set also
-appear in the Base Set, but not all: a Card that appears _only_ in a Derivative Set is
-**Set-Exclusive**. Note a beta twin is _not_ a Derivative Set — see Print Treatment.
+appear in that Main Set, but not all: a Card that appears _only_ in a Derivative Set is
+**Set-Exclusive**. Its parent is the one Main Set its Cards appear in; where none of them appear in
+any Main Set (the box toppers, all Set-Exclusive), the Main Set sharing its Set Code. Note a beta
+twin is _not_ a Derivative Set — see Print Treatment.
 _Avoid_: sub-set, secondary set, supplemental set
+
+**Misc Set**:
+A Set whose Cards come from more than one Main Set — so it has no single parent and is neither a
+Main Set nor a Derivative Set. A property of what a Set _contains_, not a label assigned to it: a
+Set becomes Misc the moment its Cards span two Main Sets, and not before.
+_Avoid_: promo set, event set, other
 
 **Print Treatment**:
 Whether a Printing is a retail or a beta copy. Orthogonal to Set: a retail and a beta card carry
@@ -58,7 +73,7 @@ _Avoid_: edition, variant, version
 The code printed on a Printing: `<Set Category> - <Set Code> [<Cycle>]`, as in `MS01 - WNC [A]` or
 `PRM - DD2 [A]`. Not exposed by the source API at all — it supplies only a slugified set _name_ — so
 the mapping from API set to printed identifier is curated. Components can be absent: `PRR01 - WNC`
-has no Cycle, and `PRM01` has only a Category. Sixteen API sets reduce to **twelve** printed
+has no Cycle, and `PRM01` has only a Category. Eighteen API sets reduce to **thirteen** printed
 identifiers, because retail and beta usually share one — see Set's note on the two prerelease
 Sets being the exception.
 
@@ -81,7 +96,7 @@ Sets are legal in the current format. **The source API exposes no cycle data**, 
 legality cannot be derived from it.
 
 **Set-Exclusive**:
-Said of a Card whose only Printings are in Derivative Sets — it was never printed in the Base
+Said of a Card whose only Printings are in Derivative Sets — it was never printed in any Main
 Set. Eleven today, all from the two retail starter decks plus one promo.
 
 **Rarity**:
@@ -251,9 +266,9 @@ never "unknown", only owned zero times.
 _Avoid_: quantity, have count
 
 **Printing Run**:
-One Set in one Print Treatment and one Locale — "the Base Set's French run", "the Heist starter
+One Set in one Print Treatment and one Locale — "Welcome to Night City's French run", "the Heist starter
 deck's beta run". The unit a collector actually decides about, because it is the unit that was
-physically manufactured as a batch. **Seventeen exist today**, unevenly: the Base Set has three
+physically manufactured as a batch. **Seventeen exist today**, unevenly: Welcome to Night City has three
 (English beta 172, English retail 150, French retail 150), three other Sets have two apiece, and
 the remaining eight have one each, so most Sets present no choice at all. Combinations that were
 never printed are not Printing Runs — there is no French beta run — so they are never offered.
@@ -269,7 +284,7 @@ shown a permanent ceiling of 47% for cards they never wanted and in many cases c
 A set of Printing Runs, rather than a Set list crossed with a Treatment list and a Locale list.
 Treatment and Locale live _inside_ a Set — a beta Printing carries the identical printed Set
 Identifier as its retail twin — so a Set-level choice cannot express them; and a cross product
-cannot express a **diagonal**, which is a real thing to want: the Base Set's beta and French runs
+cannot express a **diagonal**, which is a real thing to want: Welcome to Night City's beta and French runs
 _without_ its English retail run is three runs of 172, 150 and 150 Printings, and any cross
 product that admits the first two admits the third.
 _Avoid_: collection scope, filter, target, completion settings

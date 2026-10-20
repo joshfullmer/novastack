@@ -29,7 +29,7 @@ import {
 	type Violation
 } from '../src/lib/cards/assertions.ts';
 import {
-	baseSetSequence,
+	orderingSequence,
 	cardTypeRunsWithinColors,
 	deriveRamPerLegend,
 	deriveSets,
@@ -245,7 +245,7 @@ async function main(): Promise<void> {
 	});
 
 	const { colors, cardTypes, ram, sets } = await stage('Deriving orderings', () => {
-		const sequence = baseSetSequence(cards);
+		const sequence = orderingSequence(cards);
 		return {
 			colors: runOrder(sequence.map((entry) => entry.color)),
 			cardTypes: cardTypeRunsWithinColors(sequence),
@@ -269,7 +269,10 @@ async function main(): Promise<void> {
 	const [firstType, ...restTypes] = cardTypes.order;
 	if (firstColor === undefined || firstType === undefined) {
 		fail('Derived orderings', [
-			{ check: 'derived-order-non-empty', detail: 'the Base Set sequence produced no entries' }
+			{
+				check: 'derived-order-non-empty',
+				detail: 'the ordering reference sequence produced no entries'
+			}
 		]);
 	}
 
@@ -282,8 +285,9 @@ async function main(): Promise<void> {
 		stats: {
 			cards: cards.length,
 			printings: cards.reduce((total, card) => total + card.printings.length, 0),
-			// Genuine releases only. The other nine printed identifiers are derivative products.
-			sets: sets.filter((set) => set.kind === 'base').length
+			// Genuine releases only: Main Sets that have printings. Derivative and Misc Sets are
+			// products, and an Announced Main Set has not shipped a card yet.
+			sets: sets.filter((set) => set.kind === 'main' && set.printingCount > 0).length
 		},
 		cards,
 		generalFaqs

@@ -16,7 +16,7 @@ import {
 	totalCopies
 } from './goal.ts';
 
-/** A Base Set with all three real treatments/locales, plus a retail-only derivative set. */
+/** A Main Set with all three real treatments/locales, plus a retail-only derivative set. */
 const cards = [
 	makeCard({
 		slug: 'both-treatments',

@@ -2,7 +2,7 @@
  * Sorting.
  *
  * **Default: Color → Card Type → Cost → Name**, using the orders derived at ingest. Collector
- * number already produces perfect color and type grouping within the Base Set, so the explicit
+ * number already produces perfect color and type grouping within Welcome to Night City, so the explicit
  * sort buys one thing: cost orders *within* each color+type block, giving a readable curve.
  * `Set → Collector Number` is consequently not reachable in stage 1.
  *

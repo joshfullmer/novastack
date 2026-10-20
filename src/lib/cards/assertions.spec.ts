@@ -17,7 +17,7 @@ import {
 } from './fixtures.ts';
 import { normalizeCards } from './normalize.ts';
 import { NetdeckCardSchema } from './schema.ts';
-import { SET_IDENTIFIERS } from './sets.ts';
+import { SET_IDENTIFIERS, isMainSetCategory } from './sets.ts';
 
 const checks = (violations: readonly Violation[]) => violations.map((violation) => violation.check);
 
@@ -124,13 +124,13 @@ describe('checkRawInvariants', () => {
 
 describe('checkModelInvariants', () => {
 	/**
-	 * Four colors × four types in Base Set collector order — the real shape, in miniature.
+	 * Four colors × four types in ordering-reference collector order — the real shape, in miniature.
 	 * Every curated Set gets a printing, because a Set with none is itself a violation.
 	 */
 	function contiguousDataset() {
 		const colors = ['Red', 'Yellow', 'Green', 'Blue'] as const;
 		const types = ['Legend', 'Unit', 'Gear', 'Program'] as const;
-		const derivativeSets = SET_IDENTIFIERS.filter((set) => set.kind === 'derivative');
+		const derivativeSets = SET_IDENTIFIERS.filter((set) => !isMainSetCategory(set.category));
 		let collector = 0;
 
 		return colors.flatMap((color) =>
@@ -223,6 +223,33 @@ describe('checkModelInvariants', () => {
 		expect(checks(violations)).toContain('every-set-has-printings');
 		expect(violations.find((v) => v.check === 'every-set-has-printings')?.detail).toContain(
 			'SD01-HEI'
+		);
+	});
+
+	it('lets an Announced Main Set have no printings', () => {
+		const violations = checkModelInvariants(contiguousDataset());
+		expect(violations.map((entry) => entry.detail).join('\n')).not.toContain('MS02-BBR');
+	});
+
+	it('fails when a Set cannot be placed under a Main Set', () => {
+		// `PRM01` prints no Set Code, so a `PRM01` whose only Card is in no Main Set has neither
+		// overlap nor a Set Code to be parented by.
+		const cards = [
+			...contiguousDataset().map((card) => ({
+				...card,
+				printings: card.printings.filter(
+					(printing) => printing.setId !== 'PRM01'
+				) as typeof card.printings
+			})),
+			makeCard({
+				slug: 'orphan',
+				printings: [makePrinting({ setId: 'PRM01', collectorNumber: '001' })]
+			})
+		];
+
+		const violations = checkModelInvariants(cards);
+		expect(violations.find((entry) => entry.check === 'every-set-has-a-parent')?.detail).toContain(
+			'PRM01'
 		);
 	});
 

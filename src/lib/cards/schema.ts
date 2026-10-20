@@ -15,7 +15,7 @@
 import * as v from 'valibot';
 import { FaqSchema } from './faq.ts';
 import { ParagraphSchema } from './rules-text.ts';
-import { SetIdentifierSchema } from './sets.ts';
+import { SetIdentifierSchema, SetKindSchema } from './sets.ts';
 import {
 	CardTypeSchema,
 	ColorSchema,
@@ -168,6 +168,10 @@ export type Card = v.InferOutput<typeof CardSchema>;
 
 export const SetSummarySchema = v.object({
 	...SetIdentifierSchema.entries,
+	/** Derived at ingest from the Set's contents, never curated — see `deriveSets`. */
+	kind: SetKindSchema,
+	/** The Main Set a Derivative Set hangs from; `null` for a Main or Misc Set. */
+	parentId: v.nullable(v.string()),
 	cardCount: v.number(),
 	printingCount: v.number()
 });
@@ -177,7 +181,8 @@ export const StatsSchema = v.object({
 	cards: v.number(),
 	printings: v.number(),
 	/**
-	 * Genuine releases — **not** every printed Set Identifier. One today: Welcome to Night City.
+	 * Genuine releases — **not** every printed Set Identifier: the Main Sets that have printings,
+	 * so an Announced one is not counted. One today: Welcome to Night City.
 	 *
 	 * There are eight sources of cards, but seven of them are starter decks, demo decks, a
 	 * box-topper run, promos and a prerelease. Counting those as "sets" claims eight releases for a
@@ -190,7 +195,7 @@ export type Stats = v.InferOutput<typeof StatsSchema>;
 export const SnapshotSchema = v.object({
 	/** When `pnpm ingest` ran. The dataset is not stable — every count is a snapshot. */
 	generatedAt: v.pipe(v.string(), v.isoTimestamp()),
-	/** Derived from the Base Set's collector-number sequence, not hardcoded. */
+	/** Derived from the ordering reference's collector-number sequence, not hardcoded. */
 	colorOrder: v.tupleWithRest([ColorSchema], ColorSchema),
 	cardTypeOrder: v.tupleWithRest([CardTypeSchema], CardTypeSchema),
 	/** Uniform across Legends today — asserted, because that is data and not a rule. */

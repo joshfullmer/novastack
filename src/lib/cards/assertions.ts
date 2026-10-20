@@ -28,7 +28,8 @@
  */
 import {
 	runOrder,
-	baseSetSequence,
+	orderingSequence,
+	placeSets,
 	cardTypeRunsWithinColors,
 	deriveRamPerLegend,
 	deriveSets
@@ -211,12 +212,12 @@ export function checkModelInvariants(cards: readonly Card[]): Violation[] {
 	const violations: Violation[] = [];
 	const add = (check: string, detail: string) => violations.push({ check, detail });
 
-	const sequence = baseSetSequence(cards);
+	const sequence = orderingSequence(cards);
 	const colors = runOrder(sequence.map((entry) => entry.color));
 	if (colors.runs !== COLORS.length || colors.order.length !== COLORS.length)
 		add(
 			'color-forms-four-runs',
-			`color forms ${colors.runs} run(s) over ${colors.order.length} value(s) in the Base Set ` +
+			`color forms ${colors.runs} run(s) over ${colors.order.length} value(s) in the ordering ` +
 				`sequence; the derived order is only meaningful at exactly ${COLORS.length}`
 		);
 
@@ -247,11 +248,22 @@ export function checkModelInvariants(cards: readonly Card[]): Violation[] {
 	if (repeatedIds.length > 0)
 		add('unique-printing-ids', `repeated printing ids: ${repeatedIds.join(', ')}`);
 
-	const emptySets = deriveSets(cards).filter((set) => set.printingCount === 0);
+	// A Main Set is exempt: with no printings it is Announced, which is a state, not drift.
+	const emptySets = deriveSets(cards).filter(
+		(set) => set.printingCount === 0 && set.kind !== 'main'
+	);
 	if (emptySets.length > 0)
 		add(
 			'every-set-has-printings',
 			`curated Set(s) with no printings: ${emptySets.map((set) => set.id).join(', ')}`
+		);
+
+	const unplaced = placeSets(cards).unplaced;
+	if (unplaced.length > 0)
+		add(
+			'every-set-has-a-parent',
+			`Set(s) that are neither Main, Derivative nor Misc: ` +
+				unplaced.map((entry) => `${entry.setId} (${entry.detail})`).join('; ')
 		);
 
 	const legendsWithoutSubtitle = cards.filter(

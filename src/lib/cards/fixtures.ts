@@ -9,7 +9,7 @@
  */
 import type { Faq, NetdeckFaq } from './faq.ts';
 import type { Card, NetdeckCard, NetdeckPrinting, Printing, Snapshot } from './schema.ts';
-import { SET_IDENTIFIERS } from './sets.ts';
+import { deriveSets } from './derive.ts';
 import { DEFAULT_LOCALE, type CardType, type Color } from './vocabulary.ts';
 
 let sequence = 0;
@@ -167,8 +167,8 @@ export function makeSnapshot(cards: readonly Card[], overrides: Partial<Snapshot
 		colorOrder: ['Red', 'Yellow', 'Green', 'Blue'],
 		cardTypeOrder: ['Legend', 'Unit', 'Gear', 'Program'],
 		ramPerLegend: 2,
-		sets: SET_IDENTIFIERS.map((set) => ({ ...set, cardCount: 0, printingCount: 0 })),
-		stats: { cards: cards.length, printings: 0, sets: SET_IDENTIFIERS.length },
+		sets: deriveSets(cards),
+		stats: { cards: cards.length, printings: 0, sets: 1 },
 		cards: [...cards],
 		generalFaqs: [],
 		...overrides

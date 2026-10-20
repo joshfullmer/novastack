@@ -36,16 +36,22 @@ describe('the snapshot', () => {
 		expect(snapshot.stats.printings).toBe(
 			snapshot.cards.reduce((total, entry) => total + entry.printings.length, 0)
 		);
-		// Genuine releases, not the thirteen printed Set Identifiers: twelve of those are starter decks,
-		// demo decks, box toppers, promos, two prereleases, a tournament prize set, and weekly-play
-		// mini-sets, and calling them sets would claim twelve releases for a game that has had one.
-		expect(snapshot.stats.sets).toBe(snapshot.sets.filter((set) => set.kind === 'base').length);
+		// Genuine releases, not the fourteen printed Set Identifiers: twelve of those are starter
+		// decks, demo decks, box toppers, promos, two prereleases, a tournament prize set, and
+		// weekly-play mini-sets, and one is an Announced Main Set with no card yet. Counting them
+		// would claim fourteen releases for a game that has had one.
+		expect(snapshot.stats.sets).toBe(
+			snapshot.sets.filter((set) => set.kind === 'main' && set.printingCount > 0).length
+		);
 		expect(snapshot.stats.sets).toBeLessThan(snapshot.sets.length);
 	});
 
-	it('collapses eighteen API sets to thirteen printed Set Identifiers', () => {
-		expect(snapshot.sets).toHaveLength(13);
-		expect(snapshot.sets.filter((set) => set.kind === 'base')).toHaveLength(1);
+	it('collapses eighteen API sets to thirteen printed Set Identifiers, plus one Announced', () => {
+		expect(snapshot.sets).toHaveLength(14);
+		expect(snapshot.sets.filter((set) => set.kind === 'main')).toHaveLength(2);
+		expect(snapshot.sets.filter((set) => set.printingCount === 0).map((set) => set.id)).toEqual([
+			'MS02-BBR'
+		]);
 	});
 
 	it('carries the derived orderings rather than hardcoded ones', () => {

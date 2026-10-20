@@ -62,7 +62,11 @@ export type Dataset = {
 	colorOrder: readonly Color[];
 	cardTypeOrder: readonly CardType[];
 	ramPerLegend: number;
+	/** Sets that have printings — what every browse, collection and query surface works from. */
 	sets: readonly SetSummary[];
+	/** Every curated Set, Announced ones included — an Announced Set is visible on `/sets` and
+	 * `/sets/[id]` and nowhere else, and joins `sets` by itself when its first card ingests. */
+	allSets: readonly SetSummary[];
 	stats: Stats;
 	/** Game-scope FAQ entries — general rulings, tied to no Card. Card-scope ones live on the
 	 * Card itself (`Card.faqs`); see `faq.ts`. */
@@ -97,6 +101,11 @@ function searchHaystack(card: Card): string {
 	return normalizeForSearch(`${card.name} ${plainText(card.rulesText)}`);
 }
 
+/** Announced: a Main Set revealed but with no printings yet. Derived, so it ends by itself. */
+export function isAnnounced(set: SetSummary): boolean {
+	return set.kind === 'main' && set.printingCount === 0;
+}
+
 export function createDataset(snapshot: Snapshot): Dataset {
 	const { cards } = snapshot;
 
@@ -116,7 +125,8 @@ export function createDataset(snapshot: Snapshot): Dataset {
 		colorOrder: snapshot.colorOrder,
 		cardTypeOrder: snapshot.cardTypeOrder,
 		ramPerLegend: snapshot.ramPerLegend,
-		sets: snapshot.sets,
+		sets: snapshot.sets.filter((set) => !isAnnounced(set)),
+		allSets: snapshot.sets,
 		stats: snapshot.stats,
 		generalFaqs: snapshot.generalFaqs,
 		bySlug: new Map(cards.map((card) => [card.slug, card])),

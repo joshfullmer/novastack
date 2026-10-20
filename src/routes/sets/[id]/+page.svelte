@@ -7,8 +7,13 @@
 	 * browsing grid but would squash a retail/beta pair or a tournament-prize variant down to
 	 * one tile here, disagreeing with the header's own printing count. A "Browse in Cards →"
 	 * link is the escape hatch into full filtering/sorting for anyone who wants that view
-	 * instead. A derivative set's header points back up to the Base Set it supplements, so the
+	 * instead. A derivative set's header points back up to the Main Set it supplements, so the
 	 * hierarchy reads in both directions, not just top-down from the overview.
+	 *
+	 * An Announced Main Set has no printings, so it gets the same header with a season and a
+	 * link to the announcement in place of the counts, and an empty state in place of the grid.
+	 * It resolves through `allSets`: it is not in `dataset.sets`, which is what every other
+	 * surface sees.
 	 *
 	 * **Sorted by Collector Number, ascending** — not the shared `Sort` pipeline's `default`
 	 * (colour/type/cost). `card-database.md` deliberately left `Set → Collector Number`
@@ -43,7 +48,8 @@
 	import QuantityStepper from '#lib/components/QuantityStepper.svelte';
 	import { collection } from '#lib/collection/state.svelte.js';
 	import { manageCollection } from '#lib/collection/manage-pref.svelte.js';
-	import wncLogo from '#lib/assets/wnc-logo.png';
+	import { MAIN_SET_LOGOS } from '#lib/assets/set-logos.js';
+	import { isAnnounced } from '#lib/cards/dataset.js';
 	import { cardImageUrl } from '#lib/cards/schema.js';
 	import { DEFAULT_LOCALE, type Locale } from '#lib/cards/vocabulary.js';
 
@@ -53,8 +59,13 @@
 
 	let { data } = $props();
 
-	const set = $derived(dataset.sets.find((candidate) => candidate.id === page.params.id));
-	const baseSet = dataset.sets.find((candidate) => candidate.kind === 'base');
+	const set = $derived(dataset.allSets.find((candidate) => candidate.id === page.params.id));
+	const announced = $derived(set !== undefined && isAnnounced(set));
+	const parent = $derived(
+		set?.parentId == null ? undefined : dataset.allSets.find((entry) => entry.id === set.parentId)
+	);
+	const logo = $derived(set === undefined ? undefined : MAIN_SET_LOGOS[set.id]);
+	const KIND_LABELS = { main: 'Main set', derivative: 'Derivative set', misc: 'Misc set' } as const;
 
 	function byCollectorNumber(
 		a: { printing: { collectorNumber: string } },
@@ -160,22 +171,20 @@
 		void goto(next, { shallow: true, replace: true });
 	}
 
-	// The Base Set has its own logo; a derivative set has no comparable asset, so its first
-	// card (Collector-Number order, same as the grid below) stands in instead.
+	// A Main Set has its own logo; any other set has no comparable asset, so its first card
+	// (Collector-Number order, same as the grid below) stands in instead.
 	const ogImage = $derived(
-		set?.kind === 'base'
-			? wncLogo
-			: results[0]
-				? cardImageUrl(results[0].printing.id, 733)
-				: undefined
+		logo ?? (results[0] ? cardImageUrl(results[0].printing.id, 733) : undefined)
 	);
 </script>
 
 <Meta
 	title="{set?.name ?? 'Set not found'} — novastack"
-	description={set
-		? `${set.name} — ${set.cardCount} cards, ${set.printingCount} printings.`
-		: 'This set could not be found.'}
+	description={set === undefined
+		? 'This set could not be found.'
+		: announced
+			? `${set.name} — announced${set.releaseWindow ? `, ${set.releaseWindow}` : ''}. No cards revealed yet.`
+			: `${set.name} — ${set.cardCount} cards, ${set.printingCount} printings.`}
 	origin={data.origin}
 	path="/sets/{page.params.id}"
 	image={ogImage}
@@ -188,25 +197,50 @@
 		<p class="mt-6 text-muted">No set matches "{page.params.id}".</p>
 	{:else}
 		<div class="mt-4 mb-10">
-			<p class="text-sm font-medium tracking-widest text-neon-dim uppercase">
-				{set.kind === 'base' ? 'Base set' : 'Derivative set'}
-			</p>
-			<h1 class="mt-2 text-5xl font-bold tracking-tight text-bright">{set.name}</h1>
-			<div class="mt-4 flex flex-wrap items-center gap-x-6 gap-y-2 text-lg text-muted">
-				<span class="font-mono">{set.printed}</span>
-				<span class="tabular-nums">{shownCardCount} cards · {results.length} printings</span>
-				{#if collection.editable && manageCollection.enabled}
-					<span data-collection-ui class="text-neon tabular-nums"
-						>{ownedHere}/{results.length} collected</span
-					>
+			<div class="flex flex-col gap-6 {logo ? 'sm:flex-row sm:items-center' : ''}">
+				{#if announced && logo}
+					<img
+						src={logo}
+						alt="{set.name} logo"
+						class="size-32 shrink-0 object-contain sm:size-40"
+					/>
 				{/if}
-				{#if set.kind === 'derivative' && baseSet}
-					<span>
-						Supplements
-						<a href="/sets/{baseSet.id}" class="text-neon hover:text-neon-dim">{baseSet.name}</a>
-					</span>
-				{/if}
-				<a href="/cards?q=set:{set.id}" class="text-neon hover:text-neon-dim">Browse in Cards →</a>
+				<div class="min-w-0">
+					<p class="text-sm font-medium tracking-widest text-neon-dim uppercase">
+						{KIND_LABELS[set.kind]}{announced ? ' · Announced' : ''}
+					</p>
+					<h1 class="mt-2 text-5xl font-bold tracking-tight text-bright">{set.name}</h1>
+					<div class="mt-4 flex flex-wrap items-center gap-x-6 gap-y-2 text-lg text-muted">
+						<span class="font-mono">{set.printed}</span>
+						{#if announced}
+							{#if set.releaseWindow}<span>{set.releaseWindow}</span>{/if}
+							{#if set.announcement}
+								<a
+									href={set.announcement}
+									rel="external noopener"
+									class="text-neon hover:text-neon-dim">Read the announcement →</a
+								>
+							{/if}
+						{:else}
+							<span class="tabular-nums">{shownCardCount} cards · {results.length} printings</span>
+							{#if collection.editable && manageCollection.enabled}
+								<span data-collection-ui class="text-neon tabular-nums"
+									>{ownedHere}/{results.length} collected</span
+								>
+							{/if}
+							{#if set.kind === 'derivative' && parent}
+								<span>
+									Supplements
+									<a href="/sets/{parent.id}" class="text-neon hover:text-neon-dim">{parent.name}</a
+									>
+								</span>
+							{/if}
+							<a href="/cards?q=set:{set.id}" class="text-neon hover:text-neon-dim"
+								>Browse in Cards →</a
+							>
+						{/if}
+					</div>
+				</div>
 			</div>
 
 			<div class="mt-5 flex flex-wrap items-center gap-4">
@@ -266,6 +300,13 @@
 				{/if}
 			</div>
 		</div>
+
+		{#if announced}
+			<p class="max-w-prose text-lg text-muted">
+				No cards revealed yet. Previews and spoilers are planned for the months ahead — the
+				announcement has the details.
+			</p>
+		{/if}
 
 		<ul class="grid grid-cols-3 gap-2 sm:grid-cols-4 sm:gap-3 md:grid-cols-6">
 			{#each results as match, index (collapsed ? match.card.slug : match.printing.id)}

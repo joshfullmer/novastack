@@ -7,11 +7,18 @@
  * that run stops being contiguous the derivation is meaningless rather than merely stale.
  */
 import type { Card, Printing, SetSummary } from './schema.ts';
-import { BASE_SET_API_CODE, API_SET_CODE_TO_SET_ID, SET_IDENTIFIERS } from './sets.ts';
+import {
+	ORDERING_API_SET_CODE,
+	API_SET_CODE_TO_SET_ID,
+	SET_IDENTIFIERS,
+	isMainSetCategory,
+	type SetIdentifier,
+	type SetKind
+} from './sets.ts';
 import { DEFAULT_LOCALE, ICONIC_RARITIES, type CardType, type Color } from './vocabulary.ts';
 
-/** The Base Set's retail printing run, which is what carries the collector-number sequence. */
-export const BASE_SET_ID = API_SET_CODE_TO_SET_ID[BASE_SET_API_CODE];
+/** The ordering reference — Welcome to Night City's retail run, which carries the collector-number sequence. */
+export const ORDERING_SET_ID = API_SET_CODE_TO_SET_ID[ORDERING_API_SET_CODE];
 
 /**
  * Collector numbers are printed strings — `005a`, `β144`, `121`. Sort on the numeric part
@@ -29,7 +36,7 @@ function byCollectorNumber(a: string, b: string): number {
 }
 
 /**
- * The Base Set's retail sequence, in printed collector-number order.
+ * The ordering reference's retail sequence, in printed collector-number order.
  *
  * Beta printings are excluded by their `β` prefix rather than by API set code: the printed
  * card is the authority, and interleaving a reprint run would destroy the contiguity the
@@ -39,7 +46,7 @@ function byCollectorNumber(a: string, b: string): number {
  * reason again — a `fr` printing repeats the retail run's own Collector Numbers verbatim, so
  * interleaving it would duplicate the sequence rather than extend it.
  */
-export function baseSetSequence(
+export function orderingSequence(
 	cards: readonly Card[]
 ): { color: Color; cardType: CardType; collectorNumber: string }[] {
 	return cards
@@ -47,7 +54,7 @@ export function baseSetSequence(
 			card.printings
 				.filter(
 					(printing) =>
-						printing.setId === BASE_SET_ID &&
+						printing.setId === ORDERING_SET_ID &&
 						!printing.collectorNumber.startsWith('β') &&
 						!(ICONIC_RARITIES as readonly string[]).includes(printing.rarity) &&
 						printing.locale === DEFAULT_LOCALE
@@ -127,7 +134,90 @@ export function deriveRamPerLegend(cards: readonly Card[]): { value: number; dis
 	return { value: distinct.at(-1) ?? 0, distinct };
 }
 
-/** Per-Set card and printing counts, in curated order. A zero count is drift, not an empty set. */
+const MAIN_SETS: readonly SetIdentifier[] = SET_IDENTIFIERS.filter((set) =>
+	isMainSetCategory(set.category)
+);
+const MAIN_SET_IDS: ReadonlySet<string> = new Set(MAIN_SETS.map((set) => set.id));
+
+export type SetPlacement = { kind: SetKind; parentId: string | null };
+
+/**
+ * Where each Set sits in the Main / Derivative / Misc hierarchy — derived from what it
+ * contains, not curated (CONTEXT.md: "Derivative Set", "Misc Set").
+ *
+ * - A **Main Set** is one by its printed `MS` Category, before anything is known of its cards.
+ * - Otherwise, take the Set's Cards that appear in some Main Set (the rest are Set-Exclusive
+ *   and say nothing about parentage). The Main Sets that contain *all* of them are the
+ *   candidates. None means the Set spans Main Sets: **Misc**. One means that Main Set is its
+ *   parent. The "all", not "any", is what keeps a Card reprinted in a later Main Set from
+ *   turning its original starter deck into Misc.
+ * - Where overlap can't decide — several candidates, or no Card in any Main Set at all (the box
+ *   toppers) — the Main Set sharing the Set's Set Code does.
+ * - A Set with no printings is skipped (`every-set-has-printings` reports it), and one that
+ *   still can't be placed is returned in `unplaced` for `every-set-has-a-parent` to fail on.
+ */
+export function placeSets(cards: readonly Card[]): {
+	placements: Map<string, SetPlacement>;
+	unplaced: { setId: string; detail: string }[];
+} {
+	const mainSetsByCard = new Map<Card, Set<string>>();
+	const cardsBySet = new Map<string, Card[]>();
+	for (const card of cards) {
+		const setIds = new Set(card.printings.map((printing) => printing.setId));
+		mainSetsByCard.set(card, new Set([...setIds].filter((id) => MAIN_SET_IDS.has(id))));
+		for (const setId of setIds) cardsBySet.set(setId, [...(cardsBySet.get(setId) ?? []), card]);
+	}
+
+	const placements = new Map<string, SetPlacement>();
+	const unplaced: { setId: string; detail: string }[] = [];
+
+	for (const set of SET_IDENTIFIERS) {
+		if (isMainSetCategory(set.category)) {
+			placements.set(set.id, { kind: 'main', parentId: null });
+			continue;
+		}
+		const members = cardsBySet.get(set.id);
+		if (members === undefined) continue;
+
+		const overlaps = members
+			.map((card) => mainSetsByCard.get(card)!)
+			.filter((mainSets) => mainSets.size > 0);
+		const candidates =
+			overlaps.length === 0
+				? MAIN_SETS
+				: MAIN_SETS.filter((main) => overlaps.every((mainSets) => mainSets.has(main.id)));
+
+		if (overlaps.length > 0 && candidates.length === 0) {
+			placements.set(set.id, { kind: 'misc', parentId: null });
+			continue;
+		}
+
+		const decided =
+			overlaps.length > 0 && candidates.length === 1
+				? candidates
+				: candidates.filter((main) => main.setCode !== null && main.setCode === set.setCode);
+		if (decided.length === 1) {
+			placements.set(set.id, { kind: 'derivative', parentId: decided[0].id });
+		} else {
+			unplaced.push({
+				setId: set.id,
+				detail:
+					overlaps.length === 0
+						? `no Card is in a Main Set and no Main Set shares the Set Code ${set.setCode ?? '(none)'}`
+						: `${candidates.length} Main Sets contain all its Main-Set Cards and ${decided.length} share the Set Code ${set.setCode ?? '(none)'}`
+			});
+		}
+	}
+
+	return { placements, unplaced };
+}
+
+/**
+ * Per-Set card and printing counts, in curated order, with each Set's derived kind and parent.
+ * A zero count is drift — except on a Main Set, which is Announced until its first card. A Set
+ * `placeSets` couldn't place comes out as a parentless Derivative; ingest fails on it before
+ * that is ever written down.
+ */
 export function deriveSets(cards: readonly Card[]): SetSummary[] {
 	const cardCounts = new Map<string, Set<string>>();
 	const printingCounts = new Map<string, number>();
@@ -141,8 +231,10 @@ export function deriveSets(cards: readonly Card[]): SetSummary[] {
 		}
 	}
 
+	const { placements } = placeSets(cards);
 	return SET_IDENTIFIERS.map((set) => ({
 		...set,
+		...(placements.get(set.id) ?? { kind: 'derivative', parentId: null }),
 		cardCount: cardCounts.get(set.id)?.size ?? 0,
 		printingCount: printingCounts.get(set.id) ?? 0
 	}));
@@ -202,12 +294,12 @@ export function collapseToUniqueCards<T extends { card: Card }>(entries: readonl
 }
 
 /**
- * Cards that exist only in Derivative Sets — "show me the Base Set" legitimately excludes
+ * Cards that exist in no Main Set — "show me Welcome to Night City" legitimately excludes
  * these, which is worth surfacing rather than hiding.
  */
 export function setExclusiveSlugs(cards: readonly Card[]): string[] {
 	return cards
-		.filter((card) => card.printings.every((printing) => printing.setId !== BASE_SET_ID))
+		.filter((card) => card.printings.every((printing) => !MAIN_SET_IDS.has(printing.setId)))
 		.map((card) => card.slug);
 }
 

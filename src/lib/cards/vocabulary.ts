@@ -2,7 +2,7 @@
  * Closed vocabularies — the value sets the source API is allowed to use.
  *
  * These are *sets*, deliberately not orders: display order for Color and Card Type is
- * derived from the Base Set's collector-number sequence at ingest time and travels in the
+ * derived from the ordering reference's collector-number sequence at ingest time and travels in the
  * snapshot (see `derive.ts`). The arrays here are alphabetical so nothing reads order into
  * them by accident.
  *
@@ -64,8 +64,8 @@ export type Rarity = v.InferOutput<typeof RaritySchema>;
 
 /**
  * Alt-art showcase treatments of an already-numbered card, printed with a collector number
- * well past the Base Set's main run rather than in sequence with it (e.g. Alt Cunningham is
- * both `106`, a normal Rare, and `155`, an Iconic Legend of the same card). `baseSetSequence`
+ * well past Welcome to Night City's main run rather than in sequence with it (e.g. Alt Cunningham is
+ * both `106`, a normal Rare, and `155`, an Iconic Legend of the same card). `orderingSequence`
  * (derive.ts) excludes these for the same reason it excludes `β`-prefixed reprints: a bonus
  * treatment carries no ordering information, and including one breaks the contiguous-run
  * assumption the derived Color/Card Type order depends on.

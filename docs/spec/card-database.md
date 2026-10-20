@@ -316,8 +316,8 @@ consequences:
   than rarity filters do.
 
 The Set facet must not be a flat 12-value list: that presents a starter deck as a peer of the game's
-only real release. Group by base vs derivative. Note **11 cards are Set-Exclusive** — they exist only
-in derivative products — so "show me the base set" legitimately excludes real cards, which is worth
+real release. Group by main vs derivative vs misc. Note **11 cards are Set-Exclusive** — they exist only
+in derivative products — so "show me a main set" legitimately excludes real cards, which is worth
 surfacing.
 
 ---
@@ -326,7 +326,7 @@ surfacing.
 
 **Default: Colour → Card Type → Cost → Name**, using the derived colour and type orders from §2.5.
 
-Collector-number order already produces perfect colour and type grouping within the base set; the
+Collector-number order already produces perfect colour and type grouping within the ordering reference; the
 explicit sort was chosen anyway so that cost orders within each colour+type block, giving a readable
 curve. `Set → Collector Number` is consequently **not reachable** in stage 1.
 

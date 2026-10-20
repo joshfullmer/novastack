@@ -1,12 +1,13 @@
 import { describe, expect, it } from 'vitest';
 import {
-	baseSetSequence,
+	orderingSequence,
 	cardTypeRunsWithinColors,
 	collapseToUniqueCards,
 	collectorNumberSortKey,
 	deriveRamPerLegend,
 	deriveSets,
 	legendBaseName,
+	placeSets,
 	printTreatment,
 	printingsInSet,
 	runOrder,
@@ -14,6 +15,7 @@ import {
 	splitCardName
 } from './derive.ts';
 import { makeCard, makePrinting } from './fixtures.ts';
+import type { Card } from './schema.ts';
 import { SET_IDENTIFIERS } from './sets.ts';
 
 describe('collectorNumberSortKey', () => {
@@ -51,7 +53,7 @@ describe('runOrder', () => {
 	});
 });
 
-describe('baseSetSequence', () => {
+describe('orderingSequence', () => {
 	it('excludes beta printings by their β prefix and sorts by collector number', () => {
 		const cards = [
 			makeCard({
@@ -74,7 +76,7 @@ describe('baseSetSequence', () => {
 			})
 		];
 
-		expect(baseSetSequence(cards)).toEqual([
+		expect(orderingSequence(cards)).toEqual([
 			{ color: 'Red', cardType: 'Legend', collectorNumber: '001' },
 			{ color: 'Yellow', cardType: 'Unit', collectorNumber: '040' }
 		]);
@@ -138,12 +140,14 @@ describe('deriveSets', () => {
 		expect(sets.find((set) => set.id === 'MS01-WNC')).toMatchObject({
 			cardCount: 1,
 			printingCount: 2,
-			kind: 'base',
+			kind: 'main',
+			parentId: null,
 			printed: 'MS01 - WNC [A]'
 		});
 		expect(sets.find((set) => set.id === 'SD01-HEI')).toMatchObject({
 			cardCount: 1,
-			printingCount: 1
+			printingCount: 1,
+			kind: 'derivative'
 		});
 	});
 
@@ -151,6 +155,64 @@ describe('deriveSets', () => {
 		const sets = deriveSets([]);
 		expect(sets).toHaveLength(SET_IDENTIFIERS.length);
 		expect(sets.every((set) => set.cardCount === 0)).toBe(true);
+	});
+});
+
+describe('placeSets', () => {
+	const inSets = (slug: string, ...setIds: string[]) =>
+		makeCard({
+			slug,
+			printings: setIds.map((setId, index) =>
+				makePrinting({ setId, collectorNumber: String(index + 1).padStart(3, '0') })
+			) as Card['printings']
+		});
+
+	it('makes a Main Set of any printed MS Category, even with no cards (Announced)', () => {
+		const { placements } = placeSets([]);
+		expect(placements.get('MS01-WNC')).toEqual({ kind: 'main', parentId: null });
+		expect(placements.get('MS02-BBR')).toEqual({ kind: 'main', parentId: null });
+	});
+
+	it('parents a Derivative Set to the one Main Set its Cards overlap', () => {
+		const { placements, unplaced } = placeSets([
+			inSets('a', 'MS01-WNC', 'SD01-HEI'),
+			inSets('exclusive', 'SD01-HEI')
+		]);
+		expect(placements.get('SD01-HEI')).toEqual({ kind: 'derivative', parentId: 'MS01-WNC' });
+		expect(unplaced).toEqual([]);
+	});
+
+	it('makes a Set Misc when no single Main Set contains all its Main-Set Cards', () => {
+		const { placements } = placeSets([
+			inSets('wnc-card', 'MS01-WNC', 'PRM01'),
+			inSets('bbr-card', 'MS02-BBR', 'PRM01')
+		]);
+		expect(placements.get('PRM01')).toEqual({ kind: 'misc', parentId: null });
+	});
+
+	it('does not make a starter deck Misc just because one of its Cards was reprinted later', () => {
+		const { placements } = placeSets([
+			inSets('reprinted', 'MS01-WNC', 'MS02-BBR', 'SD01-HEI'),
+			inSets('original', 'MS01-WNC', 'SD01-HEI')
+		]);
+		expect(placements.get('SD01-HEI')).toEqual({ kind: 'derivative', parentId: 'MS01-WNC' });
+	});
+
+	it('falls back to the Set Code when no Card is in a Main Set (the box toppers)', () => {
+		const { placements } = placeSets([inSets('exclusive', 'PRM-WNC')]);
+		expect(placements.get('PRM-WNC')).toEqual({ kind: 'derivative', parentId: 'MS01-WNC' });
+	});
+
+	it('leaves a Set unplaced when neither overlap nor Set Code decides', () => {
+		const { placements, unplaced } = placeSets([inSets('exclusive', 'PRM01')]);
+		expect(placements.has('PRM01')).toBe(false);
+		expect(unplaced.map((entry) => entry.setId)).toEqual(['PRM01']);
+	});
+
+	it('skips a Set with no printings — `every-set-has-printings` reports that one', () => {
+		const { placements, unplaced } = placeSets([]);
+		expect(placements.has('SD01-HEI')).toBe(false);
+		expect(unplaced).toEqual([]);
 	});
 });
 
@@ -218,7 +280,7 @@ describe('collapseToUniqueCards', () => {
 });
 
 describe('setExclusiveSlugs', () => {
-	it('finds cards that were never printed in the Base Set', () => {
+	it('finds cards that were never printed in any Main Set', () => {
 		const cards = [
 			makeCard({ slug: 'in-base', printings: [makePrinting({ setId: 'MS01-WNC' })] }),
 			makeCard({ slug: 'starter-only', printings: [makePrinting({ setId: 'SD01-HEI' })] })

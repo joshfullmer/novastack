@@ -1,16 +1,15 @@
 <script lang="ts">
 	/**
-	 * The Set facet, **grouped base vs derivative**.
+	 * The Set facet, **grouped main vs derivative vs misc**.
 	 *
-	 * A flat list would present a 15-card demo deck as a peer of the game's only real release. The
-	 * grouping is the point, not decoration.
+	 * A flat list would present a 15-card demo deck as a peer of a real release. The grouping is
+	 * the point, not decoration. A group with no Sets (Misc, today) is not drawn.
 	 *
-	 * The facet is over the eight **printed** Set Identifiers, not the twelve sets the API
-	 * reports. The API splits every set into retail and beta entries; that split is its own
+	 * The facet is over the **printed** Set Identifiers, not the sets the API reports. The API splits every set into retail and beta entries; that split is its own
 	 * invention and does not exist on the cards, which carry the identical printed identifier and
 	 * differ only by a `β` on the Collector Number.
 	 *
-	 * Set-Exclusive cards are surfaced because "show me the Base Set" legitimately excludes real
+	 * Set-Exclusive cards are surfaced because "show me the main sets" legitimately excludes real
 	 * cards, and that is worth saying out loud rather than leaving as an absence.
 	 */
 	import type { SetSummary } from '#lib/cards/schema.js';
@@ -27,10 +26,13 @@
 		onToggle: (setId: string) => void;
 	} = $props();
 
-	const groups = $derived([
-		{ label: 'Base set', entries: sets.filter((set) => set.kind === 'base') },
-		{ label: 'Derivative products', entries: sets.filter((set) => set.kind === 'derivative') }
-	]);
+	const groups = $derived(
+		[
+			{ label: 'Main sets', entries: sets.filter((set) => set.kind === 'main') },
+			{ label: 'Derivative products', entries: sets.filter((set) => set.kind === 'derivative') },
+			{ label: 'Misc', entries: sets.filter((set) => set.kind === 'misc') }
+		].filter((group) => group.entries.length > 0)
+	);
 </script>
 
 <fieldset class="min-w-0">
@@ -73,8 +75,8 @@
 
 	{#if setExclusiveCount > 0}
 		<p class="mt-1 text-[0.7rem] leading-snug text-muted/80">
-			{setExclusiveCount} cards are Set-Exclusive — they exist only in derivative products, so the base
-			set alone excludes them.
+			{setExclusiveCount} cards are Set-Exclusive — they exist only in derivative products, so the main
+			sets alone exclude them.
 		</p>
 	{/if}
 </fieldset>
