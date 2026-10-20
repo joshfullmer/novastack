@@ -1,4 +1,5 @@
-import { expect, test } from '@playwright/test';
+import { expect, test, type Page } from '@playwright/test';
+import { splitCardName } from '../src/lib/cards/derive.ts';
 import { snapshot } from './snapshot.ts';
 
 /**
@@ -15,12 +16,21 @@ const card = (slug: string) => {
 	return found;
 };
 
+/**
+ * The printing chooser's buttons — `li > button`, not `li button`: each tile also nests the
+ * collection stepper's buttons, which are a different control and only render once the collection
+ * has loaded, so a descendant selector counts them and races hydration.
+ */
+const chooser = (page: Page) => page.locator('section ul li > button');
+
 test.describe('a card page', () => {
 	test('shows the Default Printing when none is specified', async ({ page }) => {
 		const v = card('v-streetkid');
 		await page.goto('/cards/v-streetkid');
 
-		await expect(page.getByRole('heading', { level: 1, name: v.name })).toBeVisible();
+		await expect(
+			page.getByRole('heading', { level: 1, name: splitCardName(v).name })
+		).toBeVisible();
 		await expect(page.getByText(`Art by ${v.printings[0].artist}`)).toBeVisible();
 	});
 
@@ -28,11 +38,16 @@ test.describe('a card page', () => {
 		const v = card('v-streetkid');
 		await page.goto('/cards/v-streetkid');
 
-		// A flat list of all printings — most render an identical image, so they are told apart by
-		// set, collector number and rarity rather than by art.
-		const entries = page.locator('section ul li button');
-		await expect(entries).toHaveCount(v.printings.length);
-		for (const printing of v.printings) {
+		// A flat list of the printings in the active locale — most render an identical image, so they
+		// are told apart by set, collector number and rarity rather than by art. The Locale toggle
+		// shows one locale at a time, defaulting to the Default Printing's own, so the French
+		// printings (which repeat the retail run's collector numbers) are not on this list.
+		const locale = v.printings[0].locale;
+		const shown = v.printings.filter((printing) => printing.locale === locale);
+		expect(shown.length).toBeLessThan(v.printings.length);
+
+		await expect(chooser(page)).toHaveCount(shown.length);
+		for (const printing of shown) {
 			await expect(page.getByText(printing.collectorNumber, { exact: true })).toBeVisible();
 		}
 	});
@@ -79,11 +94,11 @@ test.describe('a card page', () => {
 		const v = card('v-streetkid');
 		await page.goto('/cards/v-streetkid');
 
-		const second = page.locator('section ul li button').nth(1);
+		const second = chooser(page).nth(1);
 		await second.click();
 		expect(new URL(page.url()).searchParams.get('printing')).toBe(v.printings[1].key);
 
-		await page.locator('section ul li button').first().click();
+		await chooser(page).first().click();
 		expect(new URL(page.url()).searchParams.has('printing')).toBe(false);
 	});
 
@@ -93,7 +108,9 @@ test.describe('a card page', () => {
 
 		await page.goto('/cards/rebecca-having-a-moment');
 
-		await expect(page.getByRole('heading', { level: 1, name: rebecca.name })).toBeVisible();
+		await expect(
+			page.getByRole('heading', { level: 1, name: splitCardName(rebecca).name })
+		).toBeVisible();
 		// A null stat renders as an em dash, never as 0.
 		await expect(page.getByText('—', { exact: true }).first()).toBeVisible();
 		await expect(page.getByText('No rules text.')).toBeVisible();
