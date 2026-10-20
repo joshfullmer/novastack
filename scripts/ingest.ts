@@ -49,7 +49,9 @@ import {
 } from '../src/lib/cards/schema.ts';
 import { mirrorImages, readMirroredThumbhashes } from './lib/images.ts';
 import { enumerateSlugs, fetchCardDetails, fetchFaqs } from './lib/netdeck.ts';
+import { renderChanges, renderComposition, tintColor } from './lib/report.ts';
 import { stableStringify } from './lib/stable-json.ts';
+import { banner, box, formatDuration, paint, skipped, stage, ui } from './lib/ui.ts';
 
 const CARDS_PATH = path.join('src', 'lib', 'cards', 'cards.json');
 const LANDING_PATH = path.join('src', 'lib', 'cards', 'landing.json');
@@ -68,7 +70,6 @@ const LANDING_PATH = path.join('src', 'lib', 'cards', 'landing.json');
 const check = process.argv.includes('--check');
 const skipImages = check || process.argv.includes('--skip-images');
 
-const log = (message: string) => console.log(message);
 const onRetry = ({
 	url,
 	attempt,
@@ -79,20 +80,33 @@ const onRetry = ({
 	attempt: number;
 	delayMs: number;
 	reason: string;
-}) => console.warn(`  ↻ retry ${attempt} in ${delayMs}ms — ${reason}\n    ${url}`);
+}) =>
+	ui.warn(
+		paint.change(`  ↻ retry ${attempt} in ${delayMs}ms — ${reason}`) + paint.dim(`\n    ${url}`)
+	);
 
 function fail(stage: string, violations: readonly Violation[]): never {
-	console.error(
-		`\n✗ ${stage} failed ${violations.length} assertion(s):\n${formatViolations(violations)}\n`
+	ui.error(
+		`\n${paint.remove(`✗ ${stage} failed ${violations.length} assertion(s):`)}\n${formatViolations(violations)}\n`
 	);
-	console.error(
-		'These are assumptions about an undocumented API that has been observed changing within\n' +
-			'hours. A failure here means a decision needs revisiting, not that a check needs relaxing.\n'
+	ui.error(
+		paint.dim(
+			'These are assumptions about an undocumented API that has been observed changing within\n' +
+				'hours. A failure here means a decision needs revisiting, not that a check needs relaxing.\n'
+		)
 	);
 	// Exit 2, not 1. A check run uses 1 for "the snapshot would move", which is a normal answer;
 	// a violated assertion is a different kind of event and callers need to tell them apart. Any
 	// non-zero still fails CI, so nothing downstream is weakened by the distinction.
 	process.exit(2);
+}
+
+const startedAt = performance.now();
+
+/** Every exit of a check run goes through here, so the run always ends on its duration. */
+function finish(code: 0 | 1): never {
+	ui.log(paint.dim(`\n  done in ${formatDuration(performance.now() - startedAt)}`));
+	process.exit(code);
 }
 
 /** The committed snapshot, or `null` on a first run. Read tolerantly on purpose: an unreadable
@@ -118,71 +132,6 @@ async function previousSlugs(): Promise<string[]> {
 }
 
 /**
- * What a check run reports.
- *
- * Compared per card on the *serialised* form, so a change anywhere in the model counts — a
- * reworded rules text, a new classification, a re-rendered art URL. Thumbhashes are taken from
- * the committed snapshot where a printing already exists, so a stale local mirror cannot fake a
- * change that is not there.
- */
-function describeChanges(previous: Snapshot, next: Snapshot): string[] {
-	const lines: string[] = [];
-
-	const bySlug = (snapshot: Snapshot) => new Map(snapshot.cards.map((card) => [card.slug, card]));
-	const before = bySlug(previous);
-	const after = bySlug(next);
-
-	const added = [...after.keys()].filter((slug) => !before.has(slug));
-	const removed = [...before.keys()].filter((slug) => !after.has(slug));
-	const changed = [...after.keys()].filter(
-		(slug) =>
-			before.has(slug) && stableStringify(before.get(slug)) !== stableStringify(after.get(slug))
-	);
-
-	const printingKeys = (snapshot: Snapshot) =>
-		new Set(snapshot.cards.flatMap((card) => card.printings.map((printing) => printing.key)));
-	const beforeKeys = printingKeys(previous);
-	const afterKeys = printingKeys(next);
-	const newPrintings = [...afterKeys].filter((key) => !beforeKeys.has(key));
-	const gonePrintings = [...beforeKeys].filter((key) => !afterKeys.has(key));
-
-	const list = (label: string, values: readonly string[]) => {
-		if (values.length === 0) return;
-		const shown = values.slice(0, 10).join(', ');
-		lines.push(
-			`  ${label}: ${values.length}${values.length > 0 ? ` — ${shown}` : ''}` +
-				(values.length > 10 ? `, and ${values.length - 10} more` : '')
-		);
-	};
-
-	list('new cards', added);
-	list('removed cards', removed);
-	list('changed cards', changed);
-	list('new printings', newPrintings);
-	list('removed printings', gonePrintings);
-
-	if (
-		previous.stats.cards !== next.stats.cards ||
-		previous.stats.printings !== next.stats.printings
-	)
-		lines.push(
-			`  counts: ${previous.stats.cards} → ${next.stats.cards} cards, ` +
-				`${previous.stats.printings} → ${next.stats.printings} printings`
-		);
-
-	const setIds = (snapshot: Snapshot) => snapshot.sets.map((set) => set.id).join(',');
-	if (setIds(previous) !== setIds(next)) lines.push('  sets: the curated set list changed');
-
-	if (previous.generalFaqs.length !== next.generalFaqs.length)
-		lines.push(`  general FAQs: ${previous.generalFaqs.length} → ${next.generalFaqs.length}`);
-
-	if (previous.ramPerLegend !== next.ramPerLegend)
-		lines.push(`  RAM per Legend: ${previous.ramPerLegend} → ${next.ramPerLegend}`);
-
-	return lines;
-}
-
-/**
  * `generatedAt` means "when the data last **changed**", not "when ingest last ran".
  *
  * If it tracked the run, every weekly ingest would rewrite the file and open a pull request even
@@ -204,46 +153,53 @@ async function timestampFor(snapshot: Snapshot): Promise<string> {
 }
 
 async function main(): Promise<void> {
+	banner(
+		'ingest',
+		check ? 'check · read-only' : skipImages ? 'data only · art untouched' : 'full · data + art'
+	);
 	const previous = await committedSnapshot();
 
-	log('→ enumerating slugs');
-	const slugs = await enumerateSlugs({ onRetry });
-	log(`  ${slugs.length} slug(s)`);
+	// The FAQs are a sibling resource, independent of the card list, so they fetch alongside it.
+	const [raw, rawFaqs] = await Promise.all([
+		stage('Enumerating slugs', async (step) => {
+			const found = await enumerateSlugs({ onRetry });
+			step.note(`${found.length} cards listed`);
+			return found;
+		}).then((slugs) =>
+			// The list endpoint strips printings[], so every card is fetched on its own.
+			stage('Fetching card detail', async (step) => {
+				const cards = await fetchCardDetails(slugs, { onRetry, onProgress: step.progress });
+				step.note(`${cards.length} cards`);
+				return cards;
+			})
+		),
+		stage('Fetching FAQs', async (step) => {
+			const faqs = await fetchFaqs({ onRetry });
+			step.note(`${faqs.length} FAQs`);
+			return faqs;
+		})
+	]);
 
-	log('→ fetching card detail (the list endpoint strips printings[])');
-	const raw = await fetchCardDetails(slugs, {
-		onRetry,
-		onProgress: (done, total) => {
-			if (done % 25 === 0 || done === total) log(`  ${done}/${total}`);
-		}
+	await stage('Checking API shape', () => {
+		const violations = [
+			...checkRawInvariants(raw),
+			...checkFaqInvariants(rawFaqs, new Set(raw.map((card) => card.slug)))
+		];
+		if (violations.length > 0) fail('Source API shape', violations);
 	});
-
-	log('→ fetching FAQs');
-	const rawFaqs = await fetchFaqs({ onRetry });
-	log(`  ${rawFaqs.length} FAQ(s)`);
-
-	log('→ asserting the API’s shape');
-	const rawViolations = [
-		...checkRawInvariants(raw),
-		...checkFaqInvariants(rawFaqs, new Set(raw.map((card) => card.slug)))
-	];
-	if (rawViolations.length > 0) fail('Source API shape', rawViolations);
 
 	const printings = raw.flatMap((card) =>
 		card.printings.map((printing) => ({
 			id: printing.id,
 			imageUrl: printing.image_url,
-			sourceImageUrl: printing.source_image_url
+			sourceImageUrl: printing.source_image_url,
+			label: `${card.display_name} · ${printing.set.code} #${printing.collector_number}`
 		}))
 	);
 
 	let thumbhashes: Map<string, string>;
 	if (skipImages) {
-		log(
-			check
-				? '→ check run: not touching images'
-				: '→ skipping images (--skip-images); reusing mirrored ThumbHashes'
-		);
+		skipped('Mirroring art', check ? 'check run' : '--skip-images');
 		thumbhashes = await readMirroredThumbhashes();
 
 		// Prefer the committed snapshot's hash wherever a printing already exists: a stale or
@@ -255,40 +211,59 @@ async function main(): Promise<void> {
 		for (const printing of printings)
 			if (!thumbhashes.has(printing.id)) thumbhashes.set(printing.id, 'PENDING');
 	} else {
-		log(`→ mirroring ${printings.length} printing image(s)`);
-		const report = await mirrorImages(printings, {
-			onRetry,
-			onProgress: (done, total) => {
-				if (done % 25 === 0 || done === total) log(`  ${done}/${total}`);
-			}
+		thumbhashes = await stage('Mirroring art', async (step) => {
+			let bytes = 0;
+			const started = performance.now();
+			const report = await mirrorImages(printings, {
+				onRetry,
+				onProgress: (done, total, update) => {
+					bytes += update.bytes;
+					const rate = bytes / 1_048_576 / Math.max((performance.now() - started) / 1000, 0.001);
+					step.progress(done, total);
+					step.detail(`${update.reason} · ${rate.toFixed(1)} MB/s · ${update.label}`);
+				}
+			});
+			step.note(
+				[
+					`${report.fetched} fetched${bytes > 0 ? ` (${(bytes / 1_048_576).toFixed(1)} MB)` : ''}`,
+					`${report.upToDate} current`,
+					...(report.adopted > 0 ? [`${report.adopted} newly hashed`] : []),
+					...(report.pruned > 0 ? [`${report.pruned} delisted pruned`] : [])
+				].join(' · ')
+			);
+			return report.thumbhashes;
 		});
-		thumbhashes = report.thumbhashes;
-		log(
-			`  ${report.fetched} fetched, ${report.upToDate} already current` +
-				(report.pruned > 0 ? `, ${report.pruned} delisted printing(s) pruned` : '')
-		);
 	}
 
-	log('→ normalizing');
-	const cards = normalizeCards(raw, thumbhashes, groupFaqsByCardSlug(rawFaqs));
-	const generalFaqs = normalizeGeneralFaqs(rawFaqs);
+	const { cards, generalFaqs } = await stage('Normalizing', (step) => {
+		const normalized = {
+			cards: normalizeCards(raw, thumbhashes, groupFaqsByCardSlug(rawFaqs)),
+			generalFaqs: normalizeGeneralFaqs(rawFaqs)
+		};
+		step.note(`${normalized.cards.length} cards`);
+		return normalized;
+	});
 
-	log('→ deriving orderings and counts');
-	const sequence = baseSetSequence(cards);
-	const colors = runOrder(sequence.map((entry) => entry.color));
-	const cardTypes = cardTypeRunsWithinColors(sequence);
-	const ram = deriveRamPerLegend(cards);
-	const sets = deriveSets(cards);
+	const { colors, cardTypes, ram, sets } = await stage('Deriving orderings', () => {
+		const sequence = baseSetSequence(cards);
+		return {
+			colors: runOrder(sequence.map((entry) => entry.color)),
+			cardTypes: cardTypeRunsWithinColors(sequence),
+			ram: deriveRamPerLegend(cards),
+			sets: deriveSets(cards)
+		};
+	});
 
-	log('→ asserting our model');
-	const modelViolations = [
-		...checkModelInvariants(cards),
-		...checkSlugStability(
-			await previousSlugs(),
-			cards.map((card) => card.slug)
-		)
-	];
-	if (modelViolations.length > 0) fail('Normalized model', modelViolations);
+	await stage('Checking our model', async () => {
+		const violations = [
+			...checkModelInvariants(cards),
+			...checkSlugStability(
+				await previousSlugs(),
+				cards.map((card) => card.slug)
+			)
+		];
+		if (violations.length > 0) fail('Normalized model', violations);
+	});
 
 	const [firstColor, ...restColors] = colors.order;
 	const [firstType, ...restTypes] = cardTypes.order;
@@ -316,42 +291,58 @@ async function main(): Promise<void> {
 
 	if (check) {
 		if (previous === null) {
-			log('\n✓ no committed snapshot to compare against — a full ingest would create one');
-			process.exit(1);
+			ui.log(
+				paint.change(
+					'\n! no committed snapshot to compare against — a full ingest would create one'
+				)
+			);
+			finish(1);
 		}
 
 		const stamped: Snapshot = { ...snapshot, generatedAt: previous.generatedAt };
 		if (stableStringify(stamped) === stableStringify(previous)) {
-			log('\n✓ no card data updates — the committed snapshot is current');
-			process.exit(0);
+			ui.log(paint.ok('\n✓ no card data updates — the committed snapshot is current'));
+			finish(0);
 		}
 
-		log('\n! card data has changed:');
-		for (const line of describeChanges(previous, stamped)) log(line);
-		log('\nRun `pnpm ingest` to apply it, art included.');
-		process.exit(1);
+		ui.log('');
+		for (const line of renderChanges(previous, stamped)) ui.log(line);
+		ui.log(paint.dim('\n  Run `pnpm ingest` to apply it, art included.'));
+		finish(1);
 	}
 
 	const dated: Snapshot = { ...snapshot, generatedAt: await timestampFor(snapshot) };
 	const unchanged = dated.generatedAt !== snapshot.generatedAt;
 
-	await writeFile(CARDS_PATH, stableStringify(dated));
-	await writeFile(LANDING_PATH, stableStringify(buildLanding(dated)));
+	await stage('Writing snapshot', async (step) => {
+		await writeFile(CARDS_PATH, stableStringify(dated));
+		await writeFile(LANDING_PATH, stableStringify(buildLanding(dated)));
+		step.note(unchanged ? 'byte-identical' : 'cards.json + landing.json');
+	});
 
-	log(unchanged ? '\n✓ snapshot unchanged' : '\n✓ snapshot written');
-	log(`  ${CARDS_PATH}`);
-	log(`  ${LANDING_PATH}`);
-	const setNoun = snapshot.stats.sets === 1 ? 'set' : 'sets';
-	log(
-		`  ${snapshot.stats.cards} cards · ${snapshot.stats.printings} printings · ` +
-			`${snapshot.stats.sets} ${setNoun} (of ${snapshot.sets.length} printed identifiers)`
-	);
-	log(`  color order    ${snapshot.colorOrder.join(' → ')}`);
-	log(`  card-type order ${snapshot.cardTypeOrder.join(' → ')}`);
-	log(`  RAM per Legend  ${snapshot.ramPerLegend}`);
-	log(`  set-exclusive   ${setExclusiveSlugs(cards).length} card(s)`);
+	if (previous !== null && !unchanged) {
+		ui.log('');
+		for (const line of renderChanges(previous, dated)) ui.log(line);
+	}
+
+	const fact = (label: string, value: string | number) => `${paint.dim(label.padEnd(16))}${value}`;
 	const cardFaqCount = cards.reduce((total, card) => total + card.faqs.length, 0);
-	log(`  FAQs            ${cardFaqCount} card-specific, ${snapshot.generalFaqs.length} general`);
+	ui.log('');
+	for (const line of box(paint.ok(unchanged ? '✓ snapshot unchanged' : '✓ snapshot written'), [
+		fact(
+			'dataset',
+			`${snapshot.stats.cards} cards · ${snapshot.stats.printings} printings · ` +
+				`${snapshot.stats.sets} ${snapshot.stats.sets === 1 ? 'set' : 'sets'} ${paint.dim(`(of ${snapshot.sets.length} printed identifiers)`)}`
+		),
+		fact('colors', renderComposition(cards, snapshot.colorOrder)),
+		fact('color order', snapshot.colorOrder.map(tintColor).join(paint.dim(' → '))),
+		fact('card-type order', snapshot.cardTypeOrder.join(' → ')),
+		fact('RAM per Legend', snapshot.ramPerLegend),
+		fact('set-exclusive', `${setExclusiveSlugs(cards).length} cards`),
+		fact('FAQs', `${cardFaqCount} card-specific · ${snapshot.generalFaqs.length} general`)
+	]))
+		ui.log(line);
+	ui.log(paint.dim(`\n  done in ${formatDuration(performance.now() - startedAt)}`));
 }
 
 /**

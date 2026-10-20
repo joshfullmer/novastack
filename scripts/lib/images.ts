@@ -8,6 +8,7 @@
  * Three tiers are emitted, not two: at 2–3 columns a tile renders up to 609px, where both
  * smaller tiers visibly upscale, and large-format browsing is a supported use.
  */
+import { createHash } from 'node:crypto';
 import { existsSync } from 'node:fs';
 import { mkdir, readFile, readdir, rm, writeFile } from 'node:fs/promises';
 import path from 'node:path';
@@ -32,9 +33,27 @@ export type PrintingImage = {
 	imageUrl: string;
 	/** Stable. Stored, and diffed to decide whether the art changed. */
 	sourceImageUrl: string;
+	/** What a human calls this printing. Only for progress output; falls back to the id. */
+	label?: string;
 };
 
-type ManifestEntry = { sourceImageUrl: string; thumbhash: string };
+/**
+ * Why a printing's art was fetched: first sighting, re-rendered upstream, or the local files no
+ * longer match what ingest wrote — missing, or changed behind its back (a `git restore`, say).
+ */
+export type MirrorReason = 'new' | 'updated' | 'repaired';
+
+export type MirrorUpdate = { label: string; reason: MirrorReason; bytes: number };
+
+/** Width → SHA-256 of that derivative, exactly as ingest wrote it. */
+type Derivatives = Record<string, string>;
+
+type ManifestEntry = {
+	sourceImageUrl: string;
+	thumbhash: string;
+	/** Absent in a manifest written before hashes were kept; see `assess`. */
+	derivatives?: Derivatives;
+};
 type Manifest = Record<string, ManifestEntry>;
 
 async function readManifest(): Promise<Manifest> {
@@ -50,17 +69,48 @@ const originalPath = (id: string) => path.join(MIRROR_DIR, `${id}.webp`);
 const derivativePath = (id: string, width: number) =>
 	path.join(DERIVATIVE_DIR, id, `${width}.webp`);
 
+const sha256 = (bytes: Buffer) => createHash('sha256').update(bytes).digest('hex');
+
+async function hashDerivatives(id: string): Promise<Derivatives> {
+	const entries = await Promise.all(
+		IMAGE_WIDTHS.map(async (width) => [
+			String(width),
+			sha256(await readFile(derivativePath(id, width)))
+		])
+	);
+	return Object.fromEntries(entries);
+}
+
+type Assessment =
+	| { kind: 'current' }
+	/** Files are all there but the manifest predates hashes; trust them once and record. */
+	| { kind: 'adopt'; derivatives: Derivatives }
+	| { kind: 'stale'; reason: MirrorReason };
+
 /**
- * A printing is up to date only when the manifest, the original, *and* every derivative are
- * all present. Checking the manifest alone would silently skip a printing whose derivatives
- * were never written — the failure mode where the site 404s an image the data promises.
+ * A printing is current only when the manifest, the original, *and* every derivative are present
+ * — and every derivative is byte-for-byte what ingest wrote. Presence alone would silently skip a
+ * printing whose derivatives were put back to an older version (a `git restore static/`), leaving
+ * the site serving art the data says has been replaced.
+ *
+ * A manifest from before hashes were kept has nothing to verify against. Rather than re-encode
+ * all 1,167 files to find out, its files are adopted as they stand — one trust, taken once.
  */
-function isUpToDate(printing: PrintingImage, manifest: Manifest): boolean {
+async function assess(printing: PrintingImage, manifest: Manifest): Promise<Assessment> {
 	const entry = manifest[printing.id];
-	if (entry === undefined || entry.sourceImageUrl !== printing.sourceImageUrl) return false;
-	if (entry.thumbhash === '') return false;
-	if (!existsSync(originalPath(printing.id))) return false;
-	return IMAGE_WIDTHS.every((width) => existsSync(derivativePath(printing.id, width)));
+	if (entry === undefined) return { kind: 'stale', reason: 'new' };
+	if (entry.sourceImageUrl !== printing.sourceImageUrl) return { kind: 'stale', reason: 'updated' };
+
+	const repaired: Assessment = { kind: 'stale', reason: 'repaired' };
+	if (entry.thumbhash === '' || !existsSync(originalPath(printing.id))) return repaired;
+	if (!IMAGE_WIDTHS.every((width) => existsSync(derivativePath(printing.id, width))))
+		return repaired;
+
+	const derivatives = await hashDerivatives(printing.id);
+	if (entry.derivatives === undefined) return { kind: 'adopt', derivatives };
+	return IMAGE_WIDTHS.every((width) => derivatives[width] === entry.derivatives?.[width])
+		? { kind: 'current' }
+		: repaired;
 }
 
 async function deriveTiers(id: string, original: Buffer): Promise<void> {
@@ -116,6 +166,8 @@ export type MirrorReport = {
 	thumbhashes: Map<string, string>;
 	fetched: number;
 	upToDate: number;
+	/** Printings whose files were trusted as-is because the manifest had no hashes yet. */
+	adopted: number;
 	pruned: number;
 };
 
@@ -123,14 +175,27 @@ export async function mirrorImages(
 	printings: readonly PrintingImage[],
 	options: RetryOptions & {
 		concurrency?: number;
-		onProgress?: (done: number, total: number) => void;
+		onProgress?: (done: number, total: number, update: MirrorUpdate) => void;
 	} = {}
 ): Promise<MirrorReport> {
 	await mkdir(MIRROR_DIR, { recursive: true });
 	await mkdir(DERIVATIVE_DIR, { recursive: true });
 
 	const manifest = await readManifest();
-	const stale = printings.filter((printing) => !isUpToDate(printing, manifest));
+	const assessments = await pool(printings, 16, async (printing) => assess(printing, manifest));
+
+	const reasons = new Map<string, MirrorReason>();
+	let adopted = 0;
+	printings.forEach((printing, index) => {
+		const assessment = assessments[index];
+		if (assessment.kind === 'stale') reasons.set(printing.id, assessment.reason);
+		if (assessment.kind === 'adopt') {
+			manifest[printing.id] = { ...manifest[printing.id], derivatives: assessment.derivatives };
+			adopted += 1;
+		}
+	});
+
+	const stale = printings.filter((printing) => reasons.has(printing.id));
 	let done = 0;
 
 	const results = await pool(stale, options.concurrency ?? 8, async (printing) => {
@@ -138,13 +203,22 @@ export async function mirrorImages(
 		await writeFile(originalPath(printing.id), original);
 		await deriveTiers(printing.id, original);
 		const thumbhash = await computeThumbhash(original);
+		const derivatives = await hashDerivatives(printing.id);
 		done += 1;
-		options.onProgress?.(done, stale.length);
-		return { id: printing.id, sourceImageUrl: printing.sourceImageUrl, thumbhash };
+		options.onProgress?.(done, stale.length, {
+			label: printing.label ?? printing.id,
+			reason: reasons.get(printing.id) ?? 'new',
+			bytes: original.length
+		});
+		return { id: printing.id, sourceImageUrl: printing.sourceImageUrl, thumbhash, derivatives };
 	});
 
 	for (const result of results) {
-		manifest[result.id] = { sourceImageUrl: result.sourceImageUrl, thumbhash: result.thumbhash };
+		manifest[result.id] = {
+			sourceImageUrl: result.sourceImageUrl,
+			thumbhash: result.thumbhash,
+			derivatives: result.derivatives
+		};
 	}
 
 	const live = new Set(printings.map((printing) => printing.id));
@@ -159,7 +233,13 @@ export async function mirrorImages(
 		if (entry !== undefined) thumbhashes.set(printing.id, entry.thumbhash);
 	}
 
-	return { thumbhashes, fetched: stale.length, upToDate: printings.length - stale.length, pruned };
+	return {
+		thumbhashes,
+		fetched: stale.length,
+		upToDate: printings.length - stale.length,
+		adopted,
+		pruned
+	};
 }
 
 /** Reads the manifest's ThumbHashes without touching the network. */
