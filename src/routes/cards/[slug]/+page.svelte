@@ -27,12 +27,18 @@
 	 * on a gallery that shows it, not one that's filtered it out. Only appears when the card
 	 * actually has a localized printing.
 	 *
+	 * **The top art zooms to fit the viewport** (`ArtLightbox`). Open is `?zoom=1`, pushed shallowly,
+	 * so Back closes it and a shared link opens zoomed; close replaces the entry instead, so the
+	 * address bar never keeps pointing at a lightbox that is no longer open — the same arrangement
+	 * `/collection`'s detail overlay makes for `?card=`.
+	 *
 	 * Back-navigation needs no work: filters live in query params, so history returns the reader to
 	 * the narrowed grid.
 	 */
 	import { browser } from '$app/env';
 	import { goto } from '$app/navigation';
 	import { currentUrl } from '#lib/filters/shallow.js';
+	import ArtLightbox, { preloadZoomArt } from '#lib/components/ArtLightbox.svelte';
 	import CardImage from '#lib/components/CardImage.svelte';
 	import QuantityStepper from '#lib/components/QuantityStepper.svelte';
 	import { collection } from '#lib/collection/state.svelte.js';
@@ -50,6 +56,7 @@
 	import { DEFAULT_LOCALE, type Locale } from '#lib/cards/vocabulary.js';
 
 	const LOCALE_PARAM = 'locale';
+	const ZOOM_PARAM = 'zoom';
 
 	let { data } = $props();
 
@@ -86,6 +93,22 @@
 		// The Default Printing is the absent state, so one printing is one canonical URL.
 		if (key === card.printings[0].key) next.searchParams.delete(PRINTING_PARAM);
 		else next.searchParams.set(PRINTING_PARAM, key);
+		void goto(next, { shallow: true, replace: true });
+	}
+
+	let zoomSource = $state<HTMLElement>();
+	const zoomed = $derived(currentUrl().searchParams.has(ZOOM_PARAM));
+
+	function openZoom() {
+		const next = new URL(currentUrl().href);
+		next.searchParams.set(ZOOM_PARAM, '1');
+		void goto(next, { shallow: true });
+	}
+
+	function closeZoom() {
+		const next = new URL(currentUrl().href);
+		if (!next.searchParams.has(ZOOM_PARAM)) return;
+		next.searchParams.delete(ZOOM_PARAM);
 		void goto(next, { shallow: true, replace: true });
 	}
 
@@ -157,6 +180,14 @@
 />
 
 <article class="mx-auto max-w-6xl px-4 py-8 sm:px-6">
+	<ArtLightbox
+		open={zoomed}
+		printingId={printing.id}
+		alt="{card.name} — {set?.printed ?? printing.setId} {printing.collectorNumber}"
+		source={zoomSource}
+		onClose={closeZoom}
+	/>
+
 	<nav class="mb-6 text-sm text-muted">
 		<a href="/cards" class="underline decoration-dotted underline-offset-4 hover:text-neon"
 			>← All cards</a
@@ -166,15 +197,26 @@
 	<div class="grid gap-8 lg:grid-cols-[minmax(0,22rem)_1fr]">
 		<!-- Larger art at the 733w tier: the printed card readable at native resolution. -->
 		<div>
-			<CardImage
-				printingId={printing.id}
-				thumbhash={printing.thumbhash}
-				color={card.color}
-				alt="{card.name} — {set?.printed ?? printing.setId} {printing.collectorNumber}"
-				sizes="(min-width: 1024px) 22rem, 100vw"
-				eager
-				class="rounded-xl shadow-2xl shadow-black/60"
-			/>
+			<!-- A real button, so the zoom is reachable from the keyboard. Its box is exactly the art's. -->
+			<button
+				bind:this={zoomSource}
+				type="button"
+				onclick={openZoom}
+				onpointerenter={() => preloadZoomArt(printing.id)}
+				onfocus={() => preloadZoomArt(printing.id)}
+				aria-label="Enlarge {card.name} art"
+				class="block w-full cursor-zoom-in rounded-xl"
+			>
+				<CardImage
+					printingId={printing.id}
+					thumbhash={printing.thumbhash}
+					color={card.color}
+					alt="{card.name} — {set?.printed ?? printing.setId} {printing.collectorNumber}"
+					sizes="(min-width: 1024px) 22rem, 100vw"
+					eager
+					class="rounded-xl shadow-2xl shadow-black/60"
+				/>
+			</button>
 			<p class="mt-2 text-center text-xs text-muted">
 				Art by {printing.artist}
 			</p>

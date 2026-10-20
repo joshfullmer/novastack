@@ -52,6 +52,46 @@ test.describe('a card page', () => {
 		}
 	});
 
+	test('zooms the art to fit the viewport, and Esc, a click and Back all close it', async ({
+		page
+	}) => {
+		await page.goto('/cards/v-streetkid');
+		const art = page.getByRole('button', { name: /^Enlarge .* art$/ });
+		const lightbox = page.getByRole('dialog');
+		const viewport = page.viewportSize()!;
+
+		await art.click();
+		await expect(lightbox).toBeVisible();
+		expect(new URL(page.url()).searchParams.has('zoom')).toBe(true);
+
+		// Fit to the viewport: the card's height is 92% of it, unless the width is the tighter limit.
+		const zoomed = lightbox.getByRole('button', { name: 'Close enlarged art' });
+		await expect
+			.poll(async () => (await zoomed.boundingBox())!.height, { timeout: 2000 })
+			.toBeCloseTo(Math.min(viewport.height * 0.92, viewport.width * 0.94 * (1024 / 733)), -1);
+
+		await page.keyboard.press('Escape');
+		await expect(lightbox).toBeHidden();
+		expect(new URL(page.url()).searchParams.has('zoom')).toBe(false);
+
+		await art.click();
+		await expect(lightbox).toBeVisible();
+		await lightbox.click();
+		await expect(lightbox).toBeHidden();
+
+		// Back closes it too — opening pushed a history entry.
+		await art.click();
+		await expect(lightbox).toBeVisible();
+		await page.goBack();
+		await expect(lightbox).toBeHidden();
+		await expect(art).toBeVisible();
+	});
+
+	test('a ?zoom=1 link opens the art already zoomed', async ({ page }) => {
+		await page.goto('/cards/v-streetkid?zoom=1');
+		await expect(page.getByRole('dialog')).toBeVisible();
+	});
+
 	test('resolves a printing deep-link, β verbatim', async ({ page }) => {
 		const v = card('v-streetkid');
 		const beta = v.printings.find((printing) => printing.collectorNumber === 'β144');
