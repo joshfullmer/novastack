@@ -12523,6 +12523,17 @@
 					"thumbhash": "DeiFDAQPM/o0C7jUtw6GWoiAgYGICBiIAA=="
 				},
 				{
+					"artist": "Mooncolony",
+					"collectorNumber": "164",
+					"id": "6ceb8ace-8b73-4b12-ba75-ee867b936e5c",
+					"key": "MS01-WNC-164",
+					"locale": "en",
+					"rarity": "Iconic Other",
+					"setId": "MS01-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/6ceb8ace-8b73-4b12-ba75-ee867b936e5c/render-mpxvdydu.webp",
+					"thumbhash": "1xeKDAYPqrZ4CGeJQgbJQ5WAgYGICBiIAA=="
+				},
+				{
 					"artist": "ADIA",
 					"collectorNumber": "β088",
 					"id": "28cf40e2-f83a-47f4-9c4d-c0b5157e84e6",
@@ -12554,6 +12565,17 @@
 					"setId": "MS01-WNC",
 					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/5168d0e9-9bca-4791-967a-319030704cb1/render-17085eaa-ea89-416b-aec6-c7667c21be9a.webp",
 					"thumbhash": "DeiFDAQPI/ozDLjjtw6GWoiAgYGICBiIAA=="
+				},
+				{
+					"artist": "Mooncolony",
+					"collectorNumber": "164",
+					"id": "ec17ec9d-88dd-416d-92a5-7eb8c5076603",
+					"key": "MS01-WNC-164-FR",
+					"locale": "fr",
+					"rarity": "Iconic Other",
+					"setId": "MS01-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/ec17ec9d-88dd-416d-92a5-7eb8c5076603/render-4b5bbd25-872f-4c47-917b-f30e6d81c2ad.webp",
+					"thumbhash": "1xeKDAYPmrZ4CGeJQgbJQ5aAgYGICBiIAA=="
 				}
 			],
 			"ramProvided": null,
@@ -15953,8 +15975,8 @@
 					"locale": "fr",
 					"rarity": "Common",
 					"setId": "MS01-WNC",
-					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/bec70f1a-0e3c-41a7-aa06-cf41a233885d/render-1eb32060-6942-4a2f-a88a-247e377f08df.webp",
-					"thumbhash": "jdeFDAQPEvw0nZaggApWyICIgYGICBiIAA=="
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/bec70f1a-0e3c-41a7-aa06-cf41a233885d/render-665205c5-f81a-4fae-baeb-96ff54e1bd5c.webp",
+					"thumbhash": "jceFDAQPE+w0nJaggAlWuICIgYGICBiIAA=="
 				}
 			],
 			"ramProvided": null,
@@ -16759,7 +16781,7 @@
 			"sortOrder": 2500
 		}
 	],
-	"generatedAt": "2026-10-17T16:38:48.169Z",
+	"generatedAt": "2026-10-20T12:45:38.879Z",
 	"ramPerLegend": 2,
 	"sets": [
 		{
@@ -16770,7 +16792,7 @@
 			"kind": "base",
 			"name": "Welcome to Night City",
 			"printed": "MS01 - WNC [A]",
-			"printingCount": 500,
+			"printingCount": 502,
 			"setCode": "WNC"
 		},
 		{
@@ -16908,7 +16930,7 @@
 	],
 	"stats": {
 		"cards": 151,
-		"printings": 742,
+		"printings": 744,
 		"sets": 1
 	}
 }
