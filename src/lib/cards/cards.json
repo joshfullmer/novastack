@@ -5243,6 +5243,17 @@
 					"thumbhash": "zjiGFAYPHLRHqfSRg8j3Sp+GgYGICBiIAA=="
 				},
 				{
+					"artist": "Akram",
+					"collectorNumber": "162",
+					"id": "1a13a5a8-c1d4-4d36-88be-7a6e3cb78c90",
+					"key": "MS01-WNC-162",
+					"locale": "en",
+					"rarity": "Iconic Other",
+					"setId": "MS01-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/1a13a5a8-c1d4-4d36-88be-7a6e3cb78c90/render-mpvlozaa.webp",
+					"thumbhash": "lRiGDAIPaSV3F/aGY7/ll3+HgYGICBiIAA=="
+				},
+				{
 					"artist": "Daniel Valaisis",
 					"collectorNumber": "β046",
 					"id": "ab6fab2a-8101-4bc7-8f5d-b55adf09bc4c",
@@ -5274,6 +5285,17 @@
 					"setId": "MS01-WNC",
 					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/3751ba00-e41e-4eb7-81a3-32c3351109c0/render-f41dfaf2-fda0-4102-bcea-5c20c93ccd80.webp",
 					"thumbhash": "zjiGFAYPG7RIqfSRg8j2Sp+GgYGICBiIAA=="
+				},
+				{
+					"artist": "Akram",
+					"collectorNumber": "162",
+					"id": "fb1bc28c-21ac-4f41-855d-a0a4c63d5957",
+					"key": "MS01-WNC-162-FR",
+					"locale": "fr",
+					"rarity": "Iconic Other",
+					"setId": "MS01-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/fb1bc28c-21ac-4f41-855d-a0a4c63d5957/render-a08db3f4-4d1f-4bac-b540-41e8bdc5cc43.webp",
+					"thumbhash": "lhiGDAIPaSV3F/aGY7/lh3+IgYGICBiIAA=="
 				}
 			],
 			"ramProvided": null,
@@ -16781,7 +16803,7 @@
 			"sortOrder": 2500
 		}
 	],
-	"generatedAt": "2026-10-21T09:42:15.988Z",
+	"generatedAt": "2026-10-21T16:10:29.445Z",
 	"ramPerLegend": 2,
 	"sets": [
 		{
@@ -16794,7 +16816,7 @@
 			"name": "Welcome to Night City",
 			"parentId": null,
 			"printed": "MS01 - WNC [A]",
-			"printingCount": 502,
+			"printingCount": 504,
 			"releaseWindow": null,
 			"setCode": "WNC"
 		},
@@ -16983,7 +17005,7 @@
 	],
 	"stats": {
 		"cards": 151,
-		"printings": 744,
+		"printings": 746,
 		"sets": 1
 	}
 }
