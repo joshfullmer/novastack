@@ -6947,7 +6947,7 @@
 				{
 					"answer": "Yes.",
 					"id": "22d75516-cd32-4b86-bce5-915d075c3ec3",
-					"question": "Do I have to look at at friendly face-down Legend even if I don't want to?",
+					"question": "Do I have to look at a friendly face-down Legend even if I don't want to?",
 					"sortOrder": 100
 				}
 			],
@@ -13630,7 +13630,7 @@
 				{
 					"answer": "Yes.",
 					"id": "2a2b9c9f-1076-493c-aa0f-24a274fbf85a",
-					"question": "If I use this on a friendly Legend in that field area that is now a also a Unit, does the Legend count itself for a +1?",
+					"question": "If I use this on a friendly Legend in that field area that is now also a Unit, does the Legend count itself for a +1?",
 					"sortOrder": 200
 				}
 			],
@@ -16803,7 +16803,7 @@
 			"sortOrder": 2500
 		}
 	],
-	"generatedAt": "2026-10-21T16:10:29.445Z",
+	"generatedAt": "2026-10-22T19:42:30.275Z",
 	"ramPerLegend": 2,
 	"sets": [
 		{
