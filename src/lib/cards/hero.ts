@@ -36,8 +36,11 @@ export type HeroChoice = {
 };
 
 export const HEROES: readonly HeroChoice[] = [
-	// Red — the non-Legend Johnny, at his only Iconic tier.
-	{ slug: 'johnny-silverhand-never-stop-fighting', printing: { rarity: 'Iconic Other' } },
+	// Red — the non-Legend Johnny, at his only Iconic tier, in the beta art.
+	{
+		slug: 'johnny-silverhand-never-stop-fighting',
+		printing: { rarity: 'Iconic Other', treatment: 'beta' }
+	},
 	// Blue — the box-topper art rather than the Legend's mainline printing.
 	{ slug: 'jackie-welles-pour-one-out-for-me', printing: { setId: 'PRM-WNC' } },
 	// Green
