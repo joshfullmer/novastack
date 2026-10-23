@@ -11861,6 +11861,17 @@
 					"thumbhash": "EaeFFAYPe/ZYeaVyhBB3KICIgYGICBiIAA=="
 				},
 				{
+					"artist": "Dardo Studios",
+					"collectorNumber": "166",
+					"id": "9f251692-ea15-45d9-8fa3-5833453502c6",
+					"key": "MS01-WNC-166",
+					"locale": "en",
+					"rarity": "Iconic Other",
+					"setId": "MS01-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/9f251692-ea15-45d9-8fa3-5833453502c6/render-mpxvev8y.webp",
+					"thumbhash": "EdiJHAQPsIeHOKqYJ3UGP4WEgYGICBiIAA=="
+				},
+				{
 					"artist": "Mooncolony",
 					"collectorNumber": "β126",
 					"id": "4abedde2-f9db-4451-a2ab-fc7f594ea132",
@@ -11892,6 +11903,17 @@
 					"setId": "MS01-WNC",
 					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/da689d07-a775-4c10-b3ae-5320feb56fea/render-9435a6db-2498-41e4-8761-ef85cfd8b8b0.webp",
 					"thumbhash": "EaeFFAYPe/ZYeaVyhBB3KICIgYGICBiIAA=="
+				},
+				{
+					"artist": "Dardo Studios",
+					"collectorNumber": "166",
+					"id": "d97bfbb9-99ca-48bb-922a-367c79d2d689",
+					"key": "MS01-WNC-166-FR",
+					"locale": "fr",
+					"rarity": "Iconic Other",
+					"setId": "MS01-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/d97bfbb9-99ca-48bb-922a-367c79d2d689/render-4a1c718b-69f2-44b1-a37b-fde8548134e6.webp",
+					"thumbhash": "EdiJHAQPsIeHOJqYJ3UGP4WEgYGICBiIAA=="
 				}
 			],
 			"ramProvided": null,
@@ -16803,7 +16825,7 @@
 			"sortOrder": 2500
 		}
 	],
-	"generatedAt": "2026-10-22T19:42:30.275Z",
+	"generatedAt": "2026-10-23T21:03:53.314Z",
 	"ramPerLegend": 2,
 	"sets": [
 		{
@@ -16816,7 +16838,7 @@
 			"name": "Welcome to Night City",
 			"parentId": null,
 			"printed": "MS01 - WNC [A]",
-			"printingCount": 504,
+			"printingCount": 506,
 			"releaseWindow": null,
 			"setCode": "WNC"
 		},
@@ -17005,7 +17027,7 @@
 	],
 	"stats": {
 		"cards": 151,
-		"printings": 746,
+		"printings": 748,
 		"sets": 1
 	}
 }
