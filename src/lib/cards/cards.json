@@ -11,9 +11,9 @@
 			"eddiable": false,
 			"faqs": [
 				{
-					"answer": "Yes, the effect triggers for each stolen d6.",
+					"answer": "Yes.",
 					"id": "ed0b637f-567a-418c-a759-ab8deb631ce4",
-					"question": "If a friendly Unit steals two d6s simultaneously, can I increase two Gigs?",
+					"question": "If a friendly Unit steals two d6 simultaneously, can you trigger this effect for each d6 that is stolen?",
 					"sortOrder": 100
 				}
 			],
@@ -90,28 +90,22 @@
 			"eddiable": true,
 			"faqs": [
 				{
-					"answer": "No, the [PLAY] effect only activates when you play Adam Smasher to the field area.",
+					"answer": "No.",
 					"id": "4dc5a7cb-cb53-4a44-bcd4-33e373dafbd3",
-					"question": "Does Adam Smasher’s [PLAY] effect trigger when he is called or flipped face-up as a Legend?",
+					"question": "When Adam Smasher is called or flipped to the face-up position, will the [Play] effect trigger?",
 					"sortOrder": 100
 				},
 				{
-					"answer": "Yes. [GO SOLO] plays Adam Smasher to the field area and triggers the [PLAY] effect.",
+					"answer": "Yes.",
 					"id": "439b43af-068f-4296-923b-fd7a55ec73a9",
-					"question": "Does Adam Smasher’s [PLAY] effect trigger when he Goes Solo?",
+					"question": "When you activate the [Go Solo] effect and play your Adam Smasher to the field area will the [Play] effect trigger?",
 					"sortOrder": 200
 				},
 				{
 					"answer": "Yes.",
 					"id": "89104f80-8329-4ad9-85ff-cb23f3320d53",
-					"question": "If Adam Smasher is removed from the field area after being played to the field area is Adam Smasher removed from the game instead of being placed in the designated area?",
+					"question": "If Adam Smasher is moved to an invalid area, remove it from the game.",
 					"sortOrder": 300
-				},
-				{
-					"answer": "Yes.",
-					"id": "321ab46b-ddf1-4110-9078-9e691a8267e6",
-					"question": "If Adam Smasher’s cost is reduced does that also reduce cost to activate [GO SOLO]?",
-					"sortOrder": 400
 				}
 			],
 			"flavorText": null,
@@ -281,7 +275,7 @@
 				{
 					"answer": "Yes.",
 					"id": "a40401c6-6467-486a-9e91-a0e95a95b210",
-					"question": "If I manage to play Adam Smasher on my Rival's turn. Does it still get the [PLAY] effect?",
+					"question": "If your Adam Smasher is played during your Rival's turn will the [Play] effect trigger?",
 					"sortOrder": 100
 				}
 			],
@@ -16172,7 +16166,7 @@
 				{
 					"answer": "Yes.",
 					"id": "7ec76a28-572e-45e7-81b2-53c8f38b8ce3",
-					"question": "When this card steals a Gig do I have to ready another friendly Unit even if I don't want to?",
+					"question": "When you steal a Gig with a Wraith Marauders, does the effect force you to ready a friendly Unit with power equal to the Gig's value?",
 					"sortOrder": 100
 				}
 			],
@@ -16265,7 +16259,7 @@
 				{
 					"answer": "No.",
 					"id": "61ad63b3-47d9-48ee-a3f6-4c2842b11c66",
-					"question": "If I've already attacked with an ARASAKA Unit this turn before Yorinobu Arasaka is face-up, then flip Yorinobu, can I trigger Yorinobu's effect that turn by attacking with another ARASAKA Unit?",
+					"question": "You've already attacked with a friendly ARASAKA Unit this turn and then called a friendly Yorinobu Arasaka Legend face-up. Can Yorinobu Arasaka's effect trigger if you attack with another friendly ARASAKA Unit this turn?",
 					"sortOrder": 100
 				}
 			],
@@ -16395,19 +16389,19 @@
 				{
 					"answer": "Yes.",
 					"id": "16ff9b92-68eb-4215-9e05-eaa8bcd9afa4",
-					"question": "If the Unit played by Yorinobu has [ADRENALINE], can it attack the rival Gig area this turn?",
+					"question": "If the Unit Yorinobu is playing has [ADRENALINE], can it attack the rival Gig area this turn?",
 					"sortOrder": 100
 				},
 				{
 					"answer": "Yes.",
 					"id": "6e649617-ec75-42db-a1b0-a3c2b1ebee6c",
-					"question": "Does Yorinobu count itself for “the first time an ARASAKA Unit is defeated each turn”?",
+					"question": "When Yorinobu Arasaka is defeated, if it's the first time an ARASAKA Unit is defeated this turn, will Yorinobu Arasaka's effect trigger?",
 					"sortOrder": 200
 				},
 				{
 					"answer": "No.",
 					"id": "d2074e1b-4efa-4cfb-bc7a-0ca063fcf804",
-					"question": "If a friendly Arasaka Unit was defeated previusly during my turn and then play Yorinobu Arasaka. If another friendly Arasaka Unit is then defeated this turn. Will I draw 1 off Yorinobu's effect?",
+					"question": "If an ARASAKA Unit was defeated this turn and you then play a Yorinobu Arasaka, will Yorinobu Arasaka's effect trigger if another ARASAKA Unit is defeated this turn?",
 					"sortOrder": 300
 				}
 			],
@@ -16498,9 +16492,9 @@
 			"eddiable": true,
 			"faqs": [
 				{
-					"answer": "No, only the amount you pay.",
+					"answer": "Yes.",
 					"id": "fc46987c-3869-4d97-b73b-686e1e08120e",
-					"question": "Does this card's effect change the cost of the card?",
+					"question": "When playing this Gear, the effect only reduces the amount you pay to play the card and does not change the card's cost value.",
 					"sortOrder": 100
 				}
 			],
@@ -16587,27 +16581,27 @@
 			"eddiable": true,
 			"faqs": [
 				{
-					"answer": "Before. Adjust the Gig for Zetatech Faceplate's effect before moving on to your Rival's react step.",
+					"answer": "Yes.",
 					"id": "a4b85193-1647-4001-a076-846f54d54481",
-					"question": "When I spend a Unit equipped with Zetatech Faceplate to declare an attack, do I get Zetatech Faceplate's effect before or after I resolve the attack?",
+					"question": "When a friendly Unit equipped with a Zetatech Faceplate is spent when declaring an attack, can you resolve the Zetatech Faceplate's triggered effect before the React step and before the attack ends?",
 					"sortOrder": 100
 				},
 				{
-					"answer": "You can choose the order you resolve these effects.",
+					"answer": "Yes.",
 					"id": "9f87591e-514c-44ee-bba4-515fc488fb77",
-					"question": "If I spend a Unit equipped with Zetatech Faceplate to declare an attack, and the Unit or Legend has an [ATTACK] effect, do I get Zetatech Faceplacte's effect before or after the [ATTACK] effect?",
+					"question": "When you spend a friendly Unit with the [Attack] keyword to declare an attack while equipped with Zetatech Faceplate, both effects trigger at the same time. Can you choose the order in which to resolve the two now-pending effects?",
 					"sortOrder": 200
 				},
 				{
-					"answer": "After. Resolve the activated [Spend Icon:] effect first.",
+					"answer": "No.",
 					"id": "9b281489-5883-47ca-80a9-fa6707655b12",
-					"question": "If I spend a Unit or Legend equipped with Zetatech Faceplate to activate the Unit/Legend's [Spend Icon:] effect, do I get Zetatech Faceplate's effect before or after the activated effect?",
+					"question": "When you choose to activate the [Spend Icon:] on a friendly Unit or Legend, the equipped Zetatech Faceplate's effect will trigger. Can you resolve the now pending Zetatech Faceplate effect before the activated [Spend Icon] effect?",
 					"sortOrder": 300
 				},
 				{
-					"answer": "After. Play the card first, then adjust the Gig.",
+					"answer": "No.",
 					"id": "62c60c04-72ec-4231-9ea7-f5b8048eb4d8",
-					"question": "If I spend a Legend equipped with Zetatech Faceplate to pay a card's cost, do I get Zetatech Faceplate's effect before or after I play the card?",
+					"question": "When paying the cost to play a card or activate an effect, you spend a friendly face-up Legend, triggering the effect of the equipped Zetatech Faceplate. Can you resolve the now-pending Zetatech Faceplate effect before you finish resolving the activated Program?",
 					"sortOrder": 400
 				}
 			],
@@ -16858,7 +16852,7 @@
 			"sortOrder": 2500
 		}
 	],
-	"generatedAt": "2026-10-24T16:09:59.718Z",
+	"generatedAt": "2026-10-25T17:09:34.215Z",
 	"ramPerLegend": 2,
 	"sets": [
 		{
