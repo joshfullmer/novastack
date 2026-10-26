@@ -12654,7 +12654,7 @@
 				{
 					"answer": "Yes.",
 					"id": "66f0aa50-b90c-4bf0-9a02-ddfbec146375",
-					"question": "At the end of my turn do I have to ready this Unit or Legend even if I don't want to?",
+					"question": "At the end of your turn, when this effect resolves, if your Unit or Legend is spent, it will have to be moved to the ready position.",
 					"sortOrder": 100
 				}
 			],
@@ -12787,13 +12787,13 @@
 				{
 					"answer": "No.",
 					"id": "8b665720-9bdc-47ee-8930-9e8b6f6d41ef",
-					"question": "If I attack the rival Gig area with Sasha but she has 0 power, does she steal a Gig?",
+					"question": "During the steal step of an attack, if Sasha has a power of 0, will Sasha be able to steal a Gig?",
 					"sortOrder": 100
 				},
 				{
-					"answer": "No. You must declare the attack target before revealing the card for her [ATTACK] effect.",
+					"answer": "No.",
 					"id": "f548eacd-802d-4101-b47c-36cf1155e1df",
-					"question": "When I declare an attack with Sasha Yakovleva, can I use her [ATTACK] effect before I choose a target?",
+					"question": "Will you be able to trigger and resolve the [Attack] effect before you declare a valid attack target with Sasha Yakovleva?",
 					"sortOrder": 200
 				}
 			],
@@ -12902,13 +12902,13 @@
 				{
 					"answer": "No.",
 					"id": "d9ad00b9-ab93-498f-a6fa-bab6d833d949",
-					"question": "If a friendly Unit equipped with Satori fights a Unit of the same power and they defeat each other, do I still draw 1?",
+					"question": "Your Unit, equipped with Satori, loses a fight and is defeated, but the opposing Unit also loses and is defeated. Will the Satori effect still trigger because the opposing Unit also loses?",
 					"sortOrder": 100
 				},
 				{
 					"answer": "Yes.",
 					"id": "8ba81187-0232-4320-b876-cae87a389ea5",
-					"question": "If my Unit equipped with Satori is attacked by a rival Unit and my Unit wins the fight, do I draw 1?",
+					"question": "If a friendly Unit equipped with Satori wins a fight from an attack by a rival Unit. Will the Satori effect trigger when the equipped friendly Unit wins this fight?",
 					"sortOrder": 200
 				}
 			],
@@ -13040,7 +13040,7 @@
 				{
 					"answer": "Yes.",
 					"id": "1f7a2ac5-b236-4b1c-9f4b-6e0b34441174",
-					"question": "Do other Units keep the +2 power while fighting and stealing too?",
+					"question": "Will other friendly Units have +2 power during the attack's fight and steal steps?",
 					"sortOrder": 100
 				}
 			],
@@ -13117,13 +13117,13 @@
 				{
 					"answer": "Yes.",
 					"id": "461379b1-06dd-4753-91b2-1fdabc5024e0",
-					"question": "If I have another Unit in my trash, do I have to add it to my hand  even if I don't want to?",
+					"question": "Will you have to add another Unit from your trash when resolving the [Defeated] effect?",
 					"sortOrder": 100
 				},
 				{
 					"answer": "Yes.",
 					"id": "0db0dbe4-a10b-458b-9b5c-9e478b71c615",
-					"question": "Can Screw's effect add a different copy of Screw from my trash to my hand?",
+					"question": "When you resolve the [Defeated] effect, can you add another Screw, Lovelorn Fool from your trash to your hand?",
 					"sortOrder": 200
 				}
 			],
@@ -13345,9 +13345,9 @@
 			"eddiable": true,
 			"faqs": [
 				{
-					"answer": "Each player may still choose to draw 5, and the total number of discarded cards equals 0.",
+					"answer": "Yes.",
 					"id": "0d03437c-9149-4ee7-8006-7bb8fd044608",
-					"question": "If neither player has cards in hand when I play Shattered Memories, what happens?",
+					"question": "Will you be able to play this Program if either player has no cards in their hand?",
 					"sortOrder": 100
 				}
 			],
@@ -13447,7 +13447,7 @@
 				{
 					"answer": "Yes.",
 					"id": "9e6de445-d9cb-42cc-8e94-20c941da7cd9",
-					"question": "When I search the top 3 cards of my deck, can I choose not to reveal any cards and bottom-deck them all even if there's a Gear among them?",
+					"question": "When you search the top 3 cards of your deck with the [Attack] effect, you can choose not to reveal any cards, even if there is a valid target, and then bottom-deck them in a random order.",
 					"sortOrder": 100
 				}
 			],
@@ -13530,7 +13530,7 @@
 				{
 					"answer": "No.",
 					"id": "c41cdb0c-25d6-47ec-8c4c-5bb900a14b3e",
-					"question": "If this Unit gains 5+ power while fighting or after I declare an attack or in a fight. Do I draw 1?",
+					"question": "If the [Attack] effect has finished resolving with this Unit at 3 power and then, during the attack, this Unit has 5+ power. Can you draw 1 from the effect?",
 					"sortOrder": 100
 				}
 			],
@@ -13640,13 +13640,13 @@
 				{
 					"answer": "Yes.",
 					"id": "9f5fa425-bb0f-4f5f-908c-d56b67d14862",
-					"question": "Does this effect count friendly face-up Legends in the field area?",
+					"question": "When this friendly Unit is in a fight, does it have +1 power for each friendly face-up Legend in the Legends and Field area?",
 					"sortOrder": 100
 				},
 				{
 					"answer": "Yes.",
 					"id": "2a2b9c9f-1076-493c-aa0f-24a274fbf85a",
-					"question": "If I use this on a friendly Legend in that field area that is now also a Unit, does the Legend count itself for a +1?",
+					"question": "If you use this on a friendly face-up Legend that was played to the Field area, will that Legend get +1 while fighting rival Units this turn?",
 					"sortOrder": 200
 				}
 			],
@@ -13724,13 +13724,13 @@
 				{
 					"answer": "No.",
 					"id": "2110a5e9-a27c-42b5-b3e4-ca464f1d2dd0",
-					"question": "Do I have to reveal the friendly face-down Legends I look at?",
+					"question": "Do you have to reveal the friendly face-down Legend you look at when resolving this Unit's effect?",
 					"sortOrder": 100
 				},
 				{
 					"answer": "Yes.",
 					"id": "2a1bca2f-eaca-4418-baeb-96aab1b4e476",
-					"question": "Do I have to look at my Legends even if I don't want to?",
+					"question": "When resolving this Unit's effect, do you have to look at all your friendly face-down Legends?",
 					"sortOrder": 200
 				}
 			],
@@ -13833,13 +13833,13 @@
 				{
 					"answer": "Yes.",
 					"id": "4e9fde1b-cbe0-4025-9a04-c61b13ecde02",
-					"question": "Does this apply to Units stealing Gigs through effects outside of attacking?",
+					"question": "When a rival Unit attempts to steal a Gig through an effect, it steals 1 fewer Gig this turn while under the effect of Take Control.",
 					"sortOrder": 100
 				},
 				{
-					"answer": "0 Gigs. Take Control's effect prevents the rival Unit from stealing a Gig, which means Gorilla Arms does not activate.",
+					"answer": "No.",
 					"id": "b6be2042-7260-4c72-a7e0-0478c9cda9f9",
-					"question": "If I use Take Control on a rival Unit that would normally steal 1 Gig but is equipped with Gorilla Arms, how many Gigs does it actually steal?",
+					"question": "When a friendly Unit equipped with a Gorilla Arms at 9 power attempts to steal a Gig from an attack but can only steal 0 Gigs due to a rival's Take Control effect, will the equipped Gorilla Arms trigger off the Unit's attempt to steal the Gig?",
 					"sortOrder": 200
 				}
 			],
@@ -13943,7 +13943,7 @@
 				{
 					"answer": "Yes.",
 					"id": "5ecbb33e-871b-40cd-bb66-6997a692e1a6",
-					"question": "When searching the top card of the deck is the card still currently counted as being in the deck?",
+					"question": "When resolving the effect to search the top card of your deck. Is the card you're searching for still counted as part of the deck?",
 					"sortOrder": 100
 				}
 			],
@@ -14043,15 +14043,15 @@
 			"eddiable": true,
 			"faqs": [
 				{
-					"answer": "Yes.",
+					"answer": "No.",
 					"id": "8151aa53-358f-4d39-b3f6-58b165127b8e",
-					"question": "If I trash 1 or more Gears from this effect, do I have to add one to my hand even if I don't want to?",
+					"question": "When resolving this effect, you trash at least one Gear; can you choose not to add a Gear to your hand?",
 					"sortOrder": 100
 				},
 				{
-					"answer": "You may add it to your hand if you don't want to play it immediately. (But if you play it later, you must pay its cost normally.)",
+					"answer": "No.",
 					"id": "4f2133a0-c3cc-4955-9815-6026ed16735d",
-					"question": "If I choose a Gear with cost equal to the value of a friendly Gig, do I have to play it for free, or can I just add it to my hand?",
+					"question": "When you resolve this effect, you trash a Gear with a cost equal to the value of a friendly Gig. When you choose the Gear, do you have to play it for free instead of adding it to your hand?",
 					"sortOrder": 200
 				}
 			],
@@ -14120,9 +14120,9 @@
 			"eddiable": true,
 			"faqs": [
 				{
-					"answer": "No. The Unit/Legend moves to the trash first, so any Gear (including The Relic) remains in the trash when you bottom-deck the Unit/Legend.",
+					"answer": "No.",
 					"id": "91373c98-159f-48e1-a231-045b5fe34631",
-					"question": "When a Unit or Legend equipped with The Relic is defeated, do I move any equipped Gear on it to the bottom-deck, too?",
+					"question": "When you resolve the [Defeated] effect to bottom-deck the equipped Unit or Legend, will the Gear that moved with it to the trash also be bottom-decked?",
 					"sortOrder": 100
 				}
 			],
@@ -14233,7 +14233,7 @@
 				{
 					"answer": "Yes.",
 					"id": "71b6fcd4-2bac-430b-8589-258ab1aae486",
-					"question": "When searching the top 3 cards of my deck, are the cards still considered part of the deck?",
+					"question": "While you are searching the top 3 cards of your deck with this Program's effect, do those cards still count toward your deck count?",
 					"sortOrder": 100
 				}
 			],
@@ -14303,13 +14303,13 @@
 				{
 					"answer": "No.",
 					"id": "2a2fadce-85ca-49cd-a9a5-76a77e5cf615",
-					"question": "IfI have the same amount of Street Cred as a Rival, do I get both effects?",
+					"question": "If you have the same Street Cred value as your Rival, can you choose both options for the Program's effect?",
 					"sortOrder": 100
 				},
 				{
-					"answer": "No, you must resolve the top effect first, then the bottom one.",
+					"answer": "Yes.",
 					"id": "cabf44d5-8f4c-420e-b149-e408e4fcc699",
-					"question": "If I choose both effetcs, can I choose what order I resolve them?",
+					"question": "When you have to choose both effects of this Program instead of one, you must resolve the \"Give all rival Units -5 power this turn\" before you resolve the \"Bottom-deck all rival Units with power 0.",
 					"sortOrder": 200
 				}
 			],
@@ -14446,9 +14446,9 @@
 			"eddiable": false,
 			"faqs": [
 				{
-					"answer": "No, only the amount you pay.",
+					"answer": "Yes.",
 					"id": "b7e62adb-5a98-482e-8ec7-39fc3d176aa1",
-					"question": "Does Trauma Team Operatives' effect change the cost of the card?",
+					"question": "When you play this Unit, the effect only reduces the €$ required to play the card; it does not change its cost value.",
 					"sortOrder": 100
 				}
 			],
@@ -14536,7 +14536,7 @@
 				{
 					"answer": "No.",
 					"id": "cc187a60-e949-4ff2-a8d2-38adf6ff32e9",
-					"question": "Does the Gig I decrease with the effect have to be the min Gig I use for the draw 1 effect condition?",
+					"question": "Does the Gig you chose to decrease when resolving this effect have to be the min Gig required to draw 1?",
 					"sortOrder": 100
 				}
 			],
@@ -14629,19 +14629,19 @@
 				{
 					"answer": "No.",
 					"id": "0c12a0d1-b75a-4269-b1b5-68d5e80acf4b",
-					"question": "If I don't Call a Legend for free when I play this card, can I Call a Legend for free later instead?",
+					"question": "If you do not Call a Legend for free when resolving the [Play] effect. If you use the Call a Legend game action later this turn, can you do it for free?",
 					"sortOrder": 100
 				},
 				{
 					"answer": "Yes.",
 					"id": "1dcc06cf-2c53-4507-88d8-f5f002e2d656",
-					"question": "If I manage to play Tyger's Whisper on my Rival's turn, can I Call a Legend for free through its [PLAY] effect?",
+					"question": "If you play this Unit on your rival's turn, will you be able to Call a Legend for free when resolving the [Play] effect?",
 					"sortOrder": 200
 				},
 				{
 					"answer": "No.",
 					"id": "92d69f9f-e14d-491e-8589-7f79d56b5320",
-					"question": "If I already Called a Legend this turn, can I call another Legend with Tyger's Whisper's [PLAY] effect?",
+					"question": "If you already Called a Legend once this turn, can you Call a Legend for free when resolving the [Play] effect?",
 					"sortOrder": 300
 				}
 			],
@@ -14729,7 +14729,7 @@
 				{
 					"answer": "Yes.",
 					"id": "51314e7a-dea5-4d38-aeeb-52f58dc2a55a",
-					"question": "If I play this when there are no rival Units do I still have to bottom deck a friendly Unit?",
+					"question": "When resolving this Program's effect, if there are no spent rival Units, do you have to bottom-deck a ready friendly Unit?",
 					"sortOrder": 100
 				}
 			],
@@ -14800,7 +14800,7 @@
 				{
 					"answer": "Yes.",
 					"id": "22eadcab-b88a-45cd-9e07-ef51084da8cf",
-					"question": "Can I play this Legend to the Field area without using the [GO SOLO] keyword?",
+					"question": "Can you play this Legend to the Field area by paying its cost instead of paying the cost to activate the [Go Solo] keyword?",
 					"sortOrder": 100
 				}
 			],
@@ -14913,9 +14913,9 @@
 			"eddiable": false,
 			"faqs": [
 				{
-					"answer": "Yes, as this card specifies 'A Gig' so each Gig that gets stolen may be increased by the effect.",
+					"answer": "Yes.",
 					"id": "9eee394b-2dc7-4750-a5ef-5cb0fc988ee9",
-					"question": "If V steals multiple Gigs in one attack, can V increase each stolen Gig?",
+					"question": "If your V with 10 or more power steals 2 Gigs through an attack, will the first effect of V trigger for each of the Gigs stolen?",
 					"sortOrder": 100
 				}
 			],
@@ -14989,21 +14989,21 @@
 			"eddiable": true,
 			"faqs": [
 				{
-					"answer": "No. You can add any BRAINDANCE Program from your trash.",
+					"answer": "Yes.",
 					"id": "1dd664ff-e61f-4b15-8e96-45f0dd31a13a",
-					"question": "When I trash 3, do I need to add a BRAINDANCE Program from the cards I trashed?",
+					"question": "After you Trash 3 with the [Call] effect will you be forced to add 1 BRAINDANCE Program from the trash to your hand if there is a valid target?",
 					"sortOrder": 100
 				},
 				{
-					"answer": "Yes. Trash as many cards as possible, instead.",
+					"answer": "Yes.",
 					"id": "ba7d3b2f-96f6-4570-8e03-b7f514512d9a",
-					"question": "If there are fewer than 3 cards in my deck, can I still call V?",
+					"question": "If you have only 2 cards left in your deck when you resolve the [Call] effect, will you be forced to trash them?",
 					"sortOrder": 300
 				},
 				{
 					"answer": "No.",
 					"id": "15ebfd43-82fa-4e07-a8e5-2432562e32ef",
-					"question": "If V’s [CALL] effect trashes multiple BRAINDANCE Programs,  can I choose more than 1?",
+					"question": "Can you add 1 for each BRAINDANCE Program that is trashed with the [Call] effect?",
 					"sortOrder": 400
 				}
 			],
@@ -15227,7 +15227,7 @@
 				{
 					"answer": "No.",
 					"id": "fbe43ae0-a606-4391-8183-342a43213365",
-					"question": "If Valentino Guerrera attacks a ready rival Unit with [BLOCKER], can the attacked Unit use its own [BLOCKER] effect?",
+					"question": "If your Valentino Guerra attacks a rival Unit with [BLOCKER] that is in the ready position, can the attacked rival Unit in the ready position activate [BLOCKER] during the React step?",
 					"sortOrder": 100
 				}
 			],
@@ -15326,7 +15326,7 @@
 				{
 					"answer": "No.",
 					"id": "c78f53c3-489c-4a0e-8d73-9ab7a8431419",
-					"question": "If I give a friendly Unit [ADRENALINE] on my Rival's turn, can it make an attack?",
+					"question": "If you play this Unit on your rival's turn and give another friendly Unit with cost 5 or less [Adrenaline], can you now attack with that Unit on your rival's turn?",
 					"sortOrder": 100
 				}
 			],
@@ -15417,13 +15417,13 @@
 				{
 					"answer": "Yes.",
 					"id": "80577b2c-f335-442e-9476-b2e38d0d03dd",
-					"question": "If I have a way to play a Gear on my rival's turn, do I still get the  -3 €$ discount?",
+					"question": "If you play a CYBERWARE Gear on your rival's turn, will you still get the -3 €$ effect?",
 					"sortOrder": 100
 				},
 				{
-					"answer": "Yes, the discount is mandatory.",
+					"answer": "No.",
 					"id": "449ecd14-296c-4431-b445-261265f89c1d",
-					"question": "When I play my first Cyberware each turn, do I have to pay the reduced amount even if I would prefer to pay full price?",
+					"question": "When playing your first CYBERWARE Gear this turn can you choose not to have the -3 €$ reduction?",
 					"sortOrder": 200
 				}
 			],
@@ -15520,7 +15520,7 @@
 				{
 					"answer": "Yes.",
 					"id": "03d7a874-2d53-4fc9-9f7d-905cebcedcc7",
-					"question": "When I search the top 5 cards of my deck, can I choose not to reveal any cards and bottom-deck them all even if there's a viable Gear among them?",
+					"question": "When you search the top 5 cards of your deck with the [Call] effect, you can choose not to reveal any cards even if there is a valid target and then bottom-deck them in a random order.",
 					"sortOrder": 100
 				}
 			],
@@ -15628,9 +15628,9 @@
 			"eddiable": false,
 			"faqs": [
 				{
-					"answer": "No, the effect is mandatory. If you can do it, you must.",
+					"answer": "No.",
 					"id": "602f90aa-bda8-44dc-97b6-f3e23e59918f",
-					"question": "Can I choose not to use Viktor Vektor's [PLAY] effect?",
+					"question": "When you resolve the [Play] effect, can you choose not to play a CYBERWARE Gear costing 2 or less from your trash for free?",
 					"sortOrder": 100
 				}
 			],
@@ -15715,15 +15715,15 @@
 			"eddiable": true,
 			"faqs": [
 				{
-					"answer": "No. You can still \"choose\" the other effect, it just fails.",
+					"answer": "No.",
 					"id": "ab2739ef-ffc9-493d-b523-b6823ba1b618",
-					"question": "If there are no viable rival Units, do I have to choose the draw effect?",
+					"question": "When you are resolving the [Call] effect of Wakako Okada, can you choose \"Give a rival Unit -2 power this turn\" even if there are no rival Units?",
 					"sortOrder": 100
 				},
 				{
 					"answer": "Yes.",
 					"id": "8bbbcb97-0cb0-41b9-a674-7647d6085163",
-					"question": "Can I use this card's [Spend Icon:] effect on an already min Gig?",
+					"question": "When you resolve the [Spend Icon:] effect on Wakako Okada, can you choose a min Gig?",
 					"sortOrder": 200
 				}
 			],
@@ -15884,15 +15884,15 @@
 			"eddiable": true,
 			"faqs": [
 				{
-					"answer": "No, only the amount you pay.",
+					"answer": "No.",
 					"id": "972b7a64-cc96-4e31-8e7f-5718d319914a",
-					"question": "Does this card's effect change the cost of the card?",
+					"question": "If you spend 3 €$ to play this Program, will the cost value change from 5 to 3?",
 					"sortOrder": 100
 				},
 				{
-					"answer": "No, the discount is mandatory.",
+					"answer": "No.",
 					"id": "abf24590-be16-41a4-9314-05cf9964a483",
-					"question": "Can I choose to play this card for it's full cost if my Rival has 2 or more Gigs?",
+					"question": "Can you choose to spend 5 €$ instead of 3 €$ if your Rival controls at least 2 more gigs than you?",
 					"sortOrder": 200
 				}
 			],
@@ -15999,13 +15999,13 @@
 				{
 					"answer": "No.",
 					"id": "6a19fd88-c002-4d46-914c-dfe3b13fd27b",
-					"question": "If my Rival plays a Legend to the field after I play Westbrook Netrunner, can the Legend steal a Gig with value less than their power?",
+					"question": "If your Rival plays a Legend to the Field area after you played a Westbrook Netrunner, can the Rival Legend steal a gig with a lower value than its power?",
 					"sortOrder": 100
 				},
 				{
-					"answer": "Yes.",
+					"answer": "No.",
 					"id": "5b17e2c5-e679-4dad-a131-815a6618dd48",
-					"question": "If Westbrook Netrunner is defeated before my next turn, is its effect still active?",
+					"question": "You played a Westbrook Netrunner, resolved its [Play] effect, and ended your turn. During your rival's next turn, they use an effect to defeat your Westbrook Netrunner. Can the rival Legends now steal a Gig with a value lower than their power during that turn?",
 					"sortOrder": 200
 				}
 			],
@@ -16082,19 +16082,19 @@
 				{
 					"answer": "Yes.",
 					"id": "d0d1a60f-cb84-4dbf-b131-c2ee9f7bae22",
-					"question": "Can I play this card if there are no spent Units on the field?",
+					"question": "Can you pay the cost to play this Program even if no Units are spent in the Field areas?",
 					"sortOrder": 100
 				},
 				{
 					"answer": "Yes.",
 					"id": "192c3c09-2160-4818-840a-ae6b1d9cf27f",
-					"question": "Can I choose a friendly Unit with this effect?",
+					"question": "Can you choose a friendly Unit with the Wild in the Streets effect?",
 					"sortOrder": 200
 				},
 				{
 					"answer": "Yes.",
 					"id": "7ea036d0-1f07-4425-9a47-198eec19fef1",
-					"question": "If I play this Program and there is only a spent friendly Unit in the Field areas. Will I have to choose my Unit?",
+					"question": "If you play this Program and there is only a spent friendly Unit in the Field area. Will you then be forced to choose and defeat your own spent Unit?",
 					"sortOrder": 300
 				}
 			],
@@ -16494,7 +16494,7 @@
 				{
 					"answer": "Yes.",
 					"id": "fc46987c-3869-4d97-b73b-686e1e08120e",
-					"question": "When playing this Gear, the effect only reduces the amount you pay to play the card and does not change the card's cost value.",
+					"question": "When you play this Gear, the effect only reduces the €$ required to play the card; it does not change its cost value.",
 					"sortOrder": 100
 				}
 			],
@@ -16852,7 +16852,7 @@
 			"sortOrder": 2500
 		}
 	],
-	"generatedAt": "2026-10-25T17:09:34.215Z",
+	"generatedAt": "2026-10-26T09:54:40.244Z",
 	"ramPerLegend": 2,
 	"sets": [
 		{
