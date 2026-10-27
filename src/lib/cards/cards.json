@@ -104,7 +104,7 @@
 				{
 					"answer": "Yes.",
 					"id": "89104f80-8329-4ad9-85ff-cb23f3320d53",
-					"question": "If Adam Smasher is moved to an invalid area, remove it from the game.",
+					"question": "If Adam Smasher is moved to an invalid area, will it be removed from the game?",
 					"sortOrder": 300
 				}
 			],
@@ -10451,6 +10451,17 @@
 					"thumbhash": "TwiKHAgPp3mHCYiGmoCWCIqDgYGICBiIAA=="
 				},
 				{
+					"artist": "Divebound",
+					"collectorNumber": "170",
+					"id": "5632d773-b6c8-402d-a162-364767d3d21e",
+					"key": "MS01-WNC-170",
+					"locale": "en",
+					"rarity": "Iconic Secret",
+					"setId": "MS01-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/5632d773-b6c8-402d-a162-364767d3d21e/render-mpxvfxjh.webp",
+					"thumbhash": "FGmGFAYPZERVComoBptnc4qAgYGICBiIAA=="
+				},
+				{
 					"artist": "Ilya Kuvshinov",
 					"collectorNumber": "β085",
 					"id": "544f8db8-02af-44e5-992e-170f51ffca37",
@@ -10482,6 +10493,17 @@
 					"setId": "MS01-WNC",
 					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/56e9657c-6f2c-4a72-9d8e-8e9e332117b1/render-2a42f6ae-b190-4522-8563-7e8503a94540.webp",
 					"thumbhash": "DwiKHAgPp3mHCYiFmoCWCIqDgYGICBiIAA=="
+				},
+				{
+					"artist": "Divebound",
+					"collectorNumber": "170",
+					"id": "b073652b-8428-4aeb-9877-22b50a0110bc",
+					"key": "MS01-WNC-170-FR",
+					"locale": "fr",
+					"rarity": "Iconic Secret",
+					"setId": "MS01-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/b073652b-8428-4aeb-9877-22b50a0110bc/render-4f6337a6-06bc-4d27-8626-f03e3bd2822b.webp",
+					"thumbhash": "FFmGFAYPYzRVCoioBqtXc4qAgYGICBiIAA=="
 				}
 			],
 			"ramProvided": null,
@@ -12611,7 +12633,7 @@
 				{
 					"answer": "Yes.",
 					"id": "66f0aa50-b90c-4bf0-9a02-ddfbec146375",
-					"question": "At the end of your turn, when this effect resolves, if your Unit or Legend is spent, it will have to be moved to the ready position.",
+					"question": "If Sandevistan is equipped to a friendly Unit or Legend that is spent at the end of your turn, will you have to ready that Unit or Legend when the effect from the Sandevistan resolves?",
 					"sortOrder": 100
 				}
 			],
@@ -13437,7 +13459,7 @@
 				{
 					"answer": "Yes.",
 					"id": "9e6de445-d9cb-42cc-8e94-20c941da7cd9",
-					"question": "When you search the top 3 cards of your deck with the [Attack] effect, you can choose not to reveal any cards, even if there is a valid target, and then bottom-deck them in a random order.",
+					"question": "When you search the top 3 cards of your deck with the [Attack] effect, can you choose not to reveal any cards, even if there is a valid target, and then bottom-deck them in a random order?",
 					"sortOrder": 100
 				}
 			],
@@ -15510,7 +15532,7 @@
 				{
 					"answer": "Yes.",
 					"id": "03d7a874-2d53-4fc9-9f7d-905cebcedcc7",
-					"question": "When you search the top 5 cards of your deck with the [Call] effect, you can choose not to reveal any cards even if there is a valid target and then bottom-deck them in a random order.",
+					"question": "When you search the top 5 cards of your deck with the [Call] effect, can you choose not to reveal any cards, even if there is a valid target, and instead put them on the bottom of the deck in random order?",
 					"sortOrder": 100
 				}
 			],
@@ -16842,7 +16864,7 @@
 			"sortOrder": 2500
 		}
 	],
-	"generatedAt": "2026-10-27T06:59:32.720Z",
+	"generatedAt": "2026-10-27T17:03:21.914Z",
 	"ramPerLegend": 2,
 	"sets": [
 		{
@@ -16855,7 +16877,7 @@
 			"name": "Welcome to Night City",
 			"parentId": null,
 			"printed": "MS01 - WNC [A]",
-			"printingCount": 510,
+			"printingCount": 512,
 			"releaseWindow": null,
 			"setCode": "WNC"
 		},
@@ -17044,7 +17066,7 @@
 	],
 	"stats": {
 		"cards": 151,
-		"printings": 754,
+		"printings": 756,
 		"sets": 1
 	}
 }
