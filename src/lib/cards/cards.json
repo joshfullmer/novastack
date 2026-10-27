@@ -406,9 +406,9 @@
 			"eddiable": true,
 			"faqs": [
 				{
-					"answer": "No, the Unit only has [ADRENALINE] while the conditions are met.",
+					"answer": "No.",
 					"id": "fc82d674-d5c0-42f8-9fd9-a47a71be9ec7",
-					"question": "If my Rival controls exactly 2 more Gigs than me when I play Adrenline Converter but I steal a Gig before I attack with the equipped Unit,  does it still have [ADRENALINE]?",
+					"question": "If your Rival controls exactly 2 more Gigs than you when you play Adrenaline Converter on a Unit you played earlier this turn, you then steal a Gig with another friendly Unit, and your Rival only controls 1 more Gig than you now. Can you now declare an attack with your Unit equipped with Adrenaline Converter?",
 					"sortOrder": 100
 				}
 			],
@@ -500,7 +500,7 @@
 				{
 					"answer": "Yes.",
 					"id": "e81b51a1-5dd8-4a2b-9bb8-28b93b227bee",
-					"question": "If I choose not to adjust a Gig, can I still draw 1 if I control 2 or more Gigs with different values?",
+					"question": "When resolving this Program's effect, if you choose 0 when adjusting a Gig and control 2 or more Gigs with different values, will you draw 1?",
 					"sortOrder": 100
 				}
 			],
@@ -625,19 +625,19 @@
 				{
 					"answer": "Yes.",
 					"id": "6f7d6a80-3536-4417-bbb8-c27485f07557",
-					"question": "If All is Lost trashes one or more Units, do I have to add them to my hand  even if I don't want to?",
+					"question": "When resolving the Program's effect, after you Trash 3, do you have to add a Unit from among the trashed cards if a valid target exists?",
 					"sortOrder": 100
 				},
 				{
 					"answer": "No.",
 					"id": "086fb943-7bfb-4fee-8645-01f3cf132232",
-					"question": "If All is Lost's effect trashes no Units, can I still add a Unit to my hand?",
+					"question": "When resolving the Program's effect, after you Trash 3, if you trash no Units, can you still add a Unit from the trash area to your hand?",
 					"sortOrder": 200
 				},
 				{
-					"answer": "Yes. Trash as many cards as possible, instead.",
+					"answer": "Yes.",
 					"id": "8227301d-f845-4e94-b4ff-556fd7c9e5d0",
-					"question": "If I have fewer than 3 cards in my deck, can I still play All is Lost?",
+					"question": "When resolving this Program's effect, if you have only two cards in your deck, do you still have to Trash 3?",
 					"sortOrder": 300
 				}
 			],
@@ -708,7 +708,7 @@
 				{
 					"answer": "Yes.",
 					"id": "9c300537-ed1f-4196-a9c7-076dc5fd4603",
-					"question": "Do both effects work on either players turn?",
+					"question": "Will both effects of Alt Cunningham be able to trigger on both players' turns?",
 					"sortOrder": 100
 				}
 			],
@@ -818,19 +818,19 @@
 				{
 					"answer": "Yes.",
 					"id": "f6e95797-6d5e-4a78-b1ab-dbc01b1821f4",
-					"question": "Does Alt Cunningham's first effect apply to Programs played from Trash, too?",
+					"question": "After you resolve the first [Spend Icon:] effect of Alt Cunningham, if you play your next Program from the trash, does it count as your next Program for this effect?",
 					"sortOrder": 100
 				},
 				{
 					"answer": "Yes.",
 					"id": "c2b026c3-6e44-4b3e-97db-abef28faa220",
-					"question": "If I ready Alt Cunningham after using her first effect and use it again before playing a Program, does the discount stack?",
+					"question": "After you resolve the first [Spend Icon:] effect of Alt Cunningham, you then ready Alt Cunningham and resolve the first [Spend Icon:] for a second time before you play your next Program this turn. Will both of the activated [Spend Icon:] effects reduce the amount of €$ played together to a minimum of 1 €$?",
 					"sortOrder": 200
 				},
 				{
-					"answer": "No, the reduction amount is determined when you activate the effect.",
+					"answer": "No.",
 					"id": "dd4138dc-c8ee-4d08-899a-d3f69fb00fc7",
-					"question": "I activated Alt Cunningham's first effect with 2 friendly min Gigs, but before I play my next Program I acquire a 3rd min Gig. Does my next Program play for -3 €$ instead of -2€$?",
+					"question": "After you resolve the first [Spend] icon effect of Alt Cunningham, you will reduce the next Program you play this turn by -2 €$ to a minimum of 1€$. Before you play your next Program this turn, you now have 3 friendly Min Gigs when you play it. Will your Program now play for -3 €$ to a minimum of 1€$?",
 					"sortOrder": 300
 				}
 			],
@@ -1074,21 +1074,21 @@
 			"eddiable": true,
 			"faqs": [
 				{
-					"answer": "You must choose a friendly Unit when you play this card. The condition will only be met when that Unit wins a fight.",
+					"answer": "Yes.",
 					"id": "f7e7ce23-ddae-4f92-a770-e2e7a0fe368e",
-					"question": "When I play Appetite for Destruction, do I choose a friendly Unit, or can any friendly Unit satisfy the effect later this turn?",
+					"question": "When resolving this Program's effect, do you need to choose a friendly Unit currently in the field area?",
 					"sortOrder": 100
 				},
 				{
 					"answer": "Yes.",
 					"id": "dd350a6e-8ee0-4c1f-9418-2d22a5160c40",
-					"question": "If a Unit steals a Gig because of Appetite for Destruction, does that count as that Unit stealing a Gig for effects that trigger when that Unit steals a Gig?",
+					"question": "If a Unit steals a Gig with the Appetite for Destruction effect, is that Unit the one stealing the Gig?",
 					"sortOrder": 200
 				},
 				{
 					"answer": "Yes.",
 					"id": "82802953-08ff-450a-8630-517546b3091a",
-					"question": "If the friendly Unit cannot defeat the rival Unit but still wins the fight, does it still steal a Gig?",
+					"question": "If your friendly Unit wins a fight by 3+ power against a Unit, but that opposing Unit cannot be defeated in a fight. Will your friendly Unit still be able to steal a Gig from the effect of Appetite For Destruction?",
 					"sortOrder": 300
 				}
 			],
@@ -1159,7 +1159,7 @@
 				{
 					"answer": "Yes.",
 					"id": "d3587386-2389-4745-b6e9-8953bc790bfe",
-					"question": "If the equipped Unit or Legend is spent as part of an attack, can Arasaka Emergency Radioport Call a Legend before that Unit’s [ATTACK] effect resolves?",
+					"question": "A Unit's [Attack] trigger goes into pending at the same time as this Gear's \"When this Unit or Legend is spent\" effect. If you activate the pending Arasaka Emergency Radioport effect first, can you fully resolve it to call a Legend before resolving the pending [Attack] trigger?",
 					"sortOrder": 100
 				}
 			],
@@ -1282,7 +1282,7 @@
 				{
 					"answer": "Yes.",
 					"id": "1dc1d892-bdbf-46a6-a217-ab452b6c0c63",
-					"question": "Can I use [BLOCKER] even if my Rival has no cards in their hand?",
+					"question": "Can you activate [Blocker] on this Unit if your Rival has no cards in their hand?",
 					"sortOrder": 100
 				}
 			],
@@ -1378,7 +1378,7 @@
 				{
 					"answer": "Yes.",
 					"id": "b3bcae3f-acb3-4891-a985-4d69fea65fc7",
-					"question": "If a Rival controls at least 2 more Gigs than me, can I still choose to defeat only one Unit?",
+					"question": "If a Rival controls at least 2 more Gigs than you, can you still choose to defeat only one Unit when resolving this Program's effect?",
 					"sortOrder": 100
 				}
 			],
@@ -1448,13 +1448,13 @@
 				{
 					"answer": "No.",
 					"id": "63c9a5f8-27f2-485d-a779-79587ac49d91",
-					"question": "Do I reveal or get to look at the card I am selling?",
+					"question": "When resolving this Program's effect, do you reveal the card being sold from the top of the deck?",
 					"sortOrder": 100
 				},
 				{
-					"answer": "Yes.",
+					"answer": "No.",
 					"id": "71cfd404-4021-41e1-bebe-a468e11f0a3d",
-					"question": "If the top card of my deck doesn't have a sell tag, do I still sell it for this effect?",
+					"question": "When resolving this Program's effect, can you look at the card being sold to confirm it has the sell tag?",
 					"sortOrder": 200
 				},
 				{
@@ -1559,13 +1559,13 @@
 				{
 					"answer": "Yes.",
 					"id": "31c66530-6c62-4ba8-a521-e34ec9be6b01",
-					"question": "Do I have to defeat a rival Unit with cost 2 or less even if I don't want to?",
+					"question": "When resolving the [Play] effect of Caliber, do you have to defeat a rival Unit with cost 2 or less if there is a valid target?",
 					"sortOrder": 100
 				},
 				{
 					"answer": "No.",
 					"id": "03bc1552-a6ba-410b-8c26-4fbc895a57d5",
-					"question": "If the second card my Rival discards also has a cost equal to a friendly Gig, does my rival have to discard again?",
+					"question": "When resolving the [Defeated] effect, if the Rival discards 1 more and that card's cost equals the value of a friendly Gig, will that Rival have to discard 1 more?",
 					"sortOrder": 200
 				}
 			],
@@ -1653,9 +1653,9 @@
 			"eddiable": true,
 			"faqs": [
 				{
-					"answer": "No.",
+					"answer": "Yes.",
 					"id": "31ed50ec-6a68-4eff-9f47-fc232e4e90e6",
-					"question": "When I play this Program for less because of it's effect does that change the cost of the card too?",
+					"question": "When you play this Program the effect only reduces the €$ required to play the card; it does not change its cost value.",
 					"sortOrder": 100
 				}
 			],
@@ -1749,33 +1749,33 @@
 			"eddiable": false,
 			"faqs": [
 				{
-					"answer": "Yes. Including any new rival Units played after Chrome Fang.",
+					"answer": "No.",
 					"id": "42c38a1d-103c-4c9a-adf0-e199853a16e9",
-					"question": "Does Chrome Fang’s effect apply to all rival Units?",
+					"question": "Last turn, your rival resolved the [Play] effect of a Chrome Fang. Then, on your turn, you play a friendly Unit with [Adrenaline] and successfully attack the rival's Gig area. Can you steal a rival Gig with a value higher than that Unit's power?",
 					"sortOrder": 100
 				},
 				{
-					"answer": "Yes.",
+					"answer": "No.",
 					"id": "eb37dc38-f33d-49c8-aade-383f879945c8",
-					"question": "Does Chrome Fang’s effect continue to apply if Chrome Fang leaves the field before your next turn?",
+					"question": "If you resolve the effect of a Chrome Fang's [Play] effect and it is then defeated on the same turn, will rival Units now be able to steal friendly Gigs with value higher than their power on the following rival's turn?",
 					"sortOrder": 200
 				},
 				{
 					"answer": "Yes.",
 					"id": "28a0d1ab-e3a1-4dd4-a952-b0ad4403f831",
-					"question": "If my rival Unit has power 6 can it steal a friendly Gig with value 6?",
+					"question": "After resolving the [Play] effect, will rival Units be able to steal a friendly Gig with a value matching their power?",
 					"sortOrder": 300
 				},
 				{
-					"answer": "The attack still happens, but the rival Unit does not steal any Gigs.",
+					"answer": "Yes.",
 					"id": "18a0c359-400b-43de-9055-c7fc79baf415",
-					"question": "What happens if a rival Unit attacks my Gig area while Chrome Fang's effect is active, but all friendly Gig values are higher than its power?",
+					"question": "After you resolve Chrome Fang's [Play] effect, can your rival Units still declare an attack on your friendly Gig area, even if all friendly Gigs have a value higher than their power?",
 					"sortOrder": 400
 				},
 				{
-					"answer": "Yes.",
+					"answer": "No.",
 					"id": "fa5d28f5-57df-451f-8246-cd8949f324ad",
-					"question": "If an effect says a Unit steals an additional Gig (like Gorilla Arms), does Chrome Fang's effect apply?",
+					"question": "If a rival Unit has an effect \"When this Unit steals a Gig, steal an additional Gig,\" can it steal a friendly Gig with a higher value than its power if you resolved the [Play] effect on Chrome Fang the previous turn?",
 					"sortOrder": 500
 				}
 			],
@@ -1874,7 +1874,7 @@
 				{
 					"answer": "No.",
 					"id": "9caf46ed-3bf8-4dd7-9110-7d9e147e821e",
-					"question": "If I the chosen rival Unit that can't attack until my next turn is given the effect to attack. Can it?",
+					"question": "If a rival Unit under the effect of Chrome Reverie is given the effect \"Declare an attack on spent Units\", will that rival Unit now be able to declare an attack on spent Units?",
 					"sortOrder": 100
 				},
 				{
@@ -1960,7 +1960,7 @@
 				{
 					"answer": "No.",
 					"id": "030e8902-1692-4ba3-86de-56b83c036897",
-					"question": "If this Unit gains [ADRENALINE] the turn it's played, can it attack?",
+					"question": "When you play this Unit with [Adrenaline], can it declare an attack this turn?",
 					"sortOrder": 100
 				}
 			],
@@ -2102,13 +2102,13 @@
 				{
 					"answer": "Yes.",
 					"id": "4496adf7-0641-4c06-a1f7-6eb120c075bf",
-					"question": "Can I play this card without a rival Unit on the field?",
+					"question": "Can you play this Program without a rival Unit in the field area?",
 					"sortOrder": 100
 				},
 				{
 					"answer": "Yes.",
 					"id": "00513475-b873-4eec-b582-c8bb969fe1e5",
-					"question": "Can I choose a Unit that's already spent for this card's effect?",
+					"question": "When resolving this Program's effect can you choose a Unit that was already in the spent position before the Program was activated?",
 					"sortOrder": 200
 				}
 			],
@@ -2211,19 +2211,19 @@
 				{
 					"answer": "Yes.",
 					"id": "b59cc194-67ee-4b3e-9e4e-6858131f2903",
-					"question": "Can I choose an equipped rival Unit with this effect?",
+					"question": "Can you choose an equipped rival Unit or an equipped friendly Unit when resolving this effect?",
 					"sortOrder": 100
 				},
 				{
-					"answer": "The rival Unit gets the power boost for the ensuing fight and is defeated at the end of the turn.",
+					"answer": "Yes.",
 					"id": "0f661d5c-bfc7-4c2a-8174-b4f98e7d8b61",
-					"question": "If I play this Program [QUICK] as a reaction and choose the attacking rival Unit for the effect, what happens?",
+					"question": "You play this Program and choose an attacking rival Unit with the effect during the React step; that Unit then steals a Gig from that attack. Will it be defeated at the end of this turn?",
 					"sortOrder": 200
 				},
 				{
 					"answer": "No.",
 					"id": "0a4c62a0-f5aa-4b7e-9341-db86caf28c81",
-					"question": "If a Unit  under the effect of Cyberpsychosis attacks but does not make it to the Fight or Steal step, is it still defeated at the end of the turn?",
+					"question": "If a Unit with the effect of Cyberpsychosis attacks but does not manage to fight or steal. Will that Unit under Cyberpsychosis be defeated at the end of this turn?",
 					"sortOrder": 300
 				}
 			],
@@ -2321,15 +2321,15 @@
 			"eddiable": true,
 			"faqs": [
 				{
-					"answer": "No, choose one of them.",
+					"answer": "Yes.",
 					"id": "307b211e-ebe4-46db-9baa-e652918576fe",
-					"question": "If a Unit or Legend with two or more Deadman Transmitters is defeated, do I have to defeat both Deadman Transmitters?",
+					"question": "When a Unit equipped with two Deadman Transmitters would be defeated, will only one Deadman Transmitter be defeated instead of the Unit?",
 					"sortOrder": 100
 				},
 				{
 					"answer": "Yes.",
 					"id": "4b85693e-f6d3-4895-8606-e9917f6c706a",
-					"question": "If Deadman Transmitter protects a Unit from being defeated in a fight did that Unit still lose the fight?",
+					"question": "When the Deadman Transmitter is defeated instead of the equipped Unit in a fight, does the equipped Unit still lose the fight?",
 					"sortOrder": 200
 				}
 			],
@@ -2414,7 +2414,7 @@
 				{
 					"answer": "No.",
 					"id": "59552a2f-6661-4130-95cd-6f119a95f6b6",
-					"question": "If this Unit steals a Gig but is no longer in the field area at the end of the turn, do I still ready 1 Eddie?",
+					"question": "If this Unit steals a Gig and is then defeated before your turn ends, can you still ready 1 Eddie at the end of your turn?",
 					"sortOrder": 100
 				}
 			],
@@ -2539,7 +2539,7 @@
 				{
 					"answer": "Yes.",
 					"id": "cdc01e4e-6e36-43a8-a193-90564776528d",
-					"question": "Do I have to Draw 2 with this card's [PLAY] effect even if I don't want to?",
+					"question": "When resolving the [Play] effect, do you have to draw 2?",
 					"sortOrder": 100
 				}
 			],
@@ -2633,13 +2633,13 @@
 				{
 					"answer": "Yes.",
 					"id": "2ae2b855-aecf-4b12-9858-234649764cf1",
-					"question": "Can Detonate defeat Gear equipped to a face-up Legend?",
+					"question": "When resolving Detonate, can you choose a Gear equipped to a face-up Legend in the legends area or field area?",
 					"sortOrder": 100
 				},
 				{
 					"answer": "Yes.",
 					"id": "c459acd1-042d-47ae-9278-3cdd05d98283",
-					"question": "Can I play Detonate if there are no rival Gears in play?",
+					"question": "Can you play Detonate if there are no rival Gears in the field or the legends area to defeat?",
 					"sortOrder": 200
 				}
 			],
@@ -2714,21 +2714,21 @@
 			"eddiable": true,
 			"faqs": [
 				{
-					"answer": "No, you can still choose the other effect, it just fails.",
+					"answer": "Yes.",
 					"id": "47feaf18-6dff-4cf7-b24f-ba01d2a92514",
-					"question": "If I don't have a friendly Unit on the field when I call Dexter Deshawn, do I have to choose Draw 1?",
+					"question": "When you are resolving the [Call] effect of Dexter Deshawn, can you choose \"Give a friendly Unit +2 power this turn\" even if there are no friendly Units?",
 					"sortOrder": 100
 				},
 				{
 					"answer": "Yes.",
 					"id": "f868fe18-6a35-457a-9ed5-004b48956db9",
-					"question": "If I call Dexter Deshawn as a reaction, can I play a [QUICK] card that I drew off of Dexter's effect?",
+					"question": "During the React step, you chose Draw 1 when resolving Dexter Deshawn's [Call]. If that card has the [Quick] Keyword, can you play it during the same React step?",
 					"sortOrder": 200
 				},
 				{
 					"answer": "Yes.",
 					"id": "2a8619f2-2d2b-4b22-a190-623617b0b515",
-					"question": "Can Dexter Deshawn ’s [Spend Icon:] effect increase either a friendly Gig or a rival Gig?",
+					"question": "When resolving the [Spend Icon:] effect, can you increase a friendly or rival Gig by up to 2?",
 					"sortOrder": 300
 				}
 			],
@@ -2934,7 +2934,7 @@
 				{
 					"answer": "No.",
 					"id": "ac95df60-d8dd-44bc-b04f-1246a08a8540",
-					"question": "With the [Play] and [Attack] effect. If I choose to adjust up to 0. Does that still count as adjusting a Gig?",
+					"question": "When resolving the [Play] or [Attack] effect, if you choose 0 when adjusting a Gig, does that still count as adjusting the Gig?",
 					"sortOrder": 100
 				}
 			],
@@ -3050,13 +3050,13 @@
 				{
 					"answer": "Yes.",
 					"id": "fc26a153-0d04-43ec-8f94-beaa97ce3a93",
-					"question": "If all rival Units are already spent, can I still use this card?",
+					"question": "Can you play this Program if all rival Units are spent?",
 					"sortOrder": 100
 				},
 				{
 					"answer": "Yes.",
 					"id": "1715a8ca-857b-4dcc-9c1c-4782ccd13c04",
-					"question": "Can I defeat a spent Unit that I did not spend with this effect?",
+					"question": "When resolving this Program's effect, can you defeat a Unit already in the spent position before the Program was played?",
 					"sortOrder": 200
 				}
 			],
@@ -3149,7 +3149,7 @@
 				{
 					"answer": "Yes.",
 					"id": "94144c1c-7f0c-4bb0-898f-a9edaa1d0cd9",
-					"question": "Can Dum Dum’s [QUICK] effect choose a friendly Unit with no equipped Gear?",
+					"question": "When resolving the [Quick] 1 €$ [Spend Icon:] effect of Dum Dum, can you choose a friendly Unit that has no Gear equipped?",
 					"sortOrder": 100
 				},
 				{
@@ -6695,7 +6695,7 @@
 				{
 					"answer": "No.",
 					"id": "91ff465b-38fc-45b1-8db2-d8cbe6b465cc",
-					"question": "If I roll a 1 on a friendly Gig and choose to reroll with Kerry Eurodyne's effect, but don't roll a 1 or 20 on that Gig, do I still get the draw effect for the first result?",
+					"question": "If you roll a min or max value on a friendly Gig and choose to reroll using Kerry Eurodyne's first effect, but don't roll a min or max value on the reroll, do you still get to trigger Kerry Eurodyne's second effect?",
 					"sortOrder": 100
 				}
 			],
@@ -7060,9 +7060,9 @@
 					"sortOrder": 100
 				},
 				{
-					"answer": "Yes. There is no limit of how many times you can use [BLOCKER] in one turn.",
+					"answer": "Yes.",
 					"id": "10236d8a-b781-4d18-8857-57f7b3555983",
-					"question": "Can I use  a different Unit's [BLOCKER] effect after I block with La Llorna to redirect the attack again?",
+					"question": "If you already used [Blocker] on another Unit, can you activate [Blocker] again on La Llorona during the same React step?",
 					"sortOrder": 200
 				},
 				{
@@ -7554,7 +7554,7 @@
 				{
 					"answer": "No.",
 					"id": "9d6d9ce9-9dca-42f9-bb90-0e89c5fed80b",
-					"question": "When resolving the [Play] effect, may you discard 1 Program even if you do not get the rest of the effect?",
+					"question": "When resolving the [Play] effect, can you discard 1 Program even if you do not get the rest of the effect?",
 					"sortOrder": 100
 				}
 			],
@@ -16842,7 +16842,7 @@
 			"sortOrder": 2500
 		}
 	],
-	"generatedAt": "2026-10-26T22:08:44.550Z",
+	"generatedAt": "2026-10-27T06:59:32.720Z",
 	"ramPerLegend": 2,
 	"sets": [
 		{
