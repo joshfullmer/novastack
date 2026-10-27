@@ -4384,7 +4384,7 @@
 				{
 					"answer": "Yes.",
 					"id": "978f0a21-058a-4676-8366-ce220a6f6aa4",
-					"question": "When you resolve Gorilla Arms' effect, the Unit equipped with Gorilla Arms triggers and resolves it.",
+					"question": "When you resolve Gorilla Arms' effect, does the Unit equipped with Gorilla Arms trigger and resolve its effect?",
 					"sortOrder": 100
 				}
 			],
@@ -16864,7 +16864,7 @@
 			"sortOrder": 2500
 		}
 	],
-	"generatedAt": "2026-10-27T17:03:21.914Z",
+	"generatedAt": "2026-10-27T19:31:20.660Z",
 	"ramPerLegend": 2,
 	"sets": [
 		{
