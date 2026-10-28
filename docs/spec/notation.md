@@ -56,8 +56,8 @@ example is asserted in `src/lib/notation/*.spec.ts`, so prose and validator cann
   document: re-check the citations if it is revised.
 - **Staging: deployed, then discoverable, then indexed.** The routes landed `noindex` and out of the
   sitemap; the nav (a top-level `Notation` link, with `Sets` under a `Cards` dropdown) went live once the
-  CR audit was done. `NOTATION_LAUNCHED` now only governs search: flipping it removes `noindex` and
-  lists the pages in the sitemap. The `novanotation.net` → `novastack.gg/notation` 301 is switched on
+  CR audit was done. `NOTATION_LAUNCHED` governed search, and was flipped on 2026-10-28: `noindex` is gone and the pages are
+  in the sitemap. The `novanotation.net` → `novastack.gg/notation` 301 is switched on
   in Cloudflare and the old repo archived with a pointer.
 - **One section nav.** `routes/notation/+layout.svelte` renders `SectionNav` (Learn · Reference ·
   Scoresheet · Check a game) over all four pages, current page marked, hidden in print. Pages link to
