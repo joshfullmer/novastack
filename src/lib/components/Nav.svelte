@@ -293,6 +293,16 @@
 				>
 			</li>
 
+			<li>
+				<a
+					href="/notation"
+					class="transition-colors hover:text-bright"
+					class:text-bright={isCurrent('/notation')}
+					class:text-muted={!isCurrent('/notation')}
+					aria-current={isCurrent('/notation') ? 'page' : undefined}>Notation</a
+				>
+			</li>
+
 			<li class="group relative" use:dropdown>
 				<a
 					href={RULES_URL}
@@ -325,16 +335,6 @@
 						</li>
 					{/each}
 				</ul>
-			</li>
-
-			<li>
-				<a
-					href="/notation"
-					class="transition-colors hover:text-bright"
-					class:text-bright={isCurrent('/notation')}
-					class:text-muted={!isCurrent('/notation')}
-					aria-current={isCurrent('/notation') ? 'page' : undefined}>Notation</a
-				>
 			</li>
 		</ul>
 
@@ -470,6 +470,16 @@
 					>
 				</li>
 
+				<li>
+					<a
+						href="/notation"
+						onclick={closeMobileMenu}
+						class="block rounded-md px-2 py-2 transition-colors hover:bg-raised"
+						class:text-bright={isCurrent('/notation')}
+						class:text-muted={!isCurrent('/notation')}
+						aria-current={isCurrent('/notation') ? 'page' : undefined}>Notation</a
+					>
+				</li>
 				{#each RULES as item, index (item.href)}
 					<li>
 						<a
@@ -486,16 +496,6 @@
 						>
 					</li>
 				{/each}
-				<li>
-					<a
-						href="/notation"
-						onclick={closeMobileMenu}
-						class="block rounded-md px-2 py-2 transition-colors hover:bg-raised"
-						class:text-bright={isCurrent('/notation')}
-						class:text-muted={!isCurrent('/notation')}
-						aria-current={isCurrent('/notation') ? 'page' : undefined}>Notation</a
-					>
-				</li>
 			</ul>
 
 			<div class="mt-2 flex items-center gap-4 border-t border-edge/60 px-2 pt-3">

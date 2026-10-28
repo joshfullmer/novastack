@@ -163,6 +163,16 @@ test.describe('the Notation front door', () => {
 			'href',
 			'/notation'
 		);
+
+		// Notation sits before Rules, which is the last item in the row.
+		const labels = await page.locator('nav > ul > li > a').allInnerTexts();
+		expect(labels.map((label) => label.trim())).toEqual([
+			'Cards',
+			'Decks',
+			'Collection',
+			'Notation',
+			'Rules'
+		]);
 	});
 
 	test('gives all four pages the same column and the same heading', async ({ page }) => {
