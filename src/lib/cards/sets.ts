@@ -5,8 +5,9 @@
  * a slugified set *name*. So the mapping from API set to printed Set Identifier is curated
  * here, and ingest asserts that every API set code it sees has an entry (`assertions.ts`).
  *
- * Eighteen API sets collapse to **thirteen** printed identifiers: the API models retail and beta
- * as separate sets, which is its own invention. On the cards they carry the identical printed
+ * Twenty-two API sets collapse to **thirteen** printed identifiers: the API models retail and beta
+ * as separate sets, which is its own invention, and mirrors retail sets in French under a `-fr`
+ * code (see `API_SET_CODE_TO_LOCALE`). On the cards they carry the identical printed
  * identifier and differ only by a `β` prefix on the Collector Number — see CONTEXT.md,
  * "Print Treatment". A fourteenth, `MS02-BBR`, is a Main Set that is Announced: curated here
  * ahead of any API set or card, which is the one thing ingest lets a Set do.
@@ -188,15 +189,20 @@ export const API_SET_CODE_TO_SET_ID: Readonly<Record<string, string>> = {
 	welcometonightcitybeta: 'MS01-WNC',
 	'welcometonightcityretail-fr': 'MS01-WNC',
 	theheistretailstarterdeck: 'SD01-HEI',
+	'theheistretailstarterdeck-fr': 'SD01-HEI',
 	theheistbetastarterdeck: 'SD01-HEI',
 	embracingpowerretailstarterdeck: 'SD02-EBP',
+	'embracingpowerretailstarterde-fr': 'SD02-EBP',
 	embracingpowerbetastarterdeck: 'SD02-EBP',
 	mercdemodeck: 'PRM-DD1',
 	arasakademodeck: 'PRM-DD2',
 	boxtoppersretail: 'PRM-WNC',
+	'boxtoppersretail-fr': 'PRM-WNC',
 	boxtoppersbeta: 'PRM-WNC',
 	prereleasebeta: 'PRR01-WNC',
 	prereleaseretail: 'PRR02-WNC',
+	// Sic: the API's only upper-case locale suffix, and `embracingpower…de-fr` is truncated.
+	'prereleaseretail-FR': 'PRR02-WNC',
 	edgerunneropens1: 'EOR01-WNC',
 	PRM01: 'PRM01',
 	nightcitybrawls1: 'NCB01-WNC',
@@ -209,7 +215,11 @@ export const API_SET_CODE_TO_SET_ID: Readonly<Record<string, string>> = {
  * code absent here is assumed English rather than requiring every existing entry to be listed.
  */
 export const API_SET_CODE_TO_LOCALE: Readonly<Record<string, Locale>> = {
-	'welcometonightcityretail-fr': 'fr'
+	'welcometonightcityretail-fr': 'fr',
+	'theheistretailstarterdeck-fr': 'fr',
+	'embracingpowerretailstarterde-fr': 'fr',
+	'boxtoppersretail-fr': 'fr',
+	'prereleaseretail-FR': 'fr'
 };
 
 export function localeForApiSetCode(code: string): Locale {
