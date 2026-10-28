@@ -3,6 +3,16 @@ import { splitCardName } from '../src/lib/cards/derive.ts';
 import { snapshot } from './snapshot.ts';
 
 /**
+ * Card pages are prerendered, so a click that lands before hydration meets a button with no handler
+ * and does nothing — the lightbox "never opens". `networkidle` is the cheap way to know the page is
+ * live, the same compromise `nav.spec.ts` makes.
+ */
+const live = async (page: Page, path: string) => {
+	await page.goto(path);
+	await page.waitForLoadState('networkidle');
+};
+
+/**
  * The card detail route: the shareable card URL, the full-size art view, and the printings gallery.
  *
  * The two fixtures the spec makes mandatory are exercised here for the reason they were chosen:
@@ -26,7 +36,7 @@ const chooser = (page: Page) => page.locator('section ul li > button');
 test.describe('a card page', () => {
 	test('shows the Default Printing when none is specified', async ({ page }) => {
 		const v = card('v-streetkid');
-		await page.goto('/cards/v-streetkid');
+		await live(page, '/cards/v-streetkid');
 
 		await expect(
 			page.getByRole('heading', { level: 1, name: splitCardName(v).name })
@@ -36,7 +46,7 @@ test.describe('a card page', () => {
 
 	test('lists every printing with the metadata that distinguishes them', async ({ page }) => {
 		const v = card('v-streetkid');
-		await page.goto('/cards/v-streetkid');
+		await live(page, '/cards/v-streetkid');
 
 		// A flat list of the printings in the active locale — most render an identical image, so they
 		// are told apart by set, collector number and rarity rather than by art. The Locale toggle
@@ -55,7 +65,7 @@ test.describe('a card page', () => {
 	test('zooms the art to fit the viewport, and Esc, a click and Back all close it', async ({
 		page
 	}) => {
-		await page.goto('/cards/v-streetkid');
+		await live(page, '/cards/v-streetkid');
 		const art = page.getByRole('button', { name: /^Enlarge .* art$/ });
 		const lightbox = page.getByRole('dialog');
 		const viewport = page.viewportSize()!;
@@ -88,7 +98,7 @@ test.describe('a card page', () => {
 	});
 
 	test('a ?zoom=1 link opens the art already zoomed', async ({ page }) => {
-		await page.goto('/cards/v-streetkid?zoom=1');
+		await live(page, '/cards/v-streetkid?zoom=1');
 		await expect(page.getByRole('dialog')).toBeVisible();
 	});
 
@@ -97,7 +107,7 @@ test.describe('a card page', () => {
 		const beta = v.printings.find((printing) => printing.collectorNumber === 'β144');
 		expect(beta).toBeDefined();
 
-		await page.goto(`/cards/v-streetkid?printing=${beta?.key}`);
+		await live(page, `/cards/v-streetkid?printing=${beta?.key}`);
 
 		// The hero art, not just the gallery entry, follows the deep-link.
 		await expect(page.locator('img').nth(1)).toHaveAttribute(
@@ -109,7 +119,7 @@ test.describe('a card page', () => {
 
 	test('degrades an unknown printing key to the Default Printing', async ({ page }) => {
 		const v = card('v-streetkid');
-		await page.goto('/cards/v-streetkid?printing=NOPE-000');
+		await live(page, '/cards/v-streetkid?printing=NOPE-000');
 		await expect(page.getByText(`Art by ${v.printings[0].artist}`)).toBeVisible();
 	});
 
@@ -132,7 +142,7 @@ test.describe('a card page', () => {
 
 	test('choosing a printing leaves the Default Printing as the absent state', async ({ page }) => {
 		const v = card('v-streetkid');
-		await page.goto('/cards/v-streetkid');
+		await live(page, '/cards/v-streetkid');
 
 		const second = chooser(page).nth(1);
 		await second.click();
@@ -146,7 +156,7 @@ test.describe('a card page', () => {
 		const rebecca = card('rebecca-having-a-moment');
 		expect(rebecca.rulesText).toEqual([]);
 
-		await page.goto('/cards/rebecca-having-a-moment');
+		await live(page, '/cards/rebecca-having-a-moment');
 
 		await expect(
 			page.getByRole('heading', { level: 1, name: splitCardName(rebecca).name })
@@ -159,14 +169,14 @@ test.describe('a card page', () => {
 	test('links rules-text markup to the filters and cards it refers to', async ({ page }) => {
 		// `Deadman Transmitter` refers to itself in ALL-CAPS inside quotes — the one cardRef in the
 		// whole corpus — and carries a classification link too.
-		await page.goto('/cards/deadman-transmitter');
+		await live(page, '/cards/deadman-transmitter');
 
 		const cardRef = page.getByRole('link', { name: /DEADMAN TRANSMITTER/ });
 		await expect(cardRef).toHaveAttribute('href', '/cards/deadman-transmitter');
 	});
 
 	test('a keyword links back into a filtered grid', async ({ page }) => {
-		await page.goto('/cards/v-streetkid');
+		await live(page, '/cards/v-streetkid');
 		await page.getByRole('link', { name: 'Call', exact: true }).first().click();
 
 		await expect(page).toHaveURL(/\/cards\?q=/);
@@ -176,7 +186,7 @@ test.describe('a card page', () => {
 
 	test('credits the artist for the printing on show', async ({ page }) => {
 		const v = card('v-streetkid');
-		await page.goto('/cards/v-streetkid');
+		await live(page, '/cards/v-streetkid');
 		for (const artist of new Set(v.printings.map((printing) => printing.artist))) {
 			await expect(page.getByText(artist).first()).toBeVisible();
 		}

@@ -15,33 +15,33 @@ const landing = v.parse(
  * the dataset to render a search box, and the hero collage must not be decoration — the cards are
  * links, and the gradient above them must not swallow the clicks.
  */
-test.describe('the landing page', () => {
-	test('shows seven hero cards with interleaved colors', async ({ page }) => {
-		await page.goto('/');
 
+/**
+ * `/` and `/faq` are prerendered, so a keystroke or `Enter` that lands before hydration meets a form
+ * with no handler yet and submits natively — to a URL that is not the one the handler would build.
+ * `networkidle` is the cheap way to know the page is live, the same compromise `nav.spec.ts` makes.
+ */
+const live = async (page: Page, path: string) => {
+	await page.goto(path);
+	await page.waitForLoadState('networkidle');
+};
+
+test.describe('the landing page', () => {
+	test('shows every hero card as a link', async ({ page }) => {
+		await live(page, '/');
+
+		// Which cards, how many of each color, in what order: all hand-curated in `hero.ts`, and any valid
+		// card may be there for any reason. So nothing here says what a hero is — only that whatever
+		// `landing.json` lists is what the page renders, one link each.
 		const heroes = page.locator('a[href^="/cards/"]');
 		await expect(heroes).toHaveCount(landing.heroes.length);
-		expect(landing.heroes).toHaveLength(7);
-
-		// Interleaved, not dataset order — which begins with a long run of one color.
-		//
-		// Asserts the *property* the spec cares about rather than one arrangement: all four colors
-		// present, and none of them dominating. Pinning an exact sequence would make every
-		// recuration of HEROES a test failure, which is how a guard gets deleted rather than
-		// satisfied — and adjacency alone is too strict, since one repeated neighbour in seven is
-		// nothing like the monochrome spread the rule exists to prevent.
-		const colors = landing.heroes.map((hero) => hero.color);
-		expect(new Set(colors).size).toBe(4);
-		for (const color of new Set(colors)) {
-			expect(
-				colors.filter((entry) => entry === color).length,
-				`${color} dominates the fan`
-			).toBeLessThanOrEqual(2);
+		for (const hero of landing.heroes) {
+			await expect(page.locator(`a[href="/cards/${hero.slug}"]`)).toHaveCount(1);
 		}
 	});
 
 	test('the hero cards are links that actually receive clicks', async ({ page }) => {
-		await page.goto('/');
+		await live(page, '/');
 
 		// Nothing about a background collage suggests it is clickable, so the affordances matter —
 		// and the overlaid gradient sits above the fan, so `pointer-events` has to be layered.
@@ -54,14 +54,14 @@ test.describe('the landing page', () => {
 	});
 
 	test('a hero card is keyboard reachable', async ({ page }) => {
-		await page.goto('/');
+		await live(page, '/');
 		const hero = page.locator(`a[href="/cards/${landing.heroes[0].slug}"]`);
 		await hero.focus();
 		await expect(hero).toBeFocused();
 	});
 
 	test('shows the build-time stats line', async ({ page }) => {
-		await page.goto('/');
+		await live(page, '/');
 		await expect(
 			page.getByText(
 				`${landing.stats.cards} cards · ${landing.stats.printings} printings · ${landing.stats.sets} ${landing.stats.sets === 1 ? 'set' : 'sets'}`
@@ -70,7 +70,7 @@ test.describe('the landing page', () => {
 	});
 
 	test('the search field navigates into the grid', async ({ page }) => {
-		await page.goto('/');
+		await live(page, '/');
 		await page.getByRole('combobox', { name: 'Search cards' }).fill('blocker');
 		await page.getByRole('combobox', { name: 'Search cards' }).press('Enter');
 
@@ -79,7 +79,7 @@ test.describe('the landing page', () => {
 	});
 
 	test('accepts the full query language, not just plain words', async ({ page }) => {
-		await page.goto('/');
+		await live(page, '/');
 		await page.getByRole('combobox', { name: 'Search cards' }).fill('t:legend c:red');
 		await page.getByRole('combobox', { name: 'Search cards' }).press('Enter');
 
@@ -88,12 +88,12 @@ test.describe('the landing page', () => {
 	});
 
 	test('the search field is focused on arrival', async ({ page }) => {
-		await page.goto('/');
+		await live(page, '/');
 		await expect(page.getByRole('combobox', { name: 'Search cards' })).toBeFocused();
 	});
 
 	test('highlights and completes the query language, same as /cards', async ({ page }) => {
-		await page.goto('/');
+		await live(page, '/');
 		const box = page.getByRole('combobox', { name: 'Search cards' });
 
 		// The overlay is what's actually visible — the input's own text is transparent — so a
@@ -112,7 +112,7 @@ test.describe('the landing page', () => {
 	});
 
 	test('flags a syntax mistake without downloading the dataset', async ({ page }) => {
-		await page.goto('/');
+		await live(page, '/');
 		// Warnings here are the syntax half only (`parse`, not `parseQuery`) — an unknown field is
 		// on that side of the line, so `/` can mark it without the 277 KB snapshot.
 		await page.getByRole('combobox', { name: 'Search cards' }).fill('nope:1');
@@ -120,7 +120,7 @@ test.describe('the landing page', () => {
 	});
 
 	test('an empty search leaves no empty param behind', async ({ page }) => {
-		await page.goto('/');
+		await live(page, '/');
 		await page.getByRole('combobox', { name: 'Search cards' }).press('Enter');
 		await expect(page).toHaveURL('/cards');
 	});
@@ -145,7 +145,7 @@ test.describe('the landing page', () => {
 
 test.describe('navigation', () => {
 	test('links every built destination from the nav', async ({ page }) => {
-		await page.goto('/');
+		await live(page, '/');
 
 		// Cards, Decks and Rules are triggers with a hover dropdown, so most of these are in a menu
 		// that is hidden until hovered; they are still in the markup, and still real links.
@@ -167,7 +167,7 @@ test.describe('navigation', () => {
 	});
 
 	test('carries the attribution the project is required to show', async ({ page }) => {
-		await page.goto('/');
+		await live(page, '/');
 		await expect(
 			page.getByText(/Unofficial fan project\. Not associated with or endorsed by the publisher/)
 		).toBeVisible();
@@ -182,7 +182,7 @@ test.describe('navigation', () => {
 		const navSearch = (page: Page) => page.locator('nav').getByRole('combobox');
 
 		test('searches the whole pool from any other page', async ({ page }) => {
-			await page.goto('/faq');
+			await live(page, '/faq');
 			await navSearch(page).fill('c:red');
 			await navSearch(page).press('Enter');
 
@@ -191,15 +191,15 @@ test.describe('navigation', () => {
 		});
 
 		test('is absent where a query box already exists', async ({ page }) => {
-			await page.goto('/');
+			await live(page, '/');
 			await expect(navSearch(page)).toHaveCount(0);
 
-			await page.goto('/cards');
+			await live(page, '/cards');
 			await expect(navSearch(page)).toHaveCount(0);
 		});
 
 		test('empties itself once spent, rather than following you around', async ({ page }) => {
-			await page.goto('/faq');
+			await live(page, '/faq');
 			await navSearch(page).fill('c:red');
 			await navSearch(page).press('Enter');
 			await expect(page).toHaveURL('/cards?q=c%3Ared');

@@ -174,9 +174,21 @@ test.describe('filtering', () => {
 		await expect(resultCount(page)).toHaveText(`${total} of ${total}`);
 	});
 
-	test('the colored RAM budget admits the cards the spec verified by hand', async ({ page }) => {
+	test('the colored RAM budget admits the cards the spec says it should', async ({ page }) => {
 		await gotoGrid(page, '/cards?q=legends%3Ar4b2');
-		await expect(resultCount(page)).toHaveText(`57 of ${total}`);
+
+		// Spec §card-database, restated rather than imported: a color with no budget admits nothing,
+		// Legends included; within a color a Legend is always in, and any other card needs RAM
+		// Required no higher than that color's budget. Counted from the snapshot — "57 of 133" was true
+		// when it was verified by hand, and the pool has grown since.
+		const budget: Partial<Record<string, number>> = { Red: 4, Blue: 2 };
+		const admitted = snapshot.cards.filter((card) => {
+			const available = budget[card.color] ?? 0;
+			return available > 0 && (card.cardType === 'Legend' || (card.ramRequired ?? 0) <= available);
+		}).length;
+
+		expect(admitted).toBeGreaterThan(0);
+		await expect(resultCount(page)).toHaveText(`${admitted} of ${total}`);
 	});
 
 	test('the result count lives in a polite live region', async ({ page }) => {
@@ -260,7 +272,8 @@ test.describe('printing-level filters swap the art', () => {
 
 		await gotoGrid(page, '/cards?q=rarity%3Aiconic-legend');
 
-		const tile = page.locator(`a[href="/cards/v-streetkid"]`);
+		// A printing-level filter deep-links the tile to the printing that matched (`?printing=`).
+		const tile = page.locator(`a[href^="/cards/v-streetkid"]`);
 		await expect(tile.locator('img').nth(1)).toHaveAttribute(
 			'src',
 			`/card-art/${iconic?.id}/488.webp`
