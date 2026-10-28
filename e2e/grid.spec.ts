@@ -39,7 +39,7 @@ const queryBox = (page: Page) =>
 const queryParam = (page: Page) => new URL(page.url()).searchParams.get('q');
 
 async function openChips(page: Page) {
-	await page.getByRole('button', { name: /^Chips & filters/ }).click();
+	await page.getByRole('button', { name: /^Filters/ }).click();
 }
 
 test.describe('filtering', () => {

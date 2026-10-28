@@ -29,7 +29,7 @@ test.describe('on a phone', () => {
 	test('collapses the filters behind a single button', async ({ page }) => {
 		await gotoGrid(page, '/cards');
 
-		const toggle = page.getByRole('button', { name: /^Chips & filters/ });
+		const toggle = page.getByRole('button', { name: /^Filters/ });
 		await expect(toggle).toBeVisible();
 		await expect(page.getByRole('button', { name: 'Red', exact: true })).toBeHidden();
 
@@ -39,7 +39,7 @@ test.describe('on a phone', () => {
 
 	test('the collapsed button reports how many facets are engaged', async ({ page }) => {
 		await gotoGrid(page, '/cards?q=color%3Ared%20type%3Aunit');
-		await expect(page.getByRole('button', { name: /Chips & filters.*2 active/ })).toBeVisible();
+		await expect(page.getByRole('button', { name: /^Filters.*2/ })).toBeVisible();
 	});
 
 	test('clamps the grid to a readable number of columns', async ({ page }) => {
@@ -74,7 +74,7 @@ test.describe('on a phone', () => {
 
 	test('filtering still works with the panel open', async ({ page }) => {
 		await gotoGrid(page, '/cards');
-		await page.getByRole('button', { name: /^Chips & filters/ }).click();
+		await page.getByRole('button', { name: /^Filters/ }).click();
 		await page.getByRole('button', { name: 'Red', exact: true }).click();
 
 		expect(new URL(page.url()).searchParams.get('q')).toBe('color:Red');
