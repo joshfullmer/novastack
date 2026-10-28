@@ -13736,13 +13736,13 @@
 				{
 					"answer": "No.",
 					"id": "2110a5e9-a27c-42b5-b3e4-ca464f1d2dd0",
-					"question": "Do you have to reveal the friendly face-down Legend you look at when resolving this Unit's effect?",
+					"question": "Do you have to reveal the friendly face-down Legend you look at when resolving this Unit's [Defeated] effect?",
 					"sortOrder": 100
 				},
 				{
 					"answer": "Yes.",
 					"id": "2a1bca2f-eaca-4418-baeb-96aab1b4e476",
-					"question": "When resolving this Unit's effect, do you have to look at all your friendly face-down Legends?",
+					"question": "When resolving this Unit's [Defeated] effect, do you have to look at all your friendly face-down Legends?",
 					"sortOrder": 200
 				}
 			],
@@ -16864,7 +16864,7 @@
 			"sortOrder": 2500
 		}
 	],
-	"generatedAt": "2026-10-27T19:31:20.660Z",
+	"generatedAt": "2026-10-28T09:56:49.459Z",
 	"ramPerLegend": 2,
 	"sets": [
 		{
