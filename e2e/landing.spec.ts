@@ -144,21 +144,26 @@ test.describe('the landing page', () => {
 });
 
 test.describe('navigation', () => {
-	test('marks unbuilt destinations as coming soon, with no clickable 404', async ({ page }) => {
+	test('links every built destination from the nav', async ({ page }) => {
 		await page.goto('/');
 
-		// Decks graduated out of this list once the deckbuilder shipped — see
-		// docs/spec/deckbuilder.md. Sets and Rules remain unbuilt.
-		for (const label of ['Sets', 'Rules']) {
-			const item = page.getByText(label, { exact: false }).first();
-			await expect(item).toBeVisible();
+		// Cards, Decks and Rules are triggers with a hover dropdown, so most of these are in a menu
+		// that is hidden until hovered; they are still in the markup, and still real links.
+		const nav = page.locator('nav').first();
+		for (const href of [
+			'/cards',
+			'/sets',
+			'/decks',
+			'/explore',
+			'/collection',
+			'/faq',
+			'/notation'
+		]) {
+			expect(await nav.locator(`a[href="${href}"]`).count(), href).toBeGreaterThan(0);
 		}
-		// The signal that they are inert: no anchor carries them.
-		await expect(page.locator('nav a', { hasText: 'Sets' })).toHaveCount(0);
-		await expect(page.locator('nav a', { hasText: 'Rules' })).toHaveCount(0);
 
-		// Decks is now a real, live link — both the top-level item and the dropdown's "My Decks".
-		await expect(page.locator('nav a', { hasText: 'Decks' })).toHaveCount(2);
+		// Decks is both the top-level link and the dropdown's "My Decks".
+		await expect(nav.locator('a[href="/decks"]')).toHaveCount(2);
 	});
 
 	test('carries the attribution the project is required to show', async ({ page }) => {

@@ -22,13 +22,16 @@
 		description,
 		origin,
 		path,
-		image
+		image,
+		noindex = false
 	}: {
 		title: string;
 		description: string;
 		origin: string | undefined;
 		path: string;
 		image?: string;
+		/** Keep the page out of search results — for a route that is deployed but not yet launched. */
+		noindex?: boolean;
 	} = $props();
 
 	const url = $derived(origin ? `${origin}${path}` : undefined);
@@ -38,6 +41,9 @@
 <svelte:head>
 	<title>{title}</title>
 	<meta name="description" content={description} />
+	{#if noindex}
+		<meta name="robots" content="noindex" />
+	{/if}
 	{#if url}
 		<link rel="canonical" href={url} />
 	{/if}

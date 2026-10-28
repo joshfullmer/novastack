@@ -64,6 +64,26 @@ Retail is already mapped, with no price, so it should light up by itself — but
 - Optional, and the owner's to do: apply to TCGplayer's Impact affiliate programme so the buy
   links earn something (`docs/research/prices.md` §2.2).
 
+## Notation: launch checklist
+
+Folded in from the sibling `novanotation` repo. `/notation`, `/notation/reference`,
+`/notation/scoresheet` and `/notation/check` are live and linked from the nav, but still `noindex` and
+out of the sitemap until `NOTATION_LAUNCHED` (`src/lib/notation/launch.ts`) is flipped. Decisions:
+`docs/spec/notation.md`.
+
+- [ ] **Read the audit once more and sign it off.** Every game rule cites the CR (as of 2026-10-28),
+      overtime and one-roll-in-a-turn are enforced, swap is `A<>B'`, the soft cap is a convention and
+      Reactions are reserved. Re-check the section numbers if the CR has been revised since — see
+      `docs/research/notation-cr-audit.md`.
+- [ ] **Print the scoresheet** on Letter and A4 and try it at a real event; only then think about a
+      pinned PDF. Set the print dialog to no headers/footers, 100% scale.
+- [x] **Nav:** `Notation` is a top-level link and `Sets` sits under a `Cards` dropdown. Done.
+- [ ] **Launch commit:** set `NOTATION_LAUNCHED = true` — that removes `noindex` from the four pages
+      and adds them to the sitemap. The e2e test on `/notation` that checks both follows the constant
+      by itself.
+- [ ] **Redirect `novanotation.net` → `https://novastack.gg/notation`** (301, Cloudflare redirect rule),
+      then archive the old repo with a README pointer here.
+
 ## Ideas — not started
 
 From a scan of the other Cyberpunk TCG sites and of Magic/sibling-TCG deck sites (2026-10-07).

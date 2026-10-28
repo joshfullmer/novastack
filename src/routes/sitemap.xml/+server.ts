@@ -12,10 +12,21 @@
  */
 import { ORIGIN } from '$app/env/private';
 import { snapshot } from '#lib/cards/index.js';
+import { NOTATION_LAUNCHED } from '#lib/notation/launch.js';
 
 export const prerender = true;
 
-const STATIC_PATHS = ['/', '/cards', '/sets', '/explore', '/syntax'];
+const STATIC_PATHS = [
+	'/',
+	'/cards',
+	'/sets',
+	'/explore',
+	'/syntax',
+	// Deployed before it is launched — see `NOTATION_LAUNCHED`.
+	...(NOTATION_LAUNCHED
+		? ['/notation', '/notation/reference', '/notation/scoresheet', '/notation/check']
+		: [])
+];
 
 export function GET() {
 	const paths = [

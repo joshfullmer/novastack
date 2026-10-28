@@ -47,3 +47,58 @@ test.describe('the `/` search shortcut', () => {
 		await expect(search).toHaveValue('');
 	});
 });
+
+/**
+ * The nav's dropdowns open on hover and on focus-within, and both outlast a click: the pointer is
+ * still over the item and the link keeps focus through a client-side navigation. Using a link in
+ * one closes it.
+ */
+test.describe('the nav dropdowns', () => {
+	const open = async (page: import('@playwright/test').Page) => {
+		await page.goto('/faq');
+		await page.waitForLoadState('networkidle');
+		const group = page.locator('nav li.group').first(); // Cards
+		await group.getByRole('link', { name: 'Cards', exact: true }).hover();
+		const menu = group.locator('ul');
+		await expect(menu).toBeVisible();
+		return { group, menu };
+	};
+
+	test('close once a link inside is clicked, and open again on the next visit', async ({
+		page
+	}) => {
+		const { group, menu } = await open(page);
+
+		await menu.getByRole('link', { name: 'Sets' }).click();
+		await expect(page).toHaveURL('/sets');
+		await expect(menu).toBeHidden();
+
+		// Away and back: the menu is not stuck shut.
+		await page.mouse.move(600, 400);
+		await group.getByRole('link', { name: 'Cards', exact: true }).hover();
+		await expect(menu).toBeVisible();
+	});
+
+	test('stay open for a modified click, which leaves this page where it is', async ({ page }) => {
+		const { menu } = await open(page);
+
+		await menu.getByRole('link', { name: 'Sets' }).click({ modifiers: ['ControlOrMeta'] });
+		await expect(menu).toBeVisible();
+	});
+
+	test('open for a keyboard user and close when they follow a link', async ({ page }) => {
+		await page.goto('/faq');
+		await page.waitForLoadState('networkidle');
+		const group = page.locator('nav li.group').first();
+		const menu = group.locator('ul');
+
+		await group.getByRole('link', { name: 'Cards', exact: true }).focus();
+		await page.keyboard.press('Tab');
+		await expect(menu).toBeVisible();
+
+		await page.keyboard.press('Tab'); // Browse -> Sets
+		await page.keyboard.press('Enter');
+		await expect(page).toHaveURL('/sets');
+		await expect(menu).toBeHidden();
+	});
+});

@@ -28,6 +28,11 @@
 	 * drag 277 KB onto every route. Warnings are the syntax half only (`parse`, not `parseQuery`),
 	 * for the same reason and with the same disclosed gap the landing page documents.
 	 *
+	 * **Cards is a link with a hover dropdown**, same shape as Decks and Rules: the trigger goes to the
+	 * card database, and `Sets` sits under it. That made room for **Notation**, a top-level link of its
+	 * own — it is for people who have not found the site yet as much as for ones who have, so it is not
+	 * tucked into the Rules dropdown.
+	 *
 	 * Where it does *not* appear is the point of it:
 	 *
 	 * - **`/cards`** already pins `FilterBar`'s query row directly below this header, against the
@@ -91,7 +96,41 @@
 		else delete document.documentElement.dataset.signedIn;
 	});
 
-	const LIVE = [{ href: '/cards', label: 'Cards' }];
+	/**
+	 * A hover dropdown that closes once one of its links is used.
+	 *
+	 * The menus open on `:hover` and `:focus-within`, both of which outlast a click: the pointer is still
+	 * over the item, and the link keeps focus through a client-side navigation, so the menu would sit open
+	 * over the page you just went to. A click on a link inside it blurs that link and sets `data-closed`,
+	 * which the menu's `group-data-[closed]` classes hide it for; the pointer leaving, or focus coming
+	 * back by keyboard, clears it again, so the next visit opens it as usual.
+	 *
+	 * A modified click (new tab, new window) does not navigate this page, so it leaves the menu alone.
+	 */
+	function dropdown(node: HTMLElement) {
+		const close = (event: MouseEvent) => {
+			if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+			if (!(event.target as Element).closest('a')) return;
+			(document.activeElement as HTMLElement | null)?.blur();
+			node.dataset.closed = '';
+		};
+		const reopen = () => delete node.dataset.closed;
+		node.addEventListener('click', close);
+		node.addEventListener('pointerleave', reopen);
+		node.addEventListener('focusin', reopen);
+		return {
+			destroy() {
+				node.removeEventListener('click', close);
+				node.removeEventListener('pointerleave', reopen);
+				node.removeEventListener('focusin', reopen);
+			}
+		};
+	}
+
+	const CARDS = [
+		{ href: '/cards', label: 'Browse' },
+		{ href: '/sets', label: 'Sets' }
+	];
 	const DECKS = [
 		{ href: '/decks', label: 'My Decks' },
 		{ href: '/explore', label: 'Explore' }
@@ -184,19 +223,37 @@
 		</a>
 
 		<ul class="hidden flex-1 items-center gap-4 text-sm sm:flex">
-			{#each LIVE as item (item.href)}
-				<li>
-					<a
-						href={item.href}
-						class="transition-colors hover:text-bright"
-						class:text-bright={isCurrent(item.href)}
-						class:text-muted={!isCurrent(item.href)}
-						aria-current={isCurrent(item.href) ? 'page' : undefined}>{item.label}</a
-					>
-				</li>
-			{/each}
+			<li class="group relative" use:dropdown>
+				<a
+					href="/cards"
+					class="transition-colors hover:text-bright"
+					class:text-bright={isCurrent('/cards') || isCurrent('/sets')}
+					class:text-muted={!isCurrent('/cards') && !isCurrent('/sets')}
+					aria-current={page.url.pathname === '/cards' ? 'page' : undefined}
+				>
+					Cards
+				</a>
+				<ul
+					class="invisible absolute top-full left-0 z-30 w-32 rounded-md border border-edge
+						bg-shell p-1 text-sm opacity-0 shadow-lg transition-opacity group-focus-within:visible
+						group-focus-within:opacity-100 group-hover:visible group-hover:opacity-100
+						group-data-[closed]:invisible! group-data-[closed]:opacity-0!"
+				>
+					{#each CARDS as item (item.href)}
+						<li>
+							<a
+								href={item.href}
+								class="block rounded px-2 py-1.5 hover:bg-raised"
+								class:text-bright={isCurrent(item.href)}
+								class:text-muted={!isCurrent(item.href)}
+								aria-current={isCurrent(item.href) ? 'page' : undefined}>{item.label}</a
+							>
+						</li>
+					{/each}
+				</ul>
+			</li>
 
-			<li class="group relative">
+			<li class="group relative" use:dropdown>
 				<a
 					href="/decks"
 					class="transition-colors hover:text-bright"
@@ -209,7 +266,8 @@
 				<ul
 					class="invisible absolute top-full left-0 z-30 w-32 rounded-md border border-edge
 						bg-shell p-1 text-sm opacity-0 shadow-lg transition-opacity group-focus-within:visible
-						group-focus-within:opacity-100 group-hover:visible group-hover:opacity-100"
+						group-focus-within:opacity-100 group-hover:visible group-hover:opacity-100
+						group-data-[closed]:invisible! group-data-[closed]:opacity-0!"
 				>
 					{#each DECKS as item (item.href)}
 						<li>
@@ -235,17 +293,7 @@
 				>
 			</li>
 
-			<li>
-				<a
-					href="/sets"
-					class="transition-colors hover:text-bright"
-					class:text-bright={isCurrent('/sets')}
-					class:text-muted={!isCurrent('/sets')}
-					aria-current={isCurrent('/sets') ? 'page' : undefined}>Sets</a
-				>
-			</li>
-
-			<li class="group relative">
+			<li class="group relative" use:dropdown>
 				<a
 					href={RULES_URL}
 					target="_blank"
@@ -259,7 +307,8 @@
 				<ul
 					class="invisible absolute top-full left-0 z-30 w-40 rounded-md border border-edge
 						bg-shell p-1 text-sm opacity-0 shadow-lg transition-opacity group-focus-within:visible
-						group-focus-within:opacity-100 group-hover:visible group-hover:opacity-100"
+						group-focus-within:opacity-100 group-hover:visible group-hover:opacity-100
+						group-data-[closed]:invisible! group-data-[closed]:opacity-0!"
 				>
 					{#each RULES as item (item.href)}
 						<li>
@@ -276,6 +325,16 @@
 						</li>
 					{/each}
 				</ul>
+			</li>
+
+			<li>
+				<a
+					href="/notation"
+					class="transition-colors hover:text-bright"
+					class:text-bright={isCurrent('/notation')}
+					class:text-muted={!isCurrent('/notation')}
+					aria-current={isCurrent('/notation') ? 'page' : undefined}>Notation</a
+				>
 			</li>
 		</ul>
 
@@ -374,12 +433,13 @@
 			class="border-t border-edge/60 bg-void px-4 py-3 sm:hidden"
 		>
 			<ul class="flex flex-col gap-1 text-sm">
-				{#each LIVE as item (item.href)}
+				{#each CARDS as item, index (item.href)}
 					<li>
 						<a
 							href={item.href}
 							onclick={closeMobileMenu}
 							class="block rounded-md px-2 py-2 transition-colors hover:bg-raised"
+							class:pl-6={index > 0}
 							class:text-bright={isCurrent(item.href)}
 							class:text-muted={!isCurrent(item.href)}
 							aria-current={isCurrent(item.href) ? 'page' : undefined}>{item.label}</a
@@ -410,16 +470,6 @@
 					>
 				</li>
 
-				<li>
-					<a
-						href="/sets"
-						onclick={closeMobileMenu}
-						class="block rounded-md px-2 py-2 transition-colors hover:bg-raised"
-						class:text-bright={isCurrent('/sets')}
-						class:text-muted={!isCurrent('/sets')}
-						aria-current={isCurrent('/sets') ? 'page' : undefined}>Sets</a
-					>
-				</li>
 				{#each RULES as item, index (item.href)}
 					<li>
 						<a
@@ -436,6 +486,16 @@
 						>
 					</li>
 				{/each}
+				<li>
+					<a
+						href="/notation"
+						onclick={closeMobileMenu}
+						class="block rounded-md px-2 py-2 transition-colors hover:bg-raised"
+						class:text-bright={isCurrent('/notation')}
+						class:text-muted={!isCurrent('/notation')}
+						aria-current={isCurrent('/notation') ? 'page' : undefined}>Notation</a
+					>
+				</li>
 			</ul>
 
 			<div class="mt-2 flex items-center gap-4 border-t border-edge/60 px-2 pt-3">

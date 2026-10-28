@@ -34,6 +34,9 @@ Sets, not a treatment pair — the API's `retail`/`beta` naming on them is coinc
 usual split. Checked against the printed card, not assumed.)
 _Avoid_: expansion, release, product
 
+Not to be confused with the **Set** _action_ in Nova Notation (`=B3`), which is the official rules'
+name for setting a Gig die's value — see Notation.
+
 **Main Set**:
 A primary release — a Set of its own rather than a repackaging of another, printed with the `MS`
 Set Category (`MS01`, `MS02`). Main Sets are peers: none is "the base" of the others. Each holds the
@@ -318,3 +321,64 @@ of them can be built at a time. **Unaffected by the Collecting Goal**: a Deck ne
 actually play, and declining to collect a Set does not conjure copies of it. Goal governs
 Completion, never legality or availability.
 _Avoid_: needed, short, unowned
+
+### Notation
+
+Nova Notation is a handwriting-first way to record a game's dice state, for scoresheets and for
+machine checking. The words below are the Cyberpunk TCG's own — **Gig** and **Fixer** are printed
+on the cards and in the Comprehensive Rules — so the glossary borrows them rather than inventing
+names. ("Nova" is this site's brand, not the game's: the game is the Cyberpunk TCG.)
+
+**Transcript**:
+A game written in the notation: an optional `first:` header, then one Turn per line. Not a
+replay — it records dice state only; draws, concessions and time live in the scoresheet's result
+box and notes.
+_Avoid_: log, record, game file
+
+**Turn**:
+One player's turn, one line of a Transcript. Turn 1 belongs to whoever went first and turns
+alternate, so **the actor is never written**: it is implied by position and the `first:` header.
+A Turn with no moves is a **Pass**, written `..` — possible only once the Fixer is empty, since every
+earlier Turn must roll; a blank line is an error, never a Pass.
+
+**WE / THEY**:
+The sheet's author and their Rival, fixed for the whole sheet. Relative to the author, not to
+who went first — a best-of-three lets the loser choose, so an absolute scheme would flip between
+games on one sheet. THEY's dice carry a trailing `'`.
+
+**Fixer**:
+A player's unrolled dice (the CR's "fixer area"). Everyone starts with d4, d6, d8, d10, d12 and d20.
+Every Turn begins by **rolling in** exactly one die from the Fixer (CR §8.6.5), so six Turns empty it.
+The d20 may only be rolled in when it is the last die left.
+
+**Gig**:
+A rolled die, showing a value. Gigs are what a player _controls_ and what the other player can
+steal. Seven or more at the start of your own turn wins.
+
+**Die Owner**:
+Whose dice set a die came from. Never changes. Unrelated to the **Collection**'s ownership, which
+is who holds a physical card.
+_Avoid_: owner, on its own
+
+**Controller**:
+Whose Gigs a die currently sits in. Changes on a steal; the Die Owner does not.
+
+**Reaction**:
+A move made by the non-active player during the other player's Turn — the CR's React Step (§9.7) —
+written in parentheses where it resolved. A Reaction may only change values; it cannot Roll, Steal or
+Swap. **Reserved syntax:** cards can be played in the React Step, but none in the current pool changes
+a die there, so the notation holds Reactions for the future and the public pages do not teach them
+up front.
+
+**Roll**, **Steal**, **Increment**, **Decrement**, **Set**, **Reroll**, **Swap**:
+The seven moves, written `B4`, `xB'`, `+B5`, `-B2`, `=B3`, `~B6`, `A<>B'`. **Set** here is an action on a
+Gig, named so by the Comprehensive Rules, and has nothing to do with a **Set** of Printings;
+context decides, and the two never share a page. **Reroll** differs from Set only in provenance.
+**Swap** exchanges one Gig from each side's Gig area at once, values kept (CR §6.7); it is **not** a
+Steal (§6.7.2), so it never counts toward the overtime win. The pair is unordered — which die is the
+actor's is read off the board — and `<->` and `↔` are accepted for `<>`.
+
+**Overtime**:
+Begins as turn 14 ends: one die a Turn, six each, has emptied both Fixers (CR §1.11.1), so turn 15 is
+always its first. From then on a Steal that brings the actor to seven Gigs wins immediately, and a
+player already holding seven as it begins wins at once.
