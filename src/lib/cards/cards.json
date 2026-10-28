@@ -6999,6 +6999,17 @@
 					"thumbhash": "0QeGFAYPAU53SeqjaGAnFneAgYGICBiIAA=="
 				},
 				{
+					"artist": "Divebound",
+					"collectorNumber": "171",
+					"id": "fe26a4ff-1076-4371-8ab5-3f31d0319a3f",
+					"key": "MS01-WNC-171",
+					"locale": "en",
+					"rarity": "Iconic Secret",
+					"setId": "MS01-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/fe26a4ff-1076-4371-8ab5-3f31d0319a3f/render-mpvlphts.webp",
+					"thumbhash": "UgiGFAgPNkZ3CcaWRDAIB5SCgYGICBiIAA=="
+				},
+				{
 					"artist": "Ilya Kuvshinov",
 					"collectorNumber": "β116",
 					"id": "98b18e2d-a955-43c7-880c-6233166c673a",
@@ -7030,6 +7041,17 @@
 					"setId": "MS01-WNC",
 					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/ebae29cb-45b3-4f85-8903-67d98da06b00/render-41fcd8c2-f816-4062-8dee-c130487ab0d0.webp",
 					"thumbhash": "0QeGFAYPAk6HSeqjaFAnFnaAgYGICBiIAA=="
+				},
+				{
+					"artist": "Divebound",
+					"collectorNumber": "171",
+					"id": "9aceebe8-9977-4b7b-ad1d-7b75af879f1a",
+					"key": "MS01-WNC-171-FR",
+					"locale": "fr",
+					"rarity": "Iconic Secret",
+					"setId": "MS01-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/9aceebe8-9977-4b7b-ad1d-7b75af879f1a/render-daf038b6-771d-4218-bc46-4557614c2a25.webp",
+					"thumbhash": "UgiGFAgPJjaHCceWRDAIB5SCgYGICBiIAA=="
 				}
 			],
 			"ramProvided": null,
@@ -17794,7 +17816,7 @@
 			"sortOrder": 2500
 		}
 	],
-	"generatedAt": "2026-10-28T19:18:48.567Z",
+	"generatedAt": "2026-10-28T22:05:23.495Z",
 	"ramPerLegend": 2,
 	"sets": [
 		{
@@ -17807,7 +17829,7 @@
 			"name": "Welcome to Night City",
 			"parentId": null,
 			"printed": "MS01 - WNC [A]",
-			"printingCount": 512,
+			"printingCount": 514,
 			"releaseWindow": null,
 			"setCode": "WNC"
 		},
@@ -17996,7 +18018,7 @@
 	],
 	"stats": {
 		"cards": 151,
-		"printings": 813,
+		"printings": 815,
 		"sets": 1
 	}
 }
