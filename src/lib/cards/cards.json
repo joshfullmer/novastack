@@ -225,6 +225,17 @@
 					"setId": "MS01-WNC",
 					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/34b9a5b6-8c89-4f62-89a4-26a774e2b3d7/render-4502c9f0-6a90-4fba-b73c-c61921ced93f.webp",
 					"thumbhash": "EDiGHAYPzO5Jl1VWkAq2uHCMgYGICBiIAA=="
+				},
+				{
+					"artist": "Michał Dziekan",
+					"collectorNumber": "001",
+					"id": "595437cd-5180-4aef-b110-61950f738d8e",
+					"key": "PRR02-WNC-001-FR",
+					"locale": "fr",
+					"rarity": "Epic",
+					"setId": "PRR02-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/595437cd-5180-4aef-b110-61950f738d8e/render-df727d2a-39be-42be-8359-36aeedcfe8e3.webp",
+					"thumbhash": "zjiCFAQPpEeCqYf6sAqGy4CMgYGHBxh4AA=="
 				}
 			],
 			"ramProvided": 2,
@@ -410,6 +421,12 @@
 					"id": "fc82d674-d5c0-42f8-9fd9-a47a71be9ec7",
 					"question": "If your Rival controls exactly 2 more Gigs than you when you play Adrenaline Converter on a Unit you played earlier this turn, you then steal a Gig with another friendly Unit, and your Rival only controls 1 more Gig than you now. Can you now declare an attack with your Unit equipped with Adrenaline Converter?",
 					"sortOrder": 100
+				},
+				{
+					"answer": "No.",
+					"id": "21a17dbf-59fe-41b0-a076-015b380c8f44",
+					"question": "If a Unit or Legend is equipped with a Gear, does that Unit or Legend gain the Gear's tags?",
+					"sortOrder": 200
 				}
 			],
 			"flavorText": null,
@@ -502,6 +519,12 @@
 					"id": "e81b51a1-5dd8-4a2b-9bb8-28b93b227bee",
 					"question": "When resolving this Program's effect, if you choose 0 when adjusting a Gig and control 2 or more Gigs with different values, will you draw 1?",
 					"sortOrder": 100
+				},
+				{
+					"answer": "Yes.",
+					"id": "76dce69b-77b1-4461-aec1-d2cc7a71526f",
+					"question": "Can you play this Program if there are no Gigs to adjust?",
+					"sortOrder": 200
 				}
 			],
 			"flavorText": null,
@@ -595,6 +618,17 @@
 					"rarity": "Common",
 					"setId": "MS01-WNC",
 					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/7e659a32-b06f-49a2-ac4d-cb6e146ac426/render-c5ed2612-f49b-48b5-8a61-6de0534e6f2a.webp",
+					"thumbhash": "DgeGLAQPKaZ2B7eEdUr3C5SFgYGICBiIAA=="
+				},
+				{
+					"artist": "Alicja Użarowska",
+					"collectorNumber": "010",
+					"id": "c61f50b6-fc6d-4a85-9d06-4d8825593469",
+					"key": "SD01-HEI-010-FR",
+					"locale": "fr",
+					"rarity": "Common",
+					"setId": "SD01-HEI",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/c61f50b6-fc6d-4a85-9d06-4d8825593469/render-a22a35fc-31e4-4f92-88ae-3aeadd866aec.webp",
 					"thumbhash": "DgeGLAQPKaZ2B7eEdUr3C5SFgYGICBiIAA=="
 				}
 			],
@@ -939,6 +973,17 @@
 					"setId": "MS01-WNC",
 					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/e478f902-936a-41e4-896a-2a73d812c4ea/render-31b64906-05b2-4b89-8dbd-ffb0cc8f01b1.webp",
 					"thumbhash": "zzeGDAgPSHcliLefMDcIVoaAgYGICBiIAA=="
+				},
+				{
+					"artist": "Daniel Valaisis",
+					"collectorNumber": "009",
+					"id": "99db9a1f-e9ec-4998-9125-b7bcb79c5054",
+					"key": "PRR02-WNC-009-FR",
+					"locale": "fr",
+					"rarity": "Rare",
+					"setId": "PRR02-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/99db9a1f-e9ec-4998-9125-b7bcb79c5054/render-cae48d79-86a3-4f33-a0ed-fc5ea1d04c11.webp",
+					"thumbhash": "iueFFAYPV2Zm+LeIh3MHOIiAgYGICBiIAA=="
 				}
 			],
 			"ramProvided": 2,
@@ -1161,6 +1206,12 @@
 					"id": "d3587386-2389-4745-b6e9-8953bc790bfe",
 					"question": "A Unit's [Attack] trigger goes into pending at the same time as this Gear's \"When this Unit or Legend is spent\" effect. If you activate the pending Arasaka Emergency Radioport effect first, can you fully resolve it to call a Legend before resolving the pending [Attack] trigger?",
 					"sortOrder": 100
+				},
+				{
+					"answer": "No.",
+					"id": "7ea458e4-bb1c-4d06-b02c-0caf6bccbfdc",
+					"question": "If a Unit or Legend is equipped with a Gear, does that Unit or Legend gain the Gear's tags?",
+					"sortOrder": 200
 				}
 			],
 			"flavorText": null,
@@ -1224,6 +1275,17 @@
 					"setId": "MS01-WNC",
 					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/5f83de86-7aae-4f82-9372-28b264126a40/render-919d4297-ec0d-4068-bbad-519e81e9e977.webp",
 					"thumbhash": "DjiGHAYPK8RpFqeAcwt2xXCHgYGICBiIAA=="
+				},
+				{
+					"artist": "ADIA",
+					"collectorNumber": "006",
+					"id": "d54b768a-bee0-4dd0-be7d-01aa1588183f",
+					"key": "SD02-EBP-006-FR",
+					"locale": "fr",
+					"rarity": "Common",
+					"setId": "SD02-EBP",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/d54b768a-bee0-4dd0-be7d-01aa1588183f/render-4826f996-4a72-4f84-b17c-9033ca4afabc.webp",
+					"thumbhash": "DTiGFAYPK8RpFqeAdAt2xXCHgYGICBiIAA=="
 				}
 			],
 			"ramProvided": null,
@@ -1380,6 +1442,12 @@
 					"id": "b3bcae3f-acb3-4891-a985-4d69fea65fc7",
 					"question": "If a Rival controls at least 2 more Gigs than you, can you still choose to defeat only one Unit when resolving this Program's effect?",
 					"sortOrder": 100
+				},
+				{
+					"answer": "Yes.",
+					"id": "e4f428d9-4dfe-4d12-a42a-5755ae5afc79",
+					"question": "Can you play this Program even if there are no rival Units?",
+					"sortOrder": 200
 				}
 			],
 			"flavorText": null,
@@ -1460,8 +1528,14 @@
 				{
 					"answer": "Yes.",
 					"id": "68737f4d-0d40-42b9-b490-30d02b06544f",
-					"question": "If I already sold a card during my main phase, can I still sell a card from Bootleg Sapphire's effect?",
+					"question": "If you have already taken the \"Sell for Turn\" game action this turn, can you still sell a card when resolving this Program's effect?",
 					"sortOrder": 300
+				},
+				{
+					"answer": "Yes.",
+					"id": "303bd280-4d2b-40a6-9fa3-662ab125767f",
+					"question": "After resolving this Program's effect, can you still use your \"Sell for Turn\" game action on the same turn?",
+					"sortOrder": 400
 				}
 			],
 			"flavorText": null,
@@ -1840,6 +1914,17 @@
 					"setId": "MS01-WNC",
 					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/a2ba9cce-3b49-4ad8-9ca0-fb8d9265e7a0/render-b6f76d74-e791-4cbf-b5eb-c27bd6117d66.webp",
 					"thumbhash": "j9eFHAoPeJd3CHejZwnHpnCPgYGICBiIAA=="
+				},
+				{
+					"artist": "Bernard Kowalczuk",
+					"collectorNumber": "002",
+					"id": "8af3ebb8-0007-4d24-acd2-0edc9b0e9a34",
+					"key": "SD02-EBP-002-FR",
+					"locale": "fr",
+					"rarity": "Common",
+					"setId": "SD02-EBP",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/8af3ebb8-0007-4d24-acd2-0edc9b0e9a34/render-7d55c609-3c4e-44bf-b0ab-d955e51cafdd.webp",
+					"thumbhash": "j9eFHAoPeJd3CHejZwnHpnCPgYGICBiIAA=="
 				}
 			],
 			"ramProvided": null,
@@ -1878,7 +1963,7 @@
 					"sortOrder": 100
 				},
 				{
-					"answer": "A Gig showing it's 1 value.",
+					"answer": "A Gig that is showing its minimum value or a value of 1.",
 					"id": "5139f71f-b1f8-4819-8a83-51880067dbea",
 					"question": "What is a min Gig?",
 					"sortOrder": 200
@@ -1886,7 +1971,7 @@
 				{
 					"answer": "No.",
 					"id": "1dc8b307-ebd1-43e8-9d14-d11a7893c1d1",
-					"question": "When resolving this effect and do not choose to Call a Legend for free. Can I call a Legend for free later in the turn from this effect?",
+					"question": "If you do not Call a Legend for free when resolving the Program's effect. If you use the Call a Legend game action later this turn, can you do it for free?",
 					"sortOrder": 300
 				}
 			],
@@ -2058,6 +2143,17 @@
 					"setId": "MS01-WNC",
 					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/185e629f-b159-4015-a7eb-b9ffc1835e56/render-38fa476a-ecbb-4493-80dd-84d54c1d5f9b.webp",
 					"thumbhash": "1PeJDAAPd/h3GHiUVzr2X06FgYGICBiIAA=="
+				},
+				{
+					"artist": "CD Projekt Red",
+					"collectorNumber": "014",
+					"id": "67c0d4ad-a044-4240-8941-4a90c8d5eeef",
+					"key": "SD02-EBP-014-FR",
+					"locale": "fr",
+					"rarity": "Common",
+					"setId": "SD02-EBP",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/67c0d4ad-a044-4240-8941-4a90c8d5eeef/render-c2a4f74d-2c37-4f7e-a03b-6dcac3bbf189.webp",
+					"thumbhash": "1PeJDAAPd/h3GHiUVzr2X06FgYGICBiIAA=="
 				}
 			],
 			"ramProvided": null,
@@ -2182,6 +2278,17 @@
 					"setId": "MS01-WNC",
 					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/330a8aab-a7f4-4906-a920-44e8f6e716a7/render-d57d3677-f4db-4be0-9d08-28f815364db9.webp",
 					"thumbhash": "TbeFHAQPp7mXB2iWdUr3aoGPgYGICBiIAA=="
+				},
+				{
+					"artist": "John Liew",
+					"collectorNumber": "020",
+					"id": "cc86f2ba-b196-4316-9476-7dd6ef2194d6",
+					"key": "SD02-EBP-020-FR",
+					"locale": "fr",
+					"rarity": "Uncommon",
+					"setId": "SD02-EBP",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/cc86f2ba-b196-4316-9476-7dd6ef2194d6/render-33c63501-8fe4-475a-a6ec-57245a6fbf3f.webp",
+					"thumbhash": "TbeFHAQPp7mXB2iWdUr3aoGPgYGICBiIAA=="
 				}
 			],
 			"ramProvided": null,
@@ -2225,6 +2332,12 @@
 					"id": "0a4c62a0-f5aa-4b7e-9341-db86caf28c81",
 					"question": "If a Unit with the effect of Cyberpsychosis attacks but does not manage to fight or steal. Will that Unit under Cyberpsychosis be defeated at the end of this turn?",
 					"sortOrder": 300
+				},
+				{
+					"answer": "No.",
+					"id": "9c061c73-93ac-4b63-bdf4-b7768623dad1",
+					"question": "If you've already stolen or fought with an equipped friendly Unit, then resolve Cyberpsychosis choosing that friendly Unit, and then end your turn. Will that friendly Unit be defeated by Cyberpsychosis at the end of the turn?",
+					"sortOrder": 400
 				}
 			],
 			"flavorText": null,
@@ -2331,6 +2444,12 @@
 					"id": "4b85693e-f6d3-4895-8606-e9917f6c706a",
 					"question": "When the Deadman Transmitter is defeated instead of the equipped Unit in a fight, does the equipped Unit still lose the fight?",
 					"sortOrder": 200
+				},
+				{
+					"answer": "No.",
+					"id": "fa2a899b-1345-4714-b803-4bc5c2f04f1d",
+					"question": "If a Unit or Legend is equipped with a Gear, does that Unit or Legend gain the Gear's tags?",
+					"sortOrder": 300
 				}
 			],
 			"flavorText": null,
@@ -2510,6 +2629,17 @@
 					"setId": "MS01-WNC",
 					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/786a7d0a-7c6a-4674-ab25-e4e8a44513ca/render-1fb02cc1-280f-4085-b725-4b1616f4a323.webp",
 					"thumbhash": "0NeJDAIPWHdnCJaImJIGqHiPgYGICBiIAA=="
+				},
+				{
+					"artist": "CD Projekt Red",
+					"collectorNumber": "013",
+					"id": "66eb5361-11f4-4880-b347-ca849aa28cb8",
+					"key": "SD01-HEI-013-FR",
+					"locale": "fr",
+					"rarity": "Common",
+					"setId": "SD01-HEI",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/66eb5361-11f4-4880-b347-ca849aa28cb8/render-edb0d01f-ee52-493e-a3f5-063d1a031182.webp",
+					"thumbhash": "0NeJDAIPWHdnCJaImKIGqHiPgYGICBiIAA=="
 				}
 			],
 			"ramProvided": null,
@@ -2871,6 +3001,17 @@
 					"setId": "MS01-WNC",
 					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/dd73b839-6199-4f09-bb81-8d6237e72d20/render-4a1a1a3b-ed9f-4484-9b3f-8613aa490ab5.webp",
 					"thumbhash": "DxiGDAQPK+glCaap9bv3tXePgYGICBiIAA=="
+				},
+				{
+					"artist": "Envar",
+					"collectorNumber": "002",
+					"id": "00280859-865f-43ec-a87f-5a2c0f447d4e",
+					"key": "PRR02-WNC-002-FR",
+					"locale": "fr",
+					"rarity": "Rare",
+					"setId": "PRR02-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/00280859-865f-43ec-a87f-5a2c0f447d4e/render-1442d1b5-4046-424f-9076-f19340e81483.webp",
+					"thumbhash": "jCiGDAYPaNRVmJSQlQo1uZCLgYGICBiIAA=="
 				}
 			],
 			"ramProvided": 2,
@@ -2979,6 +3120,17 @@
 					"setId": "PRM-DD1",
 					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/daabe14b-dc95-413f-b91a-d3e32937bfd2/render-mqf8572c.webp",
 					"thumbhash": "DCiCFAIPVpSEWMbQkAnHSW2AgYGICBiIAA=="
+				},
+				{
+					"artist": "Mooncolony",
+					"collectorNumber": "002",
+					"id": "e3b8a9e8-5bed-4449-9738-c824db504be7",
+					"key": "SD01-HEI-002-FR",
+					"locale": "fr",
+					"rarity": "Uncommon",
+					"setId": "SD01-HEI",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/e3b8a9e8-5bed-4449-9738-c824db504be7/render-0ab2af26-d2e7-48c1-bf49-29b18052cdac.webp",
+					"thumbhash": "DCiCFAQPVZSEWMbQkAnHSW2AgYGICBiIAA=="
 				}
 			],
 			"ramProvided": null,
@@ -3266,6 +3418,17 @@
 					"setId": "MS01-WNC",
 					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/0a49bd60-2457-49b2-9574-fcbca496d76e/render-05aba86e-5a6c-4a12-a5dd-27c87d76062f.webp",
 					"thumbhash": "jyiGDAQPl3c3iZaHsE+YjqOAgYGICBiIAA=="
+				},
+				{
+					"artist": "Łukasz Poller",
+					"collectorNumber": "004",
+					"id": "de9ec3eb-8d07-4379-a481-f6a1aaa51347",
+					"key": "PRR02-WNC-004-FR",
+					"locale": "fr",
+					"rarity": "Rare",
+					"setId": "PRR02-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/de9ec3eb-8d07-4379-a481-f6a1aaa51347/render-e3d62e1e-2ba9-45f5-b72f-9e1ada81ba1e.webp",
+					"thumbhash": "EhmGHAYPofpkGYqwBlwVc2aAgYGICBiIAA=="
 				}
 			],
 			"ramProvided": 2,
@@ -3332,6 +3495,12 @@
 					"id": "881c635b-268e-4855-8617-a84587951a8f",
 					"question": "Your [Attack] effect on a V equipped with Dying Night resolves, and then that V is defeated. You end your turn. Will you still get to ready 2 Eddies?",
 					"sortOrder": 200
+				},
+				{
+					"answer": "No.",
+					"id": "043520f5-44f4-48a7-9d4a-bdc820a6ddf5",
+					"question": "If a Unit or Legend is equipped with a Gear, does that Unit or Legend gain the Gear's tags?",
+					"sortOrder": 300
 				}
 			],
 			"flavorText": null,
@@ -3427,6 +3596,17 @@
 					"rarity": "Rare",
 					"setId": "MS01-WNC",
 					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/69a2e4bb-12e4-4a06-b9a2-cc9ceff1e22b/render-39c36bae-9900-4247-bc2e-1fdcb055f10a.webp",
+					"thumbhash": "zveFFAYPVut2Spig5oMKK5uAgYGICBiIAA=="
+				},
+				{
+					"artist": "Ivan Shavrin",
+					"collectorNumber": "017",
+					"id": "a287a673-d258-4d60-bc7a-9093678fe5dd",
+					"key": "SD01-HEI-017-FR",
+					"locale": "fr",
+					"rarity": "Rare",
+					"setId": "SD01-HEI",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/a287a673-d258-4d60-bc7a-9093678fe5dd/render-7a22d533-fee1-42f0-9d53-0f48602add28.webp",
 					"thumbhash": "zveFFAYPVut2Spig5oMKK5uAgYGICBiIAA=="
 				}
 			],
@@ -3643,6 +3823,17 @@
 					"rarity": "Common",
 					"setId": "MS01-WNC",
 					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/989dd10c-afca-43d3-8388-a58c41771fa6/render-b24960e1-ce6a-45e5-8653-0940df91bfb9.webp",
+					"thumbhash": "EheKHAYPd/hoCHiEdi7394qBgYGICBd4AA=="
+				},
+				{
+					"artist": "Robert Sammelin",
+					"collectorNumber": "015",
+					"id": "72903660-69b5-4198-9bfb-cb58e0964a27",
+					"key": "SD02-EBP-015-FR",
+					"locale": "fr",
+					"rarity": "Common",
+					"setId": "SD02-EBP",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/72903660-69b5-4198-9bfb-cb58e0964a27/render-a929036b-e9ec-4521-b317-08bf7a43cb41.webp",
 					"thumbhash": "EheKHAYPd/hoCHiEdi7394qBgYGICBd4AA=="
 				}
 			],
@@ -3906,6 +4097,17 @@
 					"setId": "MS01-WNC",
 					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/83b6ce06-f1a6-4825-843c-accf94bca797/render-38475e46-bb96-4dbd-b4a7-8d609cc3aaa4.webp",
 					"thumbhash": "i/eFDAQPFlSVOPa1tn+nl3+GgYGICBiIAA=="
+				},
+				{
+					"artist": "Olgierd Ciszak",
+					"collectorNumber": "014",
+					"id": "431eaa98-5000-485a-8ac5-3e0c78213588",
+					"key": "SD01-HEI-014-FR",
+					"locale": "fr",
+					"rarity": "Uncommon",
+					"setId": "SD01-HEI",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/431eaa98-5000-485a-8ac5-3e0c78213588/render-c0636fa3-c121-4e97-bf4f-50b49d46862d.webp",
+					"thumbhash": "i/eFDAQPFlSVOPa1tn+nl3+GgYGICBiIAA=="
 				}
 			],
 			"ramProvided": null,
@@ -4052,6 +4254,17 @@
 					"setId": "MS01-WNC",
 					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/680eb366-940e-4077-8173-b23c85241121/render-f81b1355-84f3-495b-ab74-ac72243e5ae1.webp",
 					"thumbhash": "jQeGDAIPfqOIB6WEVxj4aY6AgYGICBiIAA=="
+				},
+				{
+					"artist": "Michal Ivan",
+					"collectorNumber": "016",
+					"id": "e1064ff5-fa7b-4f06-977a-c288a5480c4b",
+					"key": "SD02-EBP-016-FR",
+					"locale": "fr",
+					"rarity": "Common",
+					"setId": "SD02-EBP",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/e1064ff5-fa7b-4f06-977a-c288a5480c4b/render-ec5e4c7c-5ede-4bed-a8de-7a54fffb056b.webp",
+					"thumbhash": "jQeGDAIPfqOIB6WEVxj4aY6AgYGICBiIAA=="
 				}
 			],
 			"ramProvided": null,
@@ -4106,6 +4319,12 @@
 					"id": "2c3ac370-03ca-4a5c-9cf3-a61e9789b515",
 					"question": "Can you play this with no rival Units in play?",
 					"sortOrder": 100
+				},
+				{
+					"answer": "Yes.",
+					"id": "cf31b32f-6c76-4290-8d38-81516be33aba",
+					"question": "Can you choose a rival Unit with 0 power with this Program's effect?",
+					"sortOrder": 200
 				}
 			],
 			"flavorText": null,
@@ -4201,6 +4420,17 @@
 					"rarity": "Common",
 					"setId": "MS01-WNC",
 					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/6caf9713-bda8-4f1a-a7b0-af53374b7300/render-c9324148-80f3-49ef-a73e-3e0972f95c8c.webp",
+					"thumbhash": "kkiKLAwPWfdnGJdyd8MISIuAgYGICBiIAA=="
+				},
+				{
+					"artist": "DOFRESH",
+					"collectorNumber": "019",
+					"id": "8efe08a5-0691-483d-817c-3aad5b73d28f",
+					"key": "SD01-HEI-019-FR",
+					"locale": "fr",
+					"rarity": "Common",
+					"setId": "SD01-HEI",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/8efe08a5-0691-483d-817c-3aad5b73d28f/render-0b5f658b-b6cc-48cd-a508-4f050df6497b.webp",
 					"thumbhash": "kkiKLAwPWfdnGJdyd8MISIuAgYGICBiIAA=="
 				}
 			],
@@ -4386,6 +4616,12 @@
 					"id": "978f0a21-058a-4676-8366-ce220a6f6aa4",
 					"question": "When you resolve Gorilla Arms' effect, does the Unit equipped with Gorilla Arms trigger and resolve its effect?",
 					"sortOrder": 100
+				},
+				{
+					"answer": "No.",
+					"id": "cc4b6cc1-d357-448e-a021-7181a3b51b81",
+					"question": "The first time a Unit steals 2 Gigs by attacking with 10 or more power while equipped with Gorilla Arms. Will you get two triggers from the Gorilla Arms effect?",
+					"sortOrder": 200
 				}
 			],
 			"flavorText": null,
@@ -4436,6 +4672,17 @@
 					"setId": "MS01-WNC",
 					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/f6a5ea4d-32d6-438d-b14b-83a743d90244/render-bdcb0cd7-a9d1-44c5-bb1b-5fb72661c323.webp",
 					"thumbhash": "ThiGDAIPRchmWbeQRR/mNn2AgYGICBiIAA=="
+				},
+				{
+					"artist": "TOPDOG Entertainment",
+					"collectorNumber": "011",
+					"id": "68e56b4e-9c21-4d09-a270-9b3cc355fa30",
+					"key": "PRR02-WNC-011-FR",
+					"locale": "fr",
+					"rarity": "Nova Rare",
+					"setId": "PRR02-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/68e56b4e-9c21-4d09-a270-9b3cc355fa30/render-e926acad-8d41-4548-b181-fb28e910eaa9.webp",
+					"thumbhash": "UiiGDAQPlad2CKiUGT+GVomAgYGICBiIAA=="
 				}
 			],
 			"ramProvided": null,
@@ -4549,6 +4796,28 @@
 					"setId": "EOR01-WNC",
 					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/8bdba66b-a20e-49f3-8e85-2e3d7e0c6a37/render-mtcqew2k.webp",
 					"thumbhash": "EhiKDAQPmrcIeFZ5iPP3GZ+DcYGIBxd4AA=="
+				},
+				{
+					"artist": "Bad Moon Studio",
+					"collectorNumber": "012",
+					"id": "6f154367-d0cb-4650-9d31-d87193f32bfc",
+					"key": "SD02-EBP-012-FR",
+					"locale": "fr",
+					"rarity": "Epic",
+					"setId": "SD02-EBP",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/6f154367-d0cb-4650-9d31-d87193f32bfc/render-9719a063-f375-41e7-9208-79dae96e0451.webp",
+					"thumbhash": "DPiBDAYPPvY6GLWjYwxnd4SAgYGICBiIAA=="
+				},
+				{
+					"artist": "Vincenzo Riccardi",
+					"collectorNumber": "003",
+					"id": "e97ed28b-c4c7-4d21-a11e-057ae5cb43c1",
+					"key": "PRM-WNC-003-FR",
+					"locale": "fr",
+					"rarity": "Nova Rare",
+					"setId": "PRM-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/e97ed28b-c4c7-4d21-a11e-057ae5cb43c1/render-7406679d-ac96-4f32-aa66-4f16a8f5bd1a.webp",
+					"thumbhash": "EBiGDAQPqrcIN2aIl9P2GZ6AcYGIBxd4AA=="
 				}
 			],
 			"ramProvided": 2,
@@ -4605,6 +4874,24 @@
 					"id": "0c5b038a-705c-44ba-bff6-95403c35f032",
 					"question": "After you resolve Goro Takemura's [Attack] effect with none of your friendly Legends face-up, will Goro Takemura have +5 later during the same turn if all of your friendly Legends become face-up?",
 					"sortOrder": 100
+				},
+				{
+					"answer": "No.",
+					"id": "998c10e4-6f82-4a35-83de-b4178f7f0ce7",
+					"question": "During the same turn after the [Attack] effect on Goro Takemura resolves, if at any point a friendly Legend that is face-up is turned face-down, or is otherwise not face-up but remains friendly, will your Goro Takemura no longer have the +5 power?",
+					"sortOrder": 200
+				},
+				{
+					"answer": "No.",
+					"id": "134dcec6-35cc-483b-b461-2962e7959998",
+					"question": "During the same turn, after the [Attack] effect on Goro Takemura resolves when there are no face-up friendly Legends, and later that turn all your friendly Legends are face-up, will Goro Takemura have +5 power?",
+					"sortOrder": 300
+				},
+				{
+					"answer": "No. - If there are 0 friendly Legends, then there are no friendly Legends face-up.",
+					"id": "7afe8eca-66ce-4a6d-901c-bb36b456edd7",
+					"question": "When resolving Goro Takemura's [Attack] effect, if there are no friendly Legends in the field or the legends area, does Goro Takemura have +5 power?",
+					"sortOrder": 400
 				}
 			],
 			"flavorText": null,
@@ -4646,6 +4933,17 @@
 					"setId": "PRM-DD2",
 					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/384b716d-fe9c-4a09-86b3-fe9b25928c51/render-mqf839se.webp",
 					"thumbhash": "SiiGDAYPKqVXOMeQhcUHiY2AgYGICBiIAA=="
+				},
+				{
+					"artist": "Ilya Kuvshinov",
+					"collectorNumber": "017",
+					"id": "7f136179-5ad1-4990-872c-be989b77d61b",
+					"key": "SD02-EBP-017-FR",
+					"locale": "fr",
+					"rarity": "Uncommon",
+					"setId": "SD02-EBP",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/7f136179-5ad1-4990-872c-be989b77d61b/render-4736117a-e204-4c2d-952d-37009e4f9004.webp",
+					"thumbhash": "SiiGDAYPGqVXOMeQhcUHiY2AgYGICBiIAA=="
 				}
 			],
 			"ramProvided": null,
@@ -4810,6 +5108,17 @@
 					"setId": "MS01-WNC",
 					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/e2dd7f14-3393-4cce-9208-7da3941ed210/render-e2ebce8b-bf43-447a-a3f3-f59e6cbe0d5d.webp",
 					"thumbhash": "k/eFFAQPs9xUCkikgBb2CHOHgYGICBiIAA=="
+				},
+				{
+					"artist": "Daniel Valaisis",
+					"collectorNumber": "007",
+					"id": "7f38f6ab-10b1-4aaf-b295-53e703921874",
+					"key": "PRR02-WNC-007-FR",
+					"locale": "fr",
+					"rarity": "Rare",
+					"setId": "PRR02-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/7f38f6ab-10b1-4aaf-b295-53e703921874/render-c0079ea5-8ea2-478a-8abc-82f0af3e7901.webp",
+					"thumbhash": "DPiFBAQPNvZGt4eUUvLUCIqCgYGICBiIAA=="
 				}
 			],
 			"ramProvided": 2,
@@ -5383,6 +5692,17 @@
 					"setId": "MS01-WNC",
 					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/cd054721-da37-4bc4-ba1d-1847b6fc7032/render-1c44ef72-06cb-47d5-9899-e3bbaacca522.webp",
 					"thumbhash": "DwmGHAAPtpd3CFiER68W9oSCgYGICBiIAA=="
+				},
+				{
+					"artist": "Łukasz Poller",
+					"collectorNumber": "003",
+					"id": "6af18183-f8ab-40c4-8724-8287619c6c5c",
+					"key": "SD01-HEI-003-FR",
+					"locale": "fr",
+					"rarity": "Uncommon",
+					"setId": "SD01-HEI",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/6af18183-f8ab-40c4-8724-8287619c6c5c/render-b839e524-e560-4e5a-9240-cdbf5aba6133.webp",
+					"thumbhash": "DwmGHAAPtpd3CFiUR68W9oOCgYGICBiIAA=="
 				}
 			],
 			"ramProvided": null,
@@ -5426,6 +5746,12 @@
 					"id": "2f4ce47f-25ba-4321-a673-809fc8f75bd7",
 					"question": "When resolving the Program's effect, can you choose a rival's Gig?",
 					"sortOrder": 200
+				},
+				{
+					"answer": "Yes.",
+					"id": "8f2d9cb3-7782-4200-b06a-0ac764ed27cb",
+					"question": "Can you play this Program if there are no Gigs to increase?",
+					"sortOrder": 300
 				}
 			],
 			"flavorText": null,
@@ -5520,6 +5846,17 @@
 					"setId": "MS01-WNC",
 					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/7aa164ad-6d15-4177-862d-77c44662eda0/render-2564bade-f8a4-454a-b987-7bfabe54d7e8.webp",
 					"thumbhash": "yxeGFAYPKteGeKeQcgrnt3OPgYGICBiIAA=="
+				},
+				{
+					"artist": "Alexander Duder",
+					"collectorNumber": "009",
+					"id": "5eacc91e-1b36-473a-a8d9-b1dfbd3eec59",
+					"key": "SD02-EBP-009-FR",
+					"locale": "fr",
+					"rarity": "Uncommon",
+					"setId": "SD02-EBP",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/5eacc91e-1b36-473a-a8d9-b1dfbd3eec59/render-67ca36d7-c7f4-4e72-87b8-5314927a2fab.webp",
+					"thumbhash": "yxeGFAYPKteGeKeQcgrnt3OPgYGICBiIAA=="
 				}
 			],
 			"ramProvided": null,
@@ -5552,6 +5889,12 @@
 					"id": "39c1b729-a65b-4cf6-81dd-150719aa38b3",
 					"question": "If this Unit gains [Adrenaline] the turn it's played, but you have not played a Program yet. Can this Unit attack?",
 					"sortOrder": 100
+				},
+				{
+					"answer": "Yes.",
+					"id": "2e7fbbd3-de95-4da6-aae5-b21266ef3d03",
+					"question": "On the same turn after you resolved playing a Program, you play a Jacked-In Voodoo Boy with [Adrenaline]. Can you declare an attack with the Jacked-In Voodoo Boy?",
+					"sortOrder": 200
 				}
 			],
 			"flavorText": null,
@@ -5640,6 +5983,12 @@
 					"id": "ab195483-70b3-4bdf-9d42-488148b666ec",
 					"question": "If Jackie Welles is the only friendly Unit in the field area and would be defeated by your rival's effect. Could you defeat Jackie Welles with his own effect instead of the rival's effect defeating it?",
 					"sortOrder": 400
+				},
+				{
+					"answer": "Yes.",
+					"id": "f5220c5b-0204-44a8-b552-3fc139179fbb",
+					"question": "If your Jackie Welles is in the field Area with another friendly Unit, and your Rival resolves an effect that reads \"Defeat all Units,\" can you use Jackie Welles's second effect to keep the other friendly Unit from being defeated by the Rival's effect?",
+					"sortOrder": 500
 				}
 			],
 			"flavorText": null,
@@ -5879,6 +6228,28 @@
 					"setId": "EOR01-WNC",
 					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/3f37a0e1-e31f-4c6b-b97e-bec9f929432c/render-mtcq9pue.webp",
 					"thumbhash": "1ueJFAQPybiHCHdxh/YaG6+CgYGICBiIAA=="
+				},
+				{
+					"artist": "Envar",
+					"collectorNumber": "011",
+					"id": "1d5a2d7d-a372-409c-9e29-22124525f29a",
+					"key": "SD01-HEI-011-FR",
+					"locale": "fr",
+					"rarity": "Epic",
+					"setId": "SD01-HEI",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/1d5a2d7d-a372-409c-9e29-22124525f29a/render-aeca0cda-bd91-4aae-abce-1f34b1538cc6.webp",
+					"thumbhash": "jxiGLAoPecV1GNawmKQHS4mAgYGICBiIAA=="
+				},
+				{
+					"artist": "Ito (Kirby's Comic Art)",
+					"collectorNumber": "005",
+					"id": "483be286-3715-4e5b-a9cb-6299a39ef2b5",
+					"key": "PRM-WNC-005-FR",
+					"locale": "fr",
+					"rarity": "Nova Rare",
+					"setId": "PRM-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/483be286-3715-4e5b-a9cb-6299a39ef2b5/render-026cf93b-9975-47dc-b54c-056f92e19f3f.webp",
+					"thumbhash": "1ueJFAQPybiHCHdxh/YZDK+CgYGICBiIAA=="
 				}
 			],
 			"ramProvided": 2,
@@ -6263,6 +6634,18 @@
 					"id": "e403c866-e7b1-4982-8c0c-0b7d672b7185",
 					"question": "When you resolve the [Spend Icon:] effect on a friendly Unit that was played on a previous turn. Will that friendly Unit still be able to attack the rival's Gig area?",
 					"sortOrder": 300
+				},
+				{
+					"answer": "Yes. - Once you declare the attack, you can also choose to target a ready Unit as a valid attack target through the given effect of \"The next time this Unit attacks this turn, it may attack ready Units.\"",
+					"id": "2e51228f-cea1-4185-9cd0-6a859932232b",
+					"question": "You activated Johnny Silverhand's [spend icon] effect and chose a friendly ROCKER Unit you played this turn. That same friendly ROCKER Unit is given the effect \"The next time this Unit attacks this turn, it may attack ready Units.\" Can you then declare an attack with the friendly ROCKER Unit towards a ready rival Unit?",
+					"sortOrder": 400
+				},
+				{
+					"answer": "Yes.",
+					"id": "2ffc8e87-969a-4e5c-8329-ee8ac132f2bd",
+					"question": "If a Unit with the effect \"A friendly Unit can attack spent rival Units this turn it's played.\" from Johnny Silverhand is then given the effect \"The next time this Unit attacks this turn, it may attack ready Units,\" will that Unit now be able to declare an attack on ready Units the turn it's played?",
+					"sortOrder": 500
 				}
 			],
 			"flavorText": null,
@@ -7011,6 +7394,17 @@
 					"setId": "MS01-WNC",
 					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/9804e923-c2fd-4332-a615-8fd4faf66210/render-545eaa1e-bfaf-48be-b8ea-eed014fab9a7.webp",
 					"thumbhash": "DwiKFAIPV1eHCMiJvF32X2yKgYGICBiIAA=="
+				},
+				{
+					"artist": "CD Projekt Red",
+					"collectorNumber": "007",
+					"id": "ef40fd67-27e4-45b1-b492-7c40aa29aa23",
+					"key": "SD01-HEI-007-FR",
+					"locale": "fr",
+					"rarity": "Common",
+					"setId": "SD01-HEI",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/ef40fd67-27e4-45b1-b492-7c40aa29aa23/render-9b26823e-4c3d-427a-a038-c8e0c5361b2a.webp",
+					"thumbhash": "DwiKFAIPR1eHCMiJvF32X2yKgYGICBiIAA=="
 				}
 			],
 			"ramProvided": null,
@@ -7322,7 +7716,20 @@
 			"color": "Blue",
 			"cost": 5,
 			"eddiable": false,
-			"faqs": [],
+			"faqs": [
+				{
+					"answer": "No.",
+					"id": "302a8e57-a185-4e0d-9dcd-1879e78900a8",
+					"question": "When you finish resolving the activated program's effect with Lizzy Wizzy's effect. Will you place the Program in the trash before you bottom-deck it?",
+					"sortOrder": 100
+				},
+				{
+					"answer": "No.",
+					"id": "7160b6d5-6c36-4951-9753-4bff17b3d3e8",
+					"question": "If an effect triggers at the same time the [Play] effect from Lizzy Wizzy triggers and go into pending. You choose to resolve the Lizzy Wizzy effect first to play a Program from your trash. Can you resolve the previous pending effect before the played Program resolves?",
+					"sortOrder": 200
+				}
+			],
 			"flavorText": null,
 			"keywords": [
 				"Play",
@@ -7478,6 +7885,12 @@
 					"id": "3dc2ff22-518e-4809-ae1e-f778621642f0",
 					"question": "If this Unit has an effect, \"This Unit cannot be defeated in a fight this turn,\" can it still lose the fight?",
 					"sortOrder": 200
+				},
+				{
+					"answer": "Yes.",
+					"id": "be847e04-e0f7-4337-9ba1-d3a795024d1c",
+					"question": "When your Maelstrom Zealots' effect defeats the opposing rival Unit. Will your Maelstrom Zealots still be defeated in the fight by the opposing Unit?",
+					"sortOrder": 300
 				}
 			],
 			"flavorText": null,
@@ -7755,6 +8168,17 @@
 					"setId": "MS01-WNC",
 					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/d9187cbc-ec7e-4727-9447-e8c7e46e72c0/render-bb190e57-a681-4d87-a3ac-94b3a25e0878.webp",
 					"thumbhash": "UfiFDAIPCfY4V7ZxhQ/ouHCGgYGICBiIAA=="
+				},
+				{
+					"artist": "Lea Leonowicz",
+					"collectorNumber": "008",
+					"id": "2f9b1516-302b-4a3f-b23a-aea7d5196066",
+					"key": "SD01-HEI-008-FR",
+					"locale": "fr",
+					"rarity": "Common",
+					"setId": "SD01-HEI",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/2f9b1516-302b-4a3f-b23a-aea7d5196066/render-080bd134-0d65-4907-8add-0f32976da5d0.webp",
+					"thumbhash": "UfiFDAIPCfY4V7ZxhQ/ouHCGgYGICBiIAA=="
 				}
 			],
 			"ramProvided": null,
@@ -7795,7 +8219,14 @@
 			"color": "Red",
 			"cost": 1,
 			"eddiable": true,
-			"faqs": [],
+			"faqs": [
+				{
+					"answer": "No.",
+					"id": "dd7abf4b-52b3-4401-bfc3-ef07ce5974f6",
+					"question": "If a Unit or Legend is equipped with a Gear, does that Unit or Legend gain the Gear's tags?",
+					"sortOrder": 100
+				}
+			],
 			"flavorText": "\"One cut, one kill.\"",
 			"keywords": [],
 			"name": "Mantis Blades",
@@ -7876,6 +8307,17 @@
 					"rarity": "Common",
 					"setId": "MS01-WNC",
 					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/776e4925-c3fe-4486-889b-47508bfe2281/render-091fcf51-4d69-4ba1-b76a-7f9f9fd36e0d.webp",
+					"thumbhash": "TyiGDAQPJPZYVoyVhEn5qJOPgYGICBiIAA=="
+				},
+				{
+					"artist": "Ricardo Padierne Silvera",
+					"collectorNumber": "007",
+					"id": "eb57cfca-7635-451c-8d4e-30d0067acbfe",
+					"key": "SD02-EBP-007-FR",
+					"locale": "fr",
+					"rarity": "Common",
+					"setId": "SD02-EBP",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/eb57cfca-7635-451c-8d4e-30d0067acbfe/render-f1500d65-90ec-42dc-82c1-3a17279e8743.webp",
 					"thumbhash": "TyiGDAQPJPZYVoyVhEn5qJOPgYGICBiIAA=="
 				}
 			],
@@ -7971,6 +8413,17 @@
 					"rarity": "Common",
 					"setId": "MS01-WNC",
 					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/1edaec5e-bf75-4f42-b68c-cc364b878f7f/render-44b58cdd-7b94-4df7-9c59-2f95b7eedd73.webp",
+					"thumbhash": "kQiKJAYPZqp3CImWaXcHd4eAgYGICBiIAA=="
+				},
+				{
+					"artist": "Olgierd Ciszak",
+					"collectorNumber": "018",
+					"id": "1684accd-b2bc-4a30-92cb-cc2d6d53429f",
+					"key": "SD02-EBP-018-FR",
+					"locale": "fr",
+					"rarity": "Common",
+					"setId": "SD02-EBP",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/1684accd-b2bc-4a30-92cb-cc2d6d53429f/render-8f803a35-3a9d-4a5d-9226-e6015d7cf284.webp",
 					"thumbhash": "kQiKJAYPZqp3CImWaXcHd4eAgYGICBiIAA=="
 				}
 			],
@@ -8090,7 +8543,14 @@
 			"color": "Green",
 			"cost": 3,
 			"eddiable": false,
-			"faqs": [],
+			"faqs": [
+				{
+					"answer": "No.",
+					"id": "36ecf80a-cd64-4a27-91ac-a079e8d4250b",
+					"question": "When resolving the first effect of Maxtac, if Maxtac is ready, can you ready a friendly-face-up Legend?",
+					"sortOrder": 100
+				}
+			],
 			"flavorText": null,
 			"keywords": [],
 			"name": "MaxTac Squadron",
@@ -8192,6 +8652,12 @@
 					"id": "00a253c5-f0a2-4f13-a7a3-520c703c2402",
 					"question": "If I played a Legend with [Go Solo], can it declare an attack if my rival has a MaxTac Suppression Team?",
 					"sortOrder": 100
+				},
+				{
+					"answer": "Yes.",
+					"id": "8923c8fb-4c07-4d04-84af-c759285c212a",
+					"question": "If you played a Unit with [Adrenaline] and then defeated a rival's MaxTac Suppression Team that was already in the rival's Field area. Can the Unit with [Adrenaline] that you played now declare an attack?",
+					"sortOrder": 200
 				}
 			],
 			"flavorText": null,
@@ -8262,6 +8728,12 @@
 					"id": "5e7e7fa9-d975-45fd-aaaf-27cd449ac788",
 					"question": "Can you choose a rival Unit that is already spent when resolving this effect?",
 					"sortOrder": 100
+				},
+				{
+					"answer": "Yes.",
+					"id": "5c2726d7-d041-482c-bcf3-30c164e23d22",
+					"question": "Can you play this Program if there are no rival Units in play?",
+					"sortOrder": 200
 				}
 			],
 			"flavorText": null,
@@ -8500,6 +8972,17 @@
 					"setId": "NCB01-WNC",
 					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/bd6fe2cf-bfcd-4de2-bc78-ffc215d39603/render-mrw578xw.webp",
 					"thumbhash": "zveFDAYPaWdG+JeVZD/21naPgYGICBiIAA=="
+				},
+				{
+					"artist": "CD Projekt Red",
+					"collectorNumber": "003",
+					"id": "35c71811-34bb-4bdf-ad1e-eeff6a8030a6",
+					"key": "SD02-EBP-003-FR",
+					"locale": "fr",
+					"rarity": "Uncommon",
+					"setId": "SD02-EBP",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/35c71811-34bb-4bdf-ad1e-eeff6a8030a6/render-737cbfae-f73b-46a5-ac7d-718a72f85be6.webp",
+					"thumbhash": "CQiGDAYPKxVHeJapcAv2tnKPgYGICBiIAA=="
 				}
 			],
 			"ramProvided": null,
@@ -8553,6 +9036,12 @@
 					"id": "e82502be-aaff-4d75-bd4b-87e00e760fa1",
 					"question": "At the end of your turn, when choosing a card type. Can you choose Legend as a valid card type?",
 					"sortOrder": 100
+				},
+				{
+					"answer": "No.",
+					"id": "9afdaa8c-8662-4a0d-aced-d69786b199d3",
+					"question": "If Misty has an effect that reads, \"This Unit must attack if it can,\" Can you declare an attack with Misty?",
+					"sortOrder": 300
 				}
 			],
 			"flavorText": null,
@@ -8647,6 +9136,12 @@
 					"id": "e6eaf7b6-9d18-41a9-8e01-d2d060dafc03",
 					"question": "Can this effect be used in the trash?",
 					"sortOrder": 100
+				},
+				{
+					"answer": "Yes.",
+					"id": "4b894ff4-3838-4abf-ab05-67f4f7fc1811",
+					"question": "At the end of your turn, Modded Kusanagi's effect triggers while it is under Cyberpsychosis. Can you resolve Modded Kusanagi's effect first to return it to your hand, and then avoid being defeated by Cyberpsychosis?",
+					"sortOrder": 200
 				}
 			],
 			"flavorText": null,
@@ -8961,6 +9456,17 @@
 					"setId": "PRM-DD1",
 					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/f7742fc7-0abe-45ee-a6ce-22caf159e06d/render-mqf8771z.webp",
 					"thumbhash": "TfeFDAQPRfeVerek5QeZX6iEgYGICBiIAA=="
+				},
+				{
+					"artist": "Federico Sabbatini",
+					"collectorNumber": "015",
+					"id": "695a0906-3118-4ca5-a241-4eea0ed6f7cf",
+					"key": "SD01-HEI-015-FR",
+					"locale": "fr",
+					"rarity": "Uncommon",
+					"setId": "SD01-HEI",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/695a0906-3118-4ca5-a241-4eea0ed6f7cf/render-0f182b29-8714-4a99-9de5-02891333a35b.webp",
+					"thumbhash": "TveFDAQPRPaVerek5QeZX6iEgYGICBiIAA=="
 				}
 			],
 			"ramProvided": null,
@@ -9021,6 +9527,12 @@
 					"id": "c155d52c-a1ee-42f6-8698-13721cb2b6b9",
 					"question": "If a Unit can't be defeated in a fight, can it still lose?",
 					"sortOrder": 300
+				},
+				{
+					"answer": "No.",
+					"id": "58c1eb56-21db-410b-842a-b06c4e931848",
+					"question": "Will Muamar Reyes's effect, \"A friendly Unit can't be defeated in a fight this turn,\" keep a friendly Unit from being defeated by an effect in the Fight step?",
+					"sortOrder": 400
 				}
 			],
 			"flavorText": null,
@@ -9162,6 +9674,17 @@
 					"setId": "MS01-WNC",
 					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/2a97c490-1fe2-4678-9e65-44f4b122059c/render-ce3a0e83-d95c-4444-9033-c77d7aeec575.webp",
 					"thumbhash": "kwiGFAQPYLglLZmGAqq3QHqHgYGICBiIAA=="
+				},
+				{
+					"artist": "Mooncolony",
+					"collectorNumber": "005",
+					"id": "76c9d33b-bb78-40f6-803b-007f45e5de9b",
+					"key": "PRR02-WNC-005-FR",
+					"locale": "fr",
+					"rarity": "Rare",
+					"setId": "PRR02-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/76c9d33b-bb78-40f6-803b-007f45e5de9b/render-0bf703e0-9abe-410b-a460-07b8812a1e4d.webp",
+					"thumbhash": "FSmKFAQPiPZmOHWBhp91eGyAgYGICBiIAA=="
 				}
 			],
 			"ramProvided": 2,
@@ -9717,6 +10240,17 @@
 					"setId": "MS01-WNC",
 					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/315e7022-bac3-44c1-84a5-2ee5e4dc8d8c/render-eead6f4a-226b-4817-96c2-a99288547bde.webp",
 					"thumbhash": "kQiKDAIPicZ4B4dxZ58kA1mCgYGICBiIAA=="
+				},
+				{
+					"artist": "Bernard Kowalczuk",
+					"collectorNumber": "004",
+					"id": "064e6916-f284-4886-a4d5-380c8c4c81c3",
+					"key": "SD01-HEI-004-FR",
+					"locale": "fr",
+					"rarity": "Common",
+					"setId": "SD01-HEI",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/064e6916-f284-4886-a4d5-380c8c4c81c3/render-91c570fa-06f6-4bbd-8716-e4daeb1b6deb.webp",
+					"thumbhash": "kQiKDAIPicZ4B4dxZ58kA1mCgYGICBiIAA=="
 				}
 			],
 			"ramProvided": null,
@@ -9765,6 +10299,12 @@
 					"id": "00b41165-2bad-41c3-8a4a-be0c6747f4d7",
 					"question": "If you don't control a friendly d20, can you play Over the Edge?",
 					"sortOrder": 300
+				},
+				{
+					"answer": "No.",
+					"id": "995ef005-e877-4ffd-9fb4-2ac61ab90889",
+					"question": "Is a d20 in your Fixer area a friendly Gig?",
+					"sortOrder": 400
 				}
 			],
 			"flavorText": null,
@@ -9837,6 +10377,17 @@
 					"setId": "MS01-WNC",
 					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/a0c8883d-7b8b-4b1f-bb6b-8f4c762f3fdd/render-44b5706c-32e3-40cf-bb5f-ff23ca5b36d4.webp",
 					"thumbhash": "TBiGBAQPKoWZBsp2uV4ft4WPgYGICBiIAA=="
+				},
+				{
+					"artist": "Roberto Ricci",
+					"collectorNumber": "010",
+					"id": "2c41626a-3fd6-4510-b75b-c42c6edd8f42",
+					"key": "SD02-EBP-010-FR",
+					"locale": "fr",
+					"rarity": "Common",
+					"setId": "SD02-EBP",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/2c41626a-3fd6-4510-b75b-c42c6edd8f42/render-d2818b94-0705-4ed2-91b3-8f46cbf13a05.webp",
+					"thumbhash": "TBiGBAQPKoWZBsp2uV4ft4WPgYGICBiIAA=="
 				}
 			],
 			"ramProvided": null,
@@ -9876,6 +10427,12 @@
 					"id": "7f11608a-92cf-4b9f-a3b0-9d170ef231c7",
 					"question": "Can you activate the [Spend Icon:] effect even if your hand is empty?",
 					"sortOrder": 100
+				},
+				{
+					"answer": "Yes. The effect went into pending from the Unit the Zetatech Faceplate was equipped with before it was moved, and the Unit will resolve the effect from the Zetatech Faceplate even if it is no longer equipped.",
+					"id": "5514dcc7-6fee-4f37-8049-922a23664c21",
+					"question": "If an equipped Zetatech Faceplate is triggered and goes into pending when you activate the [Quick] 1 €$ [Spend Icon:] effect. When you resolve the [Spend Icon:] effect, you move the Zetatech Faceplate to another Unit; can you resolve the pending effect from the Zetatech Faceplate?",
+					"sortOrder": 200
 				}
 			],
 			"flavorText": null,
@@ -10210,6 +10767,17 @@
 					"setId": "MS01-WNC",
 					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/6cb43d36-4c6c-414a-9303-af428a0bd771/render-f7284652-b30d-4de4-92e6-6c2889f33f12.webp",
 					"thumbhash": "0eeJDAQPg+l1GYmglAeXCYOAgYGICBiIAA=="
+				},
+				{
+					"artist": "Mooncolony",
+					"collectorNumber": "008",
+					"id": "71a05ddb-312c-4976-bdfd-06d9f6feffed",
+					"key": "PRR02-WNC-008-FR",
+					"locale": "fr",
+					"rarity": "Rare",
+					"setId": "PRR02-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/71a05ddb-312c-4976-bdfd-06d9f6feffed/render-b421a4a0-a8af-4b51-83c3-f60d875880c7.webp",
+					"thumbhash": "09eJHAYPesVYB3eHdwhHN3SAgYGICBiIAA=="
 				}
 			],
 			"ramProvided": 2,
@@ -10277,6 +10845,12 @@
 					"id": "097a8261-ba28-407e-9f81-1cf59c8e995b",
 					"question": "When resolving the [Spend Icon:] effect, can you move a Gear from this Legend to an unequipped friendly Unit in the ready position?",
 					"sortOrder": 100
+				},
+				{
+					"answer": "No, a combination of any 5 equipped Units and equipped Legends satisfies the condition.",
+					"id": "5c29eb76-b653-47e4-a7c5-ad38e770890c",
+					"question": "For the second effect,  do I need both Units and Legends equipped?",
+					"sortOrder": 200
 				}
 			],
 			"flavorText": null,
@@ -10430,6 +11004,12 @@
 					"id": "eb1edc97-4acc-49ca-b9e7-8c07cb28e1d9",
 					"question": "If you've already called a Legend this turn and then play Panam Palmer, can you call a Legend again for free this turn?",
 					"sortOrder": 100
+				},
+				{
+					"answer": "Yes.",
+					"id": "f8a56ec8-e7a1-401b-af72-95415aa2a792",
+					"question": "When resolving the [Attack] effect, do you count all friendly face-up Legends in the field and the Legends area?",
+					"sortOrder": 200
 				}
 			],
 			"flavorText": null,
@@ -10546,6 +11126,12 @@
 					"id": "070c816a-ea6e-43b6-9408-cf976ef42dac",
 					"question": "When you choose a Gig's value to set, does it have to be part of the value pair you control to draw 1?",
 					"sortOrder": 100
+				},
+				{
+					"answer": "Yes.",
+					"id": "42eac469-1258-4d90-ae2a-59f9459c5bae",
+					"question": "Can you play this Program even if you cannot set a Gig to another's value?",
+					"sortOrder": 200
 				}
 			],
 			"flavorText": null,
@@ -10878,6 +11464,17 @@
 					"setId": "MS01-WNC",
 					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/c7fa437c-1b52-45fd-ad94-8c99c206dca0/render-64deb6be-5275-4233-9e75-319a7817418e.webp",
 					"thumbhash": "lgeKFAQPRplnCJiIVYBYSHiAgYGICBiIAA=="
+				},
+				{
+					"artist": "Kieran McKeown & Giada Marchisio",
+					"collectorNumber": "016",
+					"id": "bc347fa2-8428-44a7-b6e4-2b166b66447c",
+					"key": "SD01-HEI-016-FR",
+					"locale": "fr",
+					"rarity": "Common",
+					"setId": "SD01-HEI",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/bc347fa2-8428-44a7-b6e4-2b166b66447c/render-821e6c62-3782-4d6d-a4fb-53b405e92749.webp",
+					"thumbhash": "lgeKFAQPRplnCJiIVYBYSHiAgYGICBiIAA=="
 				}
 			],
 			"ramProvided": null,
@@ -11114,6 +11711,17 @@
 					"rarity": "Common",
 					"setId": "MS01-WNC",
 					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/60aec6e7-f512-42f8-9fc8-3258aab51a2b/render-2119d579-f10e-4808-9ec5-f9fbfafd9d48.webp",
+					"thumbhash": "TFiGHAwP+ebGh4h2heUHeH+BgYGICBiIAA=="
+				},
+				{
+					"artist": "Miguel Valderrama",
+					"collectorNumber": "020",
+					"id": "3558e145-19d6-4273-b4fd-9b0f160a3d8c",
+					"key": "SD01-HEI-020-FR",
+					"locale": "fr",
+					"rarity": "Common",
+					"setId": "SD01-HEI",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/3558e145-19d6-4273-b4fd-9b0f160a3d8c/render-a82f2343-a934-4a0d-8964-9cd190686bd6.webp",
 					"thumbhash": "TFiGHAwP+ebGh4h2heUHeH+BgYGICBiIAA=="
 				}
 			],
@@ -11664,6 +12272,12 @@
 					"id": "c66b9c47-a74d-4293-89ae-3d04bbb5bf92",
 					"question": "When Rogue Amendiares is face-up in your Legends area and you steal a gig with a friendly Legend. Will you trigger Rogue Amendiares' second effect?",
 					"sortOrder": 200
+				},
+				{
+					"answer": "When a Legend leaves the field or the legend's area, its equipped Gear follows the Legend to that new area; Gear cannot be equipped in the trash. So, when you remove the Legend from play, the Gear remains in the trash.",
+					"id": "b0f84fb0-46ee-4b99-ba25-565731cebbc8",
+					"question": "What happens to a Gear equipped to a Legend when the Legend is defeated?",
+					"sortOrder": 300
 				}
 			],
 			"flavorText": null,
@@ -11771,6 +12385,17 @@
 					"setId": "MS01-WNC",
 					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/220f1ab0-0791-4ac4-83df-e6cac5b89a66/render-f28a732b-b499-4ce7-86e2-e16219ad61f7.webp",
 					"thumbhash": "khiKFAIPqvV4l4djguz2aX+JgYGICBiIAA=="
+				},
+				{
+					"artist": "Olgierd Ciszak",
+					"collectorNumber": "006",
+					"id": "4054ccb4-9fc8-4588-8277-fb7c3dccc279",
+					"key": "PRR02-WNC-006-FR",
+					"locale": "fr",
+					"rarity": "Rare",
+					"setId": "PRR02-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/4054ccb4-9fc8-4588-8277-fb7c3dccc279/render-a5444d9e-36d3-4b0d-987e-96732258bec9.webp",
+					"thumbhash": "TviFHAIPRPk2+tigUQ/G4XCFgYGICBiIAA=="
 				}
 			],
 			"ramProvided": 2,
@@ -11818,6 +12443,24 @@
 					"id": "9ce8258b-6b6a-4157-9054-7923068292d5",
 					"question": "If you play Rogue Amendiares on your rival's turn during the React step. Will you be able to activate the [QUICK] 2 €$, [SPEND ICON:] effect this turn?",
 					"sortOrder": 100
+				},
+				{
+					"answer": "No.",
+					"id": "587d8011-4472-47ec-a36a-bfaea64d61da",
+					"question": "If a friendly Unit steals a Gig with a value less than its power for the first time this turn, and then you play Rogue Amendiares to the field area. Then, if another friendly Unit steals a Gig with a value lower than its power, will you trigger Rogue Amendiares' first effect?",
+					"sortOrder": 200
+				},
+				{
+					"answer": "No.",
+					"id": "30697bfe-be0f-4a0a-8de4-09f71eb30bbe",
+					"question": "The first effect of Rogue Amendiares has already resolved this turn from another friendly Unit stealing a Gig with value less than its power. If another friendly Unit steals a Gig with value less than its power this turn, will the first effect of Rogue Amendiares trigger again?",
+					"sortOrder": 300
+				},
+				{
+					"answer": "No. - The first effect of Rogue Amendiares triggers only on \"The first time another friendly Unit steals a Gig with value less than its power each turn\"; any other time this turn would be the second time, and so forth.",
+					"id": "8d449d55-52c2-4586-ae43-1f796902a3fa",
+					"question": "During this turn, you've already resolved the first effect of a friendly Rogue Amendiares, Queen of the Afterlife, in play; then you play another Rogue Amendiares. If another friendly Unit steals a Gig with a value less than its power this turn, will it trigger the effect of the Rogue Amendiares you played this turn?",
+					"sortOrder": 400
 				}
 			],
 			"flavorText": null,
@@ -12072,6 +12715,12 @@
 					"id": "46c436af-2ee0-4b1a-b7d5-03df43ed5203",
 					"question": "During your turn, will your Royce have +2 power for each of its equipped while in the Legends area?",
 					"sortOrder": 200
+				},
+				{
+					"answer": "When a Legend leaves the field or the legend's area, its equipped Gear follows the Legend to that new area; Gear cannot be equipped in the trash. So, when you remove the Legend from play, the Gear remains in the trash.",
+					"id": "903ccbd0-d2d9-46e0-9ffc-cd5ebddef04a",
+					"question": "What happens to a Gear equipped to a Legend when the Legend is defeated?",
+					"sortOrder": 300
 				}
 			],
 			"flavorText": null,
@@ -12179,6 +12828,17 @@
 					"setId": "MS01-WNC",
 					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/e3775ed6-d3c1-47f1-a3f4-835003900d8d/render-48a61114-ac1e-4335-aab9-74fc6727aab9.webp",
 					"thumbhash": "UlmGFAIPhXZ3d2ego1sG+1mCgYGICBiIAA=="
+				},
+				{
+					"artist": "Michal Ivan",
+					"collectorNumber": "003",
+					"id": "5f758458-2eb7-4286-8649-15195a3b92a3",
+					"key": "PRR02-WNC-003-FR",
+					"locale": "fr",
+					"rarity": "Rare",
+					"setId": "PRR02-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/5f758458-2eb7-4286-8649-15195a3b92a3/render-c08437ad-d305-444e-9a01-025ff00aff8b.webp",
+					"thumbhash": "SziCDAQPFKdl6NizgAy31YCMgYGICBiIAA=="
 				}
 			],
 			"ramProvided": 2,
@@ -12286,6 +12946,17 @@
 					"rarity": "Common",
 					"setId": "MS01-WNC",
 					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/8473a13d-6ffb-4a56-a4f9-1d41955f2bb3/render-509f725d-2e54-46f1-aa3f-57994e26f054.webp",
+					"thumbhash": "FBiKDAQPiPV4NmhyYwjXpnOPgYGICBiIAA=="
+				},
+				{
+					"artist": "Jeffrey Alan Love",
+					"collectorNumber": "004",
+					"id": "dadab555-f412-425e-b700-e33fdfaf74e4",
+					"key": "SD02-EBP-004-FR",
+					"locale": "fr",
+					"rarity": "Common",
+					"setId": "SD02-EBP",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/dadab555-f412-425e-b700-e33fdfaf74e4/render-8f8169f9-37fd-4c1c-806c-ab4f0b608f3f.webp",
 					"thumbhash": "FBiKDAQPiPV4NmhyYwjXpnOPgYGICBiIAA=="
 				}
 			],
@@ -12395,6 +13066,28 @@
 					"setId": "EOR01-WNC",
 					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/46387af0-342b-40c7-82fa-858d08ea473f/render-mtcqbjxl.webp",
 					"thumbhash": "FRiGDAQPtMsMF1iRUvOkRIuAgYGICBiIAA=="
+				},
+				{
+					"artist": "ADIA",
+					"collectorNumber": "013",
+					"id": "c5376289-9470-4a11-9f67-def96fb5f6f5",
+					"key": "SD02-EBP-013-FR",
+					"locale": "fr",
+					"rarity": "Epic",
+					"setId": "SD02-EBP",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/c5376289-9470-4a11-9f67-def96fb5f6f5/render-3dcbdcdd-d558-4ff4-838d-66e5e16d6b0a.webp",
+					"thumbhash": "jQiGDAYPEbllSsqXUPFDCXiEgYGICBiIAA=="
+				},
+				{
+					"artist": "Vincenzo Riccardi",
+					"collectorNumber": "004",
+					"id": "497dca45-581d-4507-a780-4d3f97531df1",
+					"key": "PRM-WNC-004-FR",
+					"locale": "fr",
+					"rarity": "Nova Rare",
+					"setId": "PRM-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/497dca45-581d-4507-a780-4d3f97531df1/render-e9549cce-087c-42c1-a067-0718154df697.webp",
+					"thumbhash": "ExiGDAQPpro6B2iDU/OjRXuAgYGICBiIAA=="
 				}
 			],
 			"ramProvided": 2,
@@ -12441,6 +13134,12 @@
 					"id": "6b38d8b1-470f-402a-aeca-024e1db97b4d",
 					"question": "When you resolve the effect of Safety Override, do you need to choose a friendly Unit currently in the Field area?",
 					"sortOrder": 100
+				},
+				{
+					"answer": "Yes.",
+					"id": "b9a0ac9f-8d03-47e3-beb8-6f064cee49c0",
+					"question": "When the Safety Override effect on a friendly Unit defeats an opposing Unit, will your friendly Unit still be defeated by losing the fight?",
+					"sortOrder": 200
 				}
 			],
 			"flavorText": null,
@@ -12519,6 +13218,12 @@
 					"id": "2507570b-3a3a-4c5e-bb34-451ebf248cc4",
 					"question": "Can this Unit attack ready Units with its effect?",
 					"sortOrder": 100
+				},
+				{
+					"answer": "No. You still need to attack a spent rival Unit to make a valid attack.",
+					"id": "0ae5584d-2dcc-4dd3-811e-953c63363cf9",
+					"question": "Does \"This Unit can attack rival Units the turn it's played\" effect allow Oda to attack a ready rival Unit?",
+					"sortOrder": 200
 				}
 			],
 			"flavorText": null,
@@ -12728,6 +13433,17 @@
 					"rarity": "Uncommon",
 					"setId": "MS01-WNC",
 					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/82f5644f-094d-454d-a35a-57f61de3bd14/render-5b103a58-43ad-4794-9201-a53125feb45f.webp",
+					"thumbhash": "yteFDAIPCHd4CPh3i073+XiOgYGICBiIAA=="
+				},
+				{
+					"artist": "CD Projekt Red",
+					"collectorNumber": "019",
+					"id": "70d8df05-c5fc-4eaf-8e5b-c81ca96d02e3",
+					"key": "SD02-EBP-019-FR",
+					"locale": "fr",
+					"rarity": "Uncommon",
+					"setId": "SD02-EBP",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/70d8df05-c5fc-4eaf-8e5b-c81ca96d02e3/render-39856acc-6f4a-4cb9-bde9-f57f53acfa78.webp",
 					"thumbhash": "yteFDAIPCHd4CPh3i073+XiOgYGICBiIAA=="
 				}
 			],
@@ -13015,6 +13731,17 @@
 					"rarity": "Uncommon",
 					"setId": "MS01-WNC",
 					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/27a443ba-ff83-4814-adb2-6607e741c150/render-06df2b97-90f6-4691-8f14-fb042cbd92bd.webp",
+					"thumbhash": "jjiGFAQPaKloCId2uCsJ2pCIgYGICBiIAA=="
+				},
+				{
+					"artist": "Ivan Shavrin",
+					"collectorNumber": "008",
+					"id": "7329d165-bd9e-41fd-aaac-38f81a629ec3",
+					"key": "SD02-EBP-008-FR",
+					"locale": "fr",
+					"rarity": "Uncommon",
+					"setId": "SD02-EBP",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/7329d165-bd9e-41fd-aaac-38f81a629ec3/render-245dd795-b83e-4ce5-9886-7b02d00e7277.webp",
 					"thumbhash": "jjiGFAQPaKloCId2uCsJ2pCIgYGICBiIAA=="
 				}
 			],
@@ -13315,6 +14042,17 @@
 					"setId": "MS01-WNC",
 					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/efa44196-731f-467d-8cbe-fce7a2c06d58/render-58fcb19b-6ce6-4eaf-b2a6-322470f27a5b.webp",
 					"thumbhash": "EwiOFAQPSpdoCKZ2SQ62r5iDgYGICBiIAA=="
+				},
+				{
+					"artist": "Luca Claretti",
+					"collectorNumber": "005",
+					"id": "cb03d048-2691-421d-9654-e20ffed0592b",
+					"key": "SD01-HEI-005-FR",
+					"locale": "fr",
+					"rarity": "Common",
+					"setId": "SD01-HEI",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/cb03d048-2691-421d-9654-e20ffed0592b/render-75f002c3-1e46-4950-a37e-dd14d9988402.webp",
+					"thumbhash": "EwiOFAQPSpdoCKZ2SQ62r5iDgYGICBiIAA=="
 				}
 			],
 			"ramProvided": null,
@@ -13421,6 +14159,17 @@
 					"rarity": "Rare",
 					"setId": "MS01-WNC",
 					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/7fc9d781-e615-418b-a85e-0a15d1870df0/render-d3637cb7-73d8-475a-8d70-944b3cdcbb3a.webp",
+					"thumbhash": "lhiKBAYPZ+p3CGiFZvS0uHKPgYGICBiIAA=="
+				},
+				{
+					"artist": "Max Fiumara",
+					"collectorNumber": "011",
+					"id": "a393570d-e0a3-4c87-88bb-e3d93d1c041f",
+					"key": "SD02-EBP-011-FR",
+					"locale": "fr",
+					"rarity": "Rare",
+					"setId": "SD02-EBP",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/a393570d-e0a3-4c87-88bb-e3d93d1c041f/render-c3e87cee-71a1-4a09-a82a-d44f797dff16.webp",
 					"thumbhash": "lhiKBAYPZ+p3CGiFZvS0uHKPgYGICBiIAA=="
 				}
 			],
@@ -13618,6 +14367,17 @@
 					"setId": "MS01-WNC",
 					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/594ab840-0aa4-4ab6-af95-e1825f6474d6/render-a238790c-d1d5-4d94-b799-38da72b60f7f.webp",
 					"thumbhash": "0xiKFAQPitd5B3d0ps9JiZePgYGICBiIAA=="
+				},
+				{
+					"artist": "Olgierd Ciszak",
+					"collectorNumber": "005",
+					"id": "6a6cf4b7-ebca-4ffd-8d9f-14983ab94fe4",
+					"key": "SD02-EBP-005-FR",
+					"locale": "fr",
+					"rarity": "Common",
+					"setId": "SD02-EBP",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/6a6cf4b7-ebca-4ffd-8d9f-14983ab94fe4/render-396cda54-f17c-402a-bb68-d9947789126b.webp",
+					"thumbhash": "0xiKFAQPitd5B3d0ps9JiZePgYGICBiIAA=="
 				}
 			],
 			"ramProvided": null,
@@ -13807,6 +14567,17 @@
 					"setId": "MS01-WNC",
 					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/230f268b-83a8-4c55-a5ed-864e7017c58f/render-f06e2778-88e5-46ce-a42a-bbbc838b9e9a.webp",
 					"thumbhash": "kAmGJAAPGPdGOYaRc/NHpQ2IgYGICBiIAA=="
+				},
+				{
+					"artist": "Łukasz Poller",
+					"collectorNumber": "006",
+					"id": "46d374ee-5bf1-4244-b93a-411869e26dd9",
+					"key": "SD01-HEI-006-FR",
+					"locale": "fr",
+					"rarity": "Uncommon",
+					"setId": "SD01-HEI",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/46d374ee-5bf1-4244-b93a-411869e26dd9/render-489d5b37-55ce-4d8f-96a1-1d097d086026.webp",
+					"thumbhash": "kAmGJAAPGPdGOYaRc/NHpQyIgYGICBiIAA=="
 				}
 			],
 			"ramProvided": null,
@@ -13957,6 +14728,30 @@
 					"id": "5ecbb33e-871b-40cd-bb66-6997a692e1a6",
 					"question": "When resolving the effect to search the top card of your deck. Is the card you're searching for still counted as part of the deck?",
 					"sortOrder": 100
+				},
+				{
+					"answer": "Yes.",
+					"id": "a241cffa-c134-4ea5-9692-c155375f63c3",
+					"question": "When a friendly Unit equipped with a Tetratronic Rippler is spent when declaring an attack, can you resolve the Tetratronic Rippler's triggered effect before the React step and before the attack ends?",
+					"sortOrder": 200
+				},
+				{
+					"answer": "Yes.",
+					"id": "07efe66d-4a02-424c-9d9f-a15163f36191",
+					"question": "When you spend a friendly Unit with the [Attack] keyword to declare an attack while equipped with Tetratronic Rippler, both effects trigger at the same time. Can you choose the order in which to resolve the two now-pending effects?",
+					"sortOrder": 300
+				},
+				{
+					"answer": "No.",
+					"id": "b577753b-b94c-4429-9fab-a209ef0aac85",
+					"question": "When you choose to activate the [Spend Icon:]  on a friendly Unit or Legend, the equipped Tetratronic Rippler's effect will trigger. Can you resolve the now pending Tetratronic Rippler effect before the activated [spend icon:] effect?",
+					"sortOrder": 400
+				},
+				{
+					"answer": "No.",
+					"id": "0e2f7008-09dc-4eda-ae31-750c16f84419",
+					"question": "When paying the cost to play a card or activate an effect, you spend a friendly face-up Legend, triggering the effect of the equipped Tetratronic Rippler. Can you resolve the now-pending Tetratronic Rippler effect before you finish resolving the activated Program?",
+					"sortOrder": 500
 				}
 			],
 			"flavorText": null,
@@ -14018,6 +14813,17 @@
 					"setId": "MS01-WNC",
 					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/c01e3a18-d793-4ef1-a1c6-82aa935f9f9a/render-0d7415ca-da4a-4b03-ae0b-48b026249b25.webp",
 					"thumbhash": "TseFBAQPCNdIeMeEqHAV93OOgYGICBiIAA=="
+				},
+				{
+					"artist": "ADIA",
+					"collectorNumber": "018",
+					"id": "0e3c8bcd-da77-408e-b8c6-7f384d569ac3",
+					"key": "SD01-HEI-018-FR",
+					"locale": "fr",
+					"rarity": "Common",
+					"setId": "SD01-HEI",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/0e3c8bcd-da77-408e-b8c6-7f384d569ac3/render-779377b1-172c-425e-b3c2-bba3d01e8f2a.webp",
+					"thumbhash": "TseFBAQPCNdIeMeEqHAW93OOgYGICBiIAA=="
 				}
 			],
 			"ramProvided": null,
@@ -14247,6 +15053,12 @@
 					"id": "71b6fcd4-2bac-430b-8589-258ab1aae486",
 					"question": "While you are searching the top 3 cards of your deck with this Program's effect, do those cards still count toward your deck count?",
 					"sortOrder": 100
+				},
+				{
+					"answer": "Yes.",
+					"id": "1267e60c-913c-4e6a-8f12-b785b77b6cd5",
+					"question": "When resolving this Program's effect, if you have a min Gig, do you have to add 1 card from those searched to your hand?",
+					"sortOrder": 200
 				}
 			],
 			"flavorText": null,
@@ -14550,6 +15362,12 @@
 					"id": "cc187a60-e949-4ff2-a8d2-38adf6ff32e9",
 					"question": "Does the Gig you chose to decrease when resolving this effect have to be the min Gig required to draw 1?",
 					"sortOrder": 100
+				},
+				{
+					"answer": "Yes.",
+					"id": "d731ae05-e1b3-4811-a67f-6512e9a00146",
+					"question": "Can you play this Program if there are no Gigs to decrease?",
+					"sortOrder": 200
 				}
 			],
 			"flavorText": null,
@@ -14888,6 +15706,28 @@
 					"setId": "EOR01-WNC",
 					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/848e3de6-3a3e-462e-8186-0a214ff03b79/render-mtcq7gp7.webp",
 					"thumbhash": "jveFFAQPrHdm2adwewVDFjCAgYGICBiIAA=="
+				},
+				{
+					"artist": "Envar",
+					"collectorNumber": "012",
+					"id": "98a296a5-1dac-4475-b401-ae3e0e18234a",
+					"key": "SD01-HEI-012-FR",
+					"locale": "fr",
+					"rarity": "Epic",
+					"setId": "SD01-HEI",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/98a296a5-1dac-4475-b401-ae3e0e18234a/render-0fd06377-6fe0-4585-8e17-a25f4b917f34.webp",
+					"thumbhash": "zfeFFAYP5QmJSKiKe2BYBpiEgYGICBiIAA=="
+				},
+				{
+					"artist": "Ito (Kirby's Comic Art)",
+					"collectorNumber": "006",
+					"id": "fb1b4f07-a39f-461b-a7e3-92fe886f87be",
+					"key": "PRM-WNC-006-FR",
+					"locale": "fr",
+					"rarity": "Nova Rare",
+					"setId": "PRM-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/fb1b4f07-a39f-461b-a7e3-92fe886f87be/render-88a5ef46-3d9f-4e54-911e-3dd03128bbd3.webp",
+					"thumbhash": "jPeFFAQPzKhXmcaAeARDFkKAgYGICBiIAA=="
 				}
 			],
 			"ramProvided": 2,
@@ -15437,6 +16277,12 @@
 					"id": "449ecd14-296c-4431-b445-261265f89c1d",
 					"question": "When playing your first CYBERWARE Gear this turn can you choose not to have the -3 €$ reduction?",
 					"sortOrder": 200
+				},
+				{
+					"answer": "No.",
+					"id": "9047f2f5-b97d-47ae-964c-11e58ed5e4b6",
+					"question": "When you play your first CYBERWARE Gear each turn for -3 €$, does it also reduce the cost value of the Gear you play?",
+					"sortOrder": 300
 				}
 			],
 			"flavorText": null,
@@ -15608,6 +16454,28 @@
 					"setId": "EOR01-WNC",
 					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/23b81de3-abe3-4231-8dc3-7656de9d99db/render-mtcqfeaz.webp",
 					"thumbhash": "mReGHAQPj6ZbWIZUiZ34r7yJgYGICBiIAA=="
+				},
+				{
+					"artist": "Envar",
+					"collectorNumber": "001",
+					"id": "b243251d-b8a9-4af3-8d42-ce800c2b27b4",
+					"key": "SD01-HEI-001-FR",
+					"locale": "fr",
+					"rarity": "Epic",
+					"setId": "SD01-HEI",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/b243251d-b8a9-4af3-8d42-ce800c2b27b4/render-14c02c04-3f7d-4300-bbfb-09f18d2ad0de.webp",
+					"thumbhash": "TwiGFAYPoJmFR6qz6D75j6aIgYGICBiIAA=="
+				},
+				{
+					"artist": "Ito (Kirby's Comic Art)",
+					"collectorNumber": "002",
+					"id": "14eb3f3d-c53c-47ca-a222-40e3680edeea",
+					"key": "PRM-WNC-002-FR",
+					"locale": "fr",
+					"rarity": "Nova Rare",
+					"setId": "PRM-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/14eb3f3d-c53c-47ca-a222-40e3680edeea/render-eb3e68b1-22df-4ddf-b6cf-b15f51a1b8c6.webp",
+					"thumbhash": "lxeGHAQPj7ZqCJVEh5z4r7yJgYGICBiIAA=="
 				}
 			],
 			"ramProvided": 2,
@@ -15834,6 +16702,17 @@
 					"setId": "MS01-WNC",
 					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/d14557b2-488f-4da1-9462-4db24b9f8db1/render-f14f8089-694d-4ab7-8ac6-b90394e6af53.webp",
 					"thumbhash": "SxiCFAYPfNQj+/PNlJMGOHqAgYGICBiIAA=="
+				},
+				{
+					"artist": "Mooncolony",
+					"collectorNumber": "010",
+					"id": "bbbd9bd0-71d3-4a39-8e2d-3d3f10aee23a",
+					"key": "PRR02-WNC-010-FR",
+					"locale": "fr",
+					"rarity": "Rare",
+					"setId": "PRR02-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/bbbd9bd0-71d3-4a39-8e2d-3d3f10aee23a/render-eb1f1cff-e62e-451f-828e-f901400274ad.webp",
+					"thumbhash": "DviFHAQPS/UnprNYprIHKomAgYGICBiIAA=="
 				}
 			],
 			"ramProvided": 2,
@@ -16273,6 +17152,12 @@
 					"id": "61ad63b3-47d9-48ee-a3f6-4c2842b11c66",
 					"question": "You've already attacked with a friendly ARASAKA Unit this turn and then called a friendly Yorinobu Arasaka Legend face-up. Can Yorinobu Arasaka's effect trigger if you attack with another friendly ARASAKA Unit this turn?",
 					"sortOrder": 100
+				},
+				{
+					"answer": "No.",
+					"id": "05b95e35-b2a6-4f3d-a7a4-01c4ad87e196",
+					"question": "If you've already attacked with a friendly ARASAKA Unit this turn, will Yorinobu Arasaka's effect trigger a second time if another friendly ARASAKA Unit attacks?",
+					"sortOrder": 200
 				}
 			],
 			"flavorText": null,
@@ -16345,6 +17230,28 @@
 					"setId": "EOR01-WNC",
 					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/ba15a39b-fc76-474b-a2f0-76e5069a69e4/render-mtcqj3os.webp",
 					"thumbhash": "VTiGDAQPmkRYCklTcW/Y+nqPgYGICBiIAA=="
+				},
+				{
+					"artist": "ADIA",
+					"collectorNumber": "001",
+					"id": "926a067d-4148-4f04-8468-13f5d435040e",
+					"key": "SD02-EBP-001-FR",
+					"locale": "fr",
+					"rarity": "Epic",
+					"setId": "SD02-EBP",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/926a067d-4148-4f04-8468-13f5d435040e/render-c2f20b54-234f-4ead-8978-f00607239979.webp",
+					"thumbhash": "j2iGDAQPb7RZFoNj+P+r3b+HgYGICBiIAA=="
+				},
+				{
+					"artist": "Vincenzo Riccardi",
+					"collectorNumber": "001",
+					"id": "be95c7f4-4a0f-4a96-80d8-03db7c809f74",
+					"key": "PRM-WNC-001-FR",
+					"locale": "fr",
+					"rarity": "Nova Rare",
+					"setId": "PRM-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/be95c7f4-4a0f-4a96-80d8-03db7c809f74/render-74608905-8177-4746-b183-fd07b5c65dcf.webp",
+					"thumbhash": "UziGDAQPmXZoCWhlc3/I+XqOgYGICBiIAA=="
 				}
 			],
 			"ramProvided": 2,
@@ -16415,6 +17322,12 @@
 					"id": "d2074e1b-4efa-4cfb-bc7a-0ca063fcf804",
 					"question": "If an ARASAKA Unit was defeated this turn and you then play a Yorinobu Arasaka, will Yorinobu Arasaka's effect trigger if another ARASAKA Unit is defeated this turn?",
 					"sortOrder": 300
+				},
+				{
+					"answer": "No. You still need a spent rival Unit as a valid attack target.",
+					"id": "e9b2a0af-407e-4b34-801e-1bd130e0e099",
+					"question": "Does the [Play] effect of Yorinobu Arasaka, \"It can attack rival Units this turn,\" allow the Unit to declare an attack on a ready rival Unit this turn?",
+					"sortOrder": 400
 				}
 			],
 			"flavorText": null,
@@ -16508,6 +17421,12 @@
 					"id": "fc46987c-3869-4d97-b73b-686e1e08120e",
 					"question": "When you play this Gear, the effect only reduces the €$ required to play the card; it does not change its cost value.",
 					"sortOrder": 100
+				},
+				{
+					"answer": "No.",
+					"id": "df287cf5-d06b-4958-8501-2ee0fb2c68cf",
+					"question": "If a Unit or Legend is equipped with a Gear, does that Unit or Legend gain the Gear's tags?",
+					"sortOrder": 200
 				}
 			],
 			"flavorText": null,
@@ -16675,6 +17594,17 @@
 					"rarity": "Uncommon",
 					"setId": "MS01-WNC",
 					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/53d70a2e-2b0d-4459-b4f0-1a6ad278c733/render-8ba9f590-b0e3-44c9-a3e8-a36363053037.webp",
+					"thumbhash": "jyiKDAYPGrZYN8dwNi/FF3yAgYGICBiIAA=="
+				},
+				{
+					"artist": "ADIA",
+					"collectorNumber": "009",
+					"id": "fb1687ac-3b22-4a0e-9f0d-44ef1e001c30",
+					"key": "SD01-HEI-009-FR",
+					"locale": "fr",
+					"rarity": "Uncommon",
+					"setId": "SD01-HEI",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/fb1687ac-3b22-4a0e-9f0d-44ef1e001c30/render-d21c2bcd-9bd5-4bb8-9150-3b32009411b3.webp",
 					"thumbhash": "jyiKDAYPGrZYN8dwNi/FF3yAgYGICBiIAA=="
 				}
 			],
@@ -16864,7 +17794,7 @@
 			"sortOrder": 2500
 		}
 	],
-	"generatedAt": "2026-10-28T09:56:49.459Z",
+	"generatedAt": "2026-10-28T19:18:48.567Z",
 	"ramPerLegend": 2,
 	"sets": [
 		{
@@ -16905,7 +17835,7 @@
 			"name": "The Heist",
 			"parentId": "MS01-WNC",
 			"printed": "SD01 - HEI [A]",
-			"printingCount": 40,
+			"printingCount": 60,
 			"releaseWindow": null,
 			"setCode": "HEI"
 		},
@@ -16919,7 +17849,7 @@
 			"name": "Embracing Power",
 			"parentId": "MS01-WNC",
 			"printed": "SD02 - EBP [A]",
-			"printingCount": 40,
+			"printingCount": 60,
 			"releaseWindow": null,
 			"setCode": "EBP"
 		},
@@ -16961,7 +17891,7 @@
 			"name": "Box Toppers",
 			"parentId": "MS01-WNC",
 			"printed": "PRM - WNC [A]",
-			"printingCount": 12,
+			"printingCount": 18,
 			"releaseWindow": null,
 			"setCode": "WNC"
 		},
@@ -16989,7 +17919,7 @@
 			"name": "Prerelease (Retail)",
 			"parentId": "MS01-WNC",
 			"printed": "PRR02 - WNC",
-			"printingCount": 11,
+			"printingCount": 22,
 			"releaseWindow": null,
 			"setCode": "WNC"
 		},
@@ -17066,7 +17996,7 @@
 	],
 	"stats": {
 		"cards": 151,
-		"printings": 756,
+		"printings": 813,
 		"sets": 1
 	}
 }
