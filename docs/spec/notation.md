@@ -36,7 +36,7 @@ example is asserted in `src/lib/notation/*.spec.ts`, so prose and validator cann
 - **Hover text** is `describeMove(move, context?)`: state-aware when a board is known ("WE lowers
   their d6 from 4 to 2"), general otherwise. One function feeds the tooltip and error text. The
   token is a focusable button: hover (~400ms), focus, or tap all show the same text.
-- **Scoresheet** is a print-styled HTML page first; a pinned PDF only after a real event has
+- **Full-page scoresheet** is a print-styled HTML page first; a pinned PDF only after a real event has
   exercised the layout. Only the printed sheet carries `Draft v0.1`. **One landscape page holds four
   best-of-three matches** (three game columns each, in a 2×2), with the site's nine-square mark in
   the header. The cost is writing room: rows are about 4.3 mm and a game's ink column about 35 mm,
@@ -46,6 +46,16 @@ example is asserted in `src/lib/notation/*.spec.ts`, so prose and validator cann
   regulations allow only objective, public information to be written down, and anything only
   briefly public (a card glimpsed in a hand) must not be. Dice state and the result circle are the
   whole record. The `first:`/`result:` options are printed plain; the player circles their own.
+  **The scoresheet's key** is one worked move taken apart (`=D'3`: action, die, theirs, value) plus a
+  dice line and an actions line of real examples, all read from the validator's tables.
+- **Notepad sheet** (`/notation/scoresheet`, the default) is one match to a page, for an A5 or half-letter
+  pad: 194 × 123 mm landscape, the three game columns beside a column holding the match details, the
+  short key and a QR code to `/notation`. Landscape because width, not height, is what a handwritten
+  turn runs out of — a game's ink column is 38 mm against 28 mm on A5 portrait, for rows of 6.4 mm
+  against 7.6. The key drops the rules text for the QR code. It is the first tab, beside the
+  four-up sheet (`/notation/scoresheet/full-page`, "Full page"), under the one Scoresheet title
+  (`scoresheet/+layout.svelte`) — route-backed, so both stay prerendered; only the default is in the
+  sitemap.
 - **Sharing** is the transcript encoded in the URL on `/notation/check` — no backend, no D1. A
   short-code layer (`/n/[code]` → encoded URL, like `/l/[code]`) can be added later without
   breaking links. The encoding is unversioned until something forces a second one.

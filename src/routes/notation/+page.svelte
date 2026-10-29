@@ -62,7 +62,7 @@
 		{
 			href: '/notation/scoresheet',
 			title: 'Print the scoresheet',
-			body: 'Four matches to a page. Write your next game on it, one turn to a row.'
+			body: 'A page a match, sized for a notepad — or four to a page. Write your next game on it, one turn to a row.'
 		},
 		{
 			href: '/notation/check',

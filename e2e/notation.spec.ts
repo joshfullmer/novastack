@@ -214,6 +214,7 @@ test.describe('the Notation front door', () => {
 			['/notation', 'Learn'],
 			['/notation/reference', 'Reference'],
 			['/notation/scoresheet', 'Scoresheet'],
+			['/notation/scoresheet/full-page', 'Scoresheet'],
 			['/notation/check', 'Check a game']
 		] as const;
 		for (const [path, label] of pages) {

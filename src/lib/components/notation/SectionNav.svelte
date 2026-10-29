@@ -20,8 +20,14 @@
 		{ href: '/notation/check', label: 'Check a game' }
 	] as const;
 
-	/** `/notation` is a prefix of every other page in the section, so it must match exactly. */
-	const isCurrent = (href: string) => page.url.pathname.replace(/\/$/, '') === href;
+	/**
+	 * `/notation` is a prefix of every other page in the section, so it must match exactly. The
+	 * others also own what is beneath them: the scoresheet's notepad is still the Scoresheet.
+	 */
+	const isCurrent = (href: string) => {
+		const path = page.url.pathname.replace(/\/$/, '');
+		return href === '/notation' ? path === href : path === href || path.startsWith(`${href}/`);
+	};
 </script>
 
 <nav aria-label="Notation sections" class="border-b border-edge/60 print:hidden">

@@ -67,7 +67,7 @@ Retail is already mapped, with no price, so it should light up by itself — but
 ## Notation: launch checklist
 
 Folded in from the sibling `novanotation` repo. `/notation`, `/notation/reference`,
-`/notation/scoresheet` and `/notation/check` are live, linked from the nav, indexable and in the
+`/notation/scoresheet` (with `/notation/scoresheet/full-page`) and `/notation/check` are live, linked from the nav, indexable and in the
 sitemap (`NOTATION_LAUNCHED` in `src/lib/notation/launch.ts` is `true`). Decisions:
 `docs/spec/notation.md`.
 
@@ -75,8 +75,10 @@ sitemap (`NOTATION_LAUNCHED` in `src/lib/notation/launch.ts` is `true`). Decisio
       overtime and one-roll-in-a-turn are enforced, swap is `A<>B'`, the soft cap is a convention and
       Reactions are reserved. Re-check the section numbers if the CR has been revised since — see
       `docs/research/notation-cr-audit.md`.
-- [ ] **Print the scoresheet** on Letter and A4 and try it at a real event; only then think about a
+- [ ] **Print the full-page scoresheet** on Letter and A4 and try it at a real event; only then think about a
       pinned PDF. Set the print dialog to no headers/footers, 100% scale.
+- [ ] **Print the notepad sheet** (`/notation/scoresheet`) on A5 and half-letter, and scan the
+      QR code off the paper. The type is small (key 2.2 mm); check it on a mono printer.
 - [x] **Nav:** `Notation` is a top-level link and `Sets` sits under a `Cards` dropdown. Done.
 - [x] **Launch:** `NOTATION_LAUNCHED = true` — `noindex` is gone and the four pages are in the sitemap.
 - [ ] **Redirect `novanotation.net` → `https://novastack.gg/notation`** (301, Cloudflare redirect rule),

@@ -2,14 +2,16 @@
 	/**
 	 * One game's column on the scoresheet — paper, black ink, a printed number on every row.
 	 *
-	 * Shared by the printable sheet (`/notation/scoresheet`, three of these, blank) and the front
+	 * Shared by the printable sheets (`/notation/scoresheet`, three of these, blank, and `full-page/`, twelve) and the front
 	 * door (one, filled with the worked game), so the picture that *teaches* the notation is the same
 	 * object people will actually hold. Leave `turns` off for a blank column; pass them to write the
 	 * game in.
 	 *
 	 * **Everything is sized in `--u`** — one millimetre on the printed sheet, a little more on screen
 	 * — so one set of proportions serves both. Rows normally share whatever height the sheet gives
-	 * them; `--row-min` is for the screen, where nothing gives them any.
+	 * them; `--row-min` is for the screen, where nothing gives them any. A page with tall rows and
+	 * narrow columns can set the type apart from the lines: `--sheet-num-size`, `--sheet-num-width`,
+	 * `--sheet-ink-size` and `--sheet-chrome-size` (the head and the result).
 	 *
 	 * **Paper is not the site's dark theme**, on purpose: the colours are literal. Hover text still
 	 * floats above it in the site's own style, because that is the part that is not on the paper.
@@ -104,7 +106,7 @@
 		background: #fff;
 		color: #111;
 		font-family: var(--font-mono);
-		font-size: calc(var(--u) * 3.2);
+		font-size: var(--sheet-chrome-size, calc(var(--u) * 3.2));
 		print-color-adjust: exact;
 		-webkit-print-color-adjust: exact;
 	}
@@ -180,14 +182,14 @@
 		display: flex;
 		align-items: center;
 		justify-content: flex-end;
-		width: calc(var(--u) * 6);
+		width: var(--sheet-num-width, calc(var(--u) * 6));
 		padding: 0 calc(var(--u) * 1.2) 0 0;
 		border: 0;
 		border-right: calc(var(--u) * 0.2) solid #000;
 		background: none;
 		color: inherit;
 		font: inherit;
-		font-size: calc(var(--u) * 3);
+		font-size: var(--sheet-num-size, calc(var(--u) * 3));
 	}
 	button.num {
 		cursor: pointer;
@@ -202,7 +204,7 @@
 		flex: 1;
 		align-items: center;
 		padding-left: calc(var(--u) * 1.5);
-		font-size: calc(var(--u) * 3.4);
+		font-size: var(--sheet-ink-size, calc(var(--u) * 3.4));
 	}
 	/* Dimmed by colour, never by `opacity`: opacity fades everything inside the row, and a token's hover
 	   text is inside it — the tooltip came out see-through, and the rows below painted over it. */
