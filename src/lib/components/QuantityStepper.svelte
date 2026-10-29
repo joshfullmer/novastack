@@ -45,6 +45,16 @@
 	 * you clicked elsewhere. Both now key off the same state the buttons do, so the container
 	 * cannot disagree with its own contents.
 	 *
+	 * **`expanded` shows no count at zero.** Resting, the `—` is the badge's only content, so it
+	 * stays; with the buttons permanently visible it's redundant noise beside a disabled `−`. The
+	 * span stays mounted but empty — a live region that's inserted already populated isn't reliably
+	 * announced — and `empty:` collapses it, with `-ml-1` cancelling the flex gap it would
+	 * otherwise leave trailing the `+`. The first copy slides the count in; the margin eases
+	 * alongside it. `expanded` carries no `min-w` for the same reason — a floor under the width
+	 * would grow on its own curve while the slide did its own, and the text jittered as they
+	 * finished apart. Nothing is clicked to the right of the count, so letting the width follow
+	 * the number costs nothing here.
+	 *
 	 * Signed out, it renders **disabled rather than hidden** — the feature is visible before it's
 	 * usable, which converts better than hiding it, and the layout doesn't shift on sign-in.
 	 *
@@ -58,6 +68,7 @@
 	 * per-font guess; a stroke centred in its own `viewBox` is centred by construction, in any
 	 * font, at any size.
 	 */
+	import { slide } from 'svelte/transition';
 	import { collection } from '#lib/collection/state.svelte.js';
 
 	let {
@@ -95,7 +106,7 @@
 	);
 	const countRevealClass = $derived(
 		expanded
-			? 'min-w-[2.75ch]'
+			? 'transition-[margin] duration-150 ease-out empty:-ml-1'
 			: 'min-w-0 transition-[min-width] group-hover/tile:min-w-[2.75ch] group-has-[:focus-visible]/badge:min-w-[2.75ch]'
 	);
 </script>
@@ -138,6 +149,10 @@
 	<span
 		class="text-right font-mono text-xs tabular-nums {countRevealClass}
 			{count === 0 ? 'text-muted/60' : 'text-bright'}"
-		aria-live="polite">{count === 0 ? '—' : `×${count}`}</span
+		aria-live="polite"
 	>
+		{#if count > 0}
+			<span class="block" in:slide={{ axis: 'x', duration: 150 }}>×{count}</span>
+		{:else if !expanded}—{/if}
+	</span>
 </div>
