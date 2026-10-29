@@ -5,7 +5,7 @@
  * a slugified set *name*. So the mapping from API set to printed Set Identifier is curated
  * here, and ingest asserts that every API set code it sees has an entry (`assertions.ts`).
  *
- * Twenty-two API sets collapse to **thirteen** printed identifiers: the API models retail and beta
+ * Twenty-four API sets collapse to **thirteen** printed identifiers: the API models retail and beta
  * as separate sets, which is its own invention, and mirrors retail sets in French under a `-fr`
  * code (see `API_SET_CODE_TO_LOCALE`). On the cards they carry the identical printed
  * identifier and differ only by a `β` prefix on the Collector Number — see CONTEXT.md,
@@ -201,12 +201,14 @@ export const API_SET_CODE_TO_SET_ID: Readonly<Record<string, string>> = {
 	boxtoppersbeta: 'PRM-WNC',
 	prereleasebeta: 'PRR01-WNC',
 	prereleaseretail: 'PRR02-WNC',
-	// Sic: the API's only upper-case locale suffix, and `embracingpower…de-fr` is truncated.
+	// Sic: the upper-case locale suffix on these three; `embracingpower…de-fr` is truncated.
 	'prereleaseretail-FR': 'PRR02-WNC',
 	edgerunneropens1: 'EOR01-WNC',
 	PRM01: 'PRM01',
 	nightcitybrawls1: 'NCB01-WNC',
+	'nightcitybrawls1-FR': 'NCB01-WNC',
 	nightcityshowdowns1: 'NCS01-WNC',
+	'nightcityshowdowns1-FR': 'NCS01-WNC',
 	judgepromos: 'JDG-WNC'
 };
 
@@ -219,7 +221,9 @@ export const API_SET_CODE_TO_LOCALE: Readonly<Record<string, Locale>> = {
 	'theheistretailstarterdeck-fr': 'fr',
 	'embracingpowerretailstarterde-fr': 'fr',
 	'boxtoppersretail-fr': 'fr',
-	'prereleaseretail-FR': 'fr'
+	'prereleaseretail-FR': 'fr',
+	'nightcitybrawls1-FR': 'fr',
+	'nightcityshowdowns1-FR': 'fr'
 };
 
 export function localeForApiSetCode(code: string): Locale {

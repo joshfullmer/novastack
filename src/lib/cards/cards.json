@@ -384,6 +384,28 @@
 					"setId": "MS01-WNC",
 					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/df2434e1-4942-44fe-ad89-ca7fc2f50966/render-5dab7384-b844-46e7-a1ca-a36927b9b344.webp",
 					"thumbhash": "TwiGDAIPVPdlqqmjcS72iKBycIGIGAh5AA=="
+				},
+				{
+					"artist": "Envar",
+					"collectorNumber": "002",
+					"id": "926893b9-9214-4db7-bf21-f6bfd7b59bdb",
+					"key": "NCS01-WNC-002-FR",
+					"locale": "fr",
+					"rarity": "Nova Rare",
+					"setId": "NCS01-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/926893b9-9214-4db7-bf21-f6bfd7b59bdb/render-d6c3a0dd-d69c-4c89-ac45-4c115123b96e.webp",
+					"thumbhash": "iziGHAYPmyWG+beJqQvVa3CIgYGICBiIAA=="
+				},
+				{
+					"artist": "Envar",
+					"collectorNumber": "004",
+					"id": "b0d19195-416d-456e-9d6e-e9816aaad0b1",
+					"key": "NCS01-WNC-004-FR",
+					"locale": "fr",
+					"rarity": "Nova Rare",
+					"setId": "NCS01-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/b0d19195-416d-456e-9d6e-e9816aaad0b1/render-6a495b8d-19b8-4901-936b-0d1a1772e0c5.webp",
+					"thumbhash": "jDiGHAYPqTSV+LeYpwvVa3CIgYGICBiIAA=="
 				}
 			],
 			"ramProvided": null,
@@ -1597,6 +1619,28 @@
 					"setId": "MS01-WNC",
 					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/eab0800b-0513-4264-930f-a6adf5e1eede/render-090e6262-2a35-4319-9d6e-cb7d7b7fabca.webp",
 					"thumbhash": "VBiOFAIPZ/d3Z5iBcpv3F46AgYGICBiIAA=="
+				},
+				{
+					"artist": "ADIA",
+					"collectorNumber": "007",
+					"id": "bf92e29e-162b-47b5-a416-f2ba389fc912",
+					"key": "NCB01-WNC-007-FR",
+					"locale": "fr",
+					"rarity": "Nova Rare",
+					"setId": "NCB01-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/bf92e29e-162b-47b5-a416-f2ba389fc912/render-419e6291-694e-498a-b701-9cacf95f6549.webp",
+					"thumbhash": "XDiOFAQPh/aIV3h0pPmoFoyAgYGICBiIAA=="
+				},
+				{
+					"artist": "ADIA",
+					"collectorNumber": "025",
+					"id": "e8882cc2-86a2-49d1-aaf9-a7c315842510",
+					"key": "NCB01-WNC-025-FR",
+					"locale": "fr",
+					"rarity": "Nova Rare",
+					"setId": "NCB01-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/e8882cc2-86a2-49d1-aaf9-a7c315842510/render-137ee9fe-d96c-4961-a852-466f9d5a1ebd.webp",
+					"thumbhash": "XDiOFAQPh/aIV3h0pPmoFoyAgYGICBiIAA=="
 				}
 			],
 			"ramProvided": null,
@@ -2154,6 +2198,28 @@
 					"setId": "SD02-EBP",
 					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/67c0d4ad-a044-4240-8941-4a90c8d5eeef/render-c2a4f74d-2c37-4f7e-a03b-6dcac3bbf189.webp",
 					"thumbhash": "1PeJDAAPd/h3GHiUVzr2X06FgYGICBiIAA=="
+				},
+				{
+					"artist": "Daniel Valaisis",
+					"collectorNumber": "009",
+					"id": "5f456afc-0bf1-4675-bee5-1d4bfb72034b",
+					"key": "NCB01-WNC-009-FR",
+					"locale": "fr",
+					"rarity": "Nova Rare",
+					"setId": "NCB01-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/5f456afc-0bf1-4675-bee5-1d4bfb72034b/render-0aad7b34-c4ee-4844-ac0b-fc5dbdb28209.webp",
+					"thumbhash": "3OeJDAIPp/dnaEiJVd/WSXmAgYGICBiIAA=="
+				},
+				{
+					"artist": "Daniel Valaisis",
+					"collectorNumber": "027",
+					"id": "2ba670a8-030e-494c-aeaf-0503926e6eac",
+					"key": "NCB01-WNC-027-FR",
+					"locale": "fr",
+					"rarity": "Nova Rare",
+					"setId": "NCB01-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/2ba670a8-030e-494c-aeaf-0503926e6eac/render-a9510782-fcb6-4021-910f-136926c32532.webp",
+					"thumbhash": "3OeJDAIPp/dnaEiJVc/WSXmAgYGICBiIAA=="
 				}
 			],
 			"ramProvided": null,
@@ -2401,6 +2467,28 @@
 					"setId": "MS01-WNC",
 					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/aa81e354-4612-4048-a14a-c5d09d4dab00/render-2b022a8c-1e74-48bf-99bf-81b60d15f30d.webp",
 					"thumbhash": "ThiGFAIPCcd4N8llhqz3mH+DgYGICBiIAA=="
+				},
+				{
+					"artist": "Michal Ivan",
+					"collectorNumber": "008",
+					"id": "3f8a1c0a-ebb1-46a7-a6d6-4331f0cee098",
+					"key": "NCB01-WNC-008-FR",
+					"locale": "fr",
+					"rarity": "Nova Rare",
+					"setId": "NCB01-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/3f8a1c0a-ebb1-46a7-a6d6-4331f0cee098/render-af02bc0b-7b2c-483c-929b-56e360263e2b.webp",
+					"thumbhash": "VSiGHAIPCXeJtod6dPvXlF6PgYGICBiIAA=="
+				},
+				{
+					"artist": "Michal Ivan",
+					"collectorNumber": "026",
+					"id": "c9fbad01-853c-4f3f-a550-45951847a04c",
+					"key": "NCB01-WNC-026-FR",
+					"locale": "fr",
+					"rarity": "Nova Rare",
+					"setId": "NCB01-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/c9fbad01-853c-4f3f-a550-45951847a04c/render-22959fc8-0341-4bf9-bc63-8ff309b70b83.webp",
+					"thumbhash": "VSiGHAIPCXeYtod6c/vXlV6PgYGICBiIAA=="
 				}
 			],
 			"ramProvided": null,
@@ -2640,6 +2728,28 @@
 					"setId": "SD01-HEI",
 					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/66eb5361-11f4-4880-b347-ca849aa28cb8/render-edb0d01f-ee52-493e-a3f5-063d1a031182.webp",
 					"thumbhash": "0NeJDAIPWHdnCJaImKIGqHiPgYGICBiIAA=="
+				},
+				{
+					"artist": "Daniel Valaisis",
+					"collectorNumber": "014",
+					"id": "6728f922-a514-4f15-991b-27ba0e17951f",
+					"key": "NCB01-WNC-014-FR",
+					"locale": "fr",
+					"rarity": "Nova Rare",
+					"setId": "NCB01-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/6728f922-a514-4f15-991b-27ba0e17951f/render-a4241144-cb37-4e60-81a5-ec3ebb5bca2f.webp",
+					"thumbhash": "1deJDAIPeAh3iKeWhWMHSJyAgYGICBiIAA=="
+				},
+				{
+					"artist": "Daniel Valaisis",
+					"collectorNumber": "032",
+					"id": "65e81385-8e38-4d8c-b0a7-09226fb72823",
+					"key": "NCB01-WNC-032-FR",
+					"locale": "fr",
+					"rarity": "Nova Rare",
+					"setId": "NCB01-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/65e81385-8e38-4d8c-b0a7-09226fb72823/render-8151f3d8-8a85-40ff-8203-d85fd9fa9446.webp",
+					"thumbhash": "1deJDAIPeAh3iKeWhWMHSJyAgYGICBiIAA=="
 				}
 			],
 			"ramProvided": null,
@@ -3271,6 +3381,28 @@
 					"setId": "MS01-WNC",
 					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/1a7081e4-9b58-4b8a-85ae-56b5e3cea502/render-f49d055e-c6cc-49c8-949f-a378c49796b5.webp",
 					"thumbhash": "S/iFDAIPg/WGR1ygYvd2JomAgYGICBiIAA=="
+				},
+				{
+					"artist": "Alex Eckman-Lawn",
+					"collectorNumber": "012",
+					"id": "bb84e7b0-0a5d-41c5-b60c-56d670777fc6",
+					"key": "NCB01-WNC-012-FR",
+					"locale": "fr",
+					"rarity": "Nova Rare",
+					"setId": "NCB01-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/bb84e7b0-0a5d-41c5-b60c-56d670777fc6/render-bda0caa2-6438-4cf3-958c-510c04a083b4.webp",
+					"thumbhash": "UPiFDAQP4uJ4CExYVvo3SIeAgYGICBiIAA=="
+				},
+				{
+					"artist": "Alex Eckman-Lawn",
+					"collectorNumber": "030",
+					"id": "2c63f11a-7ff6-4460-ad2f-a002405dc555",
+					"key": "NCB01-WNC-030-FR",
+					"locale": "fr",
+					"rarity": "Nova Rare",
+					"setId": "NCB01-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/2c63f11a-7ff6-4460-ad2f-a002405dc555/render-4dbb61e9-f906-4d5c-95e9-36849ea2278d.webp",
+					"thumbhash": "UPiFDAQP4eKICExYVvo3SIeAgYGICBiIAA=="
 				}
 			],
 			"ramProvided": null,
@@ -3608,6 +3740,28 @@
 					"setId": "SD01-HEI",
 					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/a287a673-d258-4d60-bc7a-9093678fe5dd/render-7a22d533-fee1-42f0-9d53-0f48602add28.webp",
 					"thumbhash": "zveFFAYPVut2Spig5oMKK5uAgYGICBiIAA=="
+				},
+				{
+					"artist": "Ivan Shavrin",
+					"collectorNumber": "016",
+					"id": "a96d4bb7-b498-4371-9558-e423be933064",
+					"key": "NCB01-WNC-016-FR",
+					"locale": "fr",
+					"rarity": "Nova Rare",
+					"setId": "NCB01-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/a96d4bb7-b498-4371-9558-e423be933064/render-7d34acdf-f8f0-42e0-ba38-e3976cc81611.webp",
+					"thumbhash": "ExiGFAYPYJWGV7uY3QIqOaWAgYGICBiIAA=="
+				},
+				{
+					"artist": "Ivan Shavrin",
+					"collectorNumber": "034",
+					"id": "d378d160-5c3b-4e45-b9c0-2f5715f01ba0",
+					"key": "NCB01-WNC-034-FR",
+					"locale": "fr",
+					"rarity": "Nova Rare",
+					"setId": "NCB01-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/d378d160-5c3b-4e45-b9c0-2f5715f01ba0/render-010f86aa-862d-43dd-9e37-960d7ef51f8f.webp",
+					"thumbhash": "ExiGFAYPYJWFV7uY3AIaOaWAgYGICBiIAA=="
 				}
 			],
 			"ramProvided": null,
@@ -4432,6 +4586,28 @@
 					"setId": "SD01-HEI",
 					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/8efe08a5-0691-483d-817c-3aad5b73d28f/render-0b5f658b-b6cc-48cd-a508-4f050df6497b.webp",
 					"thumbhash": "kkiKLAwPWfdnGJdyd8MISIuAgYGICBiIAA=="
+				},
+				{
+					"artist": "DOFRESH",
+					"collectorNumber": "018",
+					"id": "d8b393db-c317-4cb0-bec4-2d5327ce3e37",
+					"key": "NCB01-WNC-018-FR",
+					"locale": "fr",
+					"rarity": "Nova Rare",
+					"setId": "NCB01-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/d8b393db-c317-4cb0-bec4-2d5327ce3e37/render-0ff6ca77-d101-4e9a-b597-77c8c49224b1.webp",
+					"thumbhash": "11iGLAwPWbhZB6R1d6UIWImAgYGICBiIAA=="
+				},
+				{
+					"artist": "DOFRESH",
+					"collectorNumber": "036",
+					"id": "d7682383-70b5-4caa-9822-5a6cd46d02af",
+					"key": "NCB01-WNC-036-FR",
+					"locale": "fr",
+					"rarity": "Nova Rare",
+					"setId": "NCB01-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/d7682383-70b5-4caa-9822-5a6cd46d02af/render-d58017d1-baec-4bdf-8d53-39adcc26da77.webp",
+					"thumbhash": "11iGLAwPaMhZB6R1dqUJWIiAgYGICBiIAA=="
 				}
 			],
 			"ramProvided": null,
@@ -6352,6 +6528,28 @@
 					"setId": "MS01-WNC",
 					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/cde99261-b242-4a30-acd3-74081653154a/render-9960d7bd-b4b7-4c9f-9933-b9480a5ebc24.webp",
 					"thumbhash": "0SiGHAQPe8R3GNOAp6+m3l+FgYGICBiIAA=="
+				},
+				{
+					"artist": "Ilya Kuvshinov",
+					"collectorNumber": "004",
+					"id": "9fd08b9f-ba4c-44b4-9005-f8007ff7b107",
+					"key": "NCB01-WNC-004-FR",
+					"locale": "fr",
+					"rarity": "Nova Rare",
+					"setId": "NCB01-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/9fd08b9f-ba4c-44b4-9005-f8007ff7b107/render-218f4c93-ed70-4d11-8a0f-d9bdae8a373e.webp",
+					"thumbhash": "1DiGHAYPnbV2CPOVy8+k/02GgYGICBiIAA=="
+				},
+				{
+					"artist": "Ilya Kuvshinov",
+					"collectorNumber": "022",
+					"id": "ca3dbf6e-ead5-4948-b704-e325a6297fd7",
+					"key": "NCB01-WNC-022-FR",
+					"locale": "fr",
+					"rarity": "Nova Rare",
+					"setId": "NCB01-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/ca3dbf6e-ead5-4948-b704-e325a6297fd7/render-e1e167dc-790e-469d-89e2-b399cf7bd356.webp",
+					"thumbhash": "1DiGHAYPnLSFCPOVys+k702GgYGICBiIAA=="
 				}
 			],
 			"ramProvided": null,
@@ -6667,6 +6865,17 @@
 					"thumbhash": "T1iGDAIPOPZHqHeXdwq4+aSmobGqChqrAA=="
 				},
 				{
+					"artist": "Divebound",
+					"collectorNumber": "168",
+					"id": "cb12d8c4-64b1-4e53-898e-8fd46aeac6bf",
+					"key": "MS01-WNC-168",
+					"locale": "en",
+					"rarity": "Iconic Secret",
+					"setId": "MS01-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/cb12d8c4-64b1-4e53-898e-8fd46aeac6bf/render-mpvmtjns.webp",
+					"thumbhash": "0kiGFAoPValWCZl4U79F+WyLgYGICBiIAA=="
+				},
+				{
 					"artist": "Daniel Valaisis",
 					"collectorNumber": "β003",
 					"id": "1159e69c-614f-4a8e-be76-d69ee734bd22",
@@ -6689,6 +6898,17 @@
 					"thumbhash": "HRiKDAQPq8Z3CFWEUo721niPgYGICBiIAA=="
 				},
 				{
+					"artist": "Divebound Studio",
+					"collectorNumber": "031",
+					"id": "b6f81fe8-d0ed-4dcb-b025-058559d0cf98",
+					"key": "EOR01-WNC-031",
+					"locale": "en",
+					"rarity": "Nova Rare",
+					"setId": "EOR01-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/b6f81fe8-d0ed-4dcb-b025-058559d0cf98/render-mtcql015.webp",
+					"thumbhash": "FFmCFAgPAboUKox6U8+V+V2NgYGICBiIAA=="
+				},
+				{
 					"artist": "Daniel Valaisis",
 					"collectorNumber": "003",
 					"id": "7f03795b-029a-4347-a685-d67dcd879a93",
@@ -6698,6 +6918,17 @@
 					"setId": "MS01-WNC",
 					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/7f03795b-029a-4347-a685-d67dcd879a93/render-381b764f-0b33-49fa-b5e7-3b80e9e876fa.webp",
 					"thumbhash": "UFiGDAIPOPZIqHeXdgq3+aSmobGqChqrAA=="
+				},
+				{
+					"artist": "Divebound",
+					"collectorNumber": "168",
+					"id": "7d1960a6-2d90-4278-937c-1e6905a3a396",
+					"key": "MS01-WNC-168-FR",
+					"locale": "fr",
+					"rarity": "Iconic Secret",
+					"setId": "MS01-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/7d1960a6-2d90-4278-937c-1e6905a3a396/render-7ddbcfec-cf9d-41b3-a962-7a8ca6503f75.webp",
+					"thumbhash": "0kiGFAoPZJlXCZl5Ur9F+WyLgYGICBiIAA=="
 				}
 			],
 			"ramProvided": 2,
@@ -7306,6 +7537,28 @@
 					"setId": "MS01-WNC",
 					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/eb2fbdc2-c51e-4797-a9c6-c8f6e0a9413d/render-a5b51ae7-2110-4b95-886d-5eb8b225985a.webp",
 					"thumbhash": "TTeGHAIPKkaHCLebdTr3d2CKgYGICBiIAA=="
+				},
+				{
+					"artist": "Bogna Gawrońska",
+					"collectorNumber": "001",
+					"id": "e1be086c-78ca-472a-927f-1c145e87646b",
+					"key": "NCB01-WNC-001-FR",
+					"locale": "fr",
+					"rarity": "Nova Rare",
+					"setId": "NCB01-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/e1be086c-78ca-472a-927f-1c145e87646b/render-61e1b8be-2074-4fcd-8776-845c90451849.webp",
+					"thumbhash": "UEeGFAQPSgaGaLeKhnv2uVOPgYGICBiIAA=="
+				},
+				{
+					"artist": "Bogna Gawrońska",
+					"collectorNumber": "019",
+					"id": "77189cf1-2e1e-44a6-8190-9175789c8c8d",
+					"key": "NCB01-WNC-019-FR",
+					"locale": "fr",
+					"rarity": "Nova Rare",
+					"setId": "NCB01-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/77189cf1-2e1e-44a6-8190-9175789c8c8d/render-11a188a4-da15-4a63-9a1f-f12957d67b62.webp",
+					"thumbhash": "UEeGFAQPWgaGaMeahXv2uVOPgYGICBiIAA=="
 				}
 			],
 			"ramProvided": null,
@@ -8065,6 +8318,39 @@
 					"setId": "MS01-WNC",
 					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/678c7411-d629-43b5-924e-fb91eb44a3cf/render-11c91c06-f3a2-40d3-99eb-6364e26d0f24.webp",
 					"thumbhash": "zAeGDAQPQpp0S7vwFPUDYF6EcZKHCBiHAg=="
+				},
+				{
+					"artist": "TOPDOG Entertainment",
+					"collectorNumber": "015",
+					"id": "c0a8e28f-7f0c-4631-ad73-2219ab851160",
+					"key": "NCB01-WNC-015-FR",
+					"locale": "fr",
+					"rarity": "Nova Rare",
+					"setId": "NCB01-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/c0a8e28f-7f0c-4631-ad73-2219ab851160/render-885b1041-fe6a-4996-94bf-bb37d96c4aa2.webp",
+					"thumbhash": "DwiGFAoPgIh2eay3B+cFcG2CgYGICBiIAA=="
+				},
+				{
+					"artist": "TOPDOG Entertainment",
+					"collectorNumber": "033",
+					"id": "5d923604-b3a1-4632-b5df-14dadb95caa5",
+					"key": "NCB01-WNC-033-FR",
+					"locale": "fr",
+					"rarity": "Nova Rare",
+					"setId": "NCB01-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/5d923604-b3a1-4632-b5df-14dadb95caa5/render-6fa037b4-2039-4e2e-a36d-6231227c7e1b.webp",
+					"thumbhash": "DwiGFAoPkJh1eay2B+cFcG2CgYGICBiIAA=="
+				},
+				{
+					"artist": "TOPDOG Entertainment",
+					"collectorNumber": "037",
+					"id": "0bb3e3d1-accf-4e8f-9e93-2d4c5c86168e",
+					"key": "NCB01-WNC-037-FR",
+					"locale": "fr",
+					"rarity": "Nova Rare",
+					"setId": "NCB01-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/0bb3e3d1-accf-4e8f-9e93-2d4c5c86168e/render-dc753877-92ed-4a47-8db8-f40be88bc392.webp",
+					"thumbhash": "DwiGFAoPkJh2eay3B+cFcG2CgYGICBiIAA=="
 				}
 			],
 			"ramProvided": null,
@@ -8201,6 +8487,28 @@
 					"setId": "SD01-HEI",
 					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/2f9b1516-302b-4a3f-b23a-aea7d5196066/render-080bd134-0d65-4907-8add-0f32976da5d0.webp",
 					"thumbhash": "UfiFDAIPCfY4V7ZxhQ/ouHCGgYGICBiIAA=="
+				},
+				{
+					"artist": "Lea Leonowicz",
+					"collectorNumber": "006",
+					"id": "aa8dd968-405c-4e82-a6f5-722e1f00c490",
+					"key": "NCB01-WNC-006-FR",
+					"locale": "fr",
+					"rarity": "Nova Rare",
+					"setId": "NCB01-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/aa8dd968-405c-4e82-a6f5-722e1f00c490/render-f4473db3-a564-4046-8a44-754853147bc0.webp",
+					"thumbhash": "GPiJDAQPPPdJN6Z3iC76h4CKgYGICBiIAA=="
+				},
+				{
+					"artist": "Lea Leonowicz",
+					"collectorNumber": "024",
+					"id": "4706864a-1946-4f13-a433-65add75ad6ca",
+					"key": "NCB01-WNC-024-FR",
+					"locale": "fr",
+					"rarity": "Nova Rare",
+					"setId": "NCB01-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/4706864a-1946-4f13-a433-65add75ad6ca/render-0397595c-9116-441f-8874-52089e199c67.webp",
+					"thumbhash": "GPiJDAQPO/dIR6Z3dy76l4CLgYGICBiIAA=="
 				}
 			],
 			"ramProvided": null,
@@ -8643,6 +8951,28 @@
 					"setId": "MS01-WNC",
 					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/d19ac8c6-3520-40cb-80f6-e60066362b7d/render-aa0c920f-e54a-4770-a01d-4dabe9c30ec2.webp",
 					"thumbhash": "j9eJDAIPf9dqR4VzUwzo1ZCMgYGICBiIAA=="
+				},
+				{
+					"artist": "Olgierd Ciszak",
+					"collectorNumber": "010",
+					"id": "c740f0b7-858c-4792-862d-7dd54372cfff",
+					"key": "NCB01-WNC-010-FR",
+					"locale": "fr",
+					"rarity": "Nova Rare",
+					"setId": "NCB01-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/c740f0b7-858c-4792-862d-7dd54372cfff/render-72a0bd99-2f8e-401c-8133-81d75ea1ca1c.webp",
+					"thumbhash": "UreJDAIPb9hph5eGA0rrgbCEgYGICBiIAA=="
+				},
+				{
+					"artist": "Olgierd Ciszak",
+					"collectorNumber": "028",
+					"id": "627659e9-5298-466f-8cc2-97caaed5ab48",
+					"key": "NCB01-WNC-028-FR",
+					"locale": "fr",
+					"rarity": "Nova Rare",
+					"setId": "NCB01-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/627659e9-5298-466f-8cc2-97caaed5ab48/render-fc633e4e-ca9e-4bb7-9c28-b128809c4977.webp",
+					"thumbhash": "UreJDAIPf9hph5eFAkrqgbCEgYGICBiIAA=="
 				}
 			],
 			"ramProvided": null,
@@ -9005,6 +9335,28 @@
 					"setId": "SD02-EBP",
 					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/35c71811-34bb-4bdf-ad1e-eeff6a8030a6/render-737cbfae-f73b-46a5-ac7d-718a72f85be6.webp",
 					"thumbhash": "CQiGDAYPKxVHeJapcAv2tnKPgYGICBiIAA=="
+				},
+				{
+					"artist": "CD Projekt Red",
+					"collectorNumber": "002",
+					"id": "71cad350-657b-4a55-bd07-aada806def8e",
+					"key": "NCB01-WNC-002-FR",
+					"locale": "fr",
+					"rarity": "Nova Rare",
+					"setId": "NCB01-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/71cad350-657b-4a55-bd07-aada806def8e/render-e3acd3d2-8f06-4f2f-96a5-56e3de026bad.webp",
+					"thumbhash": "zveFDAYPalZH+YeFZT/21naPgYGICBiIAA=="
+				},
+				{
+					"artist": "CD Projekt Red",
+					"collectorNumber": "020",
+					"id": "e5207a33-75fe-460c-8476-872cd746c6a6",
+					"key": "NCB01-WNC-020-FR",
+					"locale": "fr",
+					"rarity": "Nova Rare",
+					"setId": "NCB01-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/e5207a33-75fe-460c-8476-872cd746c6a6/render-02d1b47f-dd59-492b-ace7-3680adb907c6.webp",
+					"thumbhash": "zveFDAYPaWZG+ZeVZD/21naPgYGICBiIAA=="
 				}
 			],
 			"ramProvided": null,
@@ -9924,6 +10276,28 @@
 					"setId": "MS01-WNC",
 					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/5ab4befe-a812-43ce-b2ff-0f4fea00be96/render-b7345ef3-e620-4c3d-9038-f340e253daf3.webp",
 					"thumbhash": "1PaJFAIPU/lXKIqTdgOnKH+AgYGICBiIAA=="
+				},
+				{
+					"artist": "Mooncolony",
+					"collectorNumber": "017",
+					"id": "fc2e2d9b-f9ad-4017-b570-9775285dcaed",
+					"key": "NCB01-WNC-017-FR",
+					"locale": "fr",
+					"rarity": "Nova Rare",
+					"setId": "NCB01-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/fc2e2d9b-f9ad-4017-b570-9775285dcaed/render-eca84011-9130-449a-98f5-43f8c844b736.webp",
+					"thumbhash": "mfaFDAQPUfg4CJp2dgR2SHyAgYGICBiIAA=="
+				},
+				{
+					"artist": "Mooncolony",
+					"collectorNumber": "035",
+					"id": "5dea5d8a-4fc5-4598-8e3c-b21d0ef9d85d",
+					"key": "NCB01-WNC-035-FR",
+					"locale": "fr",
+					"rarity": "Nova Rare",
+					"setId": "NCB01-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/5dea5d8a-4fc5-4598-8e3c-b21d0ef9d85d/render-3aa6b0b4-542c-44ab-be26-44e51f8bbadb.webp",
+					"thumbhash": "mfaFDAQPUfg4CJp2dQR2SHyAgYGICBiIAA=="
 				}
 			],
 			"ramProvided": null,
@@ -13467,6 +13841,39 @@
 					"setId": "SD02-EBP",
 					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/70d8df05-c5fc-4eaf-8e5b-c81ca96d02e3/render-39856acc-6f4a-4cb9-bde9-f57f53acfa78.webp",
 					"thumbhash": "yteFDAIPCHd4CPh3i073+XiOgYGICBiIAA=="
+				},
+				{
+					"artist": "Envar",
+					"collectorNumber": "001",
+					"id": "4917aef2-61e8-4208-9ff3-f51903c09494",
+					"key": "NCS01-WNC-001-FR",
+					"locale": "fr",
+					"rarity": "Nova Rare",
+					"setId": "NCS01-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/4917aef2-61e8-4208-9ff3-f51903c09494/render-e25c2191-82f7-4a19-9762-ad896176d4b0.webp",
+					"thumbhash": "U+eFFAQPbqRHBsV0pQOWBnWAgYGICBiIAA=="
+				},
+				{
+					"artist": "Envar",
+					"collectorNumber": "003",
+					"id": "57e0fbcf-59b2-405a-b35f-30b101e8e9a0",
+					"key": "NCS01-WNC-003-FR",
+					"locale": "fr",
+					"rarity": "Nova Rare",
+					"setId": "NCS01-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/57e0fbcf-59b2-405a-b35f-30b101e8e9a0/render-663a1181-6778-472e-a7d0-e20d13596ee2.webp",
+					"thumbhash": "U+eFFAQPXqRIBsV0pQOWBnWAgYGICBiIAA=="
+				},
+				{
+					"artist": "Envar",
+					"collectorNumber": "005",
+					"id": "4e8061a5-646b-46e5-be0d-f74af37259f1",
+					"key": "NCS01-WNC-005-FR",
+					"locale": "fr",
+					"rarity": "Nova Rare",
+					"setId": "NCS01-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/4e8061a5-646b-46e5-be0d-f74af37259f1/render-d13d991b-e1de-4187-a6ce-170f1d4941e3.webp",
+					"thumbhash": "U+eFFAQPbqRHBcV0pQOWBmWAgYGICBiIAA=="
 				}
 			],
 			"ramProvided": null,
@@ -13765,6 +14172,28 @@
 					"setId": "SD02-EBP",
 					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/7329d165-bd9e-41fd-aaac-38f81a629ec3/render-245dd795-b83e-4ce5-9886-7b02d00e7277.webp",
 					"thumbhash": "jjiGFAQPaKloCId2uCsJ2pCIgYGICBiIAA=="
+				},
+				{
+					"artist": "Ivan Shavrin",
+					"collectorNumber": "003",
+					"id": "86665027-3400-4183-a246-a4df93b83c83",
+					"key": "NCB01-WNC-003-FR",
+					"locale": "fr",
+					"rarity": "Nova Rare",
+					"setId": "NCB01-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/86665027-3400-4183-a246-a4df93b83c83/render-dc6e9c90-0cee-4945-9ee1-e4185794eb5e.webp",
+					"thumbhash": "UiiGHAQPdgtbVrdolgtY+YCJgYGICBiIAA=="
+				},
+				{
+					"artist": "Ivan Shavrin",
+					"collectorNumber": "021",
+					"id": "b142d928-a4fe-4f0a-84f7-860baf5a787f",
+					"key": "NCB01-WNC-021-FR",
+					"locale": "fr",
+					"rarity": "Nova Rare",
+					"setId": "NCB01-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/b142d928-a4fe-4f0a-84f7-860baf5a787f/render-fa0fa3d8-7531-442b-a5d2-57d3438dd373.webp",
+					"thumbhash": "UiiGHAQPhAtaVsZolQtY+YCJgYGICBiIAA=="
 				}
 			],
 			"ramProvided": null,
@@ -14075,6 +14504,28 @@
 					"setId": "SD01-HEI",
 					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/cb03d048-2691-421d-9654-e20ffed0592b/render-75f002c3-1e46-4950-a37e-dd14d9988402.webp",
 					"thumbhash": "EwiOFAQPSpdoCKZ2SQ62r5iDgYGICBiIAA=="
+				},
+				{
+					"artist": "Luca Claretti",
+					"collectorNumber": "005",
+					"id": "648a99cd-d25d-4e9e-a45d-14b47ed7f854",
+					"key": "NCB01-WNC-005-FR",
+					"locale": "fr",
+					"rarity": "Nova Rare",
+					"setId": "NCB01-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/648a99cd-d25d-4e9e-a45d-14b47ed7f854/render-82e06605-de3d-4290-8ea6-35f1baa428b8.webp",
+					"thumbhash": "2QeKFAQPTyV5R7RoGA/iiwCNgYGICBiIAA=="
+				},
+				{
+					"artist": "Luca Claretti",
+					"collectorNumber": "023",
+					"id": "eb96776d-e7ab-4312-85a8-fe2957f22094",
+					"key": "NCB01-WNC-023-FR",
+					"locale": "fr",
+					"rarity": "Nova Rare",
+					"setId": "NCB01-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/eb96776d-e7ab-4312-85a8-fe2957f22094/render-7a5aac72-10d4-4909-bbd0-014dda4eaa85.webp",
+					"thumbhash": "2geKFAQPTzV4R7R4GA/iiwCNgYGICBiIAA=="
 				}
 			],
 			"ramProvided": null,
@@ -16868,6 +17319,28 @@
 					"setId": "MS01-WNC",
 					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/1c963f25-948c-4e35-83e2-736b5ab1c899/render-c3ed5d65-5aa3-4dad-9166-be0a711c6c3e.webp",
 					"thumbhash": "TueFHAIPa+iXCIVncQiHJoWAgYGICBiIAA=="
+				},
+				{
+					"artist": "Olgierd Ciszak",
+					"collectorNumber": "013",
+					"id": "1b15e610-8f48-46f0-8708-5104134e966b",
+					"key": "NCB01-WNC-013-FR",
+					"locale": "fr",
+					"rarity": "Nova Rare",
+					"setId": "NCB01-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/1b15e610-8f48-46f0-8708-5104134e966b/render-94a90bf2-51b5-4617-85ca-c84bc7147c5e.webp",
+					"thumbhash": "FteFJAQPjTmn9xORXQd3JYGAgYGICBiIAA=="
+				},
+				{
+					"artist": "Olgierd Ciszak",
+					"collectorNumber": "031",
+					"id": "c95ba50a-07d9-4c10-a3e5-4dc5f25a30ef",
+					"key": "NCB01-WNC-031-FR",
+					"locale": "fr",
+					"rarity": "Nova Rare",
+					"setId": "NCB01-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/c95ba50a-07d9-4c10-a3e5-4dc5f25a30ef/render-ea6caf7d-1ee2-4710-8281-744ff2156e95.webp",
+					"thumbhash": "FteFHAQPjTmm9yORXAh3JYGAgYGICBiIAA=="
 				}
 			],
 			"ramProvided": null,
@@ -17142,6 +17615,28 @@
 					"setId": "MS01-WNC",
 					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/2a518740-19e5-4436-8259-070cb664b20e/render-e13ac45d-c7cb-4a83-b518-eb409253a66b.webp",
 					"thumbhash": "jAiGFAQPJ3l4CMiHeZMHWYqAgYGICBiIAA=="
+				},
+				{
+					"artist": "Daniel Valaisis",
+					"collectorNumber": "011",
+					"id": "221a8a1f-77bc-42f4-b044-a3fb09965805",
+					"key": "NCB01-WNC-011-FR",
+					"locale": "fr",
+					"rarity": "Nova Rare",
+					"setId": "NCB01-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/221a8a1f-77bc-42f4-b044-a3fb09965805/render-d1c7228a-bce3-486e-a45d-e0553d154d42.webp",
+					"thumbhash": "0RiGFAQPUzqZB6trVGYIWIaAgYGICBiIAA=="
+				},
+				{
+					"artist": "Daniel Valaisis",
+					"collectorNumber": "029",
+					"id": "20d5d227-d18b-4039-9834-6ad5bc324557",
+					"key": "NCB01-WNC-029-FR",
+					"locale": "fr",
+					"rarity": "Nova Rare",
+					"setId": "NCB01-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/20d5d227-d18b-4039-9834-6ad5bc324557/render-dba26a2d-a7f7-43a4-868c-42c5582da6ad.webp",
+					"thumbhash": "0RiGFAQPUjqYB6trVGYIWIaAgYGICBiIAA=="
 				}
 			],
 			"ramProvided": null,
@@ -17816,7 +18311,7 @@
 			"sortOrder": 2500
 		}
 	],
-	"generatedAt": "2026-10-28T22:05:23.495Z",
+	"generatedAt": "2026-10-29T22:05:23.343Z",
 	"ramPerLegend": 2,
 	"sets": [
 		{
@@ -17829,7 +18324,7 @@
 			"name": "Welcome to Night City",
 			"parentId": null,
 			"printed": "MS01 - WNC [A]",
-			"printingCount": 514,
+			"printingCount": 516,
 			"releaseWindow": null,
 			"setCode": "WNC"
 		},
@@ -17947,7 +18442,7 @@
 		},
 		{
 			"announcement": null,
-			"cardCount": 32,
+			"cardCount": 33,
 			"category": "EOR01",
 			"cycle": null,
 			"id": "EOR01-WNC",
@@ -17955,7 +18450,7 @@
 			"name": "Edgerunner Open Season 1",
 			"parentId": "MS01-WNC",
 			"printed": "EOR01 - WNC",
-			"printingCount": 52,
+			"printingCount": 53,
 			"releaseWindow": null,
 			"setCode": "WNC"
 		},
@@ -17983,7 +18478,7 @@
 			"name": "Night City Brawl Season 1",
 			"parentId": "MS01-WNC",
 			"printed": "NCB01 - WNC",
-			"printingCount": 37,
+			"printingCount": 74,
 			"releaseWindow": null,
 			"setCode": "WNC"
 		},
@@ -17997,7 +18492,7 @@
 			"name": "Night City Showdown Season 1",
 			"parentId": "MS01-WNC",
 			"printed": "NCS01 - WNC",
-			"printingCount": 5,
+			"printingCount": 10,
 			"releaseWindow": null,
 			"setCode": "WNC"
 		},
@@ -18018,7 +18513,7 @@
 	],
 	"stats": {
 		"cards": 151,
-		"printings": 815,
+		"printings": 860,
 		"sets": 1
 	}
 }

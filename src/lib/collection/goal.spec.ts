@@ -84,11 +84,11 @@ describe('printing runs', () => {
 
 describe('the real dataset', () => {
 	it('has a run per Set, treatment and locale, and defaults to the English retail ones', () => {
-		// 22 in all: English retail (13) and beta (4), and five French retail mirrors.
-		expect(PRINTING_RUNS).toHaveLength(22);
+		// 24 in all: English retail (13) and beta (4), and seven French retail mirrors.
+		expect(PRINTING_RUNS).toHaveLength(24);
 		const count = (locale: string, treatment: string) =>
 			PRINTING_RUNS.filter((run) => run.locale === locale && run.treatment === treatment).length;
-		expect([count('en', 'retail'), count('en', 'beta'), count('fr', 'retail')]).toEqual([13, 4, 5]);
+		expect([count('en', 'retail'), count('en', 'beta'), count('fr', 'retail')]).toEqual([13, 4, 7]);
 		expect([...DEFAULT_GOAL]).toHaveLength(13);
 		// Every Set is included by default; only treatment and locale narrow it.
 		expect([...DEFAULT_GOAL].every((key) => key.endsWith('|retail|en'))).toBe(true);
