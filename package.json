@@ -15,6 +15,7 @@
 		"format": "prettier --write .",
 		"test:unit": "vitest",
 		"test": "npm run test:unit -- --run && npm run test:e2e",
+		"i": "pnpm ingest",
 		"ingest": "node scripts/ingest.ts",
 		"ingest:data": "node scripts/ingest.ts --skip-images",
 		"test:e2e": "playwright test",
