@@ -197,6 +197,7 @@ function cardmarketPrice(row: CardmarketPriceRow | undefined): number | null {
  *   noise — on 2026-10-07 TCGplayer put `V: Streetkid`'s two standard arts the one way round and
  *   Cardmarket the other — and so is not evidence either way. Mixing them up costs about the gap
  *   between them, and a link to the sibling art.
+ * - **Both sides under `NOISE_FLOOR`**: skipped, however far apart. See `V: Streetkid`, 2026-10-21.
  * - **Decisively apart on one side only**: reject, unless the other side still *confirms* it —
  *   at least `CONFIRMING_GAP` times apart, in the same order. One marketplace sees a big gap that
  *   the other cannot confirm, so a mixed-up pairing would cost the whole gap. That is the case
@@ -236,6 +237,7 @@ function pairTies(
 		for (let j = i + 1; j < pairs.length; j += 1) {
 			const [ti, tj, ci, cj] = [tcg[i], tcg[j], cm[i], cm[j]];
 			if (ti === null || tj === null || ci === null || cj === null) return null;
+			if (Math.max(ti, tj, ci, cj) < NOISE_FLOOR) continue;
 
 			const decisiveOnTcgplayer = isApart(ti, tj, DECISIVE_GAP);
 			const decisiveOnCardmarket = isApart(ci, cj, DECISIVE_GAP);
@@ -252,6 +254,13 @@ function pairTies(
 
 /** How many times apart two prices must be before their order is evidence rather than noise. */
 const DECISIVE_GAP = 3;
+
+/**
+ * Minor units (a euro or a dollar) below which neither marketplace's order of two arts means
+ * anything: Cardmarket's trend on a card nobody buys swings from 0 to 0.10 to 0.48 in a week, so
+ * a 4.8x gap between two such arts is a rounding artefact, not a ranking.
+ */
+const NOISE_FLOOR = 100;
 
 /** How far apart the other marketplace must have them to back a gap only one side calls decisive. */
 const CONFIRMING_GAP = 2;

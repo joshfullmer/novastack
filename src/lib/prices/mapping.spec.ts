@@ -356,8 +356,10 @@ describe('mapCardmarket tie-break', () => {
 			{ collectorNumber: 'β144' }
 		);
 		const trioProducts = [1, 2, 3].map((id) => cmProduct(id, 'V Streetkid'));
-		const market = new Map(trio.printings.map((printing, i) => [printing.id, [29, 31, 12365][i]]));
-		const prices = [cmRow(1, 0.2), cmRow(2, 0.3), cmRow(3, 120)];
+		const market = new Map(
+			trio.printings.map((printing, i) => [printing.id, [290, 310, 12365][i]])
+		);
+		const prices = [cmRow(1, 2), cmRow(2, 3), cmRow(3, 120)];
 
 		const ok = mapCardmarket(
 			[trio],
@@ -366,7 +368,7 @@ describe('mapCardmarket tie-break', () => {
 		);
 		expect(ok.quotes.size).toBe(3);
 
-		market.set(trio.printings[1].id, 5); // 005b now cheaper than 005a on TCGplayer only
+		market.set(trio.printings[1].id, 50); // 005b now cheaper than 005a on TCGplayer only
 		const bad = mapCardmarket(
 			[trio],
 			{ products: trioProducts, prices },
@@ -402,6 +404,21 @@ describe('mapCardmarket tie-break: noise between near-equal arts', () => {
 		);
 		expect(quotes.get(iconic.id)).toEqual({ productId: 905232, trend: 12026 });
 		expect(quotes.size).toBe(3);
+		expect(report.paired).toBe(3);
+	});
+
+	it('ignores a decisive-looking gap between two arts that both trade under a euro', () => {
+		// 2026-10-21: Cardmarket's trend for the cheap arts collapsed to 0 (foil €0.48) and €0.10, a
+		// 4.8x gap with TCGplayer at $0.30 vs $0.37. Noise, which threw the Iconic Legend out too.
+		const { quotes, report } = mapCardmarket(
+			[trio],
+			{
+				products,
+				prices: [cmRow(905092, 0, 0.48), cmRow(905093, 0.1, 0.44), cmRow(905232, 0, 124.17)]
+			},
+			market([30, 37, 11674])
+		);
+		expect(quotes.get(iconic.id)).toEqual({ productId: 905232, trend: 12417 });
 		expect(report.paired).toBe(3);
 	});
 
