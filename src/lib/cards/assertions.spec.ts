@@ -13,6 +13,7 @@ import {
 	makeNetdeckFaq,
 	makeNetdeckPrinting,
 	makePrinting,
+	revealDatesFor,
 	thumbhashesFor
 } from './fixtures.ts';
 import { normalizeCards } from './normalize.ts';
@@ -328,7 +329,7 @@ describe('checkFaqInvariants', () => {
 describe('the pipeline end to end', () => {
 	it('normalizes a clean raw dataset into a model that passes its own invariants', () => {
 		const raw = cleanRaw();
-		const cards = normalizeCards(raw, thumbhashesFor(raw));
+		const cards = normalizeCards(raw, thumbhashesFor(raw), revealDatesFor(raw));
 
 		expect(checkRawInvariants(raw)).toEqual([]);
 		// Two cards cannot satisfy the four-run orderings; the printing-level checks still hold.

@@ -53,7 +53,8 @@ export function buildSegmentContext(cards: readonly NetdeckCard[]): SegmentConte
 
 function normalizePrinting(
 	raw: NetdeckPrinting,
-	thumbhashes: ReadonlyMap<string, string>
+	thumbhashes: ReadonlyMap<string, string>,
+	revealedAt: ReadonlyMap<string, string>
 ): Printing {
 	const setId = API_SET_CODE_TO_SET_ID[raw.set.code];
 	if (setId === undefined) {
@@ -66,6 +67,11 @@ function normalizePrinting(
 	const thumbhash = thumbhashes.get(raw.id);
 	if (thumbhash === undefined) {
 		throw new Error(`No ThumbHash mirrored for printing ${raw.id} (${raw.collector_number}).`);
+	}
+
+	const revealed = revealedAt.get(raw.id);
+	if (revealed === undefined) {
+		throw new Error(`No reveal date for printing ${raw.id} (${raw.collector_number}).`);
 	}
 
 	const locale = localeForApiSetCode(raw.set.code);
@@ -83,6 +89,7 @@ function normalizePrinting(
 		rarity: raw.rarity,
 		artist: normalizeArtist(raw.artist),
 		sourceImageUrl: raw.source_image_url,
+		revealedAt: revealed,
 		thumbhash
 	};
 }
@@ -91,11 +98,14 @@ export function normalizeCard(
 	raw: NetdeckCard,
 	ctx: SegmentContext,
 	thumbhashes: ReadonlyMap<string, string>,
+	revealedAt: ReadonlyMap<string, string>,
 	faqsBySlug: ReadonlyMap<string, Faq[]> = new Map()
 ): Card {
 	const isLegend = raw.card_type === 'Legend';
 	const { rulesText, flavorText } = splitRulesText(raw.rules_text, ctx);
-	const printings = raw.printings.map((printing) => normalizePrinting(printing, thumbhashes));
+	const printings = raw.printings.map((printing) =>
+		normalizePrinting(printing, thumbhashes, revealedAt)
+	);
 
 	const [defaultPrinting, ...rest] = printings;
 	if (defaultPrinting === undefined) {
@@ -129,10 +139,11 @@ export function normalizeCard(
 export function normalizeCards(
 	raw: readonly NetdeckCard[],
 	thumbhashes: ReadonlyMap<string, string>,
+	revealedAt: ReadonlyMap<string, string>,
 	faqsBySlug: ReadonlyMap<string, Faq[]> = new Map()
 ): Card[] {
 	const ctx = buildSegmentContext(raw);
 	return raw
-		.map((card) => normalizeCard(card, ctx, thumbhashes, faqsBySlug))
+		.map((card) => normalizeCard(card, ctx, thumbhashes, revealedAt, faqsBySlug))
 		.sort((a, b) => a.slug.localeCompare(b.slug));
 }

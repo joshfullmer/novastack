@@ -235,12 +235,31 @@ async function main(): Promise<void> {
 		});
 	}
 
+	// A printing keeps the date of the first snapshot that carried it; only a printing absent from
+	// the committed snapshot is stamped today. With no committed snapshot at all (a first run) that
+	// would be everything — which is the honest answer, there being no earlier one to defer to.
+	const revealedAt = new Map<string, string>(
+		(previous?.cards ?? []).flatMap((card) =>
+			card.printings.map((printing) => [printing.id, printing.revealedAt])
+		)
+	);
+	const today = new Date().toISOString().slice(0, 10);
+	let newPrintings = 0;
+	for (const { id } of printings)
+		if (!revealedAt.has(id)) {
+			revealedAt.set(id, today);
+			newPrintings += 1;
+		}
+
 	const { cards, generalFaqs } = await stage('Normalizing', (step) => {
 		const normalized = {
-			cards: normalizeCards(raw, thumbhashes, groupFaqsByCardSlug(rawFaqs)),
+			cards: normalizeCards(raw, thumbhashes, revealedAt, groupFaqsByCardSlug(rawFaqs)),
 			generalFaqs: normalizeGeneralFaqs(rawFaqs)
 		};
-		step.note(`${normalized.cards.length} cards`);
+		step.note(
+			`${normalized.cards.length} cards` +
+				(newPrintings > 0 ? ` · ${newPrintings} newly revealed (${today})` : '')
+		);
 		return normalized;
 	});
 

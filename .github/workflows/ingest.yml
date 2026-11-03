@@ -1,4 +1,4 @@
-name: Weekly ingest
+name: Daily ingest
 
 # Re-runs `pnpm ingest` and opens a PR if the snapshot moved, so drift arrives as a reviewable
 # diff with no cadence to remember. The dataset is *not* stable — it moved 131 → 133 cards and
@@ -6,12 +6,16 @@ name: Weekly ingest
 #
 # This is also the backstop for the one unresolved question about the source API: whether the
 # `render-{hash}` in an image URL rotates when art is re-rendered. If it does not, a hash-diff
-# heuristic would silently miss updated art — a full weekly re-ingest catches it anyway.
+# heuristic would silently miss updated art — a full scheduled re-ingest catches it anyway.
+#
+# Daily rather than weekly because ingest is also where a printing's `revealedAt` is stamped: the
+# date is the first run that saw it, so the cadence *is* the resolution of the "Reveal date" sort.
+# Quiet days cost seconds — the check below is ~150 detail requests and no image traffic.
 
 on:
   schedule:
-    # Mondays, 07:00 UTC.
-    - cron: '0 7 * * 1'
+    # Every day, 07:00 UTC.
+    - cron: '0 7 * * *'
   workflow_dispatch:
 
 permissions:

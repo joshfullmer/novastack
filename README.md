@@ -152,12 +152,12 @@ leaves the snapshot byte-identical and produces no diff.
 
 ### Let it happen on a schedule
 
-The **Weekly ingest** workflow runs every Monday, and it **checks before it acts**: if
+The **Daily ingest** workflow runs every day, and it **checks before it acts**: if
 `ingest:check` reports nothing new, the run stops there in seconds. Only when data has actually
 moved does it run the full ingest, verify it, and open a PR.
 
 That gate earns its keep because `mirror/` is gitignored, so a fresh runner has neither the
-originals nor the manifest that let ingest skip unchanged art. Without it, every Monday would
+originals nor the manifest that let ingest skip unchanged art. Without it, every day would
 re-download 47 MB and re-encode all 1,167 derivatives to produce, usually, no change at all —
 and any difference in `sharp`'s output bytes would land as 1,167 changed binary files in a pull
 request that changed nothing. When the gate does open, `mirror/` is restored from the Actions

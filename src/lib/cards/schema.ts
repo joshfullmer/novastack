@@ -113,6 +113,15 @@ export const PrintingSchema = v.object({
 	rarity: RaritySchema,
 	artist: v.pipe(v.string(), v.nonEmpty()),
 	sourceImageUrl: v.pipe(v.string(), v.nonEmpty()),
+	/**
+	 * `YYYY-MM-DD` (UTC) of the first ingest that saw this printing. The API exposes no date, so
+	 * this is stamped by us and carried forward from the previous snapshot by printing id — it
+	 * says when a printing *reached the dataset*, to the resolution of the ingest cadence (daily),
+	 * not when it was announced. Printings that were in the first snapshot, or whose history
+	 * predates it, carry that snapshot's date. Never recomputed: rewriting it would reorder every
+	 * "newest first" view.
+	 */
+	revealedAt: v.pipe(v.string(), v.isoDate()),
 	/** ThumbHash, base64. ~25 bytes; carries alpha, which every card image has. */
 	thumbhash: v.pipe(v.string(), v.nonEmpty())
 });

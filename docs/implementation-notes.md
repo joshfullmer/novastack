@@ -182,8 +182,8 @@ SvelteKit throws on `url.searchParams` during prerendering. That is not an obsta
 - **`pnpm ingest:data`** skips images and reuses the mirrored ThumbHashes, for data-only reruns.
 - **`generatedAt` records when the data last _changed_, not when ingest last ran.** Verified: two
   consecutive `pnpm ingest` runs produce byte-identical `cards.json` and `landing.json`, and
-  re-fetch zero images. Without this, every weekly run would rewrite the timestamp, and §2.7's
-  "opens a PR if the snapshot changed" would open one every Monday regardless — a PR that says
+  re-fetch zero images. Without this, every scheduled run would rewrite the timestamp, and §2.7's
+  "opens a PR if the snapshot changed" would open one every day regardless — a PR that says
   nothing changed is a PR nobody reads.
 - **Node runs the ingest scripts directly.** Node 24 strips TypeScript natively, so there is no
   build step and no `tsx`. The consequence is that anything `scripts/` imports must use `.ts`
@@ -212,5 +212,5 @@ The spec's own open questions stand, minus the two this build answered by choosi
    the flavour was misfiled inside `rules_text` and there are 5 cards' worth of it.
 3. **Loading and error states** beyond the zero-result case and a styled 404.
 4. **Format rotation.** Still no cycle data in the source API.
-5. **Whether the image render hash rotates.** The weekly ingest is the backstop; it has not been
+5. **Whether the image render hash rotates.** The scheduled ingest is the backstop; it has not been
    observed changing yet because it has only run once.

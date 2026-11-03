@@ -19,6 +19,14 @@ collector number, rarity, and artist. A Card has two to fourteen Printings. Pure
 Printing ever changes how a Card plays.
 _Avoid_: variant, version, edition, art
 
+**Reveal Date**:
+The day (UTC) a Printing first reached the dataset — stamped by our own ingest, because the source API
+exposes no date. Carried forward by printing id and never recomputed. Its resolution is the ingest
+cadence (daily), and it says when we _saw_ a Printing, not when the publisher announced it. A Card's
+Reveal Date is its earliest Printing's, so a later reprint doesn't make an old Card new. Printings
+that predate the first snapshot carry that snapshot's date.
+_Avoid_: release date, added date, created date
+
 **Default Printing**:
 The Printing shown for a Card when nobody has chosen one. Supplied by the source data, not by
 us; always the first entry in a Card's Printings.

@@ -29,6 +29,7 @@ export function makePrinting(overrides: Partial<Printing> = {}): Printing {
 		rarity: 'Common',
 		artist: 'Test Artist',
 		sourceImageUrl: `https://example.invalid/${id}.webp`,
+		revealedAt: '2026-08-21',
 		thumbhash: 'AAAAAAAA',
 		...overrides
 	};
@@ -123,6 +124,11 @@ export function makeNetdeckCard(overrides: Partial<NetdeckCard> = {}): NetdeckCa
 /** Every printing in a raw fixture, mapped to a placeholder ThumbHash. */
 export function thumbhashesFor(cards: readonly NetdeckCard[]): Map<string, string> {
 	return new Map(cards.flatMap((card) => card.printings.map((p) => [p.id, 'AAAAAAAA'])));
+}
+
+/** Every printing in a raw fixture, mapped to a placeholder reveal date. */
+export function revealDatesFor(cards: readonly NetdeckCard[]): Map<string, string> {
+	return new Map(cards.flatMap((card) => card.printings.map((p) => [p.id, '2026-08-21'])));
 }
 
 export function makeFaq(overrides: Partial<Faq> = {}): Faq {

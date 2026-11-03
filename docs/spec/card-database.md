@@ -135,6 +135,12 @@ rule_, so each gets an assertion.
 | RAM per Legend  | max `ramProvided` across Legends → `2`                                                        | `ramProvided` is **uniform** across Legends   |
 | Stats constant  | card / printing / set counts, for the landing page                                            | —                                             |
 
+**Reveal dates.** The API carries no date, so ingest stamps `Printing.revealedAt` (`YYYY-MM-DD`,
+UTC): a printing present in the previous committed snapshot keeps its date, an unseen one gets
+today's. Backfilled once from the commit history of `cards.json`; the 418 printings in the first
+snapshot all carry its date. The sort surface is "Reveal date" (newest first), which dates a Card by
+its earliest printing and breaks same-day ties on the printing's `key`, numerically.
+
 **Printed Set Identifier map.** Curated, because the API does not expose it — `set.code` is a
 slugified set _name_. The printed form is `<Category> - <Set Code> [<Cycle>]`.
 
@@ -183,9 +189,9 @@ Two workflows:
 1. **Schema gate** — parses the committed `cards.json` against the schema and **blocks the merge** on
    failure. Because the snapshot is a static committed artifact, passing here means it passes
    everywhere, forever.
-2. **Weekly ingest** — runs `pnpm ingest` and opens a PR if the snapshot changed. Drift arrives as a
+2. **Daily ingest** — runs `pnpm ingest` and opens a PR if the snapshot changed. Drift arrives as a
    reviewable diff with no cadence to remember. This is also the backstop for notes §8's open
-   question about whether the image render hash rotates: a full weekly re-ingest catches changes a
+   question about whether the image render hash rotates: a full scheduled re-ingest catches changes a
    hash-diff heuristic would miss.
 
 The dataset is **not stable** — it moved 131 → 133 cards and 385 → 389 printings within hours on
