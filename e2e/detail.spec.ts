@@ -62,6 +62,18 @@ test.describe('a card page', () => {
 		}
 	});
 
+	test("lists each shown printing's reveal date", async ({ page }) => {
+		const v = card('v-streetkid');
+		await live(page, '/cards/v-streetkid');
+
+		const shown = v.printings.filter((printing) => printing.locale === v.printings[0].locale);
+		const rows = chooser(page).locator('dt', { hasText: 'Revealed' });
+		await expect(rows).toHaveCount(shown.length);
+		for (const [index, printing] of shown.entries()) {
+			await expect(chooser(page).nth(index)).toContainText(printing.revealedAt);
+		}
+	});
+
 	test('zooms the art to fit the viewport, and Esc, a click and Back all close it', async ({
 		page
 	}) => {

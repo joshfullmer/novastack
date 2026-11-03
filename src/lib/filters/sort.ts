@@ -12,10 +12,10 @@
  * than discovered.
  */
 import type { Dataset } from '#lib/cards/dataset.js';
-import type { Card } from '#lib/cards/schema.js';
+import type { Card, Printing } from '#lib/cards/schema.js';
 import type { Match } from './predicate.js';
 
-export const SORT_KEYS = ['default', 'cost', 'power', 'name'] as const;
+export const SORT_KEYS = ['default', 'cost', 'power', 'name', 'revealed'] as const;
 export type SortKey = (typeof SORT_KEYS)[number];
 
 export const SORT_DIRECTIONS = ['asc', 'desc'] as const;
@@ -29,7 +29,17 @@ export const SORT_LABELS: Record<SortKey, string> = {
 	default: 'Color, type, cost',
 	cost: 'Cost',
 	power: 'Power',
-	name: 'Name'
+	name: 'Name',
+	revealed: 'Reveal date'
+};
+
+/** The direction a key opens in. "Reveal date" is a question about what's new, so newest first. */
+export const SORT_FIRST_DIRECTION: Record<SortKey, SortDirection> = {
+	default: 'asc',
+	cost: 'asc',
+	power: 'asc',
+	name: 'asc',
+	revealed: 'desc'
 };
 
 /**
@@ -53,6 +63,17 @@ function compareNames(a: Card, b: Card): number {
 	return a.name.localeCompare(b.name);
 }
 
+/**
+ * The printing a Card was first revealed with — the earliest `revealedAt`, the earlier-listed
+ * printing winning a tie so the Default Printing stands for its own day. A Card is as new as its
+ * oldest printing: a later reprint doesn't make it a fresh reveal.
+ */
+function firstRevealed(card: Card): Printing {
+	return card.printings.reduce((first, printing) =>
+		printing.revealedAt < first.revealedAt ? printing : first
+	);
+}
+
 export function compareCards(dataset: Dataset, sort: Sort): (a: Card, b: Card) => number {
 	const rank = <T>(map: ReadonlyMap<T, number>, value: T) =>
 		map.get(value) ?? Number.MAX_SAFE_INTEGER;
@@ -70,6 +91,18 @@ export function compareCards(dataset: Dataset, sort: Sort): (a: Card, b: Card) =
 			return (a, b) => compareNullable(a.power, b.power, sort.direction) || compareNames(a, b);
 		case 'name':
 			return (a, b) => (sort.direction === 'asc' ? compareNames(a, b) : compareNames(b, a));
+		case 'revealed':
+			// Within a day, collector-number order — the order a reveal is announced in. `key` leads
+			// with the Set, which a Collector Number alone can't be trusted without.
+			return (a, b) => {
+				const [first, second] = [firstRevealed(a), firstRevealed(b)];
+				const byDate = first.revealedAt.localeCompare(second.revealedAt);
+				return (
+					(sort.direction === 'asc' ? byDate : -byDate) ||
+					first.key.localeCompare(second.key, 'en', { numeric: true }) ||
+					compareNames(a, b)
+				);
+			};
 	}
 }
 

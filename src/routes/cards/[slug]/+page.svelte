@@ -338,6 +338,10 @@
 								<dt class="text-muted">Artist</dt>
 								<dd class="text-right text-body">{entry.artist}</dd>
 							</div>
+							<div class="flex justify-between gap-2">
+								<dt class="text-muted">Revealed</dt>
+								<dd class="font-mono text-body">{entry.revealedAt}</dd>
+							</div>
 						</dl>
 					</button>
 					<!-- Both rows sit outside the chooser `<button>` on purpose: a stepper or a link nested in a

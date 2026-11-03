@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { createDataset } from '#lib/cards/dataset.js';
-import { makeCard, makeSnapshot } from '#lib/cards/fixtures.js';
+import { makeCard, makePrinting, makeSnapshot } from '#lib/cards/fixtures.js';
 import type { Card } from '#lib/cards/schema.js';
 import { evaluate } from './predicate.js';
 import { compareCards, DEFAULT_SORT, sortMatches, type Sort } from './sort.js';
@@ -81,6 +81,46 @@ describe('selectable sorts', () => {
 			makeCard({ slug: 'c-1', cost: 1, name: 'C' })
 		];
 		expect(order(costs, { key: 'cost', direction: 'asc' })).toEqual(['c-1', 'c-9', 'c-null']);
+	});
+});
+
+describe('the reveal date sort', () => {
+	const revealed = (slug: string, revealedAt: string, collectorNumber = '001') =>
+		makeCard({
+			slug,
+			name: slug,
+			printings: [makePrinting({ revealedAt, collectorNumber })]
+		});
+
+	it('puts the newest reveal first by default direction and the oldest first ascending', () => {
+		const cards = [revealed('old', '2026-08-21'), revealed('new', '2026-11-03')];
+		expect(order(cards, { key: 'revealed', direction: 'desc' })).toEqual(['new', 'old']);
+		expect(order(cards, { key: 'revealed', direction: 'asc' })).toEqual(['old', 'new']);
+	});
+
+	it('orders a single day by collector number, numerically', () => {
+		const cards = [
+			revealed('c-10', '2026-11-03', '010'),
+			revealed('c-2', '2026-11-03', '002'),
+			revealed('c-1', '2026-11-03', '001')
+		];
+		expect(order(cards, { key: 'revealed', direction: 'asc' })).toEqual(['c-1', 'c-2', 'c-10']);
+	});
+
+	it("dates a card by its oldest printing, so a later reprint doesn't make it new", () => {
+		const reprinted = makeCard({
+			slug: 'reprinted',
+			name: 'reprinted',
+			printings: [
+				makePrinting({ revealedAt: '2026-11-03', collectorNumber: '050' }),
+				makePrinting({ revealedAt: '2026-08-21', collectorNumber: '010' })
+			]
+		});
+		const fresh = revealed('fresh', '2026-10-01');
+		expect(order([reprinted, fresh], { key: 'revealed', direction: 'desc' })).toEqual([
+			'fresh',
+			'reprinted'
+		]);
 	});
 });
 

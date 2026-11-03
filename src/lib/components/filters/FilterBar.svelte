@@ -30,7 +30,13 @@
 	import type { ColorBudget } from '#lib/filters/budget.js';
 	import type { FacetEdit } from '#lib/filters/query-edit.js';
 	import type { ParseWarning } from '#lib/query/index.js';
-	import { SORT_KEYS, SORT_LABELS, type Sort, type SortKey } from '#lib/filters/sort.js';
+	import {
+		SORT_FIRST_DIRECTION,
+		SORT_KEYS,
+		SORT_LABELS,
+		type Sort,
+		type SortKey
+	} from '#lib/filters/sort.js';
 	import { slide } from 'svelte/transition';
 	import { COLOR_CHIP_OFF, COLOR_CHIP_ON } from '../color.js';
 	import ChipGroup from './ChipGroup.svelte';
@@ -100,7 +106,11 @@
 
 	function setSort(key: SortKey) {
 		const direction: Sort['direction'] =
-			sort.key === key && key !== 'default' && sort.direction === 'asc' ? 'desc' : 'asc';
+			sort.key === key && key !== 'default'
+				? sort.direction === 'asc'
+					? 'desc'
+					: 'asc'
+				: SORT_FIRST_DIRECTION[key];
 		onSort({ key, direction });
 	}
 

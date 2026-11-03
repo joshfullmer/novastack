@@ -20,8 +20,12 @@
 	 * unreachable as a *general* sort option (§4.5's note), but scoped to one already-fixed set
 	 * this is exactly the natural order a set's own checklist is printed in, so it's a local sort
 	 * here rather than an extension to the shared `Sort` type — `collectorNumberSortKey`
-	 * (`derive.ts`) is what reads through the `β` prefix and letter suffixes.
+	 * (`derive.ts`) is what reads through the `β` prefix and letter suffixes. `?sort=revealed`
+	 * swaps that for **newest reveal first** (`Printing.revealedAt`), ties staying in Collector
+	 * Number order. It is applied last, after "Hide duplicates": collapsing keeps the first
+	 * occurrence, which has to still be the lowest-numbered Printing, not the newest.
 	 *
+
 	 * **Retail/Beta tabs, Locale tabs, and a "one per card" toggle** — in `?treatment=`,
 	 * `?locale=`, `?unique=`. Beta is a Kickstarter-only phenomenon of Set 1's sets, and it's
 	 * detected from the data (any `β` Collector Number present), not hardcoded to those sets by
@@ -56,6 +60,8 @@
 	const TREATMENT_PARAM = 'treatment';
 	const LOCALE_PARAM = 'locale';
 	const UNIQUE_PARAM = 'unique';
+	const SORT_PARAM = 'sort';
+	const REVEALED_SORT = 'revealed';
 
 	let { data } = $props();
 
@@ -74,6 +80,14 @@
 		const [aNum, aText] = collectorNumberSortKey(a.printing.collectorNumber);
 		const [bNum, bText] = collectorNumberSortKey(b.printing.collectorNumber);
 		return aNum - bNum || aText.localeCompare(bText);
+	}
+
+	/** Newest reveal first. `Array.prototype.sort` is stable, so a day keeps Collector Number order. */
+	function byNewestReveal(
+		a: { printing: { revealedAt: string } },
+		b: { printing: { revealedAt: string } }
+	): number {
+		return b.printing.revealedAt.localeCompare(a.printing.revealedAt);
 	}
 
 	const allResults = $derived(
@@ -121,7 +135,16 @@
 	);
 	const collapsed = $derived(canCollapse && currentUrl().searchParams.has(UNIQUE_PARAM));
 
-	const results = $derived(collapsed ? collapseToUniqueCards(localeFiltered) : localeFiltered);
+	// Only worth showing where it would do something — a set revealed in one go has one date.
+	const canSortByReveal = $derived(
+		new Set(localeFiltered.map((match) => match.printing.revealedAt)).size > 1
+	);
+	const newestFirst = $derived(
+		canSortByReveal && currentUrl().searchParams.get(SORT_PARAM) === REVEALED_SORT
+	);
+
+	const checklist = $derived(collapsed ? collapseToUniqueCards(localeFiltered) : localeFiltered);
+	const results = $derived(newestFirst ? checklist.toSorted(byNewestReveal) : checklist);
 	const shownCardCount = $derived(new Set(results.map((match) => match.card.slug)).size);
 
 	// Client-side, not in `load`: this page is edge-cached with `s-maxage`, so per-user data in
@@ -171,10 +194,18 @@
 		void goto(next, { shallow: true, replace: true });
 	}
 
+	function chooseSort(sort: string) {
+		const next = new URL(currentUrl().href);
+		// Collector Number is the absent state — one canonical URL for the common case.
+		if (sort === REVEALED_SORT) next.searchParams.set(SORT_PARAM, REVEALED_SORT);
+		else next.searchParams.delete(SORT_PARAM);
+		void goto(next, { shallow: true, replace: true });
+	}
+
 	// A Main Set has its own logo; any other set has no comparable asset, so its first card
-	// (Collector-Number order, same as the grid below) stands in instead.
+	// (Collector-Number order, regardless of the sort chosen) stands in instead.
 	const ogImage = $derived(
-		logo ?? (results[0] ? cardImageUrl(results[0].printing.id, 733) : undefined)
+		logo ?? (checklist[0] ? cardImageUrl(checklist[0].printing.id, 733) : undefined)
 	);
 </script>
 
@@ -297,6 +328,20 @@
 					>
 						Hide duplicates
 					</button>
+				{/if}
+
+				{#if canSortByReveal}
+					<label class="flex items-center gap-2 text-sm text-muted">
+						Sort by
+						<select
+							value={newestFirst ? REVEALED_SORT : ''}
+							onchange={(event) => chooseSort(event.currentTarget.value)}
+							class="rounded border border-edge bg-void px-2 py-1 text-sm text-body"
+						>
+							<option value="">Collector number</option>
+							<option value={REVEALED_SORT}>Reveal Date</option>
+						</select>
+					</label>
 				{/if}
 			</div>
 		</div>
