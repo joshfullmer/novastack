@@ -27,14 +27,16 @@ jobs:
       - name: Typecheck
         run: pnpm check
 
+      # Before the unit tests, not after: vitest's `client` project runs component tests in a real
+      # Chromium, so the gate below cannot start without the browser.
+      - name: Install Playwright browsers
+        run: pnpm exec playwright install --with-deps chromium
+
       # The gate: parses the committed snapshot against the schema, asserts the two mandatory
       # fixtures survive normalization, and checks that every printing the data promises has all
       # three mirrored image tiers on disk.
       - name: Schema gate and unit tests
         run: pnpm test:unit --run
-
-      - name: Install Playwright browsers
-        run: pnpm exec playwright install --with-deps chromium
 
       - name: End-to-end tests
         run: pnpm test:e2e

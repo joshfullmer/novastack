@@ -74,6 +74,12 @@ jobs:
         if: steps.check.outputs.changed == 'true'
         run: pnpm ingest
 
+      # vitest's `client` project runs component tests in a real Chromium; without this the verify
+      # step below fails on every run that has new data, and the PR is never opened.
+      - name: Install Playwright browsers
+        if: steps.check.outputs.changed == 'true'
+        run: pnpm exec playwright install --with-deps chromium
+
       - name: Verify the new snapshot
         if: steps.check.outputs.changed == 'true'
         run: pnpm test:unit --run
