@@ -8464,6 +8464,69 @@
 			"tournamentLegal": true
 		},
 		{
+			"cardType": "Legend",
+			"classifications": [
+				"Maine's Crew",
+				"Merc",
+				"Netrunner"
+			],
+			"color": "Blue",
+			"cost": null,
+			"eddiable": true,
+			"faqs": [],
+			"flavorText": null,
+			"keywords": [
+				"Call"
+			],
+			"name": "Lucyna Kushinada: Fresh Beginnings",
+			"power": null,
+			"printings": [
+				{
+					"artist": "Pandart Studio",
+					"collectorNumber": "004a",
+					"id": "9b4231da-b5e9-44ee-9de9-75ba6a6e6de6",
+					"key": "PRM01-004a",
+					"locale": "en",
+					"rarity": "Nova Rare",
+					"revealedAt": "2026-11-09",
+					"setId": "PRM01",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/9b4231da-b5e9-44ee-9de9-75ba6a6e6de6/render-msyiij67.webp",
+					"thumbhash": "nUiGFAYPKvhX5nWpkTMHOoWAgYGICBiIAA=="
+				},
+				{
+					"artist": "Pandart Studio",
+					"collectorNumber": "004b",
+					"id": "0cf807a8-4131-426a-a67d-4d03e372b05e",
+					"key": "PRM01-004b",
+					"locale": "en",
+					"rarity": "Nova Rare",
+					"revealedAt": "2026-11-09",
+					"setId": "PRM01",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/0cf807a8-4131-426a-a67d-4d03e372b05e/render-msyiijlo.webp",
+					"thumbhash": "nUiGFAYPKvhX5nWpkTMHOoWAgYGICBiIAA=="
+				}
+			],
+			"ramProvided": 2,
+			"ramRequired": null,
+			"rawRulesText": "{Call}: Draw 1. If you control 2 or more min Gigs, draw 2 instead.",
+			"rulesText": [
+				[
+					{
+						"keyword": "Call",
+						"kind": "keyword",
+						"text": "{Call}"
+					},
+					{
+						"kind": "text",
+						"text": ": Draw 1. If you control 2 or more min Gigs, draw 2 instead."
+					}
+				]
+			],
+			"slug": "lucyna-kushinada-fresh-beginnings",
+			"subtitle": "Fresh Beginnings",
+			"tournamentLegal": true
+		},
+		{
 			"cardType": "Unit",
 			"classifications": [
 				"Ganger",
@@ -19171,7 +19234,7 @@
 			"sortOrder": 2500
 		}
 	],
-	"generatedAt": "2026-10-29T22:05:23.343Z",
+	"generatedAt": "2026-11-09T08:44:16.314Z",
 	"ramPerLegend": 2,
 	"sets": [
 		{
@@ -19316,7 +19379,7 @@
 		},
 		{
 			"announcement": null,
-			"cardCount": 3,
+			"cardCount": 4,
 			"category": "PRM01",
 			"cycle": null,
 			"id": "PRM01",
@@ -19324,7 +19387,7 @@
 			"name": "Set 1 Promos",
 			"parentId": "MS01-WNC",
 			"printed": "PRM01",
-			"printingCount": 4,
+			"printingCount": 6,
 			"releaseWindow": null,
 			"setCode": null
 		},
@@ -19372,8 +19435,8 @@
 		}
 	],
 	"stats": {
-		"cards": 151,
-		"printings": 860,
+		"cards": 152,
+		"printings": 862,
 		"sets": 1
 	}
 }
