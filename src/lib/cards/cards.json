@@ -7963,7 +7963,7 @@
 				{
 					"answer": "Yes.",
 					"id": "22d75516-cd32-4b86-bce5-915d075c3ec3",
-					"question": "When resolving the [Attack] effect, do you have to look at all your current friendly face-down Legends?",
+					"question": "When resolving the [Attack] effect, do you have to look at a friendly face-down Legend?",
 					"sortOrder": 100
 				}
 			],
@@ -19234,7 +19234,7 @@
 			"sortOrder": 2500
 		}
 	],
-	"generatedAt": "2026-11-09T08:44:16.314Z",
+	"generatedAt": "2026-11-09T17:15:47.835Z",
 	"ramPerLegend": 2,
 	"sets": [
 		{
