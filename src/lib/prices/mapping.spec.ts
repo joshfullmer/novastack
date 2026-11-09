@@ -272,10 +272,10 @@ describe('mapCardmarket', () => {
 		expect(report.expansions.get(WNC_BETA_EXPANSION)).toEqual({ ours: 1, found: 0 });
 	});
 
-	it('skips a run with no expansion at all — retail and French', () => {
-		const retail = cardWith('Chrome Fang', { collectorNumber: '012' });
+	it('skips a run with no expansion at all — French, and EOR01', () => {
+		const eor = cardWith('Chrome Fang', { setId: 'EOR01-WNC', collectorNumber: '012' });
 		const french = cardWith('Chrome Fang', { collectorNumber: '012', locale: 'fr' });
-		const { quotes, report } = mapCardmarket([retail, french], {
+		const { quotes, report } = mapCardmarket([eor, french], {
 			products: [cmProduct(10, 'Chrome Fang')],
 			prices: [cmRow(10, 1)]
 		});

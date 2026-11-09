@@ -98,12 +98,12 @@ describe('cheapestOffer when Cardmarket could not identify a printing', () => {
 		expect(cheapestOffer(card, quotes, 'cardmarket')?.printing.id).toBe('standard');
 	});
 
-	it('ignores printings in runs Cardmarket does not cover — retail has no expansion', () => {
+	it('ignores printings in runs Cardmarket does not cover — French has no expansion', () => {
 		const withRetail = makeCard({
 			slug: 'chrome-fang',
 			printings: [
 				makePrinting({ id: 'beta', collectorNumber: 'β010' }),
-				makePrinting({ id: 'retail', collectorNumber: '010' })
+				makePrinting({ id: 'french', collectorNumber: '010', locale: 'fr' })
 			]
 		});
 		const quotes = lookup({ beta: cm(1, 50) });
@@ -141,6 +141,7 @@ describe('costToComplete', () => {
 	const ghost = threePrintings('ghost');
 
 	const quotes = lookup({
+		'chrome-fang-retail': cm(10, 400),
 		'chrome-fang-beta': { ...tcg(1, 25), ...cm(11, 20) },
 		'mantis-blades-beta': tcg(2, 1000), // TCGplayer only
 		'ghost-beta': tcg(3, null) // a product with no market

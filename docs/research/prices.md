@@ -433,10 +433,19 @@ the 2026-10-17 source files with every threshold from 2x to 3x, Towerfall was th
 changed and the 61 existing pairings were identical. `Rebecca: Having a Moment` (`PRM01`, two
 printings, one Cardmarket product) stays unjoined: no rule can pair unequal counts.
 
+**Update, 2026-11-09 (retail is on both marketplaces).** Cardmarket's retail expansions appeared on
+2026-10-30 (`6761` WNC 172, `6762` Heist 20, `6763` Embracing Power 20, `6764` Box Toppers 6, `6765`
+Pre-Release Retail 11) and 2026-11-06 (`6952` Judge Promos 3, `6953` Night City Brawl 37, `6954`
+Showdown 5), and are now in `CARDMARKET_EXPANSIONS`. Only WNC, Heist and Embracing Power retail carry
+trends so far; the rest map and price on their own. TCGplayer gained `24928` Pre-Release Retail
+(`PRR02-WNC`) and `24927` Judge Promos (`JDG-WNC`), both 1:1 on collector number. Still unmapped, on
+purpose: Cardmarket `6722` "Alpha" (35 products on its own art, the same kit as TCGplayer `24881`),
+`EOR01` on Cardmarket, `PRM-DD1`/`PRM-DD2`/`NCS01-WNC` on TCGplayer, and every French run.
+
 ### 4.4 Failure modes (what will actually bite)
 
-- **Retail has no price until after 2026-11-06.** Both marketplaces list it as presale; Cardmarket has
-  0 cards. A retail Printing's honest state today is "no market price yet".
+- **Retail prices arrive unevenly.** Both marketplaces listed it as presale until 2026-11-06; some runs
+  still have no market price (see the 2026-11-09 update above). "No market price yet" stays an honest state.
 - **French run: no marketplace has it.** 157 printings (22% of the database) permanently unmappable
   until a French group appears. Do not borrow the English price; they are different products.
 - **Beta vs retail must never be merged.** Same Set Identifier, different groups, different prices
