@@ -27,6 +27,7 @@
 	import DeckExportDialog from '#lib/components/DeckExportDialog.svelte';
 	import DeckImageDialog from '#lib/components/DeckImageDialog.svelte';
 	import DeckCollectionPanel from '#lib/components/DeckCollectionPanel.svelte';
+	import GuideBody from '#lib/components/GuideBody.svelte';
 	import DeckPrice from '#lib/components/DeckPrice.svelte';
 	import type { Card } from '#lib/cards/schema.js';
 	import { COLORS } from '#lib/cards/vocabulary.js';
@@ -592,6 +593,18 @@
 						{/each}
 					</div>
 				</div>
+
+				<!-- The author's Guide (`CONTEXT.md`), under the Legends it is about. Collapsible, because a
+				     long one would otherwise push the cards a screen down; open by default, because
+				     it is the one part of this page the author wrote for you to read. -->
+				{#if data.guide.trim() !== ''}
+					<details open class="mb-4 rounded-md border border-edge bg-surface p-3">
+						<summary class="cursor-pointer text-sm font-medium text-bright select-none"
+							>Guide</summary
+						>
+						<div class="mt-3"><GuideBody source={data.guide} /></div>
+					</details>
+				{/if}
 
 				<!-- Wraps below `sm`: the tabs and the counts-plus-view-toggle do not both fit a phone, and
 				     unwrapped this row pushed the whole page 24px past the screen. Each group is

@@ -1,11 +1,19 @@
 import { error, fail, redirect } from '@sveltejs/kit';
 import * as v from 'valibot';
+import { dataset } from '#lib/cards/index.js';
 import { carryForwardPrintings } from '#lib/decks/carry-printings.js';
 import { deckPath } from '#lib/decks/links.js';
+import { GUIDE_MAX_LENGTH } from '#lib/decks/guide.js';
 import { DeckVersionPayloadSchema } from '#lib/decks/schema.js';
 import { can } from '#lib/entitlements.js';
 import { featuresFor } from '#lib/server/db/entitlements.js';
-import { getDeck, getLatestVersion, renameDeck, saveDeckVersion } from '#lib/server/db/decks.js';
+import {
+	getDeck,
+	getLatestVersion,
+	renameDeck,
+	saveDeckVersion,
+	setDeckGuide
+} from '#lib/server/db/decks.js';
 import { ensureDeckShareCode } from '#lib/server/db/share-codes.js';
 import { readViewPref } from '#lib/server/view-pref.js';
 import type { Actions, PageServerLoad } from './$types';
@@ -50,6 +58,11 @@ export const load: PageServerLoad = async (event) => {
 		shareCode: await ensureDeckShareCode(event.locals.db, deck),
 		deckName: deck.name,
 		payload,
+		/** Card slugs Bookmarked in this deck — filtered to cards that still exist, since a slug can
+		 * outlive the card it named. Read here, written by `./bookmark/+server.ts`, never by Save. */
+		bookmarks: deck.bookmarks.filter((slug) => dataset.bySlug.has(slug)),
+		/** Markdown; `''` for none. Saved with the deck, outside its versioned payload. */
+		guide: deck.guide ?? '',
 		// Shared with the read-only view (`/decks/[id]`) — "how I like browsing a deck's cards"
 		// is one preference, not two.
 		deckView: readViewPref(event.cookies, 'deck-cards-view', ['list', 'gallery'], 'gallery')
@@ -105,6 +118,16 @@ export const actions: Actions = {
 					})
 				: null;
 			toStore = carryForwardPrintings(stored, payload);
+		}
+
+		// The Guide rides along with Save but isn't part of the versioned payload. Absent means this
+		// client doesn't send one, so the stored Guide is left alone rather than cleared.
+		const guide = formData.get('guide');
+		if (typeof guide === 'string') {
+			if (guide.length > GUIDE_MAX_LENGTH) {
+				return fail(400, { message: `The guide is over ${GUIDE_MAX_LENGTH} characters` });
+			}
+			await setDeckGuide(event.locals.db, deck.id, guide.trim() === '' ? null : guide);
 		}
 
 		await saveDeckVersion(event.locals.db, deck.id, toStore);

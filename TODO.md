@@ -1,5 +1,15 @@
 - Combining Chips and Sliders makes things break
 
+## Mobile: pages scroll sideways when they shouldn't
+
+Seen on a phone: some pages need horizontal scrolling where nothing should overflow. Not yet
+audited, so which routes and which elements are unknown. Sweep every route at 390px (and 360px) with
+Playwright, find what is wider than the viewport (`document.documentElement.scrollWidth >
+innerWidth`), and fix the cause rather than clipping with `overflow-x: hidden` on the body. Likeliest
+suspects are fixed-width panels, wide tables and rows, and long unbroken strings (deck and card names,
+share codes). Related, and separate: the Binder spread below, and the deckbuilder's mobile layout
+(`docs/spec/deckbuilder.md`, open question 4).
+
 ## Binders on a phone: a spread is the wrong shape for 390px
 
 A shared Binder now fits the screen from `sm` up — the spread takes its aspect ratio from its own

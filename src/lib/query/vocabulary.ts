@@ -24,6 +24,7 @@ export const FIELD_KINDS = [
 	'treatment',
 	'owned',
 	'copies',
+	'bookmarked',
 	'name',
 	'rules',
 	'text',
@@ -45,6 +46,13 @@ export type FieldSpec = {
 	nullable: boolean;
 	/** The known enum values, in display order, for `value: 'enum'` fields. */
 	enum?: readonly string[];
+	/**
+	 * Only exists where a Deck does — the deck editor. Everywhere else the keyword is not a field at
+	 * all, so it degrades like any other unknown one (spec §6) rather than being a field that
+	 * silently matches nothing. `lookupField` is where that is decided; `parse` opts in with
+	 * `{ deck: true }`.
+	 */
+	deckOnly?: boolean;
 };
 
 export const FIELDS: readonly FieldSpec[] = [
@@ -196,6 +204,20 @@ export const FIELDS: readonly FieldSpec[] = [
 		nullable: false
 	},
 	{
+		/**
+		 * A Card flagged for consideration in *this* Deck (`CONTEXT.md`, Bookmark) — a boolean per
+		 * Card, `yes`/`no`, never null. Deck-only: a Bookmark belongs to a Deck, so outside the editor
+		 * there is nothing for it to mean.
+		 */
+		kind: 'bookmarked',
+		canonical: 'bookmarked',
+		aliases: [],
+		value: 'boolean',
+		comparisons: false,
+		nullable: false,
+		deckOnly: true
+	},
+	{
 		// `name:none`/`name:has` parse but always drop as inapplicable (spec §3.4) — no card
 		// ever has an empty name — so `nullable` is false here, not just syntactically accepted.
 		kind: 'name',
@@ -248,8 +270,10 @@ const KEYWORD_LOOKUP: ReadonlyMap<string, FieldKind> = new Map(
 	)
 );
 
-export function lookupField(keyword: string): FieldKind | null {
-	return KEYWORD_LOOKUP.get(keyword.toLowerCase()) ?? null;
+export function lookupField(keyword: string, deck = false): FieldKind | null {
+	const kind = KEYWORD_LOOKUP.get(keyword.toLowerCase()) ?? null;
+	if (kind === null) return null;
+	return deck || !fieldSpec(kind).deckOnly ? kind : null;
 }
 
 export function fieldSpec(kind: FieldKind): FieldSpec {

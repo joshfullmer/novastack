@@ -94,7 +94,30 @@ export const decks = sqliteTable(
 		 * assigned", which `ensureShareCode` fills on first read — so a row written by an older
 		 * Worker mid-deploy, or missed by the backfill, is never unshareable, just briefly codeless.
 		 */
-		shareCode: text('share_code')
+		shareCode: text('share_code'),
+		/**
+		 * Card slugs Bookmarked in this Deck (`CONTEXT.md`) — the author's "maybe" flags, shown only
+		 * in the editor and never on the public view.
+		 *
+		 * On `decks`, not `deck_versions`, because a Bookmark is not part of the card list: a version
+		 * is what the deck *was* at a save, and a flag toggled while browsing is neither a save nor
+		 * something history should diff. Written by its own endpoint, never by Save, so a toggle
+		 * made in another tab can't be overwritten by a stale payload.
+		 *
+		 * `NOT NULL DEFAULT '[]'` — additive with no backfill, since empty is correct for every row
+		 * that predates it (the `sideboard` precedent above).
+		 */
+		bookmarks: text('bookmarks', { mode: 'json' }).notNull().default([]).$type<string[]>(),
+		/**
+		 * The Guide (`CONTEXT.md`) — Markdown the author writes about playing this deck.
+		 *
+		 * On `decks`, not `deck_versions`, for the same reason `name` is: it is prose about the deck,
+		 * not part of its card list, and a version diff of cards has nothing to say about it. Written
+		 * with Save but outside the versioned payload. Nullable and additive: `NULL` is "no Guide",
+		 * which is what every existing row means. Rendered by `#lib/decks/guide.ts`, never trusted as
+		 * HTML.
+		 */
+		guide: text('guide')
 	},
 	(table) => [
 		index('decks_owner_idx').on(table.ownerId),

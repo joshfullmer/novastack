@@ -400,12 +400,12 @@ grid's own inner scroll and then discovering an outer page scroll was also neede
 
 ## 7. Routes
 
-| route                 | rendering | contents                                                                                 |
-| --------------------- | --------- | ---------------------------------------------------------------------------------------- |
-| `/decks`              | dynamic   | Tabbed: **My Decks** (§8) and **Explore** (§9)                                           |
-| `/decks/new`          | dynamic   | Creates a draft deck, redirects to `/decks/[id]`                                         |
-| `/decks/[id]`         | dynamic   | The deckbuilder screen (§5) — owner sees an editor, others a viewer, gated by visibility |
-| `/decks/[id]/@[user]` | —         | Not a real route; a user's public decks are a filtered view of §9, not a new surface     |
+| route                 | rendering | contents                                                                                             |
+| --------------------- | --------- | ---------------------------------------------------------------------------------------------------- |
+| `/decks`              | dynamic   | Tabbed: **My Decks** (§8) and **Explore** (§9)                                                       |
+| `/decks/new`          | client    | The builder on a local draft (§10.5); its form action creates an empty deck, then `/decks/[id]/edit` |
+| `/decks/[id]`         | dynamic   | The deckbuilder screen (§5) — owner sees an editor, others a viewer, gated by visibility             |
+| `/decks/[id]/@[user]` | —         | Not a real route; a user's public decks are a filtered view of §9, not a new surface                 |
 
 Auth routes (`/auth/login`, `/auth/logout`) use Better Auth's session/email-password logic from
 the `sv add better-auth` scaffold, but with **custom-styled pages matching this site's own visual
@@ -455,6 +455,92 @@ decks, so this is part of the destination even though it wasn't in the original 
   by owner, not a new surface), the 3 Legend portraits, main-deck card count, like count with a
   like toggle for signed-in viewers, creation date. No visibility badge — the tab itself is
   filtered to public decks only.
+
+---
+
+## 10. Editor additions (2026-11)
+
+From a review of RiftAtlas's builder. Filter applied: **builder-adjacent only** — features that
+sharpen deck construction or build on the Collection. Their AI Fit, tournament/event data, sealed
+and simulator are out; so are version restore, filter-chip facet counts, resizable panels and the
+alt-art count. Order of build is the order below.
+
+### 10.1 Ownership in the editor
+
+- The editor loads the viewer's Owned Counts, so `owned:` works in **both** search boxes (§5.1).
+- Each tile shows its **Card-level** owned count — every Printing rolled up, the same rule as
+  **Missing** (`CONTEXT.md`).
+- The deck panel shows a **Missing** total linking into the existing Wantlist flow.
+- **Ownership is information, never a gate.** A card you own too few of is never hidden, dimmed or
+  disabled; a deck of cards you don't have yet is a normal thing to build. (Contrast the ≤3-copy
+  limit in §5.1, which does disable.)
+- Signed out (§10.5) there is no Collection, so none of this renders.
+
+### 10.2 Bookmarks
+
+A **Bookmark** (`CONTEXT.md`) is a per-Deck flag on a Card: "consider this for _this_ deck".
+
+- **No pile, no deck-panel space.** It is a ribbon hanging from the top edge of each catalog tile (quiet until the tile is hovered or focused, always on once set; the tail lengthens on hover) — a physical mark rather than an icon —, on any Card including
+  Legends, and a filter on the card-selection side.
+- **Filter:** a `bookmarked:` query field (`yes`/`no`) and a bookmark chip beside each search box that
+  writes it in and out of the query using the existing chip write-back (`query-edit.ts`), so it
+  composes (`bookmarked:yes c:calm cost<=3`).
+- **Editor-only.** The field exists only where a Deck does. On `/cards` it is an unknown field and
+  degrades like any other. With no Bookmarks, `bookmarked:yes` is an empty grid, as `owned:yes` is
+  for an empty Collection.
+- **Written immediately**, not on Save: a nullable JSON column on `decks` (additive, no backfill),
+  its own endpoint, an optimistic toggle that rolls back on failure. Bookmarks are **not** in the
+  Save payload — Save would otherwise overwrite a toggle made in another tab — and "Discard changes"
+  does not undo them: they are not a change to the deck.
+- Duplicate carries them. `/d/[code]` never shows them.
+
+### 10.3 Drag to add
+
+Native HTML5 drag from a catalog tile (the `/decks` folder drag is the precedent). Click-to-add stays
+the primary path and is the only one on touch. Drop zones:
+
+- **Main Deck** and **Sideboard** — a drop onto the Sideboard adds there regardless of the
+  `Deck | Sideboard` toggle (§5.1); a drop onto the Main Deck likewise.
+- **Legend slots**, for Legend tiles.
+- Dragging a deck or sideboard row **onto the card grid** removes **one copy**, like its `−` — not
+  the whole entry, so a stray drag costs nothing that one click can't put back.
+- Dragging a row **onto the other pile** moves one copy. Moving keeps the copy count, so it skips
+  the copy limit, but still honours a full sideboard.
+- A tile at 3 copies is not draggable, matching its disabled state.
+
+The Binder's pointer-drag (`pocket-drag.svelte.ts`) is the fallback if native drag doesn't feel
+right.
+
+### 10.4 Guide
+
+The **Guide** (`CONTEXT.md`) is Markdown prose about playing the deck.
+
+- A nullable text column on `decks`, additive, **written on Save** with the name and visibility. Not
+  in `deck_versions`: it isn't part of the card list and would only add noise to the diff.
+- Edited in the editor with a **Preview** tab; shown on `/d/[code]` under the Legends for public and
+  unlisted decks. A private deck's Guide is owner-only, like the deck.
+- Rendered through a sanitizing Markdown pipeline — this is user content on a public page.
+
+### 10.5 Signed-out local draft
+
+- **`/decks/new` is the front door.** `GET /decks/new` renders the **same editor** (`DeckEditor`) over a
+  `localStorage` draft, labelled "Local draft". It is client-rendered (`ssr = false`) because the
+  draft only exists in the browser. Signed out, `/decks` redirects there instead of to login.
+- The editor is one component with two hosts: `/decks/[id]/edit` (a saved deck) and `/decks/new` (a
+  draft). The presence of `DraftControls` is the mode. In draft mode the name and Bookmarks stay local,
+  every change is written through to `localStorage` (validated on read — never trusted as typed), and
+  "Discard draft" starts over.
+- **Save while signed out** sets a short-lived `resume-draft` cookie and goes to login. Every sign-in
+  path (password, registration, Discord) ends at `/decks`, which spends the cookie and redirects to
+  `/decks/new?finish`; there the draft is saved without another click. A `?redirectTo` was rejected:
+  none of the four sign-in paths carries one.
+- **Save while signed in** posts the draft (entries, Legends, sideboard, name, Bookmarks, Guide) to
+  `POST /decks/new/create`, which validates it like any boundary, strips Printings unless the user may
+  choose them, creates the deck, and returns its URL. The local copy is then cleared.
+- `+ New deck` on `/decks` still makes an empty account-backed deck — now as the default **form
+  action** of `/decks/new`, because a browser form POST to a route that has a page is routed to the
+  page, never to a `+server.ts` beside it.
+- Signed out: no Collection request (so no ownership, no Missing), and no Printing picker.
 
 ---
 

@@ -18,7 +18,7 @@ import type { NumericRange } from './chips.js';
 import type { CountField, Predicate } from './predicate.js';
 import { compileNode, type CompileContext } from '#lib/query/compile.js';
 import { formatLegendsValue } from '#lib/query/legends-value.js';
-import { parse, type Node } from '#lib/query/parser.js';
+import { parse, type Node, type ParseOptions } from '#lib/query/parser.js';
 
 export type FacetEdit =
 	| { facet: 'color'; values: readonly Color[] }
@@ -29,6 +29,8 @@ export type FacetEdit =
 	| { facet: 'set'; values: readonly string[] }
 	| { facet: 'eddiable'; value: boolean | null }
 	| { facet: 'tournamentLegal'; value: boolean | null }
+	/** Deck editor only — `null` removes the clause. */
+	| { facet: 'bookmarked'; value: boolean | null }
 	| { facet: 'cost' | 'power' | 'ram'; range: NumericRange }
 	/**
 	 * Ownership as the three states a segmented control offers, rather than a `NumericRange`:
@@ -53,6 +55,7 @@ type FacetTarget =
 				| 'rarity'
 				| 'eddiable'
 				| 'tournamentLegal'
+				| 'bookmarked'
 				| 'ramBudget';
 	  }
 	| { kind: 'numeric'; field: CountField };
@@ -101,6 +104,8 @@ function clauseFor(edit: FacetEdit, dataset: Dataset): string | null {
 			return edit.value === null ? null : `eddiable:${edit.value}`;
 		case 'tournamentLegal':
 			return edit.value === null ? null : `legal:${edit.value}`;
+		case 'bookmarked':
+			return edit.value === null ? null : `bookmarked:${edit.value ? 'yes' : 'no'}`;
 		case 'cost':
 		case 'power':
 		case 'ram':
@@ -137,6 +142,8 @@ function targetFor(facet: FacetEdit['facet']): FacetTarget {
 			return { kind: 'eddiable' };
 		case 'tournamentLegal':
 			return { kind: 'tournamentLegal' };
+		case 'bookmarked':
+			return { kind: 'bookmarked' };
 		case 'legends':
 			return { kind: 'ramBudget' };
 		case 'cost':
@@ -160,8 +167,13 @@ function astTopLevelChildren(node: Node | null): readonly Node[] {
 }
 
 /** Applies one facet edit to `source`, returning the new query text. */
-export function withFacetEdit(source: string, dataset: Dataset, edit: FacetEdit): string {
-	const { node } = parse(source);
+export function withFacetEdit(
+	source: string,
+	dataset: Dataset,
+	edit: FacetEdit,
+	options?: ParseOptions
+): string {
+	const { node } = parse(source, options);
 	const target = targetFor(edit.facet);
 	const ctx: CompileContext = { dataset };
 

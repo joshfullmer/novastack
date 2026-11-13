@@ -17,6 +17,7 @@ import {
 	renameFolder,
 	setFolderVisibility
 } from '#lib/server/db/folders.js';
+import { RESUME_COOKIE } from '#lib/decks/draft.js';
 import { legendRefsFromJson } from '#lib/decks/schema.js';
 import { readViewPref } from '#lib/server/view-pref.js';
 import type { Actions, PageServerLoad } from './$types';
@@ -68,7 +69,16 @@ async function requireOwnedFolder(event: {
 }
 
 export const load: PageServerLoad = async (event) => {
-	if (!event.locals.user) return redirect(302, '/auth/login');
+	// Signed out, `/decks` has nothing of yours to show — but the builder works without an account
+	// (`docs/spec/deckbuilder.md` §10.5), so that is where a visitor goes, not a login wall.
+	if (!event.locals.user) return redirect(302, '/decks/new');
+
+	// Back from signing in with a local draft waiting: every way of signing in ends here, so this is
+	// where "come back and save it" is picked up (`RESUME_COOKIE`). Once — the cookie is spent.
+	if (event.cookies.get(RESUME_COOKIE)) {
+		event.cookies.delete(RESUME_COOKIE, { path: '/' });
+		return redirect(303, '/decks/new?finish');
+	}
 
 	const owned = await listDecksForOwner(event.locals.db, event.locals.user.id);
 	const folders = await listFoldersForOwner(event.locals.db, event.locals.user.id);

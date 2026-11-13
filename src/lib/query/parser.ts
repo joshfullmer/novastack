@@ -58,7 +58,12 @@ const MIRROR: Readonly<Record<CompareOp, CompareOp>> = {
 };
 const isLowerBound = (op: CompareOp) => op === '>' || op === '>=';
 
-export function parse(source: string): ParseResult {
+export type ParseOptions = {
+	/** Recognise the fields that only exist in the deck editor (`FieldSpec.deckOnly`). */
+	deck?: boolean;
+};
+
+export function parse(source: string, { deck = false }: ParseOptions = {}): ParseResult {
 	const warnings: ParseWarning[] = [];
 	let pos = 0;
 
@@ -114,7 +119,7 @@ export function parse(source: string): ParseResult {
 		if (v1?.kind !== 'word') return undefined;
 		if (op1?.kind !== 'op' || !isCompareOp(op1.value)) return undefined;
 		if (fieldTok?.kind !== 'word') return undefined;
-		const field = lookupField(fieldTok.text);
+		const field = lookupField(fieldTok.text, deck);
 		if (field === null || !fieldSpec(field).comparisons) return undefined;
 		if (op2?.kind !== 'op' || !isCompareOp(op2.value)) return undefined;
 		if (v2?.kind !== 'word') return undefined;
@@ -144,7 +149,7 @@ export function parse(source: string): ParseResult {
 		const opTok = advance();
 		if (wordTok.kind !== 'word' || opTok.kind !== 'op') throw new Error('unreachable');
 
-		const field = lookupField(wordTok.text);
+		const field = lookupField(wordTok.text, deck);
 		if (field === null) {
 			const valueTok = advance();
 			warn([wordTok.span[0], valueTok.span[1]], 'unknown-field');

@@ -31,6 +31,7 @@
 		treatment: 'Print Treatment',
 		owned: 'Owned Count (per card)',
 		copies: 'Owned Count (per printing)',
+		bookmarked: 'Bookmarked (deck editor only)',
 		name: 'Name',
 		rules: 'Rules text',
 		text: 'Bare word',
@@ -98,7 +99,7 @@
 					</tr>
 				</thead>
 				<tbody class="divide-y divide-edge/40">
-					{#each FIELDS as field (field.kind)}
+					{#each FIELDS.filter((field) => !field.deckOnly) as field (field.kind)}
 						<tr>
 							<td class="px-3 py-2 font-medium text-bright">{FIELD_LABELS[field.kind]}</td>
 							<td class="px-3 py-2 font-mono text-xs text-body">

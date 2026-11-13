@@ -54,6 +54,15 @@ export type OwnedLookup = (printingId: string) => number;
 /** Signed out, or wherever ownership is irrelevant: everything is owned zero times. */
 export const NOTHING_OWNED: OwnedLookup = () => 0;
 
+/**
+ * Whether a Card is Bookmarked in the Deck being edited (`CONTEXT.md`) — by slug, because a
+ * Bookmark is on the Card and never the Printing. A function for the same reason `OwnedLookup` is.
+ * Only the deck editor has one; everywhere else nothing is Bookmarked.
+ */
+export type BookmarkLookup = (cardSlug: string) => boolean;
+
+export const NOTHING_BOOKMARKED: BookmarkLookup = () => false;
+
 export type Predicate =
 	| { kind: 'all' }
 	| { kind: 'and'; children: readonly Predicate[] }
@@ -76,6 +85,7 @@ export type Predicate =
 	  }
 	| { kind: 'eddiable'; value: boolean }
 	| { kind: 'tournamentLegal'; value: boolean }
+	| { kind: 'bookmarked'; value: boolean }
 	| {
 			kind: 'numeric';
 			field: CountField;
@@ -221,17 +231,22 @@ export function test(
 	card: Card,
 	printing: Printing,
 	/** Defaulted so every existing caller and test keeps working unchanged. */
-	ownedOf: OwnedLookup = NOTHING_OWNED
+	ownedOf: OwnedLookup = NOTHING_OWNED,
+	bookmarkedOf: BookmarkLookup = NOTHING_BOOKMARKED
 ): boolean {
 	switch (predicate.kind) {
 		case 'all':
 			return true;
 		case 'and':
-			return predicate.children.every((child) => test(child, dataset, card, printing, ownedOf));
+			return predicate.children.every((child) =>
+				test(child, dataset, card, printing, ownedOf, bookmarkedOf)
+			);
 		case 'or':
-			return predicate.children.some((child) => test(child, dataset, card, printing, ownedOf));
+			return predicate.children.some((child) =>
+				test(child, dataset, card, printing, ownedOf, bookmarkedOf)
+			);
 		case 'not':
-			return !test(predicate.child, dataset, card, printing, ownedOf);
+			return !test(predicate.child, dataset, card, printing, ownedOf, bookmarkedOf);
 		case 'color':
 			return predicate.values.includes(card.color);
 		case 'cardType':
@@ -248,6 +263,8 @@ export function test(
 			return card.eddiable === predicate.value;
 		case 'tournamentLegal':
 			return card.tournamentLegal === predicate.value;
+		case 'bookmarked':
+			return bookmarkedOf(card.slug) === predicate.value;
 		case 'numeric':
 			return testNumeric(card, printing, predicate, ownedOf);
 		case 'text':
@@ -278,13 +295,14 @@ export function test(
 export function evaluate(
 	dataset: Dataset,
 	tree: Predicate,
-	ownedOf: OwnedLookup = NOTHING_OWNED
+	ownedOf: OwnedLookup = NOTHING_OWNED,
+	bookmarkedOf: BookmarkLookup = NOTHING_BOOKMARKED
 ): Match[] {
 	const matches: Match[] = [];
 
 	for (const card of dataset.cards) {
 		for (const printing of card.printings) {
-			if (!test(tree, dataset, card, printing, ownedOf)) continue;
+			if (!test(tree, dataset, card, printing, ownedOf, bookmarkedOf)) continue;
 			matches.push({ card, printing });
 			break;
 		}

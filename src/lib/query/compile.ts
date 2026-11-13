@@ -273,6 +273,8 @@ export function compileField(
 			return compileEddiable(node, warnings);
 		case 'tournamentLegal':
 			return compileTournamentLegal(node, warnings);
+		case 'bookmarked':
+			return compileBookmarked(node, warnings);
 		case 'cost':
 		case 'power':
 		case 'ram':
@@ -460,6 +462,23 @@ function compileEddiable(node: FieldNode, warnings: ParseWarning[]): Predicate |
 	const raw = valueText(node.value).toLowerCase();
 	if (raw === 'true') return { kind: 'eddiable', value: true };
 	if (raw === 'false') return { kind: 'eddiable', value: false };
+	return malformed(node, warnings);
+}
+
+// ---------------------------------------------------------------------------
+// Bookmarked — boolean, never null. Deck editor only (`FieldSpec.deckOnly`), so this is only
+// reached from a parse that opted in.
+// ---------------------------------------------------------------------------
+
+function compileBookmarked(node: FieldNode, warnings: ParseWarning[]): Predicate | null {
+	if (!requireSimpleOperator(node, warnings)) return null;
+	if (isReservedWord(node.value, 'none') || isReservedWord(node.value, 'has')) {
+		return droppedInapplicable(node, warnings);
+	}
+	// `yes`/`no`, the spelling `owned:` teaches — not Eddiable's `true`/`false`.
+	const raw = valueText(node.value).toLowerCase();
+	if (raw === 'yes') return { kind: 'bookmarked', value: true };
+	if (raw === 'no') return { kind: 'bookmarked', value: false };
 	return malformed(node, warnings);
 }
 

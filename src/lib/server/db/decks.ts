@@ -3,7 +3,7 @@
  * directly. See `docs/spec/deckbuilder.md` §3.2: a deck's current state is its latest
  * `deck_versions` row; every save is a new row, never an update.
  */
-import { and, asc, count, desc, eq, gte } from 'drizzle-orm';
+import { and, asc, count, desc, eq, gte, sql } from 'drizzle-orm';
 import type { DeckVersionPayload } from '#lib/decks/schema.js';
 import { normalizeShareCode } from '#lib/short-id.js';
 import type { getDb } from './index.js';
@@ -93,6 +93,55 @@ export async function renameDeck(db: Db, deckId: string, name: string) {
 	await db.update(decks).set({ name }).where(eq(decks.id, deckId));
 }
 
+/**
+ * Adds or removes one Card's Bookmark.
+ *
+ * **One statement each, deliberately not read-modify-write.** Bookmarks get toggled in quick
+ * succession, and those requests run concurrently: reading the list, changing it and writing it
+ * back made two toggles in the same breath both start from `[]`, so the second write erased the
+ * first (seen live — two bookmarks toggled, one survived a reload). SQLite's JSON functions let the
+ * database do the change against its own current value, which a single `UPDATE` makes atomic.
+ *
+ * Absolute (`bookmarked`) rather than a toggle, so a retry after a dropped response lands in the
+ * same place instead of flipping it back.
+ */
+export async function setDeckBookmark(
+	db: Db,
+	deckId: string,
+	cardSlug: string,
+	bookmarked: boolean
+): Promise<void> {
+	if (bookmarked) {
+		await db
+			.update(decks)
+			.set({ bookmarks: sql`json_insert(${decks.bookmarks}, '$[#]', ${cardSlug})` })
+			.where(
+				and(
+					eq(decks.id, deckId),
+					sql`NOT EXISTS (SELECT 1 FROM json_each(${decks.bookmarks}) WHERE value = ${cardSlug})`
+				)
+			);
+		return;
+	}
+	await db
+		.update(decks)
+		.set({
+			bookmarks: sql`(SELECT json_group_array(value) FROM json_each(${decks.bookmarks}) WHERE value <> ${cardSlug})`
+		})
+		.where(eq(decks.id, deckId));
+}
+
+/** Replaces every Bookmark at once — for a deck that was just created from a draft, where there is
+ * no concurrent toggle to race (`setDeckBookmark` is the one for those). */
+export async function setDeckBookmarks(db: Db, deckId: string, bookmarks: string[]) {
+	await db.update(decks).set({ bookmarks }).where(eq(decks.id, deckId));
+}
+
+/** `null` removes the Guide. Length and content are the caller's to have checked. */
+export async function setDeckGuide(db: Db, deckId: string, guide: string | null) {
+	await db.update(decks).set({ guide }).where(eq(decks.id, deckId));
+}
+
 export async function setDeckVisibility(db: Db, deckId: string, visibility: Visibility) {
 	await db.update(decks).set({ visibility }).where(eq(decks.id, deckId));
 }
@@ -101,8 +150,8 @@ export async function deleteDeck(db: Db, deckId: string) {
 	await db.delete(decks).where(eq(decks.id, deckId));
 }
 
-/** Copies name and latest version only — never the original's visibility, so a duplicate of a
- * public deck doesn't itself start out public. */
+/** Copies name, Bookmarks, Guide and latest version — never the original's visibility, so a duplicate of
+ * a public deck doesn't itself start out public. */
 export async function duplicateDeck(db: Db, deckId: string, ownerId: string) {
 	const [original] = await db.select().from(decks).where(eq(decks.id, deckId));
 	if (!original) return null;
@@ -115,6 +164,8 @@ export async function duplicateDeck(db: Db, deckId: string, ownerId: string) {
 		.values({
 			ownerId,
 			name: `${original.name} (copy)`,
+			bookmarks: original.bookmarks,
+			guide: original.guide,
 			shareCode: await freshDeckShareCode(db)
 		})
 		.returning();

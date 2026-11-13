@@ -108,6 +108,9 @@ export const load: PageServerLoad = async (event) => {
 		/** The URL-facing id — share links, the canonical tag, and the editor link all use this. */
 		shareCode,
 		deckName: deck.name,
+		/** Markdown, rendered by `GuideBody`. Private decks never reach here for a non-owner (403 above),
+		 * so whoever receives this may read it. */
+		guide: deck.guide ?? '',
 		ownerName: deck.ownerName,
 		visibility: deck.visibility,
 		isOwner,
