@@ -344,6 +344,26 @@ actually play, and declining to collect a Set does not conjure copies of it. Goa
 Completion, never legality or availability.
 _Avoid_: needed, short, unowned
 
+### Tournaments (stage 4)
+
+**Tournament**:
+One Melee event we have ingested — identified by Melee's tournament id, which we keep as our own.
+Read-only: nothing on Novastack edits one, and its data is whatever Melee said when it ended.
+_Avoid_: event, competition
+
+**Standing**:
+A player's final result in a Tournament — rank, points, match and game record — taken from the last
+Round's standings. The word is Melee's own.
+_Avoid_: placement, result, ranking
+
+**Tournament Deck**:
+The list one player registered for one Tournament. Not a **Deck**: no Novastack account owns it,
+it has no versions or visibility, and it is never edited. Stored as the text Melee showed; the Cards
+it names are a **derived index** that is rebuilt whenever how we read names changes, so a change to
+how a Card is named never freezes a stale reading. A player with no registered list has a Standing but
+no Tournament Deck.
+_Avoid_: decklist (ambiguous with a pasted Deck), event deck, pro deck
+
 ### Notation
 
 Nova Notation is a handwriting-first way to record a game's dice state, for scoresheets and for
