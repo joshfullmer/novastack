@@ -9,8 +9,8 @@
  *
  * `admits` is a pure function of budget and card so stage 2 inherits it unchanged.
  */
-import type { Card } from '#lib/cards/schema.js';
-import { COLORS, type Color } from '#lib/cards/vocabulary.js';
+import type { Card } from '../cards/schema.ts';
+import { COLORS, type Color } from '../cards/vocabulary.ts';
 
 export type ColorBudget = Readonly<Record<Color, number>>;
 

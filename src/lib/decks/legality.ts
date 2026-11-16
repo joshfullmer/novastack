@@ -5,10 +5,10 @@
  * the budget from the *chosen* Legends and reporting what a budget doesn't cover, not about
  * re-deriving the admission rule itself.
  */
-import { legendBaseName } from '#lib/cards/derive.js';
-import type { Card } from '#lib/cards/schema.js';
-import { COLORS, type Color } from '#lib/cards/vocabulary.js';
-import { admits, EMPTY_BUDGET, type ColorBudget } from '#lib/filters/budget.js';
+import { legendBaseName } from '../cards/derive.ts';
+import type { Card } from '../cards/schema.ts';
+import { COLORS, type Color } from '../cards/vocabulary.ts';
+import { admits, EMPTY_BUDGET, type ColorBudget } from '../filters/budget.ts';
 
 export const LEGEND_SLOTS = 3;
 export const MIN_DECK_SIZE = 40;

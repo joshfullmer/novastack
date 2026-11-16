@@ -43,9 +43,9 @@
  * Default Printing's anyway. Keeping the printings a draft already had is the caller's job
  * (`replaceWith` in `deck-state.svelte.ts`).
  */
-import { normalizeForSearch } from '#lib/cards/dataset.js';
-import type { Card } from '#lib/cards/schema.js';
-import { LEGEND_SLOTS, MAX_COPIES, SIDEBOARD_SIZE, copiesOf, type DeckEntry } from './legality.js';
+import { normalizeForSearch } from '../cards/dataset.ts';
+import type { Card } from '../cards/schema.ts';
+import { LEGEND_SLOTS, MAX_COPIES, SIDEBOARD_SIZE, copiesOf, type DeckEntry } from './legality.ts';
 
 export type ImportWarning = {
 	kind: 'copies' | 'sideboard-full' | 'legends-full' | 'legend-duplicate' | 'legend-in-sideboard';
