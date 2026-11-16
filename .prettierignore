@@ -17,3 +17,6 @@ src/lib/server/db/auth.schema.ts
 
 # No SQL parser is configured.
 scripts/*.sql
+
+# Captured Melee responses (tournament 485070), kept byte-for-byte as test fixtures.
+src/lib/tournaments/fixtures/
