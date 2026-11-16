@@ -380,6 +380,15 @@ view. These are the two things that keep filterable stats affordable.
 tables after each ingest, as swubase does (per meta and per Legend: `deck_count`, main/side counts,
 `match_win`, `match_lose`). That is a later, additive migration, not a v1 table.
 
+**Built: the event page (2026-11-16).** `/tournaments/[id]` with three views as sub-routes, so each is
+linkable: `/tournaments/[id]` (standings, each row opening to its deck), `/podium`, and `/rounds`
+(`?round=N`). One layout load (`getEventView` in `src/lib/server/db/tournaments.ts`, six indexed
+selects) feeds all three; `buildEventView` (`src/lib/tournaments/event-view.ts`) shapes it and is tested
+against the ingest's own fixtures. Dynamic, not prerendered; `/tournaments` is in the hooks'
+`DYNAMIC_PREFIXES`. A non-integer or unknown id is a 404 before or after one lookup. Not yet done: a
+shared-cache header (a response that may carry a session cookie can't be `public` without care), a nav
+link (nothing to link to until the list page exists), and production (migration `0014` isn't applied).
+
 ---
 
 ## 7. Open questions

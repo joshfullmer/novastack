@@ -28,6 +28,7 @@ const DYNAMIC_PREFIXES = [
 	'/collection',
 	'/decks',
 	'/explore',
+	'/tournaments',
 	'/auth',
 	'/account',
 	'/api',
