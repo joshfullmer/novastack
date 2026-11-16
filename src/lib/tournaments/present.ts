@@ -4,6 +4,7 @@
  */
 import { legendBaseName } from '../cards/derive.ts';
 import { dataset } from '../cards/index.ts';
+import type { Color } from '../cards/vocabulary.ts';
 
 const bySlug = new Map(dataset.cards.map((card) => [card.slug, card]));
 
@@ -28,3 +29,31 @@ export const formatDate = (ms: number) =>
 		year: 'numeric',
 		timeZone: 'UTC'
 	});
+
+const COLOUR_ORDER: readonly Color[] = ['Red', 'Yellow', 'Green', 'Blue'];
+
+/**
+ * An event's Legend picks as colour segments, as percent widths, for a field-composition bar. A Legend
+ * the dataset doesn't know contributes nothing: a colour we can't state would be a guess.
+ */
+export function fieldByColour(counts: readonly { slug: string; decks: number }[]) {
+	const by = new Map<Color, number>();
+	for (const { slug, decks } of counts) {
+		const colour = bySlug.get(slug)?.color;
+		if (colour) by.set(colour, (by.get(colour) ?? 0) + decks);
+	}
+	const total = [...by.values()].reduce((a, b) => a + b, 0) || 1;
+	return COLOUR_ORDER.filter((c) => by.has(c)).map((colour) => ({
+		colour,
+		width: ((by.get(colour) ?? 0) / total) * 100
+	}));
+}
+
+/** 1st, 2nd, 3rd, 4th … 11th, 12th, 13th … 21st: English ordinals, teens included. */
+export function ordinal(n: number): string {
+	const teen = n % 100 >= 11 && n % 100 <= 13;
+	const suffix = teen
+		? 'th'
+		: (({ 1: 'st', 2: 'nd', 3: 'rd' } as Record<number, string>)[n % 10] ?? 'th');
+	return `${n}${suffix}`;
+}

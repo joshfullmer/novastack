@@ -6,7 +6,8 @@
  * tested. Six small queries rather than one wide join: each is a primary-key or indexed lookup, and a
  * wide join would repeat every deck's cards once per standing.
  */
-import { eq } from 'drizzle-orm';
+import { and, count, eq, isNotNull, min } from 'drizzle-orm';
+import { buildEventList, type EventListItem } from '#lib/tournaments/event-list.js';
 import { buildEventView, type EventView } from '#lib/tournaments/event-view.js';
 import type { getDb } from './index.js';
 import {
@@ -50,4 +51,70 @@ export async function getEventView(db: Db, id: number): Promise<EventView | null
 		deckCards: deckCards.map((row) => row.card),
 		matches
 	});
+}
+
+/**
+ * Every ingested Tournament, newest first, with what a list row or card needs.
+ *
+ * **Aggregates, not rows**: counts per event and one row per Legend, so the list's cost grows with the
+ * number of events rather than the number of decks. (D1 bills by rows read; the full-deck reads belong to
+ * the event page, which wants them.) The "showcase" is the best-placed player who registered a deck,
+ * found by joining each event's minimum deck-holding rank back to its standing.
+ */
+export async function getEventList(db: Db): Promise<EventListItem[]> {
+	const best = db
+		.select({ tournamentId: standings.tournamentId, rank: min(standings.rank).as('best_rank') })
+		.from(standings)
+		.where(isNotNull(standings.deckGuid))
+		.groupBy(standings.tournamentId)
+		.as('best');
+
+	const [events, rounds, decks, winners, showcase, legends] = await Promise.all([
+		db.select().from(tournaments),
+		db
+			.select({ tournamentId: tournamentRounds.tournamentId, rounds: count() })
+			.from(tournamentRounds)
+			.groupBy(tournamentRounds.tournamentId),
+		db
+			.select({ tournamentId: tournamentDecks.tournamentId, decks: count() })
+			.from(tournamentDecks)
+			.groupBy(tournamentDecks.tournamentId),
+		db
+			.select({ tournamentId: standings.tournamentId, name: players.displayName })
+			.from(standings)
+			.innerJoin(players, eq(players.id, standings.playerId))
+			.where(eq(standings.rank, 1)),
+		db
+			.select({
+				tournamentId: standings.tournamentId,
+				rank: standings.rank,
+				name: players.displayName,
+				cardSlug: tournamentDeckCards.cardSlug
+			})
+			.from(standings)
+			.innerJoin(
+				best,
+				and(eq(best.tournamentId, standings.tournamentId), eq(best.rank, standings.rank))
+			)
+			.innerJoin(players, eq(players.id, standings.playerId))
+			.innerJoin(
+				tournamentDeckCards,
+				and(
+					eq(tournamentDeckCards.deckGuid, standings.deckGuid),
+					eq(tournamentDeckCards.board, 'legend')
+				)
+			),
+		db
+			.select({
+				tournamentId: tournamentDecks.tournamentId,
+				cardSlug: tournamentDeckCards.cardSlug,
+				decks: count()
+			})
+			.from(tournamentDeckCards)
+			.innerJoin(tournamentDecks, eq(tournamentDecks.guid, tournamentDeckCards.deckGuid))
+			.where(eq(tournamentDeckCards.board, 'legend'))
+			.groupBy(tournamentDecks.tournamentId, tournamentDeckCards.cardSlug)
+	]);
+
+	return buildEventList({ tournaments: events, rounds, decks, winners, showcase, legends });
 }
