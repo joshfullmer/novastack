@@ -368,4 +368,172 @@ export const deckLikes = sqliteTable(
 	(table) => [primaryKey({ columns: [table.deckId, table.userId] })]
 );
 
+/**
+ * Tournaments ingested from Melee — `docs/spec/tournaments.md` §3. Written only by `pnpm melee`;
+ * the Worker only reads these. Every child table cascades from `tournaments`, so re-ingesting an
+ * event is `DELETE FROM tournaments WHERE id = ?` plus inserts and nothing is orphaned. `players`
+ * is shared across events, so nothing cascades from it: removing a player is a deliberate act.
+ *
+ * Ids are Melee's own (tournament id, `Player.ID`, decklist guid), never ours: they are what makes a
+ * rerun idempotent.
+ */
+export const tournaments = sqliteTable(
+	'tournaments',
+	{
+		/** Melee's tournament id — ours too. Not autoincrement. */
+		id: integer('id').primaryKey(),
+		name: text('name').notNull(),
+		startsAt: integer('starts_at', { mode: 'timestamp_ms' }).notNull(),
+		organizerId: integer('organizer_id').notNull(),
+		organizerName: text('organizer_name').notNull(),
+		/** Melee's word ("Constructed"); not interpreted. */
+		format: text('format').notNull(),
+		/** Melee's format GUID — the one in the Decklists filter URL. */
+		formatId: text('format_id').notNull(),
+		playerCount: integer('player_count').notNull(),
+		ingestedAt: integer('ingested_at', { mode: 'timestamp_ms' }).notNull().default(now)
+	},
+	(table) => [index('tournaments_starts_at_idx').on(table.startsAt)]
+);
+
+/** Swiss rounds, then any top cut — `number` is the order of Melee's round buttons. */
+export const tournamentRounds = sqliteTable(
+	'tournament_rounds',
+	{
+		tournamentId: integer('tournament_id')
+			.notNull()
+			.references(() => tournaments.id, { onDelete: 'cascade' }),
+		number: integer('number').notNull(),
+		/** Melee's round id: what its endpoints take, as opposed to `number`. */
+		meleeRoundId: integer('melee_round_id').notNull(),
+		name: text('name').notNull()
+	},
+	(table) => [primaryKey({ columns: [table.tournamentId, table.number] })]
+);
+
+/** Keyed by Melee's `Player.ID`: a username can be `__placeholder__`, and a display name isn't unique. */
+export const players = sqliteTable('players', {
+	id: integer('id').primaryKey(),
+	/** Free text, as the player entered it; the latest ingest wins. */
+	displayName: text('display_name').notNull(),
+	/** Null when Melee reports `__placeholder__`. */
+	username: text('username')
+});
+
+/**
+ * The Tournament Deck — the list one player registered for one event (`CONTEXT.md`). `text` is the
+ * source of truth, entity-decoded; `legendLine`, `unresolved` and `tournament_deck_cards` are derived
+ * from it by `parseDeckImport` and are rebuilt by `pnpm melee --reparse` whenever how we read card
+ * names changes.
+ */
+export const tournamentDecks = sqliteTable(
+	'tournament_decks',
+	{
+		/** Melee's decklist guid. */
+		guid: text('guid').primaryKey(),
+		tournamentId: integer('tournament_id')
+			.notNull()
+			.references(() => tournaments.id, { onDelete: 'cascade' }),
+		playerId: integer('player_id')
+			.notNull()
+			.references(() => players.id),
+		/** The player's own label — colour letters in the one event measured; NOT an archetype. */
+		name: text('name').notNull(),
+		text: text('text').notNull(),
+		/** The three Legend slugs, sorted, joined by `+`; null when the deck doesn't name three. */
+		legendLine: text('legend_line'),
+		/** Lines that named no single Card — counted, never dropped silently. */
+		unresolved: integer('unresolved').notNull().default(0)
+	},
+	(table) => [
+		index('tournament_decks_tournament_idx').on(table.tournamentId),
+		index('tournament_decks_legend_line_idx').on(table.legendLine)
+	]
+);
+
+/** A derived index of `tournament_decks.text`: which Cards a deck holds, on which board. */
+export const tournamentDeckCards = sqliteTable(
+	'tournament_deck_cards',
+	{
+		deckGuid: text('deck_guid')
+			.notNull()
+			.references(() => tournamentDecks.guid, { onDelete: 'cascade' }),
+		cardSlug: text('card_slug').notNull(),
+		board: text('board', { enum: ['main', 'legend', 'side'] }).notNull(),
+		quantity: integer('quantity').notNull()
+	},
+	(table) => [
+		primaryKey({ columns: [table.deckGuid, table.cardSlug, table.board] }),
+		index('tournament_deck_cards_card_idx').on(table.cardSlug)
+	]
+);
+
+/** The last round's standings: an event's final results. Records are numbers, not `W-L-D` strings. */
+export const standings = sqliteTable(
+	'standings',
+	{
+		tournamentId: integer('tournament_id')
+			.notNull()
+			.references(() => tournaments.id, { onDelete: 'cascade' }),
+		playerId: integer('player_id')
+			.notNull()
+			.references(() => players.id),
+		rank: integer('rank').notNull(),
+		points: integer('points').notNull(),
+		matchWins: integer('match_wins').notNull(),
+		matchLosses: integer('match_losses').notNull(),
+		matchDraws: integer('match_draws').notNull(),
+		gameWins: integer('game_wins').notNull(),
+		gameLosses: integer('game_losses').notNull(),
+		gameDraws: integer('game_draws').notNull(),
+		/** Null: this player registered no list. */
+		deckGuid: text('deck_guid').references(() => tournamentDecks.guid, { onDelete: 'set null' })
+	},
+	(table) => [
+		primaryKey({ columns: [table.tournamentId, table.playerId] }),
+		index('standings_rank_idx').on(table.tournamentId, table.rank),
+		index('standings_deck_idx').on(table.deckGuid)
+	]
+);
+
+export const tournamentMatches = sqliteTable(
+	'tournament_matches',
+	{
+		id: integer('id').primaryKey({ autoIncrement: true }),
+		tournamentId: integer('tournament_id')
+			.notNull()
+			.references(() => tournaments.id, { onDelete: 'cascade' }),
+		/** `tournament_rounds.number`, not Melee's round id. */
+		round: integer('round').notNull(),
+		tableNumber: integer('table_number'),
+		playerA: integer('player_a')
+			.notNull()
+			.references(() => players.id),
+		/** Null for a bye. */
+		playerB: integer('player_b').references(() => players.id),
+		gamesA: integer('games_a').notNull(),
+		gamesB: integer('games_b').notNull(),
+		draws: integer('draws').notNull(),
+		kind: text('kind', { enum: ['played', 'draw', 'bye', 'forfeit'] }).notNull()
+	},
+	(table) => [
+		index('tournament_matches_round_idx').on(table.tournamentId, table.round),
+		index('tournament_matches_player_a_idx').on(table.playerA),
+		index('tournament_matches_player_b_idx').on(table.playerB)
+	]
+);
+
+/**
+ * A named period that statistics are cut by. A Tournament belongs to the one whose range holds its
+ * `startsAt` — derived at read time, never assigned, so moving a meta needs no edit to any event.
+ * Hand-seeded; empty until someone decides what the periods are.
+ */
+export const metas = sqliteTable('metas', {
+	id: integer('id').primaryKey({ autoIncrement: true }),
+	name: text('name').notNull(),
+	startsOn: integer('starts_on', { mode: 'timestamp_ms' }).notNull(),
+	/** Null: still running. Exclusive. */
+	endsOn: integer('ends_on', { mode: 'timestamp_ms' })
+});
+
 export * from './auth.schema.js';
