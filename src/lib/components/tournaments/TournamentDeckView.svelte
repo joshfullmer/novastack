@@ -40,7 +40,7 @@
 		view: DeckView;
 		/** `page` sets the preview, list and stats side by side; `pane` fits half a screen. */
 		layout?: 'page' | 'pane';
-		/** Extra for the pane's narrow rail, above the preview (the path through the event). */
+		/** Extra for the pane's narrow rail, below the preview (the path through the event). */
 		rail?: Snippet;
 	} = $props();
 
@@ -196,11 +196,17 @@
 		{/if}
 	</div>
 
-	<div class="flex flex-col gap-4">
-		{@render rail?.()}
+	<!-- In the pane the rail scrolls on its own and stays in view while the cards scroll past, so the card
+	     being pointed at is always on screen. -->
+	<div
+		class="flex flex-col gap-4 {layout === 'pane'
+			? 'lg:sticky lg:top-0 lg:max-h-[calc(100vh-7rem)] lg:self-start lg:overflow-y-auto lg:pr-1'
+			: ''}"
+	>
 		{#if layout === 'pane'}
 			<div class="hidden lg:block"><DeckPreview card={shown} sizes="256px" /></div>
 		{/if}
+		{@render rail?.()}
 		<DeckPrice entries={priced} ownerCanChoosePrinting={false} />
 		<DeckStats entries={main} total={mainCards} {pick} onpick={(next) => (pick = next)} />
 	</div>

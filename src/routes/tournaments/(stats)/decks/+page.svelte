@@ -221,7 +221,7 @@
 	<aside
 		bind:this={pane}
 		aria-label="Deck"
-		class="min-w-0 2xl:sticky 2xl:top-20 2xl:max-h-[calc(100vh-6rem)] 2xl:overflow-y-auto 2xl:rounded-xl 2xl:border 2xl:border-edge 2xl:p-5 {data.deck
+		class="min-w-0 2xl:sticky 2xl:top-20 2xl:max-h-[calc(100vh-6rem)] 2xl:overflow-y-auto 2xl:border-l 2xl:border-edge 2xl:pl-6 {data.deck
 			? 'max-2xl:order-first'
 			: 'max-2xl:hidden'}"
 	>
