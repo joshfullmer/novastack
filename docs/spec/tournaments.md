@@ -413,7 +413,7 @@ shared-cache header (a response that may carry a session cookie can't be `public
 link (nothing to link to until the list page exists), and production (migration `0014` isn't applied).
 
 **Built: the list page (2026-11-16).** `/tournaments` with two views of the same events, `?view=table`
-(a dense ledger) and `?view=cards` (art-forward). `getEventList` reads **aggregates only** (counts per
+(a dense ledger) and a Gallery (art-forward), chosen by the app's usual List/Gallery cookie toggle. `getEventList` reads **aggregates only** (counts per
 event and one row per Legend), so its cost grows with events rather than decks. Each event carries a
 "showcase": the best-placed player who registered a deck, so a card isn't blank when the champion left
 their list empty (2 of the 5 events ingested so far); the page says which rank's deck it shows. Also

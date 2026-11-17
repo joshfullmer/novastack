@@ -1,8 +1,10 @@
 <script lang="ts">
-	// The tournament list, in two views of the same events: a dense table for scanning, and cards
-	// for browsing. `?view=cards` names the second, so a link carries the choice.
+	// The tournament list, in two views of the same events: a dense List for scanning, and a Gallery
+	// for browsing. The choice is a cookie read on the server (`data.view`), like every other List/Gallery
+	// toggle in the app, so the first render already matches and no link needs to carry it.
 	import { page } from '$app/state';
 	import Meta from '#lib/components/Meta.svelte';
+	import { cookieState } from '#lib/cookie-state.svelte.js';
 	import LegendArt from '#lib/components/tournaments/LegendArt.svelte';
 	import {
 		fieldByColour,
@@ -15,7 +17,8 @@
 
 	let { data } = $props();
 
-	const view = $derived(page.url.searchParams.get('view') === 'cards' ? 'cards' : 'table');
+	// svelte-ignore state_referenced_locally
+	const view = cookieState('tournaments-list-view', data.view);
 	const go = (n: number) => withParams(page.url, { page: n === 1 ? null : n });
 
 	const TINT = {
@@ -27,10 +30,6 @@
 	/** This page's own query with some of it changed; a filter or view change starts again at page 1. */
 	const link = (patch: Record<string, string | number | null>) =>
 		withParams(page.url, patch, ['page']);
-	const VIEWS = $derived([
-		{ key: 'table', label: 'Table', href: link({ view: null }) },
-		{ key: 'cards', label: 'Cards', href: link({ view: 'cards' }) }
-	] as const);
 	const query = $derived(data.query);
 	const filtered = $derived(query.kind !== null || query.year !== null || query.q !== null);
 </script>
@@ -55,19 +54,24 @@
 					{data.total} events · {data.players} players
 				</p>
 			</div>
-			<nav class="flex gap-1.5" aria-label="View">
-				{#each VIEWS as v (v.key)}
-					<a
-						href={v.href}
-						aria-current={v.key === view ? 'page' : undefined}
-						class="rounded-full border px-3 py-1 font-mono text-xs {v.key === view
-							? 'border-neon bg-neon/10 text-bright'
-							: 'border-edge text-muted hover:text-body'}"
-					>
-						{v.label}
-					</a>
-				{/each}
-			</nav>
+			<div class="flex overflow-hidden rounded-md border border-edge text-xs">
+				<button
+					type="button"
+					onclick={() => (view.value = 'list')}
+					class="px-2 py-1 transition-colors hover:bg-raised/60 hover:text-bright"
+					class:bg-raised={view.value === 'list'}
+					class:text-bright={view.value === 'list'}
+					class:text-muted={view.value !== 'list'}>List</button
+				>
+				<button
+					type="button"
+					onclick={() => (view.value = 'gallery')}
+					class="px-2 py-1 transition-colors hover:bg-raised/60 hover:text-bright"
+					class:bg-raised={view.value === 'gallery'}
+					class:text-bright={view.value === 'gallery'}
+					class:text-muted={view.value !== 'gallery'}>Gallery</button
+				>
+			</div>
 		</header>
 
 		{#snippet chip(label: string, href: string, active: boolean, count?: number)}
@@ -84,7 +88,6 @@
 
 		<div class="mt-3 flex flex-wrap items-center gap-x-6 gap-y-2" role="group" aria-label="Filter">
 			<form method="get" action="/tournaments" class="flex gap-1.5" role="search">
-				{#if view === 'cards'}<input type="hidden" name="view" value="cards" />{/if}
 				{#if query.kind}<input type="hidden" name="kind" value={query.kind} />{/if}
 				{#if query.year}<input type="hidden" name="year" value={query.year} />{/if}
 				<input
@@ -126,7 +129,7 @@
 			<p class="mt-8 text-center text-sm text-muted">
 				{filtered ? 'No events match those filters.' : 'No tournaments have been added yet.'}
 			</p>
-		{:else if view === 'table'}
+		{:else if view.value === 'list'}
 			<div
 				class="mt-3 grid grid-cols-[6.5rem_1fr_3rem_3rem_16rem] gap-x-4 px-2 font-mono text-[11px] tracking-wide text-muted uppercase"
 				aria-hidden="true"

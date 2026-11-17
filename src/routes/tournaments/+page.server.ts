@@ -1,3 +1,4 @@
+import { readViewPref } from '#lib/server/view-pref.js';
 import { getEventList } from '#lib/server/db/tournaments.js';
 import { parseEventQuery } from '#lib/tournaments/event-list.js';
 import type { PageServerLoad } from './$types';
@@ -5,6 +6,10 @@ import type { PageServerLoad } from './$types';
 // Overrides the root layout's `prerender = true` — the list is whatever has been ingested so far.
 export const prerender = false;
 
-export const load: PageServerLoad = async ({ locals, url }) => {
-	return getEventList(locals.db, parseEventQuery(url.searchParams));
+export const load: PageServerLoad = async ({ locals, url, cookies }) => {
+	return {
+		...(await getEventList(locals.db, parseEventQuery(url.searchParams))),
+		// List or Gallery, remembered in a cookie like the app's other toggles of this kind.
+		view: readViewPref(cookies, 'tournaments-list-view', ['list', 'gallery'], 'list')
+	};
 };
