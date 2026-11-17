@@ -3,6 +3,7 @@
 	// for browsing. The choice is a cookie read on the server (`data.view`), like every other List/Gallery
 	// toggle in the app, so the first render already matches and no link needs to carry it.
 	import { cn } from '#lib/cn.js';
+	import { goto } from '$app/navigation';
 	import { page } from '$app/state';
 	import Meta from '#lib/components/Meta.svelte';
 	import { cookieState } from '#lib/cookie-state.svelte.js';
@@ -40,6 +41,31 @@
 		withParams(page.url, patch, ['page']);
 	const query = $derived(data.query);
 	const filtered = $derived(query.kind !== null || query.year !== null || query.q !== null);
+
+	// Search as you type: the list follows the box a beat after the last keystroke, replacing the
+	// history entry so Back doesn't walk through every prefix. The form still submits on Enter, so it
+	// works without JavaScript.
+	const SEARCH_DELAY = 300;
+	let searchBox: HTMLInputElement | undefined;
+	// svelte-ignore state_referenced_locally
+	let text = $state(query.q ?? '');
+	let pending: ReturnType<typeof setTimeout> | undefined;
+
+	function search() {
+		clearTimeout(pending);
+		pending = setTimeout(
+			() => goto(link({ q: text.trim() || null }), { replace: true, reset: false }),
+			SEARCH_DELAY
+		);
+	}
+
+	// Follow the address (Back, Clear filters) — but never overwrite what is being typed, which
+	// runs ahead of the results.
+	$effect(() => {
+		const q = query.q ?? '';
+		if (document.activeElement !== searchBox) text = q;
+	});
+	$effect(() => () => clearTimeout(pending));
 </script>
 
 <!-- `noindex` until the tournament pages launch (production has no tournament tables yet, and nothing links here). -->
@@ -95,21 +121,20 @@
 		{/snippet}
 
 		<div class="mt-3 flex flex-wrap items-center gap-x-6 gap-y-2" role="group" aria-label="Filter">
-			<form method="get" action="/tournaments" class="flex gap-1.5" role="search">
+			<form method="get" action="/tournaments" role="search" onsubmit={() => clearTimeout(pending)}>
 				{#if query.kind}<input type="hidden" name="kind" value={query.kind} />{/if}
 				{#if query.year}<input type="hidden" name="year" value={query.year} />{/if}
 				<input
+					bind:this={searchBox}
+					bind:value={text}
+					oninput={search}
 					type="search"
 					name="q"
-					value={query.q ?? ''}
 					maxlength="60"
 					placeholder="Event or organizer"
 					aria-label="Search events"
 					class="w-52 rounded border border-edge bg-shell px-2.5 py-1 font-mono text-xs text-body placeholder:text-muted"
 				/>
-				<button class="rounded border border-edge px-2.5 py-1 font-mono text-xs hover:text-bright">
-					Search
-				</button>
 			</form>
 			<KindSelect kinds={data.kinds} value={query.kind} href={(kind) => link({ kind })} />
 			{#if data.years.length > 1}
