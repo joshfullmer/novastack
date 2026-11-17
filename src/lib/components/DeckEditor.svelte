@@ -1,4 +1,5 @@
 <script lang="ts" module>
+	import { cn } from '#lib/cn.js';
 	import type { DeckVersionPayload } from '#lib/decks/schema.js';
 	import type { DraftState } from '#lib/decks/draft.js';
 
@@ -592,10 +593,10 @@
 	 * pointer fills. Classes are whole literals so Tailwind sees them. */
 	function zoneClass(zone: DropZone): string {
 		if (overZone === zone) {
-			return 'bg-neon/10 outline-2 -outline-offset-2 outline-dashed outline-neon';
+			return cn('bg-neon/10 outline-2 -outline-offset-2 outline-neon outline-dashed');
 		}
 		if (drag && canDropOn(zone, drag)) {
-			return 'outline-1 -outline-offset-2 outline-dashed outline-neon-dim';
+			return cn('outline-1 -outline-offset-2 outline-neon-dim outline-dashed');
 		}
 		return '';
 	}

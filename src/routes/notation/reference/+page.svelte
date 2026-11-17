@@ -9,6 +9,7 @@
 	 * Rules section behind it — or a "pending" chip until the owner's audit fills `RULES[].cr` in.
 	 * Conventions about how a Transcript is *written* are listed apart, with nothing to cite.
 	 */
+	import { cn } from '#lib/cn.js';
 	import Board from '#lib/components/notation/Board.svelte';
 	import NotationLine from '#lib/components/notation/NotationLine.svelte';
 	import Meta from '#lib/components/Meta.svelte';
@@ -37,7 +38,7 @@
 
 	let { data } = $props();
 
-	const code = 'rounded bg-raised px-1 py-0.5 text-sm';
+	const code = cn('rounded bg-raised px-1 py-0.5 text-sm');
 
 	/** The die letters, from the lib. */
 	const dieLegend = Object.entries(DIE_LETTERS);

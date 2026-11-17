@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { cn } from '#lib/cn.js';
 	import { enhance } from '$app/forms';
 	import { page } from '$app/state';
 	import { onMount } from 'svelte';
@@ -45,10 +46,12 @@
 		return 'Something went wrong linking Discord. Please try again.';
 	});
 
-	const primaryButton =
-		'rounded-md bg-neon px-3 py-2 text-sm font-medium text-void hover:bg-neon-dim';
-	const secondaryButton =
-		'rounded-md border border-edge px-3 py-2 text-sm font-medium text-body transition-colors hover:border-neon-dim hover:text-bright';
+	const primaryButton = cn(
+		'rounded-md bg-neon px-3 py-2 text-sm font-medium text-void hover:bg-neon-dim'
+	);
+	const secondaryButton = cn(
+		'rounded-md border border-edge px-3 py-2 text-sm font-medium text-body transition-colors hover:border-neon-dim hover:text-bright'
+	);
 </script>
 
 <svelte:head>

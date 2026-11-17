@@ -3,6 +3,7 @@
 	// Group by Legend line, a single Legend, or just the colours; count every deck, only the top 8, or
 	// only the winners; conversion columns say how often an archetype reached the top 8 or won. A win
 	// rate is quoted only from MIN_DECKS decks up: fewer is noise.
+	import { cn } from '#lib/cn.js';
 	import LegendArt from '#lib/components/tournaments/LegendArt.svelte';
 	import { MIN_DECKS, type GroupStat } from '#lib/tournaments/meta.js';
 	import { legendNames } from '#lib/tournaments/present.js';
@@ -14,10 +15,10 @@
 	let part = $state<'decks' | 'top8' | 'wins'>('decks');
 
 	const DOT: Record<string, string> = {
-		Red: 'bg-card-red',
-		Yellow: 'bg-card-yellow',
-		Green: 'bg-card-green',
-		Blue: 'bg-card-blue'
+		Red: cn('bg-card-red'),
+		Yellow: cn('bg-card-yellow'),
+		Green: cn('bg-card-green'),
+		Blue: cn('bg-card-blue')
 	};
 	const PARTS = [
 		['decks', 'All decks'],
@@ -49,13 +50,15 @@
 
 	const percent = (n: number | null) => (n === null ? '—' : `${Math.round(n * 100)}%`);
 	const tone = (rate: number | null) =>
-		rate === null
-			? 'text-muted'
-			: rate >= 0.55
-				? 'text-card-green'
-				: rate <= 0.45
-					? 'text-card-red'
-					: 'text-body';
+		cn(
+			rate === null
+				? 'text-muted'
+				: rate >= 0.55
+					? 'text-card-green'
+					: rate <= 0.45
+						? 'text-card-red'
+						: 'text-body'
+		);
 </script>
 
 <header class="flex flex-wrap items-end justify-between gap-3 border-b border-edge pb-4">

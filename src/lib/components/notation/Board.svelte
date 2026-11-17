@@ -10,6 +10,7 @@
 	 * Pass `prev` — the board a step earlier — to ring the Gigs that are new or changed since,
 	 * which is what makes stepping through a game teach rather than just redraw.
 	 */
+	import { cn } from '#lib/cn.js';
 	import { PLAYER_LABEL, formatDie, sameDie } from '#lib/notation/index.js';
 	import type { Die, GameState, Gig, Owner } from '#lib/notation/index.js';
 
@@ -18,8 +19,8 @@
 	const players: Owner[] = ['w', 't'];
 
 	const theme: Record<Owner, { text: string; border: string; fill: string }> = {
-		w: { text: 'text-neon', border: 'border-neon/50', fill: 'bg-neon/10' },
-		t: { text: 'text-card-red', border: 'border-card-red/50', fill: 'bg-card-red/10' }
+		w: { text: cn('text-neon'), border: cn('border-neon/50'), fill: cn('bg-neon/10') },
+		t: { text: cn('text-card-red'), border: cn('border-card-red/50'), fill: cn('bg-card-red/10') }
 	};
 
 	const label = (die: Die) => `d${die.sides}${die.owner === 't' ? '’' : ''}`;

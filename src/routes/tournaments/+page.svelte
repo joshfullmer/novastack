@@ -2,6 +2,7 @@
 	// The tournament list, in two views of the same events: a dense List for scanning, and a Gallery
 	// for browsing. The choice is a cookie read on the server (`data.view`), like every other List/Gallery
 	// toggle in the app, so the first render already matches and no link needs to carry it.
+	import { cn } from '#lib/cn.js';
 	import { page } from '$app/state';
 	import Meta from '#lib/components/Meta.svelte';
 	import { cookieState } from '#lib/cookie-state.svelte.js';
@@ -23,16 +24,16 @@
 	const go = (n: number) => withParams(page.url, { page: n === 1 ? null : n });
 
 	const TINT = {
-		Red: 'bg-card-red',
-		Yellow: 'bg-card-yellow',
-		Green: 'bg-card-green',
-		Blue: 'bg-card-blue'
+		Red: cn('bg-card-red'),
+		Yellow: cn('bg-card-yellow'),
+		Green: cn('bg-card-green'),
+		Blue: cn('bg-card-blue')
 	};
 	/**
 	 * On hover each Legend rises a beat after the one before it. `group-hover:` scopes the delay to the
 	 * way in, so moving off the tile drops them together. Whole class names, so Tailwind finds them.
 	 */
-	const HOVER_DELAY = ['', 'group-hover:delay-75', 'group-hover:delay-150'];
+	const HOVER_DELAY = ['', cn('group-hover:delay-75'), cn('group-hover:delay-150')];
 
 	/** This page's own query with some of it changed; a filter or view change starts again at page 1. */
 	const link = (patch: Record<string, string | number | null>) =>

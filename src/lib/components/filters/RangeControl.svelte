@@ -15,6 +15,7 @@
 	 * Keyboard operability comes free from the construction the spec asks for — two focusable
 	 * `input[type=range]` elements sharing one track.
 	 */
+	import { cn } from '#lib/cn.js';
 	import type { NumericDomain } from '#lib/cards/dataset.js';
 	import type { NumericRange } from '#lib/filters/chips.js';
 
@@ -54,15 +55,16 @@
 		value.min === null && value.max === null ? 'any' : lo === hi ? `${lo}` : `${lo}–${hi}`
 	);
 
-	const thumbClass =
-		'pointer-events-none absolute inset-x-0 top-0 h-6 w-full appearance-none bg-transparent ' +
-		'[&::-webkit-slider-thumb]:pointer-events-auto [&::-webkit-slider-thumb]:size-4 ' +
-		'[&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full ' +
-		'[&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-void ' +
-		'[&::-webkit-slider-thumb]:bg-neon [&::-moz-range-thumb]:pointer-events-auto ' +
-		'[&::-moz-range-thumb]:size-4 [&::-moz-range-thumb]:appearance-none ' +
-		'[&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:border-2 ' +
-		'[&::-moz-range-thumb]:border-void [&::-moz-range-thumb]:bg-neon';
+	const thumbClass = cn(
+		'pointer-events-none absolute inset-x-0 top-0 h-6 w-full appearance-none bg-transparent',
+		'[&::-webkit-slider-thumb]:pointer-events-auto [&::-webkit-slider-thumb]:size-4',
+		'[&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full',
+		'[&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-void',
+		'[&::-moz-range-thumb]:pointer-events-auto [&::-webkit-slider-thumb]:bg-neon',
+		'[&::-moz-range-thumb]:size-4 [&::-moz-range-thumb]:appearance-none',
+		'[&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:border-2',
+		'[&::-moz-range-thumb]:border-void [&::-moz-range-thumb]:bg-neon'
+	);
 </script>
 
 <fieldset class="min-w-[11rem]">

@@ -8,16 +8,18 @@
  *
  * Written as a literal array, not composed — Tailwind discovers classes by scanning source text.
  */
+import { cn } from '#lib/cn.js';
+
 const RARITY_GRADIENT = [
-	'bg-neon/25',
-	'bg-neon/35',
-	'bg-neon/45',
-	'bg-neon/55',
-	'bg-neon/65',
-	'bg-neon/75',
-	'bg-neon/85',
-	'bg-neon/95',
-	'bg-neon'
+	cn('bg-neon/25'),
+	cn('bg-neon/35'),
+	cn('bg-neon/45'),
+	cn('bg-neon/55'),
+	cn('bg-neon/65'),
+	cn('bg-neon/75'),
+	cn('bg-neon/85'),
+	cn('bg-neon/95'),
+	cn('bg-neon')
 ] as const;
 
 /**

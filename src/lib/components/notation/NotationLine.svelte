@@ -10,6 +10,7 @@
 	 *
 	 * Display only — never an input. Typing happens in a `<textarea>`, which has no hover.
 	 */
+	import { cn } from '#lib/cn.js';
 	import { SYNTAX_HELP, describeMove, splitTurn } from '#lib/notation/index.js';
 	import type { MoveReport, TurnReport } from '#lib/notation/index.js';
 	import NotationToken from './NotationToken.svelte';
@@ -29,9 +30,9 @@
 	} = $props();
 
 	const tone = $derived({
-		move: ink ? 'text-inherit' : 'text-bright',
-		fault: ink ? 'text-red-700' : 'text-card-red',
-		quiet: ink ? 'text-inherit opacity-60' : 'text-muted'
+		move: ink ? cn('text-inherit') : cn('text-bright'),
+		fault: ink ? cn('text-red-700') : cn('text-card-red'),
+		quiet: ink ? cn('text-inherit opacity-60') : cn('text-muted')
 	});
 
 	type Item =

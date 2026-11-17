@@ -8,6 +8,7 @@
 	 * no half-imported state to describe. A page rather than a modal because the preview is a table
 	 * of up to 720 rows. See `#lib/collection/import.js` for what an import does and doesn't do.
 	 */
+	import { cn } from '#lib/cn.js';
 	import Meta from '#lib/components/Meta.svelte';
 	import { collection } from '#lib/collection/state.svelte.js';
 	import { planImport, parseTable, resolveRows, type ChangeKind } from '#lib/collection/import.js';
@@ -60,10 +61,10 @@
 	const decreasing = $derived(plan?.counts.decrease ?? 0);
 
 	const KIND: Record<ChangeKind, { label: string; tone: string }> = {
-		new: { label: 'New', tone: 'text-card-green' },
-		increase: { label: 'More', tone: 'text-card-green' },
-		decrease: { label: 'Fewer', tone: 'text-card-red' },
-		unchanged: { label: 'Same', tone: 'text-muted' }
+		new: { label: 'New', tone: cn('text-card-green') },
+		increase: { label: 'More', tone: cn('text-card-green') },
+		decrease: { label: 'Fewer', tone: cn('text-card-red') },
+		unchanged: { label: 'Same', tone: cn('text-muted') }
 	};
 
 	async function onFile(event: Event & { currentTarget: HTMLInputElement }) {

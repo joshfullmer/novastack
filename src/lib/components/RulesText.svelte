@@ -14,6 +14,7 @@
 	 * (`rules-text.ts`) is the one place that knows how a paragraph turns into one; this only asks
 	 * "did it," and renders a `<ul>` instead of a `<p>` when it did.
 	 */
+	import { cn } from '#lib/cn.js';
 	import { splitChoiceOptions, type Paragraph, type Segment } from '#lib/cards/rules-text.js';
 	import { quoteQueryValue } from '#lib/cards/dataset.js';
 	import { PARAM } from '#lib/filters/state.js';
@@ -24,8 +25,9 @@
 		size = 'base'
 	}: { paragraphs: readonly Paragraph[]; size?: 'sm' | 'base' } = $props();
 
-	const linkClass =
-		'underline decoration-dotted decoration-neon-dim underline-offset-2 hover:text-neon';
+	const linkClass = cn(
+		'underline decoration-neon-dim decoration-dotted underline-offset-2 hover:text-neon'
+	);
 </script>
 
 {#snippet renderSegment(segment: Segment)}

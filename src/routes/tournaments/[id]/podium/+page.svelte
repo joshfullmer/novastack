@@ -1,6 +1,7 @@
 <script lang="ts">
 	// Podium: the top of the bracket gets the room. The top three as art-led panels with their lists,
 	// fourth to eighth as tiles, everyone else as chips.
+	import { cn } from '#lib/cn.js';
 	import LegendArt from '#lib/components/tournaments/LegendArt.svelte';
 	import TournamentDeck from '#lib/components/tournaments/TournamentDeck.svelte';
 	import { legendNames } from '#lib/tournaments/present.js';
@@ -10,7 +11,7 @@
 	const podium = $derived(standings.slice(0, 3));
 	const topEight = $derived(standings.slice(3, 8));
 	const field = $derived(standings.slice(8));
-	const MEDAL = ['text-card-yellow', 'text-body', 'text-card-red'];
+	const MEDAL = [cn('text-card-yellow'), cn('text-body'), cn('text-card-red')];
 </script>
 
 <section class="grid gap-4 lg:grid-cols-3" aria-label="Podium">

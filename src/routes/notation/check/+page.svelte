@@ -14,6 +14,7 @@
 	 * result column re-renders every turn through `NotationLine`, where each move explains itself —
 	 * or says why it is illegal.
 	 */
+	import { cn } from '#lib/cn.js';
 	import { onMount } from 'svelte';
 	import { replaceState } from '$app/navigation';
 	import Board from '#lib/components/notation/Board.svelte';
@@ -111,7 +112,7 @@
 		return `${PLAYER_LABEL[outcome.player]} wins ${how} ${outcome.turn}`;
 	}
 
-	const actorText: Record<Owner, string> = { w: 'text-neon', t: 'text-card-red' };
+	const actorText: Record<Owner, string> = { w: cn('text-neon'), t: cn('text-card-red') };
 </script>
 
 <Meta

@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { cn } from '#lib/cn.js';
 	import type { ParseWarning, ParseWarningReason } from '#lib/query/index.js';
 	import { tick } from 'svelte';
 	import { autocompleteFor, type AutocompleteState, type Suggestion } from './autocomplete.js';
@@ -176,7 +177,7 @@
 		onSource: (next: string) => void;
 	} = $props();
 
-	const PADDING = { comfortable: 'px-4 py-2.5', dense: 'px-3 py-1.5' } as const;
+	const PADDING = { comfortable: cn('px-4 py-2.5'), dense: cn('px-3 py-1.5') } as const;
 	const padding = $derived(PADDING[size]);
 
 	let inputEl = $state<HTMLInputElement>();
@@ -359,11 +360,11 @@
 	// Grammar (operators, parens, the `or`/`and`/`-` connectives) shares one dim tier — it's
 	// structure, not content. Values stay `bright`, same as plain/unrecognized text.
 	const CATEGORY_CLASS: Record<HighlightCategory, string> = {
-		field: 'text-neon',
-		operator: 'text-muted',
-		keyword: 'text-muted',
-		value: 'text-bright',
-		regex: 'text-bright'
+		field: cn('text-neon'),
+		operator: cn('text-muted'),
+		keyword: cn('text-muted'),
+		value: cn('text-bright'),
+		regex: cn('text-bright')
 	};
 
 	const REASON_MESSAGE: Record<ParseWarningReason, string> = {
@@ -395,13 +396,13 @@
 			if (start >= end) continue;
 			const colorSpan = colorSpans.find((s) => s.span[0] <= start && start < s.span[1]);
 			const warning = warnings.find((w) => w.span[0] <= start && start < w.span[1]);
-			const decoration =
-				warning !== undefined
-					? ' underline decoration-wavy decoration-amber-400 underline-offset-2'
-					: '';
 			result.push({
 				text: text.slice(start, end),
-				class: (colorSpan ? CATEGORY_CLASS[colorSpan.category] : 'text-bright') + decoration,
+				class: cn(
+					colorSpan ? CATEGORY_CLASS[colorSpan.category] : 'text-bright',
+					warning !== undefined &&
+						'underline decoration-amber-400 decoration-wavy underline-offset-2'
+				),
 				warning
 			});
 		}

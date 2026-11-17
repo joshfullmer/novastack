@@ -5,10 +5,11 @@
  *
  * Written as literal strings, not composed — Tailwind discovers classes by scanning source text.
  */
+import { cn } from '#lib/cn.js';
 import type { SizeStatus } from './legality.js';
 
 export const SIZE_STATUS_TONE: Record<SizeStatus, string> = {
-	under: 'text-card-yellow',
-	legal: 'text-card-green',
-	over: 'text-card-red'
+	under: cn('text-card-yellow'),
+	legal: cn('text-card-green'),
+	over: cn('text-card-red')
 };

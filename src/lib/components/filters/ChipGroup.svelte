@@ -1,4 +1,5 @@
 <script lang="ts" generics="T extends string">
+	import { cn } from '#lib/cn.js';
 	/**
 	 * A multi-select chip row. **OR within a facet** — selecting Red and Blue widens.
 	 *
@@ -24,7 +25,9 @@
 		tintOff?: Record<string, string>;
 	} = $props();
 
-	const base = 'rounded-full border px-3 py-1 text-sm transition-colors focus-visible:outline-neon';
+	const base = cn(
+		'rounded-full border px-3 py-1 text-sm transition-colors focus-visible:outline-neon'
+	);
 </script>
 
 <fieldset class="min-w-0">

@@ -5,6 +5,7 @@
 	 * §6. Composed only while the dialog is open, so the card art isn't fetched
 	 * for a visitor who never asks for the image.
 	 */
+	import { cn } from '#lib/cn.js';
 	import { composeDeckImage, type DeckImageLayout } from '#lib/decks/deck-image.js';
 	import type { DeckImageOptions } from '#lib/decks/deck-image-canvas.js';
 
@@ -69,10 +70,12 @@
 		URL.revokeObjectURL(url);
 	}
 
-	const button =
-		'rounded-md border border-edge px-3 py-1.5 text-sm text-body hover:border-neon hover:text-neon';
-	const primary =
-		'rounded-md bg-neon px-3 py-1.5 text-sm font-medium text-void hover:bg-neon-dim disabled:opacity-50';
+	const button = cn(
+		'rounded-md border border-edge px-3 py-1.5 text-sm text-body hover:border-neon hover:text-neon'
+	);
+	const primary = cn(
+		'rounded-md bg-neon px-3 py-1.5 text-sm font-medium text-void hover:bg-neon-dim disabled:opacity-50'
+	);
 </script>
 
 <button

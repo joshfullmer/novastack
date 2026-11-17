@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { cn } from '#lib/cn.js';
 	import { periodParams } from '#lib/tournaments/period.js';
 	// One Tournament Deck: who played it and how it did, its path through the event (every round, the
 	// opponent's Legends and the result), and the list.
@@ -11,10 +12,10 @@
 	const deck = $derived(data.deck);
 
 	const MARK = {
-		W: 'text-card-green',
-		L: 'text-card-red',
-		D: 'text-card-yellow',
-		BYE: 'text-muted'
+		W: cn('text-card-green'),
+		L: cn('text-card-red'),
+		D: cn('text-card-yellow'),
+		BYE: cn('text-muted')
 	};
 </script>
 

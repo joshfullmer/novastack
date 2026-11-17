@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { cn } from '#lib/cn.js';
 	/**
 	 * Export as text: one tab per format, a live preview of exactly what gets copied, and
 	 * Copy / Download. The formats are `#lib/decks/export.ts`'s — `docs/spec/deckbuilder.md` §6.
@@ -63,9 +64,12 @@
 		URL.revokeObjectURL(url);
 	}
 
-	const button =
-		'rounded-md border border-edge px-3 py-1.5 text-sm text-body hover:border-neon hover:text-neon';
-	const primary = 'rounded-md bg-neon px-3 py-1.5 text-sm font-medium text-void hover:bg-neon-dim';
+	const button = cn(
+		'rounded-md border border-edge px-3 py-1.5 text-sm text-body hover:border-neon hover:text-neon'
+	);
+	const primary = cn(
+		'rounded-md bg-neon px-3 py-1.5 text-sm font-medium text-void hover:bg-neon-dim'
+	);
 </script>
 
 <button type="button" onclick={() => dialogEl?.showModal()} class={button}>Export</button>

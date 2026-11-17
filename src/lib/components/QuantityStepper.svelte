@@ -68,6 +68,7 @@
 	 * per-font guess; a stroke centred in its own `viewBox` is centred by construction, in any
 	 * font, at any size.
 	 */
+	import { cn } from '#lib/cn.js';
 	import { slide } from 'svelte/transition';
 	import { collection } from '#lib/collection/state.svelte.js';
 
@@ -97,17 +98,25 @@
 	// Written as whole literal strings rather than composed from fragments, so Tailwind's source
 	// scanner sees every class it needs to generate.
 	const revealClass = $derived(
-		expanded ? 'gap-1' : 'gap-0 transition-[gap] group-hover/tile:gap-1 has-[:focus-visible]:gap-1'
+		cn(
+			expanded
+				? 'gap-1'
+				: 'gap-0 transition-[gap] group-hover/tile:gap-1 has-[:focus-visible]:gap-1'
+		)
 	);
 	const buttonRevealClass = $derived(
-		expanded
-			? 'w-5'
-			: 'w-0 opacity-0 transition-all group-hover/tile:w-5 group-hover/tile:opacity-100 focus-visible:w-5 focus-visible:opacity-100'
+		cn(
+			expanded
+				? 'w-5'
+				: 'w-0 opacity-0 transition-all group-hover/tile:w-5 group-hover/tile:opacity-100 focus-visible:w-5 focus-visible:opacity-100'
+		)
 	);
 	const countRevealClass = $derived(
-		expanded
-			? 'transition-[margin] duration-150 ease-out empty:-ml-1'
-			: 'min-w-0 transition-[min-width] group-hover/tile:min-w-[2.75ch] group-has-[:focus-visible]/badge:min-w-[2.75ch]'
+		cn(
+			expanded
+				? 'transition-[margin] duration-150 ease-out empty:-ml-1'
+				: 'min-w-0 transition-[min-width] group-hover/tile:min-w-[2.75ch] group-has-[:focus-visible]/badge:min-w-[2.75ch]'
+		)
 	);
 </script>
 
