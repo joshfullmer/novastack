@@ -1,11 +1,8 @@
 <script lang="ts">
-	import PeriodFields from '#lib/components/tournaments/PeriodFields.svelte';
 	import { periodParams } from '#lib/tournaments/period.js';
 	// A Card's tournament record: its art and headline numbers, a picker for another card, and two views
-	// of the same usage (every deck that ran it; where it fits). The picker is a plain GET form to
-	// `/tournaments/cards`, which redirects, so it works without JavaScript.
+	// of the same usage (every deck that ran it; where it fits). It is reached from the card breakdown.
 	import { page } from '$app/state';
-	import { dataset } from '#lib/cards/index.js';
 	import Meta from '#lib/components/Meta.svelte';
 	import LegendArt from '#lib/components/tournaments/LegendArt.svelte';
 	import { cardName } from '#lib/tournaments/present.js';
@@ -15,7 +12,6 @@
 	const usage = $derived(data.usage);
 	const base = $derived(`/tournaments/cards/${usage.slug}`);
 
-	const choices = [...dataset.cards].sort((a, b) => a.name.localeCompare(b.name));
 	const percent = (n: number) => `${Math.round(n * 100)}%`;
 
 	const facts = $derived([
@@ -45,26 +41,13 @@
 <div>
 	<div class="py-6">
 		<div class="flex flex-wrap items-center justify-between gap-3 border-b border-edge pb-4">
-			<h1 class="font-mono text-xl text-bright">Played in tournaments</h1>
-			<form
-				method="GET"
-				action="/tournaments/cards"
-				class="flex items-center gap-2 font-mono text-xs text-muted"
-			>
-				<PeriodFields period={data.period} />
-				<label for="card-picker">Card</label>
-				<select
-					id="card-picker"
-					name="card"
-					class="max-w-64 rounded border border-edge bg-shell px-2 py-1.5 text-body"
-					onchange={(event) => event.currentTarget.form?.requestSubmit()}
+			<div class="flex items-baseline gap-4">
+				<a
+					href={href('/tournaments/meta/cards', periodParams(data.period))}
+					class="font-mono text-xs text-muted hover:text-body">← Card breakdown</a
 				>
-					{#each choices as card (card.slug)}
-						<option value={card.slug} selected={card.slug === usage.slug}>{card.name}</option>
-					{/each}
-				</select>
-				<noscript><button class="rounded border border-edge px-2 py-1.5">Go</button></noscript>
-			</form>
+				<h1 class="font-mono text-xl text-bright">Played in tournaments</h1>
+			</div>
 		</div>
 
 		<div class="mt-6 grid gap-8 md:grid-cols-[14rem_1fr]">

@@ -43,7 +43,8 @@
 			initial: 'M',
 			path: '/tournaments/meta',
 			scoped: true,
-			on: (p) => p.startsWith('/tournaments/meta'),
+			// A card's own page is reached from the card breakdown, so it sits here.
+			on: (p) => p.startsWith('/tournaments/meta') || p.startsWith('/tournaments/cards'),
 			items: [
 				{ label: 'Tier list', path: '/tournaments/meta', on: (p) => p === '/tournaments/meta' },
 				{
@@ -54,7 +55,7 @@
 				{
 					label: 'Card breakdown',
 					path: '/tournaments/meta/cards',
-					on: (p) => p.startsWith('/tournaments/meta/cards')
+					on: (p) => p.startsWith('/tournaments/meta/cards') || p.startsWith('/tournaments/cards')
 				}
 			]
 		},
@@ -76,14 +77,6 @@
 					on: (p) => p.startsWith('/tournaments/decks/lines')
 				}
 			]
-		},
-		{
-			label: 'Cards',
-			initial: 'C',
-			path: '/tournaments/cards',
-			scoped: true,
-			on: (p) => p.startsWith('/tournaments/cards'),
-			items: []
 		}
 	];
 

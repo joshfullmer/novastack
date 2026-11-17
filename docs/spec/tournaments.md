@@ -455,7 +455,7 @@ read-only, dynamic and `noindex`:
   **`/decks/lines`** (shelves per Legend line) and **`/decks/[guid]`** (a deck's path through its event, and
   its list).
 - **`/tournaments/cards/[slug]`** (usage and finishes) and **`/cards/[slug]/fit`** (does it do better at the
-  top; which RAMs and lines run it). `/tournaments/cards` is a front door that redirects to a card.
+  top; which RAMs and lines run it). A card's page has no picker of its own: it is reached by clicking a card in the card breakdown.
 - **Tiers** (2026-11-17). The tier list ranks how a deck _performs_, S down to D, and within a tier by how
   much of the field plays it (the share bar stays beside it). A group's _power_ is its match win rate (a
   draw counts half) pulled toward 50% as if it had also played 10 even matches (`TIER_PRIOR`), so a few
@@ -497,9 +497,9 @@ read-only, dynamic and `noindex`:
 - **Navigation is a sidebar** (2026-11-17): the section's tabs, the meta and deck sub-tabs and the
   period / kind / field-size row used to take about 300px off the top of every page. They are now one
   collapsible left sidebar (`TournamentsNav`, in `/tournaments/+layout.svelte`): Events, Meta (Tier list,
-  Matchups, Card breakdown), Decks (All decks, By Legends), Cards, and, on the statistics pages only, the
+  Matchups, Card breakdown), Decks (All decks, By Legends), and, on the statistics pages only, the
   scope (Period, Kind, Players) as stacked dropdowns. Collapsed, it is a rail of initials (and the period);
-  the choice is the `tournaments-nav` cookie. Below `lg` it is a menu above the page. Pages drop their own
+  the choice is the `tournaments-nav` cookie. Below `lg` it is a menu above the page. There is no Cards item: a card's own page (`/tournaments/cards/[slug]`: its record, and where it fits) is reached from the card breakdown, and there is no `/tournaments/cards` index. Pages drop their own
   titles (kept for screen readers) since the sidebar says where you are. The deck pane's split moved to
   1536px wide, since the sidebar takes room. The scope loads in `/tournaments/+layout.server.ts` now, so
   every page under it has `period`, `periods` and `kinds`.
