@@ -82,44 +82,49 @@
 	</section>
 {/snippet}
 
-<!-- On a page of its own the path sits beside the header, not under it: a row of the path is short. -->
-<div
-	class={layout === 'page' ? 'grid gap-8 lg:grid-cols-[minmax(0,1fr)_28rem] lg:items-start' : ''}
->
-	<header class="flex items-center gap-4 border-b border-edge pb-4">
-		<div class="flex {compact ? 'w-32' : 'w-64'} shrink-0 gap-1">
-			{#each deck.legends as slug (slug)}<LegendArt
-					{slug}
-					sizes="120px"
-					class="flex-1 shadow-lg"
-				/>{/each}
-		</div>
-		<div class="min-w-0">
-			<h1 class="truncate {compact ? 'text-xl' : 'text-2xl'} font-semibold text-bright">
-				{deck.player}
-			</h1>
-			<p class="text-sm text-muted">
-				{#if deck.ram}
-					<a
-						href="/cards?q=legends:{deck.ram}"
-						class="mr-1 text-base hover:underline"
-						title="The cards this deck's Legends allow"><RamCode ram={deck.ram} /></a
+<!-- In the deck list's pane (wide), this fills the pane's height and the cards and the rail scroll inside
+     it. On a page of its own the path sits beside the header, not under it: a row of the path is short. -->
+<div class={compact ? '2xl:flex 2xl:min-h-0 2xl:flex-1 2xl:flex-col' : ''}>
+	<div
+		class={layout === 'page' ? 'grid gap-8 lg:grid-cols-[minmax(0,1fr)_28rem] lg:items-start' : ''}
+	>
+		<header class="flex items-center gap-4 border-b border-edge pb-4">
+			<div class="flex {compact ? 'w-32' : 'w-64'} shrink-0 gap-1">
+				{#each deck.legends as slug (slug)}<LegendArt
+						{slug}
+						sizes="120px"
+						class="flex-1 shadow-lg"
+					/>{/each}
+			</div>
+			<div class="min-w-0">
+				<h1 class="truncate {compact ? 'text-xl' : 'text-2xl'} font-semibold text-bright">
+					{deck.player}
+				</h1>
+				<p class="text-sm text-muted">
+					{#if deck.ram}
+						<a
+							href="/cards?q=legends:{deck.ram}"
+							class="mr-1 text-base hover:underline"
+							title="The cards this deck's Legends allow"><RamCode ram={deck.ram} /></a
+						>
+					{/if}{legendNames(deck.legends)}
+				</p>
+				<p class="mt-1 font-mono text-xs text-muted">
+					Finished {deck.rank} of {deck.playerCount} · {deck.wins}-{deck.losses}-{deck.draws} ·
+					<a href="/tournaments/{deck.eventId}" class="text-neon hover:underline"
+						>{deck.eventName}</a
 					>
-				{/if}{legendNames(deck.legends)}
-			</p>
-			<p class="mt-1 font-mono text-xs text-muted">
-				Finished {deck.rank} of {deck.playerCount} · {deck.wins}-{deck.losses}-{deck.draws} ·
-				<a href="/tournaments/{deck.eventId}" class="text-neon hover:underline">{deck.eventName}</a>
-				· {formatDate(deck.startsAt)}
-			</p>
-		</div>
-	</header>
+					· {formatDate(deck.startsAt)}
+				</p>
+			</div>
+		</header>
 
-	{#if layout === 'page'}
-		<div class="mt-5 lg:mt-0">{@render path()}</div>
-	{/if}
+		{#if layout === 'page'}
+			<div class="mt-5 lg:mt-0">{@render path()}</div>
+		{/if}
+	</div>
+
+	<section class="mt-5 {compact ? '2xl:min-h-0 2xl:flex-1' : ''}" aria-label="Decklist">
+		<TournamentDeckView {deck} {view} {layout} rail={layout === 'pane' ? path : undefined} />
+	</section>
 </div>
-
-<section class="mt-5" aria-label="Decklist">
-	<TournamentDeckView {deck} {view} {layout} rail={layout === 'pane' ? path : undefined} />
-</section>

@@ -50,6 +50,8 @@ export const load: PageServerLoad = async ({ locals, parent, url, cookies }) => 
 	return {
 		...result,
 		deck,
+		// Fits the screen on a wide one: the list and the deck each scroll, the window does not.
+		fullHeight: true,
 		deckView: readViewPref(cookies, 'deck-cards-view', DECK_VIEWS, 'gallery'),
 		rams: (await ramRows(locals.db, period))
 			.flatMap((row) => (row.line ? [{ ram: row.line, decks: row.decks }] : []))

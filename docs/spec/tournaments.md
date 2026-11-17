@@ -474,7 +474,12 @@ read-only, dynamic and `noindex`:
   link opened without JavaScript, still goes to `/decks/[guid]`, which shows the same `DeckDetail`.
   The list is a narrow column (finish, player and RAM, W-L-D; the event is in the pane and the row's
   tooltip) so the pane takes the rest; the filters run in one row above both and apply as you choose or type;
-  in the pane the right rail (the card being pointed at, then the path through the event, price and stats) is pinned and scrolls on its own, so that card stays in view while the cards scroll past. The pane is set off from the list by a divider, not a box.
+  in the pane the right rail (the card being pointed at, then the path through the event, price and stats) scrolls on its own, so that card stays in view while the cards scroll past. The pane is set off from the list by a divider, not a box.
+  **On a screen 1536px wide or more the deck list is exactly the height of the screen**: the window does not
+  scroll, the footer steps aside, and three columns scroll on their own (the deck list, the deck's cards,
+  and the rail) instead of the pane scrolling inside a page that also scrolls. A page asks for this with
+  `fullHeight: true` in its load data; the root layout and the layouts above it hand the height down.
+  Narrower, it is an ordinary page.
 - **A tournament deck reads like a saved deck** (2026-11-17): `DeckDetail` draws the cards with the same
   components as `/d/[code]` (`components/deck/`: `DeckPreview`, `DeckCardList`, `DeckSideboard`,
   `DeckStats`, `ViewToggle`), so the card pointed at shows large beside the list, cards group by type with

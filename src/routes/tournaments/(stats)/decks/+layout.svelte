@@ -14,6 +14,10 @@
 	noindex
 />
 
-<div class="py-6">
+<div
+	class="py-6 {page.data.fullHeight === true
+		? '2xl:flex 2xl:min-h-0 2xl:flex-1 2xl:flex-col 2xl:pb-4'
+		: ''}"
+>
 	{@render children()}
 </div>

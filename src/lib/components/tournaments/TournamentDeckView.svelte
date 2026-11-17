@@ -67,11 +67,16 @@
 	const priced = $derived([...legends.map((card) => ({ card, quantity: 1 })), ...main, ...side]);
 
 	let focused = $state<Card | null>(null);
-	// A different deck starts from its own first card and its whole list, not the last one's.
+	let cardsColumn = $state<HTMLElement>();
+	let railColumn = $state<HTMLElement>();
+	// A different deck starts from its own first card and its whole list, scrolled to the top, not where
+	// the last one was left.
 	$effect(() => {
 		void deck.guid;
 		focused = null;
 		pick = null;
+		cardsColumn?.scrollTo(0, 0);
+		railColumn?.scrollTo(0, 0);
 	});
 	const shown = $derived(focused ?? legends[0] ?? main[0]?.card ?? null);
 
@@ -109,10 +114,12 @@
 	}
 </script>
 
+<!-- In the deck list's pane on a wide screen the cards and the rail each scroll in the height the pane
+     has; anywhere else the page scrolls. -->
 <div
 	class="grid gap-6 {layout === 'page'
 		? 'lg:grid-cols-[240px_1fr_280px]'
-		: 'lg:grid-cols-[minmax(0,1fr)_16rem]'}"
+		: 'lg:grid-cols-[minmax(0,1fr)_16rem] 2xl:h-full 2xl:min-h-0 2xl:grid-rows-[minmax(0,1fr)]'}"
 >
 	{#if layout === 'page'}
 		<div class="hidden lg:sticky lg:top-6 lg:block lg:self-start">
@@ -120,7 +127,10 @@
 		</div>
 	{/if}
 
-	<div class="min-w-0">
+	<div
+		bind:this={cardsColumn}
+		class="min-w-0 {layout === 'pane' ? '2xl:min-h-0 2xl:overflow-y-auto' : ''}"
+	>
 		<div class="mb-3 flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
 			<div class="flex flex-wrap items-center gap-x-3 gap-y-1">
 				<p class="text-sm text-muted tabular-nums">
@@ -196,11 +206,10 @@
 		{/if}
 	</div>
 
-	<!-- In the pane the rail scrolls on its own and stays in view while the cards scroll past, so the card
-	     being pointed at is always on screen. -->
 	<div
+		bind:this={railColumn}
 		class="flex flex-col gap-4 {layout === 'pane'
-			? 'lg:sticky lg:top-0 lg:max-h-[calc(100vh-7rem)] lg:self-start lg:overflow-y-auto lg:pr-1'
+			? '2xl:min-h-0 2xl:overflow-y-auto 2xl:pr-1'
 			: ''}"
 	>
 		{#if layout === 'pane'}
