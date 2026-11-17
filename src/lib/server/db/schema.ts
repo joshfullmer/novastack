@@ -468,13 +468,22 @@ export const tournamentDeckCards = sqliteTable(
 		deckGuid: text('deck_guid')
 			.notNull()
 			.references(() => tournamentDecks.guid, { onDelete: 'cascade' }),
+		/**
+		 * The deck's Tournament, repeated here so an aggregate over a period can filter and group on this
+		 * table alone (its index `(board, tournament_id, card_slug)` covers them) instead of joining every
+		 * card row to its deck first. Always equal to `tournament_decks.tournament_id`.
+		 */
+		tournamentId: integer('tournament_id')
+			.notNull()
+			.references(() => tournaments.id, { onDelete: 'cascade' }),
 		cardSlug: text('card_slug').notNull(),
 		board: text('board', { enum: ['main', 'legend', 'side'] }).notNull(),
 		quantity: integer('quantity').notNull()
 	},
 	(table) => [
 		primaryKey({ columns: [table.deckGuid, table.cardSlug, table.board] }),
-		index('tournament_deck_cards_card_idx').on(table.cardSlug)
+		index('tournament_deck_cards_card_idx').on(table.cardSlug),
+		index('tournament_deck_cards_board_idx').on(table.board, table.tournamentId, table.cardSlug)
 	]
 );
 

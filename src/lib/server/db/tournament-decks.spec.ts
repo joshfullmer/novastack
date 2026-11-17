@@ -5,12 +5,15 @@
 import { describe, expect, it } from 'vitest';
 import {
 	DECKS_PER_PAGE,
-	buildShelves,
-	type DeckFilters,
-	type DeckListRow
+	buildShelf,
+	SHELF_DECKS,
+	SHELF_LINES,
+	type DeckFilters
 } from '#lib/tournaments/deck-views.js';
+import type { LineRow } from '#lib/tournaments/meta.js';
 import { ALL_TIME, type Period } from '#lib/tournaments/period.js';
 import { getDeckDetail, getDeckList, getDecksByLine } from './tournament-decks.js';
+import { seedCorpus } from './test-corpus.js';
 import { createTestDb } from './test-db.js';
 import { seedEvent } from './test-seed.js';
 import { world as buildWorld } from './test-world.js';
@@ -170,40 +173,61 @@ describe('getDeckDetail', () => {
 
 describe('getDecksByLine', () => {
 	it('groups decks by Legend line, biggest shelf first', async () => {
-		const shelves = await getDecksByLine(world(), ALL_TIME);
-		expect(shelves.map((s) => [s.line, s.decks.length])).toEqual([
-			['a+b+c', 3],
-			['a+b+d', 2],
-			['e+f+g', 1]
+		const { shelves, lines, decks } = await getDecksByLine(world(), ALL_TIME);
+		expect(shelves.map((s) => [s.line, s.deckCount, s.decks.length])).toEqual([
+			['a+b+c', 3, 3],
+			['a+b+d', 2, 2],
+			['e+f+g', 1, 1]
 		]);
+		expect([lines, decks]).toEqual([3, 6]);
 		expect(shelves[0].legends).toEqual(['a', 'b', 'c']);
 		expect(shelves[0].bestRank).toBe(1);
 	});
 
 	it('quotes no win rate for a shelf under five decks', async () => {
-		expect((await getDecksByLine(world(), ALL_TIME)).every((s) => s.winRate === null)).toBe(true);
+		const { shelves } = await getDecksByLine(world(), ALL_TIME);
+		expect(shelves.every((s) => s.winRate === null)).toBe(true);
 	});
 });
 
-describe('buildShelves', () => {
-	const row = (guid: string, wins: number, losses: number): DeckListRow & { line: string } => ({
-		guid,
-		eventId: 1,
-		eventName: 'e',
-		startsAt: 0,
-		playerCount: 10,
-		player: guid,
-		rank: 1,
-		wins,
-		losses,
-		draws: 0,
-		legends: ['a', 'b', 'c'],
-		line: 'a+b+c'
+describe('getDecksByLine on a large field', () => {
+	it('draws a fixed number of lines and decks, with the record over all of them', async () => {
+		const { db, sqlite } = createTestDb();
+		seedCorpus(sqlite, { events: 60 });
+		const { shelves, lines, decks } = await getDecksByLine(db, ALL_TIME);
+
+		expect(shelves).toHaveLength(SHELF_LINES);
+		expect(lines).toBeGreaterThan(SHELF_LINES);
+		const popular = shelves[0];
+		expect(popular.decks).toHaveLength(SHELF_DECKS);
+		expect(popular.deckCount).toBeGreaterThan(SHELF_DECKS);
+		// The sample is the line's best finishes, so its best deck is the best the line ever had.
+		expect(Math.min(...popular.decks.map((d) => d.rank))).toBe(popular.bestRank);
+		expect(decks).toBeGreaterThan(popular.deckCount);
+		expect(shelves.map((s) => s.deckCount)).toEqual(
+			[...shelves.map((s) => s.deckCount)].sort((a, b) => b - a)
+		);
+	});
+});
+
+describe('buildShelf', () => {
+	const line = (decks: number): LineRow & { line: string } => ({
+		line: 'a+b+c',
+		decks,
+		matchWins: 12,
+		matchLosses: 8,
+		matchDraws: 0,
+		top8: 0,
+		wins: 0,
+		best: 3
 	});
 
-	it('quotes a win rate from five decks up', () => {
-		const five = [row('1', 3, 1), row('2', 2, 2), row('3', 1, 3), row('4', 3, 1), row('5', 3, 1)];
-		expect(buildShelves(five)[0].winRate).toBeCloseTo(12 / 20);
-		expect(buildShelves(five.slice(0, 4))[0].winRate).toBeNull();
+	it('quotes a win rate from five decks up, over every deck of the line', () => {
+		expect(buildShelf(line(5), []).winRate).toBeCloseTo(12 / 20);
+		expect(buildShelf(line(4), []).winRate).toBeNull();
+	});
+
+	it('reports the line, not the sample, for its size and best finish', () => {
+		expect(buildShelf(line(40), [])).toMatchObject({ deckCount: 40, bestRank: 3, decks: [] });
 	});
 });

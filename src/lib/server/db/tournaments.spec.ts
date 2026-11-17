@@ -3,6 +3,7 @@
  * two awkward events: one whose champion registered no deck, and one with no decks at all.
  */
 import { describe, expect, it } from 'vitest';
+import { EVENTS_PER_PAGE } from '#lib/tournaments/event-list.js';
 import { getEventList, getEventView } from './tournaments.js';
 import { seedEvent } from './test-seed.js';
 import { world } from './test-world.js';
@@ -46,7 +47,7 @@ function withAwkwardEvents() {
 
 describe('getEventList', () => {
 	it('lists events newest first with counts', async () => {
-		const events = await getEventList(withAwkwardEvents());
+		const events = (await getEventList(withAwkwardEvents())).events;
 		expect(events.map((e) => e.id)).toEqual([4, 3, 2, 1]);
 		const [, , two, one] = events;
 		expect(one).toMatchObject({ deckCount: 4, roundCount: 3, winner: 'P1', playerCount: 4 });
@@ -54,23 +55,23 @@ describe('getEventList', () => {
 	});
 
 	it("shows the winner's deck when there is one", async () => {
-		const [, , , one] = await getEventList(withAwkwardEvents());
+		const [, , , one] = (await getEventList(withAwkwardEvents())).events;
 		expect(one.showcase).toEqual({ rank: 1, name: 'P1', legends: ['a', 'b', 'c'] });
 	});
 
 	it('shows the best-placed player who has a deck when the winner has none', async () => {
-		const [, three] = await getEventList(withAwkwardEvents());
+		const [, three] = (await getEventList(withAwkwardEvents())).events;
 		expect(three.winner).toBe('P8');
 		expect(three.showcase).toEqual({ rank: 2, name: 'P9', legends: ['h', 'i', 'j'] });
 	});
 
 	it('has no showcase, and still a winner, for an event with no decks', async () => {
-		const [four] = await getEventList(withAwkwardEvents());
+		const [four] = (await getEventList(withAwkwardEvents())).events;
 		expect(four).toMatchObject({ winner: 'P11', showcase: null, deckCount: 0, field: [] });
 	});
 
 	it('counts how many decks ran each Legend', async () => {
-		const [, , , one] = await getEventList(withAwkwardEvents());
+		const [, , , one] = (await getEventList(withAwkwardEvents())).events;
 		// D1 D2 are X (a b c), D3 is Y (a b d), D4 is Z (e f g)
 		expect(Object.fromEntries(one.field.map((f) => [f.slug, f.decks]))).toEqual({
 			a: 3,
@@ -86,7 +87,49 @@ describe('getEventList', () => {
 
 	it('is empty when nothing has been ingested', async () => {
 		const { createTestDb } = await import('./test-db.js');
-		expect(await getEventList(createTestDb().db)).toEqual([]);
+		expect(await getEventList(createTestDb().db)).toEqual({
+			events: [],
+			total: 0,
+			players: 0,
+			page: 1,
+			pages: 1
+		});
+	});
+
+	describe('paging', () => {
+		const corpus = async () => {
+			const { createTestDb } = await import('./test-db.js');
+			const { seedCorpus } = await import('./test-corpus.js');
+			const { db, sqlite } = createTestDb();
+			seedCorpus(sqlite, { events: EVENTS_PER_PAGE + 6 });
+			return db;
+		};
+
+		it('returns one page of events with totals over all of them', async () => {
+			const db = await corpus();
+			const first = await getEventList(db, 1);
+			const second = await getEventList(db, 2);
+			expect(first.events).toHaveLength(EVENTS_PER_PAGE);
+			expect(second.events).toHaveLength(6);
+			expect([first.total, first.pages, second.page]).toEqual([EVENTS_PER_PAGE + 6, 2, 2]);
+			expect(first.players).toBe(second.players);
+			expect(first.players).toBeGreaterThan(0);
+		});
+
+		it('is newest first across pages, with no event twice', async () => {
+			const db = await corpus();
+			const all = [...(await getEventList(db, 1)).events, ...(await getEventList(db, 2)).events];
+			expect(new Set(all.map((e) => e.id)).size).toBe(all.length);
+			expect(all.map((e) => e.startsAt)).toEqual(
+				[...all.map((e) => e.startsAt)].sort((a, b) => b - a)
+			);
+		});
+
+		it('clamps a page past the end or before the start', async () => {
+			const db = await corpus();
+			expect((await getEventList(db, 99)).page).toBe(2);
+			expect((await getEventList(db, -3)).page).toBe(1);
+		});
 	});
 });
 

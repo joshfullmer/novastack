@@ -15,7 +15,12 @@ import * as schema from './schema.js';
 
 const MIGRATIONS = new URL('../../../../drizzle/', import.meta.url);
 
-export function createTestDb() {
+export function createTestDb(
+	options: {
+		/** Called with each statement and its bound parameters just before it runs. */
+		onQuery?: (sql: string, params: unknown[]) => void;
+	} = {}
+) {
 	const sqlite = new DatabaseSync(':memory:');
 	for (const file of readdirSync(MIGRATIONS)
 		.filter((name) => /^\d{4}_.*\.sql$/.test(name))
@@ -29,6 +34,7 @@ export function createTestDb() {
 
 	const db = drizzle(
 		async (sql, params, method) => {
+			options.onQuery?.(sql, params);
 			const statement = sqlite.prepare(sql);
 			// Rows as arrays of values, which is what the proxy driver reads: objects would lose a column
 			// when a join selects two of the same name.

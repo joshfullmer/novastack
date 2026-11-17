@@ -88,8 +88,9 @@ export function seedEvent(sqlite: DatabaseSync, event: SeedEvent): void {
 			);
 			const card = (slug: string, board: string, quantity: number) =>
 				run(
-					`INSERT INTO tournament_deck_cards (deck_guid, card_slug, board, quantity) VALUES (?, ?, ?, ?)`,
+					`INSERT INTO tournament_deck_cards (deck_guid, tournament_id, card_slug, board, quantity) VALUES (?, ?, ?, ?, ?)`,
 					d.guid,
+					event.id,
 					slug,
 					board,
 					quantity

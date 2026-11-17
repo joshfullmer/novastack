@@ -5,7 +5,7 @@
 	// rate is quoted only from MIN_DECKS decks up: fewer is noise.
 	import LegendArt from '#lib/components/tournaments/LegendArt.svelte';
 	import { MIN_DECKS, type GroupStat } from '#lib/tournaments/meta.js';
-	import { groupByColours, legendNames } from '#lib/tournaments/present.js';
+	import { legendNames } from '#lib/tournaments/present.js';
 
 	let { data } = $props();
 	const meta = $derived(data.meta);
@@ -33,11 +33,13 @@
 	const base = $derived.by((): GroupStat[] => {
 		if (by === 'line') return meta.byLine;
 		if (by === 'legend') return meta.byLegend;
-		return groupByColours(meta.byLine);
+		return meta.byColours;
 	});
 	/** Who is counted: every deck, only those that made the top 8, or only event winners. */
 	const rows = $derived.by(() => {
-		const total = base.reduce((n, g) => n + g[part], 0) || 1;
+		// Shares are of the whole field, so the lines past the listed ones still count in the total.
+		const total =
+			base.reduce((n, g) => n + g[part], 0) + (by === 'line' ? meta.unlisted[part] : 0) || 1;
 		return base
 			.filter((g) => g[part] > 0)
 			.map((g) => ({ ...g, partShare: g[part] / total }))
@@ -169,4 +171,10 @@
 </ol>
 {#if by === 'legend'}
 	<p class="mt-3 text-xs text-muted">Each deck counts once per Legend, so shares add up to 300%.</p>
+{:else if by === 'line' && meta.unlisted.lines > 0}
+	<p class="mt-3 text-xs text-muted">
+		The {meta.byLine.length} most-played lines. {meta.unlisted.lines} others, with {meta.unlisted
+			.decks}
+		decks between them, are counted in every share but not listed.
+	</p>
 {/if}

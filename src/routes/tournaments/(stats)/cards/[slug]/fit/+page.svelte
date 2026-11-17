@@ -72,4 +72,9 @@
 			<li class="text-sm text-muted">No deck in this period ran it.</li>
 		{/each}
 	</ul>
+	{#if usage.lineCount > usage.byLine.length}
+		<p class="mt-2 text-[11px] text-muted">
+			The {usage.byLine.length} lines that run it most, of {usage.lineCount}.
+		</p>
+	{/if}
 </section>

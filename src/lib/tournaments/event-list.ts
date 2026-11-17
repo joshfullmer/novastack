@@ -8,6 +8,23 @@
 import type { tournaments } from '../server/db/schema.ts';
 import { eventKind, type EventKind } from './kind.ts';
 
+/** Events on one page of the list. */
+export const EVENTS_PER_PAGE = 24;
+
+export const eventPageCount = (total: number) => Math.max(1, Math.ceil(total / EVENTS_PER_PAGE));
+
+/** One page of the list, with the totals the header quotes. */
+export type EventListPage = {
+	events: EventListItem[];
+	/** Every ingested event, not just this page's. */
+	total: number;
+	/** Players across every event. */
+	players: number;
+	/** The page these events are, after clamping a request to the last one. */
+	page: number;
+	pages: number;
+};
+
 export type EventListRows = {
 	tournaments: (typeof tournaments.$inferSelect)[];
 	rounds: { tournamentId: number; rounds: number }[];

@@ -52,24 +52,32 @@ export type DeckIndex = {
 };
 
 /** Reads a deck's text into the derived columns and card rows. Never guesses: see `importDeck`. */
-export function indexDeck(guid: string, text: string, cards: readonly Card[]): DeckIndex {
+export function indexDeck(
+	guid: string,
+	tournamentId: number,
+	text: string,
+	cards: readonly Card[]
+): DeckIndex {
 	const reading = importDeck(text, cards);
 	const legendSlugs = reading.legends.map((card) => card.slug).sort();
 	const rows: DeckIndex['cards'] = [
 		...reading.legends.map((card) => ({
 			deckGuid: guid,
+			tournamentId,
 			cardSlug: card.slug,
 			board: 'legend' as const,
 			quantity: 1
 		})),
 		...reading.entries.map((entry) => ({
 			deckGuid: guid,
+			tournamentId,
 			cardSlug: entry.card.slug,
 			board: 'main' as const,
 			quantity: entry.quantity
 		})),
 		...reading.sideboard.map((entry) => ({
 			deckGuid: guid,
+			tournamentId,
 			cardSlug: entry.card.slug,
 			board: 'side' as const,
 			quantity: entry.quantity

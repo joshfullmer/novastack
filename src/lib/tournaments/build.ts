@@ -132,7 +132,7 @@ export function buildTournament(input: BuildInput): BuiltTournament {
 				// that names no card would only skew every count taken over decks.
 				blankDecks.push(picked.guid);
 			} else {
-				const index = indexDeck(picked.guid, text, cards);
+				const index = indexDeck(picked.guid, tournamentId, text, cards);
 				decks.push({
 					guid: picked.guid,
 					tournamentId,

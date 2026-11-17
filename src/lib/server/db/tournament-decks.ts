@@ -3,29 +3,17 @@
  * event; and decks grouped by Legend line (`docs/spec/tournaments.md` §6).
  *
  * Filtering and paging happen in SQL, so a page's cost is its page size, not the number of decks
- * ever ingested. The only unbounded read is `getDecksByLine`, capped, because a shelf view is a
- * survey of everything by nature.
+ * ever ingested. The shelf view is bounded too: a fixed number of lines, each with a fixed number of decks.
  */
-import {
-	and,
-	asc,
-	count,
-	desc,
-	eq,
-	exists,
-	inArray,
-	isNotNull,
-	ne,
-	or,
-	sql,
-	type SQL
-} from 'drizzle-orm';
+import { and, asc, count, desc, eq, exists, inArray, ne, or, sql, type SQL } from 'drizzle-orm';
 import { alias } from 'drizzle-orm/sqlite-core';
 import {
 	buildPath,
-	buildShelves,
+	buildShelf,
 	DECKS_PER_PAGE,
 	pageCount,
+	SHELF_DECKS,
+	SHELF_LINES,
 	type DeckDetail,
 	type DeckFilters,
 	type DeckListPage,
@@ -33,7 +21,7 @@ import {
 	type LineShelf
 } from '#lib/tournaments/deck-views.js';
 import type { Period } from '#lib/tournaments/period.js';
-import { inPeriod } from './tournament-stats.js';
+import { inPeriod, lineRows } from './tournament-stats.js';
 import type { Db } from './tournaments.js';
 import {
 	players,
@@ -264,33 +252,44 @@ export async function getDeckDetail(db: Db, guid: string): Promise<DeckDetail | 
 	};
 }
 
-/** The most decks a shelf view reads. A survey of everything is unbounded by nature; this bounds it. */
-export const SHELF_DECK_CAP = 1000;
-
-export async function getDecksByLine(db: Db, period: Period): Promise<LineShelf[]> {
-	const rows = await db
-		.select({ ...deckColumns, line: tournamentDecks.legendLine })
-		.from(tournamentDecks)
-		.innerJoin(standings, eq(standings.deckGuid, tournamentDecks.guid))
-		.innerJoin(players, eq(players.id, standings.playerId))
-		.innerJoin(tournaments, eq(tournaments.id, tournamentDecks.tournamentId))
-		.where(and(isNotNull(tournamentDecks.legendLine), inPeriod(period)))
-		.orderBy(desc(tournaments.startsAt), asc(standings.rank))
-		.limit(SHELF_DECK_CAP);
-
-	return buildShelves(
-		rows.flatMap((row) =>
-			row.line === null
-				? []
-				: [
-						{
-							...row,
-							startsAt: row.startsAt.getTime(),
-							// A line is its Legends, sorted and joined, so they need no lookup.
-							legends: row.line.split('+'),
-							line: row.line
-						}
-					]
-		)
+/**
+ * The shelf view: the `SHELF_LINES` most-played Legend lines, each with its record over every deck that
+ * ran it and the `SHELF_DECKS` best-placed of them as tiles. Bounded by those two numbers, not by the
+ * field, and says how many lines and decks it left out.
+ */
+export async function getDecksByLine(
+	db: Db,
+	period: Period
+): Promise<{ shelves: LineShelf[]; lines: number; decks: number }> {
+	const every = (await lineRows(db, period)).flatMap((row) =>
+		row.line === null ? [] : [{ ...row, line: row.line }]
 	);
+	const shown = every
+		.sort((a, b) => b.decks - a.decks || a.best - b.best || a.line.localeCompare(b.line))
+		.slice(0, SHELF_LINES);
+
+	const shelves = await Promise.all(
+		shown.map(async (row) => {
+			const tiles = await db
+				.select(deckColumns)
+				.from(tournamentDecks)
+				.innerJoin(standings, eq(standings.deckGuid, tournamentDecks.guid))
+				.innerJoin(players, eq(players.id, standings.playerId))
+				.innerJoin(tournaments, eq(tournaments.id, tournamentDecks.tournamentId))
+				.where(and(eq(tournamentDecks.legendLine, row.line), inPeriod(period)))
+				// Placement as a share of the field, so a win at 200 players outranks a win at 8.
+				.orderBy(
+					sql`cast(${standings.rank} as real) / ${tournaments.playerCount}`,
+					desc(tournaments.startsAt)
+				)
+				.limit(SHELF_DECKS);
+			// A line is its Legends, sorted and joined, so a tile's Legends need no lookup.
+			const legends = new Map(tiles.map((tile) => [tile.guid, row.line.split('+')]));
+			return buildShelf(
+				row,
+				tiles.map((tile) => toRow(tile, legends))
+			);
+		})
+	);
+	return { shelves, lines: every.length, decks: every.reduce((n, row) => n + row.decks, 0) };
 }

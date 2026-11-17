@@ -54,6 +54,11 @@ export type UsageRow = {
 	asLegend: boolean;
 };
 
+/** The decks listed on a Card's page: its best finishes. A staple is in most of the field's decks. */
+export const ENTRY_LIMIT = 100;
+/** The Legend lines listed as running a Card, most-using first. */
+export const FIT_LIMIT = 25;
+
 export type CardUsage = {
 	slug: string;
 	/** Decks in scope. */
@@ -72,6 +77,9 @@ export type CardUsage = {
 	allTop8: number;
 	/** For each Legend line that ran it: how many of that line's decks did. */
 	byLine: { line: string; legends: string[]; decks: number; withCard: number; rate: number }[];
+	/** How many lines ran it, of which `byLine` lists the first `FIT_LIMIT`. */
+	lineCount: number;
+	/** The best `ENTRY_LIMIT` of the `decks` that ran it. */
 	entries: UsageRow[];
 };
 
@@ -89,6 +97,23 @@ export function buildCardUsage(input: {
 		if (row.line) withCard.set(row.line, (withCard.get(row.line) ?? 0) + 1);
 	}
 
+	const fits = input.lines
+		.flatMap((line) => {
+			const n = line.line ? (withCard.get(line.line) ?? 0) : 0;
+			return line.line && n > 0
+				? [
+						{
+							line: line.line,
+							legends: line.line.split('+'),
+							decks: line.decks,
+							withCard: n,
+							rate: n / line.decks
+						}
+					]
+				: [];
+		})
+		.sort((a, b) => b.withCard - a.withCard || b.rate - a.rate || a.line.localeCompare(b.line));
+
 	return {
 		slug: input.slug,
 		totalDecks: totals.decks,
@@ -101,22 +126,10 @@ export function buildCardUsage(input: {
 		top8: rows.filter((row) => row.rank <= 8).length,
 		allWinners: totals.winners,
 		allTop8: totals.top8,
-		byLine: input.lines
-			.flatMap((line) => {
-				const n = line.line ? (withCard.get(line.line) ?? 0) : 0;
-				return line.line && n > 0
-					? [
-							{
-								line: line.line,
-								legends: line.line.split('+'),
-								decks: line.decks,
-								withCard: n,
-								rate: n / line.decks
-							}
-						]
-					: [];
-			})
-			.sort((a, b) => b.withCard - a.withCard || b.rate - a.rate || a.line.localeCompare(b.line)),
-		entries: [...rows].sort((a, b) => a.rank - b.rank || b.startsAt - a.startsAt)
+		byLine: fits.slice(0, FIT_LIMIT),
+		lineCount: fits.length,
+		entries: [...rows]
+			.sort((a, b) => a.rank - b.rank || b.startsAt - a.startsAt)
+			.slice(0, ENTRY_LIMIT)
 	};
 }

@@ -6,7 +6,7 @@
  * what keep that down, and `rows_read` is measured on the real thing, not here.) Every query takes a
  * `Period`: a Tournament counts when its start falls in the window.
  */
-import { and, count, eq, gte, inArray, isNotNull, lt, ne, sql, type SQL } from 'drizzle-orm';
+import { and, count, eq, gte, inArray, isNotNull, lt, min, ne, sql, type SQL } from 'drizzle-orm';
 import { alias } from 'drizzle-orm/sqlite-core';
 import {
 	buildCardStats,
@@ -57,11 +57,12 @@ const recordColumns = {
 	matchLosses: total(sql`${standings.matchLosses}`),
 	matchDraws: total(sql`${standings.matchDraws}`),
 	top8: total(one(sql`${standings.rank} <= 8`)),
-	wins: total(one(sql`${standings.rank} = 1`))
+	wins: total(one(sql`${standings.rank} = 1`)),
+	best: min(standings.rank).mapWith(Number)
 };
 
 /** One row per Legend line with its record: the first half of `getMeta`, for pages that only need that. */
-async function lineRows(db: Db, period: Period): Promise<LineRow[]> {
+export async function lineRows(db: Db, period: Period): Promise<LineRow[]> {
 	return db
 		.select({ line: tournamentDecks.legendLine, ...recordColumns })
 		.from(tournamentDecks)
@@ -92,10 +93,16 @@ export async function getMeta(
 			? db
 					.select({ line: tournamentDeckCards.cardSlug, ...recordColumns })
 					.from(tournamentDeckCards)
-					.innerJoin(tournamentDecks, eq(tournamentDecks.guid, tournamentDeckCards.deckGuid))
-					.innerJoin(standings, eq(standings.deckGuid, tournamentDecks.guid))
-					.innerJoin(tournaments, eq(tournaments.id, tournamentDecks.tournamentId))
-					.where(and(eq(tournamentDeckCards.board, 'legend'), inPeriod(period)))
+					.innerJoin(standings, eq(standings.deckGuid, tournamentDeckCards.deckGuid))
+					.where(
+						and(
+							eq(tournamentDeckCards.board, 'legend'),
+							inArray(
+								tournamentDeckCards.tournamentId,
+								db.select({ id: tournaments.id }).from(tournaments).where(inPeriod(period))
+							)
+						)
+					)
 					.groupBy(tournamentDeckCards.cardSlug)
 			: Promise.resolve([])
 	]);
@@ -206,28 +213,48 @@ export async function getCardStats(
 	period: Period,
 	line: string | null
 ): Promise<{ decks: number; cards: CardStat[] }> {
+	const columns = {
+		slug: tournamentDeckCards.cardSlug,
+		mainDecks: total(one(sql`${tournamentDeckCards.board} = 'main'`)),
+		copies: total(
+			sql`case when ${tournamentDeckCards.board} = 'main' then ${tournamentDeckCards.quantity} else 0 end`
+		),
+		sideDecks: total(one(sql`${tournamentDeckCards.board} = 'side'`))
+	};
 	const [decks, rows] = await Promise.all([
 		countDecks(db, period, line),
-		db
-			.select({
-				slug: tournamentDeckCards.cardSlug,
-				mainDecks: total(one(sql`${tournamentDeckCards.board} = 'main'`)),
-				copies: total(
-					sql`case when ${tournamentDeckCards.board} = 'main' then ${tournamentDeckCards.quantity} else 0 end`
-				),
-				sideDecks: total(one(sql`${tournamentDeckCards.board} = 'side'`))
-			})
-			.from(tournamentDeckCards)
-			.innerJoin(tournamentDecks, eq(tournamentDecks.guid, tournamentDeckCards.deckGuid))
-			.innerJoin(tournaments, eq(tournaments.id, tournamentDecks.tournamentId))
-			.where(
-				and(
-					ne(tournamentDeckCards.board, 'legend'),
-					inPeriod(period),
-					line === null ? undefined : eq(tournamentDecks.legendLine, line)
-				)
-			)
-			.groupBy(tournamentDeckCards.cardSlug)
+		// Two shapes, because each wants a different driving table. Across every deck the rows are found
+		// by `(board, tournament_id, card_slug)`, so a window is a range and no deck is joined. For one
+		// Legend line the few decks that ran it are found first and their cards read by deck; there the
+		// board test is deliberately `<>`, which that index cannot serve, or the planner prefers walking
+		// every card row to starting from the line (measured: 4 ms vs 255 ms at 1,000 events).
+		line === null
+			? db
+					.select(columns)
+					.from(tournamentDeckCards)
+					.where(
+						and(
+							inArray(tournamentDeckCards.board, ['main', 'side']),
+							inArray(
+								tournamentDeckCards.tournamentId,
+								db.select({ id: tournaments.id }).from(tournaments).where(inPeriod(period))
+							)
+						)
+					)
+					.groupBy(tournamentDeckCards.cardSlug)
+			: db
+					.select(columns)
+					.from(tournamentDeckCards)
+					.innerJoin(tournamentDecks, eq(tournamentDecks.guid, tournamentDeckCards.deckGuid))
+					.innerJoin(tournaments, eq(tournaments.id, tournamentDecks.tournamentId))
+					.where(
+						and(
+							ne(tournamentDeckCards.board, 'legend'),
+							inPeriod(period),
+							eq(tournamentDecks.legendLine, line)
+						)
+					)
+					.groupBy(tournamentDeckCards.cardSlug)
 	]);
 	return { decks, cards: buildCardStats(rows, decks) };
 }

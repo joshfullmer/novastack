@@ -238,11 +238,15 @@ describe('--reparse: rebuild the derived columns from stored text', () => {
 		);
 		expect(count(db, 'tournament_deck_cards')).toBe(0);
 
-		const decks = db.prepare('SELECT guid, text FROM tournament_decks').all();
+		const decks = db.prepare('SELECT guid, tournament_id, text FROM tournament_decks').all();
 		db.exec(
 			toFile(
 				reindexStatements(
-					decks.map((row) => ({ guid: String(row.guid), text: String(row.text) })),
+					decks.map((row) => ({
+						guid: String(row.guid),
+						tournamentId: Number(row.tournament_id),
+						text: String(row.text)
+					})),
 					dataset.cards
 				)
 			)

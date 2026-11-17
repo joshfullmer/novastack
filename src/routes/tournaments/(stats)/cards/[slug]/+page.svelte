@@ -1,5 +1,5 @@
 <script lang="ts">
-	// Usage & finishes: every deck that ran this Card, best finish first.
+	// Usage & finishes: the decks that ran this Card, best finish first, up to ENTRY_LIMIT of them.
 	import LegendArt from '#lib/components/tournaments/LegendArt.svelte';
 	import { formatDate, legendNames } from '#lib/tournaments/present.js';
 	import { href } from '#lib/tournaments/url.js';
@@ -53,3 +53,8 @@
 		<li class="p-6 text-center text-sm text-muted">No deck in this period ran it.</li>
 	{/each}
 </ul>
+{#if data.usage.decks > entries.length}
+	<p class="mt-3 text-xs text-muted">
+		The {entries.length} best finishes of the {data.usage.decks} decks that ran it.
+	</p>
+{/if}

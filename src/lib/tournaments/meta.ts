@@ -8,8 +8,17 @@
  * so its Legends are recoverable from the key and need no join.
  */
 
+import { groupByColours } from './present.ts';
+
 /** A group needs at least this many decks before a win rate is quoted: fewer is noise, not a rate. */
 export const MIN_DECKS = 5;
+
+/**
+ * How many Legend lines a response lists. A line is three Legends of dozens, so the count of distinct
+ * lines grows with the field and mostly in one-deck lines (half of them at 1,000 events); the page gets
+ * the most-played hundred and a count of the rest, never the tail itself.
+ */
+export const LINE_LIMIT = 100;
 
 /** How many Legend lines the matchup matrix is drawn for. */
 export const MATRIX_SIZE = 8;
@@ -24,6 +33,8 @@ export type LineRow = {
 	top8: number;
 	/** Decks that won their event. */
 	wins: number;
+	/** The best finish any of its decks had (1 is a win). */
+	best: number;
 };
 export type MatchupRow = { a: string | null; b: string | null; matches: number; score: number };
 
@@ -46,8 +57,13 @@ export type MatrixCell = { a: string; b: string; matches: number; winRate: numbe
 export type MetaView = {
 	/** Decks whose Legends could be read; the denominator of every share. */
 	decks: number;
+	/** The `LINE_LIMIT` most-played lines. */
 	byLine: GroupStat[];
+	/** The lines left out of `byLine`, so the page can say so rather than pass the list off as whole. */
+	unlisted: { lines: number; decks: number; top8: number; wins: number };
 	byLegend: GroupStat[];
+	/** The colour pairs, folded over every line, listed or not. */
+	byColours: GroupStat[];
 	/** The matrix's rows and columns: the most-played lines, in order. */
 	matrixLines: string[];
 	/** Every ordered pair of `matrixLines`, including those nobody played (matches 0). */
@@ -76,12 +92,17 @@ const toStat = (row: LineRow, key: string, legends: string[], total: number): Gr
 const ranked = (a: GroupStat, b: GroupStat) =>
 	b.decks - a.decks || b.wins - a.wins || a.key.localeCompare(b.key);
 
-/** Just the Legend lines, most-played first: what a sidebar or a filter needs. */
-export function buildLines(rows: readonly LineRow[]): GroupStat[] {
+/** Every Legend line, most-played first. Shares are of all lines, whatever a caller then lists. */
+function allLines(rows: readonly LineRow[]): GroupStat[] {
 	const total = rows.reduce((n, row) => n + row.decks, 0);
 	return rows
 		.flatMap((row) => (row.line ? [toStat(row, row.line, row.line.split('+'), total)] : []))
 		.sort(ranked);
+}
+
+/** The `LINE_LIMIT` most-played Legend lines: what a sidebar or a filter needs. */
+export function buildLines(rows: readonly LineRow[]): GroupStat[] {
+	return allLines(rows).slice(0, LINE_LIMIT);
 }
 
 export function buildMeta(input: {
@@ -94,7 +115,9 @@ export function buildMeta(input: {
 }): MetaView {
 	const total = input.lines.reduce((n, row) => n + row.decks, 0);
 
-	const byLine = buildLines(input.lines);
+	const everyLine = allLines(input.lines);
+	const byLine = everyLine.slice(0, LINE_LIMIT);
+	const unlisted = everyLine.slice(LINE_LIMIT);
 	const byLegend = input.legends
 		.flatMap((row) => (row.line ? [toStat(row, row.line, [row.line], total)] : []))
 		.sort(ranked);
@@ -128,7 +151,14 @@ export function buildMeta(input: {
 	return {
 		decks: total,
 		byLine,
+		unlisted: {
+			lines: unlisted.length,
+			decks: unlisted.reduce((n, g) => n + g.decks, 0),
+			top8: unlisted.reduce((n, g) => n + g.top8, 0),
+			wins: unlisted.reduce((n, g) => n + g.wins, 0)
+		},
 		byLegend,
+		byColours: groupByColours(everyLine),
 		matrixLines,
 		matrix,
 		crossMatches,

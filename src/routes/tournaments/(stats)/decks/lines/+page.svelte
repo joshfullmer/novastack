@@ -1,6 +1,6 @@
 <script lang="ts">
 	// The same decks as shelves, one per Legend line: its art and record on the left, every deck that ran
-	// it as a tile. Reads like browsing a collection rather than querying a table. A win rate appears
+	// it as a tile, the best-placed few. Reads like browsing a collection rather than querying a table. A win rate appears
 	// only from 5 decks up.
 	import LegendArt from '#lib/components/tournaments/LegendArt.svelte';
 	import { MIN_DECKS } from '#lib/tournaments/meta.js';
@@ -9,11 +9,12 @@
 
 	let { data } = $props();
 	const percent = (n: number | null) => (n === null ? '—' : `${Math.round(n * 100)}%`);
-	const total = $derived(data.shelves.reduce((n, shelf) => n + shelf.decks.length, 0));
 </script>
 
 <h1 class="font-mono text-xl text-bright">Decks by Legend line</h1>
-<p class="font-mono text-xs text-muted">{total} decks · {data.shelves.length} lines</p>
+<p class="font-mono text-xs text-muted">
+	The {data.shelves.length} most-played of {data.lines} lines · {data.decks} decks
+</p>
 
 <div class="mt-5 space-y-4">
 	{#each data.shelves as shelf (shelf.line)}
@@ -29,7 +30,7 @@
 				<div class="min-w-0 flex-1">
 					<h2 class="text-sm font-semibold text-bright">{legendNames(shelf.legends)}</h2>
 					<p class="font-mono text-[11px] text-muted">
-						{shelf.decks.length} deck{shelf.decks.length === 1 ? '' : 's'} · best finish {shelf.bestRank}
+						{shelf.deckCount} deck{shelf.deckCount === 1 ? '' : 's'} · best finish {shelf.bestRank}
 						· win rate
 						{#if shelf.winRate === null}
 							<span title="Fewer than {MIN_DECKS} decks: not enough to quote a rate">—</span>
@@ -55,6 +56,11 @@
 							</a>
 						</li>
 					{/each}
+					{#if shelf.deckCount > shelf.decks.length}
+						<li class="self-center font-mono text-[11px] text-muted">
+							+{shelf.deckCount - shelf.decks.length} more
+						</li>
+					{/if}
 				</ul>
 			</div>
 		</section>

@@ -11,11 +11,12 @@
 		ordinal,
 		wherePlayed
 	} from '#lib/tournaments/present.js';
+	import { withParams } from '#lib/tournaments/url.js';
 
 	let { data } = $props();
 
 	const view = $derived(page.url.searchParams.get('view') === 'cards' ? 'cards' : 'table');
-	const totalPlayers = $derived(data.events.reduce((n, e) => n + e.playerCount, 0));
+	const go = (n: number) => withParams(page.url, { page: n === 1 ? null : n });
 
 	const TINT = {
 		Red: 'bg-card-red',
@@ -46,7 +47,7 @@
 			<div>
 				<h1 class="font-mono text-xl text-bright">Tournaments</h1>
 				<p class="font-mono text-xs text-muted">
-					{data.events.length} events · {totalPlayers} players
+					{data.total} events · {data.players} players
 				</p>
 			</div>
 			<nav class="flex gap-1.5" aria-label="View">
@@ -191,6 +192,28 @@
 					</li>
 				{/each}
 			</ul>
+		{/if}
+
+		{#if data.pages > 1}
+			<nav class="mt-6 flex items-center justify-between font-mono text-xs" aria-label="Pages">
+				{#if data.page > 1}
+					<a
+						href={go(data.page - 1)}
+						class="rounded border border-edge px-3 py-1.5 hover:text-bright">← Newer</a
+					>
+				{:else}
+					<span></span>
+				{/if}
+				<span class="text-muted">Page {data.page} of {data.pages}</span>
+				{#if data.page < data.pages}
+					<a
+						href={go(data.page + 1)}
+						class="rounded border border-edge px-3 py-1.5 hover:text-bright">Older →</a
+					>
+				{:else}
+					<span></span>
+				{/if}
+			</nav>
 		{/if}
 	</div>
 </div>

@@ -2,7 +2,7 @@
  * The decks pages' shapes: a filtered list, one deck with its path through its event, and decks
  * grouped by Legend line. Pure; the database selects and `tournament-decks.ts` hands rows here.
  */
-import { MIN_DECKS } from './meta.ts';
+import { MIN_DECKS, type LineRow } from './meta.ts';
 
 export const DECKS_PER_PAGE = 30;
 
@@ -102,37 +102,38 @@ export type DeckDetail = DeckListRow & {
 	path: PathRow[];
 };
 
-/** A shelf of decks sharing a Legend line. */
+/** How many Legend lines the shelf view draws, and how many decks of each. */
+export const SHELF_LINES = 12;
+export const SHELF_DECKS = 12;
+
+/** A shelf of decks sharing a Legend line: a sample of them, and the line's record over all of them. */
 export type LineShelf = {
 	line: string;
 	legends: string[];
+	/** The best-placed `SHELF_DECKS` of them. */
 	decks: DeckListRow[];
+	/** Every deck that ran the line, of which `decks` shows some. */
+	deckCount: number;
 	/** The best finish any of its decks had (1 is a win). */
 	bestRank: number;
 	/** Match win rate with a draw as half; null below `MIN_DECKS` decks or when nothing was played. */
 	winRate: number | null;
 };
 
-export function buildShelves(rows: readonly (DeckListRow & { line: string })[]): LineShelf[] {
-	const by = new Map<string, (DeckListRow & { line: string })[]>();
-	for (const row of rows) by.set(row.line, [...(by.get(row.line) ?? []), row]);
-
-	return [...by]
-		.map(([line, decks]): LineShelf => {
-			const played = decks.reduce((n, d) => n + d.wins + d.losses + d.draws, 0);
-			const won = decks.reduce((n, d) => n + d.wins + d.draws / 2, 0);
-			return {
-				line,
-				legends: line.split('+'),
-				decks: [...decks].sort(
-					(a, b) => a.rank / a.playerCount - b.rank / b.playerCount || b.startsAt - a.startsAt
-				),
-				bestRank: Math.min(...decks.map((d) => d.rank)),
-				winRate: decks.length >= MIN_DECKS && played ? won / played : null
-			};
-		})
-		.sort(
-			(a, b) =>
-				b.decks.length - a.decks.length || a.bestRank - b.bestRank || a.line.localeCompare(b.line)
-		);
+/** One line's shelf: its record is of every deck, its tiles are the sample read for it. */
+export function buildShelf(
+	row: LineRow & { line: string },
+	decks: readonly DeckListRow[]
+): LineShelf {
+	const played = row.matchWins + row.matchLosses + row.matchDraws;
+	return {
+		line: row.line,
+		legends: row.line.split('+'),
+		decks: [...decks].sort(
+			(a, b) => a.rank / a.playerCount - b.rank / b.playerCount || b.startsAt - a.startsAt
+		),
+		deckCount: row.decks,
+		bestRank: row.best,
+		winRate: row.decks >= MIN_DECKS && played ? (row.matchWins + row.matchDraws / 2) / played : null
+	};
 }

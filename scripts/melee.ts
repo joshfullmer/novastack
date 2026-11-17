@@ -51,15 +51,23 @@ async function approved(target: Target, summary: string, yes: boolean): Promise<
 
 async function reparse(target: Target, cards: readonly Card[], yes: boolean): Promise<number> {
 	const decks = v.parse(
-		v.array(v.object({ guid: v.string(), text: v.string() })),
-		select(target, 'SELECT guid, text FROM tournament_decks ORDER BY guid')
+		v.array(v.object({ guid: v.string(), tournament_id: v.number(), text: v.string() })),
+		select(target, 'SELECT guid, tournament_id, text FROM tournament_decks ORDER BY guid')
 	);
 	if (decks.length === 0) {
 		say(`No decks in the ${targetName(target)} database; nothing to re-read.`);
 		return 0;
 	}
 	if (!(await approved(target, `Re-read ${decks.length} decks.`, yes))) return 2;
-	await runFile(target, toFile(reindexStatements(decks, cards)));
+	await runFile(
+		target,
+		toFile(
+			reindexStatements(
+				decks.map(({ guid, tournament_id, text }) => ({ guid, tournamentId: tournament_id, text })),
+				cards
+			)
+		)
+	);
 	say(
 		paint.ok(`✓ re-read ${decks.length} decks`) +
 			paint.dim(` in the ${targetName(target)} database`)

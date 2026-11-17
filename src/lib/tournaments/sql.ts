@@ -79,11 +79,11 @@ export function writeStatements(built: BuiltTournament): string[] {
  * separator between a Legend's name and subtitle has changed twice already.
  */
 export function reindexStatements(
-	decks: readonly { guid: string; text: string }[],
+	decks: readonly { guid: string; tournamentId: number; text: string }[],
 	cards: readonly Card[]
 ): string[] {
-	return decks.flatMap(({ guid, text }) => {
-		const index = indexDeck(guid, text, cards);
+	return decks.flatMap(({ guid, tournamentId, text }) => {
+		const index = indexDeck(guid, tournamentId, text, cards);
 		return [
 			`UPDATE tournament_decks SET legend_line = ${literal(index.legendLine)}, unresolved = ${literal(index.unresolved)} WHERE guid = ${literal(guid)};`,
 			`DELETE FROM tournament_deck_cards WHERE deck_guid = ${literal(guid)};`,
@@ -122,7 +122,7 @@ export function storedQueries(id: number): Record<OwnedTable, string> {
 		tournaments: `SELECT * FROM tournaments WHERE id = ${n}`,
 		tournament_rounds: `SELECT * FROM tournament_rounds WHERE tournament_id = ${n}`,
 		tournament_decks: `SELECT * FROM tournament_decks WHERE tournament_id = ${n}`,
-		tournament_deck_cards: `SELECT c.* FROM tournament_deck_cards c JOIN tournament_decks d ON d.guid = c.deck_guid WHERE d.tournament_id = ${n}`,
+		tournament_deck_cards: `SELECT * FROM tournament_deck_cards WHERE tournament_id = ${n}`,
 		standings: `SELECT * FROM standings WHERE tournament_id = ${n}`,
 		tournament_matches: `SELECT * FROM tournament_matches WHERE tournament_id = ${n}`
 	};
