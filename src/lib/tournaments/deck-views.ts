@@ -52,6 +52,8 @@ export type PathRow = {
 	round: number;
 	opponent: string | null;
 	oppLegends: string[];
+	/** The opponent's deck, when they have one to open; null for a bye or a player with no list. */
+	oppDeck: string | null;
 	result: 'W' | 'L' | 'D' | 'BYE';
 	/** `2–1`, from the deck's player's side; empty for a bye. */
 	score: string;
@@ -69,7 +71,7 @@ export type MatchRowForPath = {
 export function buildPath(
 	playerId: number,
 	matches: readonly MatchRowForPath[],
-	opponents: ReadonlyMap<number, { name: string; legends: string[] }>
+	opponents: ReadonlyMap<number, { name: string; legends: string[]; deck: string | null }>
 ): PathRow[] {
 	return matches
 		.filter((m) => m.playerA === playerId || m.playerB === playerId)
@@ -91,6 +93,7 @@ export function buildPath(
 				round: m.round,
 				opponent: opponentId === null ? null : (opponent?.name ?? `Player ${opponentId}`),
 				oppLegends: opponent?.legends ?? [],
+				oppDeck: opponent?.deck ?? null,
 				result,
 				score: m.kind === 'bye' ? '' : `${mine}–${theirs}`
 			};

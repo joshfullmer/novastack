@@ -201,7 +201,13 @@
 				<a href={withParams(page.url, { deck: null })} class="text-muted hover:text-body">Close ✕</a
 				>
 			</div>
-			<DeckDetail deck={data.deck} layout="pane" />
+			<DeckDetail
+				deck={data.deck}
+				view={data.deckView}
+				layout="pane"
+				hrefFor={(guid) => href(`/tournaments/decks/${guid}`, periodParams(data.period))}
+				onopen={open}
+			/>
 		{:else}
 			<p class="py-24 text-center text-sm text-muted">Choose a deck to read it here.</p>
 		{/if}

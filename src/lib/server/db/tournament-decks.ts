@@ -196,11 +196,12 @@ export async function getDeckDetail(db: Db, guid: string): Promise<DeckDetail | 
 				.filter((id): id is number => id !== null && id !== row.playerId)
 		)
 	];
-	const opponents = new Map<number, { name: string; legends: string[] }>();
+	const opponents = new Map<number, { name: string; legends: string[]; deck: string | null }>();
 	if (opponentIds.length > 0) {
 		const found = await db
 			.select({
 				playerId: standings.playerId,
+				deck: standings.deckGuid,
 				name: players.displayName,
 				slug: tournamentDeckCards.cardSlug
 			})
@@ -217,7 +218,7 @@ export async function getDeckDetail(db: Db, guid: string): Promise<DeckDetail | 
 				and(eq(standings.tournamentId, row.eventId), inArray(standings.playerId, opponentIds))
 			);
 		for (const f of found) {
-			const cur = opponents.get(f.playerId) ?? { name: f.name, legends: [] };
+			const cur = opponents.get(f.playerId) ?? { name: f.name, legends: [], deck: f.deck };
 			if (f.slug) cur.legends = [...cur.legends, f.slug].sort();
 			opponents.set(f.playerId, cur);
 		}

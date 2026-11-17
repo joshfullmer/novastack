@@ -161,17 +161,46 @@ describe('getDeckDetail', () => {
 	it('works out the path through the event, with each opponent’s Legends', async () => {
 		const deck = await getDeckDetail(world(), 'D1');
 		expect(deck?.path).toEqual([
-			{ round: 1, opponent: 'P3', oppLegends: ['a', 'b', 'd'], result: 'W', score: '2–0' },
-			{ round: 2, opponent: 'P2', oppLegends: ['a', 'b', 'c'], result: 'W', score: '2–0' },
-			{ round: 3, opponent: 'P4', oppLegends: ['e', 'f', 'g'], result: 'W', score: '2–0' }
+			{
+				round: 1,
+				opponent: 'P3',
+				oppLegends: ['a', 'b', 'd'],
+				oppDeck: 'D3',
+				result: 'W',
+				score: '2–0'
+			},
+			{
+				round: 2,
+				opponent: 'P2',
+				oppLegends: ['a', 'b', 'c'],
+				oppDeck: 'D2',
+				result: 'W',
+				score: '2–0'
+			},
+			{
+				round: 3,
+				opponent: 'P4',
+				oppLegends: ['e', 'f', 'g'],
+				oppDeck: 'D4',
+				result: 'W',
+				score: '2–0'
+			}
 		]);
 	});
 
 	it('reads a loss from the deck’s own side, whichever side it was drawn on', async () => {
 		const deck = await getDeckDetail(world(), 'D6'); // P6 was player B against P5, then A against P7
 		expect(deck?.path).toEqual([
-			{ round: 1, opponent: 'P5', oppLegends: ['a', 'b', 'd'], result: 'L', score: '1–2' },
-			{ round: 2, opponent: 'P7', oppLegends: [], result: 'W', score: '2–0' } // P7 has no deck
+			{
+				round: 1,
+				opponent: 'P5',
+				oppLegends: ['a', 'b', 'd'],
+				oppDeck: 'D5',
+				result: 'L',
+				score: '1–2'
+			},
+			// P7 has no deck, so there is nothing to open
+			{ round: 2, opponent: 'P7', oppLegends: [], oppDeck: null, result: 'W', score: '2–0' }
 		]);
 	});
 
@@ -181,6 +210,7 @@ describe('getDeckDetail', () => {
 			round: 2,
 			opponent: null,
 			oppLegends: [],
+			oppDeck: null,
 			result: 'BYE',
 			score: ''
 		});

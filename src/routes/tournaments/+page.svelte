@@ -7,6 +7,7 @@
 	import { page } from '$app/state';
 	import Meta from '#lib/components/Meta.svelte';
 	import { cookieState } from '#lib/cookie-state.svelte.js';
+	import ViewToggle from '#lib/components/deck/ViewToggle.svelte';
 	import LinkSelect from '#lib/components/tournaments/LinkSelect.svelte';
 	import LegendArt from '#lib/components/tournaments/LegendArt.svelte';
 	import {
@@ -88,24 +89,7 @@
 					{data.total} events · {data.players} players
 				</p>
 			</div>
-			<div class="flex overflow-hidden rounded-md border border-edge text-xs">
-				<button
-					type="button"
-					onclick={() => (view.value = 'list')}
-					class="px-2 py-1 transition-colors hover:bg-raised/60 hover:text-bright"
-					class:bg-raised={view.value === 'list'}
-					class:text-bright={view.value === 'list'}
-					class:text-muted={view.value !== 'list'}>List</button
-				>
-				<button
-					type="button"
-					onclick={() => (view.value = 'gallery')}
-					class="px-2 py-1 transition-colors hover:bg-raised/60 hover:text-bright"
-					class:bg-raised={view.value === 'gallery'}
-					class:text-bright={view.value === 'gallery'}
-					class:text-muted={view.value !== 'gallery'}>Gallery</button
-				>
-			</div>
+			<ViewToggle value={view.value} onchange={(next) => (view.value = next)} />
 		</header>
 
 		{#snippet chip(label: string, href: string, active: boolean, count?: number)}

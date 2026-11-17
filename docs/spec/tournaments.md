@@ -472,6 +472,15 @@ read-only, dynamic and `noindex`:
   in a sticky right half instead of going to a new page. The choice is `?deck=<guid>` (so a link, and Back,
   keep it); it stays open as filters change; a plain click on a narrower screen, or a modified click or a
   link opened without JavaScript, still goes to `/decks/[guid]`, which shows the same `DeckDetail`.
+- **A tournament deck reads like a saved deck** (2026-11-17): `DeckDetail` draws the cards with the same
+  components as `/d/[code]` (`components/deck/`: `DeckPreview`, `DeckCardList`, `DeckSideboard`,
+  `DeckStats`, `ViewToggle`), so the card pointed at shows large beside the list, cards group by type with
+  counts, List / Gallery is the one remembered `deck-cards-view` preference, and the curve, colours, Eddiable
+  share and rarities sit beside it. Cards resolve through the dataset by slug; a line it does not know is
+  left out and counted in `unresolved`. The **path through the event is walkable**: a round against an
+  opponent who has a list links to it (`PathRow.oppDeck`, null for a bye or a player with no list), and in
+  the deck list's pane that swaps the pane. Not done yet, from `docs/research/swubase-deck-view.md`: export
+  and "open as a new deck", clickable cost bars, a Stacks layout, price, comparing decks.
 - **Layout** (2026-11-17): the statistics pages use the app's wide container (`max-w-[1800px]`) and fill it:
   the tier list flows into two columns and the card breakdown goes to eight or ten columns of art. Lists of
   rows stay one column: data you scan down is not split in two. The period, kind and field-size choices are dropdowns (`LinkSelect`).

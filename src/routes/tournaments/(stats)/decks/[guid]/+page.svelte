@@ -16,5 +16,9 @@
 </a>
 
 <div class="mt-3">
-	<DeckDetail deck={data.deck} />
+	<DeckDetail
+		deck={data.deck}
+		view={data.deckView}
+		hrefFor={(guid) => href(`/tournaments/decks/${guid}`, periodParams(data.period))}
+	/>
 </div>

@@ -10,6 +10,9 @@ swubase is AGPL-3.0, so everything below is behaviour described in my own words.
 Live pages used: a public user deck (`/decks/24f22fd9-...`, 51 main / 0 side, desktop 1440 and mobile 390) and
 the All Decks tab of a PQ event (`/tournaments/e3e2220d-.../decks?maDeckId=...`). No login, no form submission.
 
+> **Status (2026-11-17):** recommendations 1 and 2 are built (the tournament deck uses the saved-deck
+> components; path rows open the opponent's deck). Recommendation 3 (export, "open as a new deck") is not.
+
 ## 1. The deck view, element by element
 
 ### 1.1 One component, three placements

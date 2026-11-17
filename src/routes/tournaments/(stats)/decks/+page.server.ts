@@ -4,6 +4,7 @@ import { ramRows } from '#lib/server/db/tournament-stats.js';
 import { DECKS_PER_PAGE, type DeckFilters } from '#lib/tournaments/deck-views.js';
 import { RAM_PER_LEGEND } from '#lib/tournaments/present.js';
 import { parseRam } from '#lib/tournaments/ram.js';
+import { readViewPref } from '#lib/server/view-pref.js';
 import { resolveCards } from '#lib/tournaments/search.js';
 import type { PageServerLoad } from './$types';
 
@@ -18,7 +19,7 @@ const legendChoices = dataset.cards
 	.map((card) => ({ slug: card.slug, name: card.name }))
 	.sort((a, b) => a.name.localeCompare(b.name));
 
-export const load: PageServerLoad = async ({ locals, parent, url }) => {
+export const load: PageServerLoad = async ({ locals, parent, url, cookies }) => {
 	const { period } = await parent();
 	const q = url.searchParams;
 
@@ -48,6 +49,7 @@ export const load: PageServerLoad = async ({ locals, parent, url }) => {
 	return {
 		...result,
 		deck,
+		deckView: readViewPref(cookies, 'deck-cards-view', ['list', 'gallery'], 'gallery'),
 		rams: (await ramRows(locals.db, period))
 			.flatMap((row) => (row.line ? [{ ram: row.line, decks: row.decks }] : []))
 			.sort((a, b) => b.decks - a.decks || a.ram.localeCompare(b.ram))

@@ -18,11 +18,13 @@
 	import { menuPosition } from '#lib/menu-position.js';
 	import { SvelteSet, SvelteURLSearchParams } from 'svelte/reactivity';
 	import CardImage from '#lib/components/CardImage.svelte';
-	import CardMetaBadges from '#lib/components/CardMetaBadges.svelte';
-	import CardStats from '#lib/components/CardStats.svelte';
-	import { COLOR_BADGE_IMAGE, COLOR_DOT, COLOR_TEXT, COLOR_TINT } from '#lib/components/color.js';
+	import DeckCardList from '#lib/components/deck/DeckCardList.svelte';
+	import DeckPreview from '#lib/components/deck/DeckPreview.svelte';
+	import DeckSideboard from '#lib/components/deck/DeckSideboard.svelte';
+	import DeckStats from '#lib/components/deck/DeckStats.svelte';
+	import ViewToggle from '#lib/components/deck/ViewToggle.svelte';
+	import { COLOR_BADGE_IMAGE, COLOR_TEXT } from '#lib/components/color.js';
 	import { dataset } from '#lib/cards/index.js';
-	import { splitCardName } from '#lib/cards/derive.js';
 	import Meta from '#lib/components/Meta.svelte';
 	import DeckExportDialog from '#lib/components/DeckExportDialog.svelte';
 	import DeckImageDialog from '#lib/components/DeckImageDialog.svelte';
@@ -41,13 +43,6 @@
 	import { deckToJson, deckToMeleeFormat, deckToOfficialFormat } from '#lib/decks/export.js';
 	import { groupDeckEntries } from '#lib/decks/grouping.js';
 	import { deckPrinting } from '#lib/decks/printing.js';
-	import { rarityTint } from '#lib/decks/rarity-tone.js';
-	import {
-		colorComposition,
-		costCurve,
-		eddiableStat,
-		rarityComposition
-	} from '#lib/decks/stats.js';
 	import { SIZE_STATUS_TONE } from '#lib/decks/status-tone.js';
 	import { cookieState } from '#lib/cookie-state.svelte.js';
 
@@ -213,8 +208,6 @@
 	let focused = $state<Card | null>(null);
 	const shown = $derived(focused ?? fallback);
 
-	const shownNameParts = $derived(shown === null ? null : splitCardName(shown));
-
 	const mainGroups = $derived(groupDeckEntries(dataset, deck.entries));
 
 	// Everything needed to field this list, as the Collection tab and the price panel both read it:
@@ -231,19 +224,6 @@
 		...deck.sideboard
 	]);
 	const sizeTone = $derived(SIZE_STATUS_TONE[deck.sizeStatus]);
-
-	const curve = $derived(costCurve(deck.entries));
-	const curveMax = $derived(Math.max(1, ...curve.map((bucket) => bucket.quantity)));
-	const composition = $derived(
-		colorComposition(deck.entries).filter((slice) => slice.quantity > 0)
-	);
-	const rarityDist = $derived(
-		rarityComposition(deck.entries).filter((slice) => slice.quantity > 0)
-	);
-	const eddiable = $derived(eddiableStat(deck.entries));
-	const eddiablePercent = $derived(
-		eddiable.totalQuantity === 0 ? 0 : (eddiable.eddiableQuantity / eddiable.totalQuantity) * 100
-	);
 
 	// Text and image export (`docs/spec/deckbuilder.md` §6) are `DeckExportDialog` and
 	// `DeckImageDialog` — both built from what's already on the page; no server route.
@@ -299,39 +279,7 @@
 			     this panel has no mobile equivalent to serve as a substitute for — it was just dead
 			     weight pushing the real content down a screen's worth of scroll. -->
 			<div class="hidden lg:sticky lg:top-6 lg:block lg:self-start">
-				{#if shown}
-					{@const shownPrinting = deckPrinting(shown, deck.printingIdOf(shown))}
-					<div class="card-frame overflow-hidden rounded-lg border border-edge">
-						<CardImage
-							printingId={shownPrinting.id}
-							thumbhash={shownPrinting.thumbhash}
-							color={shown.color}
-							alt={shown.name}
-							sizes="240px"
-						/>
-					</div>
-					<p class="mt-2 text-sm font-medium uppercase {COLOR_TEXT[shown.color]}">
-						{shownNameParts?.name}
-					</p>
-					{#if shownNameParts?.subtitle}
-						<p class="text-xs font-medium tracking-wide text-muted uppercase">
-							{shownNameParts.subtitle}
-						</p>
-					{/if}
-
-					<div class="mt-2">
-						<CardMetaBadges card={shown} compact />
-					</div>
-
-					<CardStats card={shown} showCost={false} class="mt-2" />
-				{:else}
-					<div
-						class="flex card-frame items-center justify-center rounded-lg border border-edge
-						bg-surface text-sm text-muted"
-					>
-						No cards yet
-					</div>
-				{/if}
+				<DeckPreview card={shown} printingId={shown ? deck.printingIdOf(shown) : undefined} />
 			</div>
 
 			<!-- Main column -->
@@ -637,24 +585,11 @@
 								<span class="font-medium">{deck.sideboardCards}/{SIDEBOARD_SIZE}</span> sideboard
 							</span>
 						{/if}
-						<div class="flex overflow-hidden rounded-md border border-edge text-xs">
-							<button
-								type="button"
-								onclick={() => (deckView.value = 'gallery')}
-								class="px-2 py-1 transition-colors hover:bg-raised/60 hover:text-bright"
-								class:bg-raised={deckView.value === 'gallery'}
-								class:text-bright={deckView.value === 'gallery'}
-								class:text-muted={deckView.value !== 'gallery'}>Gallery</button
-							>
-							<button
-								type="button"
-								onclick={() => (deckView.value = 'list')}
-								class="px-2 py-1 transition-colors hover:bg-raised/60 hover:text-bright"
-								class:bg-raised={deckView.value === 'list'}
-								class:text-bright={deckView.value === 'list'}
-								class:text-muted={deckView.value !== 'list'}>List</button
-							>
-						</div>
+						<ViewToggle
+							value={deckView.value}
+							onchange={(next) => (deckView.value = next)}
+							first="gallery"
+						/>
 					</div>
 				</div>
 
@@ -827,108 +762,12 @@
 							</li>
 						{/each}
 					</ul>
-				{:else if deckView.value === 'list'}
-					{@const columns = 'grid-cols-[2rem_6fr_1fr_1fr_1fr]'}
-					<ul class="rounded-md border border-edge">
-						<li
-							class="grid {columns} items-center gap-2 border-b border-edge px-4 py-1
-							text-[0.65rem] font-medium tracking-wide text-muted uppercase"
-						>
-							<span></span>
-							<span>Name</span>
-							<span class="text-right">Cost</span>
-							<span class="text-right">Pwr</span>
-							<span class="text-right">RAM</span>
-						</li>
-						{#each mainGroups as group (group.cardType)}
-							<li
-								class="border-b border-edge/50 bg-raised px-4 py-1.5 text-xs tracking-wide
-								uppercase"
-							>
-								<span class="font-semibold text-bright">{group.label}</span>
-								<span class="text-muted tabular-nums">({group.quantity})</span>
-							</li>
-							{#each group.entries as entry (entry.card.slug)}
-								<li class="border-b border-edge/50 last:border-b-0">
-									<a
-										href={resolve('/cards/[slug]', { slug: entry.card.slug })}
-										class="grid {columns} items-center gap-2 px-4 py-1.5 hover:bg-raised"
-										onmouseenter={() => (focused = entry.card)}
-									>
-										<span class="text-muted tabular-nums">{entry.quantity}×</span>
-										<span class="min-w-0 truncate text-sm {COLOR_TEXT[entry.card.color]}"
-											>{entry.card.name}</span
-										>
-										<span class="text-right text-xs text-muted tabular-nums"
-											>{entry.card.cost ?? '—'}</span
-										>
-										<span class="text-right text-xs text-muted tabular-nums"
-											>{entry.card.power ?? '—'}</span
-										>
-										<span class="text-right text-xs tabular-nums {COLOR_TEXT[entry.card.color]}"
-											>{entry.card.ramRequired ?? '—'}</span
-										>
-									</a>
-								</li>
-							{/each}
-						{:else}
-							<li class="p-4 text-sm text-muted">No cards yet.</li>
-						{/each}
-					</ul>
 				{:else}
-					<div>
-						{#each mainGroups as group (group.cardType)}
-							<p
-								class="mt-3 mb-1.5 rounded-md bg-raised px-3 py-1.5 text-xs tracking-wide
-								uppercase first:mt-0"
-							>
-								<span class="font-semibold text-bright">{group.label}</span>
-								<span class="text-muted tabular-nums">{group.quantity}</span>
-							</p>
-							<ul class="grid grid-cols-5 gap-2">
-								{#each group.entries as entry (entry.card.slug)}
-									{@const printing = deckPrinting(entry.card, entry.printingId)}
-									<li class="relative overflow-hidden rounded-md">
-										<a
-											href={resolve('/cards/[slug]', { slug: entry.card.slug })}
-											class="block"
-											onmouseenter={() => (focused = entry.card)}
-										>
-											<CardImage
-												printingId={printing.id}
-												thumbhash={printing.thumbhash}
-												color={entry.card.color}
-												alt={entry.card.name}
-												sizes="150px"
-											/>
-										</a>
-										<!-- Same chamfered-corner clip as the Eddiable "€$" badge
-											(`CardStats.svelte`) — the printed card's own UI chrome shape,
-											not a generic rounded square. Two layers because a `border`
-											can't follow an angled `clip-path` edge: `eddie-badge` is the
-											`bright` "ring", `eddie-badge-inset` sits 2px inside it in
-											void — a hollow outline, not a solid fill, so the badge reads
-											as a tag stamped on the card rather than a sticker covering
-											it. Plain white, not `neon` or a tinted accent: it reads
-											clearly against any of the four card colours without picking
-											a side among them. -->
-										<span
-											class="pointer-events-none absolute bottom-1 left-1/2 isolate inline-flex
-											size-6 -translate-x-1/2 items-center justify-center"
-										>
-											<span class="absolute inset-0 bg-bright eddie-badge"></span>
-											<span class="absolute inset-[2px] bg-void eddie-badge-inset"></span>
-											<span class="relative z-10 text-sm font-black text-bright tabular-nums">
-												×{entry.quantity}
-											</span>
-										</span>
-									</li>
-								{/each}
-							</ul>
-						{:else}
-							<p class="p-4 text-sm text-muted">No cards yet.</p>
-						{/each}
-					</div>
+					<DeckCardList
+						groups={mainGroups}
+						view={deckView.value}
+						onfocus={(card) => (focused = card)}
+					/>
 				{/if}
 
 				<!-- Hidden entirely when empty, because an empty sideboard is a legal deck (tournament
@@ -942,103 +781,13 @@
 					     below the deck read as the deck's last row. In Gallery the grid is also
 					     tighter than the main deck's own (7 across vs 5), which makes a complete
 					     sideboard exactly one row wide — "is this the 7" without reading the count. -->
-					<div class="mt-6 rounded-lg border border-edge bg-void/50 p-3">
-						<div
-							class="mb-2.5 flex items-center justify-between gap-2 border-b border-edge/60 pb-2"
-						>
-							<p
-								class="flex items-center gap-2 text-xs font-medium tracking-wide text-bright
-									uppercase"
-							>
-								<span class="inline-block h-3.5 w-1 rounded-full bg-neon"></span>
-								Sideboard
-							</p>
-							<span
-								class="text-xs tabular-nums {deck.sideboardStatus === 'legal'
-									? 'text-neon'
-									: 'text-muted'}"
-								title="A constructed sideboard is exactly {SIDEBOARD_SIZE} cards"
-							>
-								{deck.sideboardCards}/{SIDEBOARD_SIZE}
-							</span>
-						</div>
-						{#if deckView.value === 'list'}
-							<!-- Same column track as the main deck's table, so the two line up as one
-							     decklist read top to bottom. No type-group headers: at 7 cards they'd
-							     outnumber the rows they label. -->
-							{@const columns = 'grid-cols-[2rem_6fr_1fr_1fr_1fr]'}
-							<ul class="overflow-hidden rounded-md border border-edge/60">
-								<li
-									class="grid {columns} items-center gap-2 border-b border-edge/60 px-4 py-1
-										text-[0.65rem] font-medium tracking-wide text-muted uppercase"
-								>
-									<span></span>
-									<span>Name</span>
-									<span class="text-right">Cost</span>
-									<span class="text-right">Pwr</span>
-									<span class="text-right">RAM</span>
-								</li>
-								{#each deck.sideboard as entry (entry.card.slug)}
-									<li class="border-b border-edge/40 last:border-b-0">
-										<a
-											href={resolve('/cards/[slug]', { slug: entry.card.slug })}
-											class="grid {columns} items-center gap-2 px-4 py-1.5 hover:bg-raised"
-											onmouseenter={() => (focused = entry.card)}
-										>
-											<span class="text-muted tabular-nums">{entry.quantity}×</span>
-											<span class="min-w-0 truncate text-sm {COLOR_TEXT[entry.card.color]}"
-												>{entry.card.name}</span
-											>
-											<span class="text-right text-xs text-muted tabular-nums"
-												>{entry.card.cost ?? '—'}</span
-											>
-											<span class="text-right text-xs text-muted tabular-nums"
-												>{entry.card.power ?? '—'}</span
-											>
-											<span class="text-right text-xs tabular-nums {COLOR_TEXT[entry.card.color]}"
-												>{entry.card.ramRequired ?? '—'}</span
-											>
-										</a>
-									</li>
-								{/each}
-							</ul>
-						{:else}
-							<ul class="grid grid-cols-7 gap-2">
-								{#each deck.sideboard as entry (entry.card.slug)}
-									{@const printing = deckPrinting(entry.card, entry.printingId)}
-									<li class="relative overflow-hidden rounded-md">
-										<a
-											href={resolve('/cards/[slug]', { slug: entry.card.slug })}
-											class="block"
-											onmouseenter={() => (focused = entry.card)}
-										>
-											<CardImage
-												printingId={printing.id}
-												thumbhash={printing.thumbhash}
-												color={entry.card.color}
-												alt={entry.card.name}
-												sizes="110px"
-											/>
-										</a>
-										{#if entry.quantity > 1}
-											<!-- Same two-layer chamfered badge as the main-deck gallery above, but
-											     only past one copy — see the editor's own sideboard for why. -->
-											<span
-												class="pointer-events-none absolute bottom-1 left-1/2 isolate inline-flex
-												size-6 -translate-x-1/2 items-center justify-center"
-											>
-												<span class="absolute inset-0 bg-bright eddie-badge"></span>
-												<span class="absolute inset-[2px] bg-void eddie-badge-inset"></span>
-												<span class="relative z-10 text-sm font-black text-bright tabular-nums">
-													×{entry.quantity}
-												</span>
-											</span>
-										{/if}
-									</li>
-								{/each}
-							</ul>
-						{/if}
-					</div>
+					<DeckSideboard
+						entries={deck.sideboard}
+						view={deckView.value}
+						onfocus={(card) => (focused = card)}
+						cards={deck.sideboardCards}
+						legal={deck.sideboardStatus === 'legal'}
+					/>
 				{/if}
 			</div>
 
@@ -1046,92 +795,7 @@
 			<div class="flex flex-col gap-4">
 				<DeckPrice entries={listEntries} ownerCanChoosePrinting={data.ownerCanChoosePrinting} />
 
-				<div class="rounded-md border border-edge bg-shell p-4">
-					<p class="mb-3 text-xs font-medium tracking-wide text-muted uppercase">Cost curve</p>
-					{#if curve.length === 0}
-						<p class="text-xs text-muted">No cards yet.</p>
-					{:else}
-						<div class="flex items-end gap-1.5">
-							{#each curve as bucket (bucket.cost ?? 'null')}
-								<div class="flex flex-1 flex-col items-center gap-1">
-									<span class="text-[0.65rem] text-muted tabular-nums">{bucket.quantity}</span>
-									<div class="flex h-16 w-full items-end">
-										<div
-											class="w-full rounded-sm bg-neon-dim"
-											style="height: {(bucket.quantity / curveMax) * 100}%"
-										></div>
-									</div>
-									<span class="text-[0.65rem] text-muted tabular-nums">{bucket.cost ?? '—'}</span>
-								</div>
-							{/each}
-						</div>
-					{/if}
-				</div>
-
-				<div class="rounded-md border border-edge bg-shell p-4">
-					<p class="mb-3 text-xs font-medium tracking-wide text-muted uppercase">Colors</p>
-					{#if composition.length === 0}
-						<p class="text-xs text-muted">No cards yet.</p>
-					{:else}
-						<div class="flex h-2 overflow-hidden rounded-full bg-raised">
-							{#each composition as slice (slice.color)}
-								<div
-									class={COLOR_TINT[slice.color]}
-									style="width: {(slice.quantity / deck.totalCards) * 100}%"
-								></div>
-							{/each}
-						</div>
-						<div class="mt-3 flex flex-wrap gap-x-3 gap-y-1 text-xs text-muted">
-							{#each composition as slice (slice.color)}
-								<span class="inline-flex items-center gap-1.5">
-									<span class="size-2 rounded-full {COLOR_DOT[slice.color]}"></span>{slice.color}
-									{slice.quantity}
-								</span>
-							{/each}
-						</div>
-					{/if}
-				</div>
-
-				<div class="rounded-md border border-edge bg-shell p-4">
-					<p class="mb-3 text-xs font-medium tracking-wide text-muted uppercase">Eddiable</p>
-					{#if eddiable.totalQuantity === 0}
-						<p class="text-xs text-muted">No cards yet.</p>
-					{:else}
-						<div class="h-2 overflow-hidden rounded-full bg-raised">
-							<div class="h-full bg-neon" style="width: {eddiablePercent}%"></div>
-						</div>
-						<p class="mt-3 text-xs text-muted">
-							{eddiable.eddiableQuantity} of {eddiable.totalQuantity} cards ({Math.round(
-								eddiablePercent
-							)}%)
-						</p>
-					{/if}
-				</div>
-
-				<div class="rounded-md border border-edge bg-shell p-4">
-					<p class="mb-3 text-xs font-medium tracking-wide text-muted uppercase">Rarity</p>
-					{#if rarityDist.length === 0}
-						<p class="text-xs text-muted">No cards yet.</p>
-					{:else}
-						<div class="flex h-2 overflow-hidden rounded-full bg-raised">
-							{#each rarityDist as slice, index (slice.rarity)}
-								<div
-									class={rarityTint(index, rarityDist.length)}
-									style="width: {(slice.quantity / deck.totalCards) * 100}%"
-								></div>
-							{/each}
-						</div>
-						<div class="mt-3 flex flex-wrap gap-x-3 gap-y-1 text-xs text-muted">
-							{#each rarityDist as slice, index (slice.rarity)}
-								<span class="inline-flex items-center gap-1.5">
-									<span class="size-2 rounded-full {rarityTint(index, rarityDist.length)}"
-									></span>{slice.rarity}
-									{slice.quantity}
-								</span>
-							{/each}
-						</div>
-					{/if}
-				</div>
+				<DeckStats entries={deck.entries} total={deck.totalCards} />
 			</div>
 		</div>
 	</div>
