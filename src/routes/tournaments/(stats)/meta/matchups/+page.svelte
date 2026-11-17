@@ -42,7 +42,7 @@
 
 <header class="flex flex-wrap items-end justify-between gap-3 border-b border-edge pb-4">
 	<div>
-		<h1 class="font-mono text-xl text-bright">Matchups</h1>
+		<h1 class="sr-only">Matchups</h1>
 		<p class="font-mono text-xs text-muted">
 			The row's win rate against the column · {meta.crossMatches} matches between these {meta.matrixBy ===
 			'ram'

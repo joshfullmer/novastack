@@ -12,7 +12,7 @@
 	const percent = (n: number | null) => (n === null ? '—' : `${Math.round(n * 100)}%`);
 </script>
 
-<h1 class="font-mono text-xl text-bright">Decks by Legends</h1>
+<h1 class="sr-only">Decks by Legends</h1>
 <p class="font-mono text-xs text-muted">
 	The {data.shelves.length} most-played of {data.lines} lines · {data.decks} decks
 </p>

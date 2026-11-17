@@ -7,9 +7,12 @@
 	let {
 		label,
 		value,
-		options
+		options,
+		stacked = false
 	}: {
 		label: string;
+		/** The label above a full-width box, for a narrow column, not beside it. */
+		stacked?: boolean;
 		/** The chosen option's `value`. */
 		value: string;
 		options: { value: string; label: string; href: string }[];
@@ -21,7 +24,11 @@
 	}
 </script>
 
-<label class="flex items-center gap-1.5 font-mono text-xs text-muted">
+<label
+	class="flex font-mono text-xs text-muted {stacked
+		? 'flex-col items-stretch gap-1'
+		: 'items-center gap-1.5'}"
+>
 	{label}
 	<select
 		{value}

@@ -489,6 +489,15 @@ read-only, dynamic and `noindex`:
   again, or the chip, shows them all). The saved deck's page shares the Stacks view and the curve filter.
   Not done, from `docs/research/swubase-deck-view.md`: comparing decks (needs a design: an average-deck
   view is the place to start) and URL state for a card dialog.
+- **Navigation is a sidebar** (2026-11-17): the section's tabs, the meta and deck sub-tabs and the
+  period / kind / field-size row used to take about 300px off the top of every page. They are now one
+  collapsible left sidebar (`TournamentsNav`, in `/tournaments/+layout.svelte`): Events, Meta (Tier list,
+  Matchups, Card breakdown), Decks (All decks, By Legends), Cards, and, on the statistics pages only, the
+  scope (Period, Kind, Players) as stacked dropdowns. Collapsed, it is a rail of initials (and the period);
+  the choice is the `tournaments-nav` cookie. Below `lg` it is a menu above the page. Pages drop their own
+  titles (kept for screen readers) since the sidebar says where you are. The deck pane's split moved to
+  1536px wide, since the sidebar takes room. The scope loads in `/tournaments/+layout.server.ts` now, so
+  every page under it has `period`, `periods` and `kinds`.
 - **Layout** (2026-11-17): the statistics pages use the app's wide container (`max-w-[1800px]`) and fill it:
   the tier list flows into two columns and the card breakdown goes to eight or ten columns of art. Lists of
   rows stay one column: data you scan down is not split in two. The period, kind and field-size choices are dropdowns (`LinkSelect`).

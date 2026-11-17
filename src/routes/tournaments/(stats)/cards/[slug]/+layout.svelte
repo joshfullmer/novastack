@@ -43,7 +43,7 @@
 />
 
 <div>
-	<div class="mx-auto w-full max-w-[1800px] px-4 py-6 sm:px-6">
+	<div class="py-6">
 		<div class="flex flex-wrap items-center justify-between gap-3 border-b border-edge pb-4">
 			<h1 class="font-mono text-xl text-bright">Played in tournaments</h1>
 			<form

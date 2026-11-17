@@ -90,7 +90,7 @@
 
 <header class="flex flex-wrap items-end justify-between gap-3 border-b border-edge pb-4">
 	<div>
-		<h1 class="font-mono text-xl text-bright">Tier list</h1>
+		<h1 class="sr-only">Tier list</h1>
 		<p class="font-mono text-xs text-muted">{meta.decks} decks with a readable set of Legends</p>
 	</div>
 	<div class="flex flex-wrap gap-2 font-mono text-xs">

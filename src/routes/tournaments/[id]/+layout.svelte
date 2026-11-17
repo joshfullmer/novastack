@@ -42,7 +42,7 @@
 <!-- The extra plain wrapper matters: `<main>` (root layout) is a column flex container, and a
      `mx-auto max-w-…` box that is a *direct* flex child has its stretch behaviour disabled. -->
 <div>
-	<div class="mx-auto w-full max-w-[1800px] px-4 py-8 sm:px-6">
+	<div class="py-6">
 		<header class="border-b border-edge pb-4">
 			<h1 class="text-2xl font-semibold text-bright">{event.name}</h1>
 			<p class="mt-1 font-mono text-xs text-muted">

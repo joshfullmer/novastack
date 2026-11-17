@@ -37,7 +37,7 @@
 
 <div class="grid gap-6 lg:grid-cols-[16rem_1fr]">
 	<aside class="lg:sticky lg:top-20 lg:self-start">
-		<h1 class="mb-3 font-mono text-xl text-bright">Card breakdown</h1>
+		<h1 class="sr-only">Card breakdown</h1>
 
 		<a
 			href={mine(null)}

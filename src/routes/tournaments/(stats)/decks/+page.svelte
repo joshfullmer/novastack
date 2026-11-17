@@ -25,7 +25,7 @@
 
 	// On a wide screen a deck opens in the pane beside the list (`?deck=`, so a link keeps it); a plain
 	// click on a narrow one, or a modified click anywhere, still goes to the deck's own page.
-	const SPLIT = '(min-width: 1280px)';
+	const SPLIT = '(min-width: 1536px)';
 	function open(event: MouseEvent, guid: string) {
 		if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey)
 			return;
@@ -78,7 +78,7 @@
 
 <header class="border-b border-edge pb-4">
 	<div class="flex flex-wrap items-baseline gap-x-4">
-		<h1 class="font-mono text-xl text-bright">All decks</h1>
+		<h1 class="sr-only">All decks</h1>
 		<p class="font-mono text-xs text-muted">
 			{#if data.total === 0}
 				No decks match
@@ -145,7 +145,7 @@
 	</form>
 </header>
 
-<div class="mt-4 grid gap-6 xl:grid-cols-[28rem_minmax(0,1fr)] xl:items-start">
+<div class="mt-4 grid gap-6 2xl:grid-cols-[28rem_minmax(0,1fr)] 2xl:items-start">
 	<div class="min-w-0">
 		<div
 			class="grid grid-cols-[3.25rem_1fr_4.25rem] gap-x-3 px-2 font-mono text-[11px] tracking-wide text-muted uppercase"
@@ -221,9 +221,9 @@
 	<aside
 		bind:this={pane}
 		aria-label="Deck"
-		class="min-w-0 xl:sticky xl:top-20 xl:max-h-[calc(100vh-6rem)] xl:overflow-y-auto xl:rounded-xl xl:border xl:border-edge xl:p-5 {data.deck
-			? 'max-xl:order-first'
-			: 'max-xl:hidden'}"
+		class="min-w-0 2xl:sticky 2xl:top-20 2xl:max-h-[calc(100vh-6rem)] 2xl:overflow-y-auto 2xl:rounded-xl 2xl:border 2xl:border-edge 2xl:p-5 {data.deck
+			? 'max-2xl:order-first'
+			: 'max-2xl:hidden'}"
 	>
 		{#if data.deck}
 			<div class="mb-3 flex items-center justify-between font-mono text-xs">
