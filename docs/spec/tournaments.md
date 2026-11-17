@@ -469,8 +469,8 @@ read-only, dynamic and `noindex`:
   card's usage). The breakdown orders by Percentage (the share of decks that ran a card) or Count (its
   copies), and shows both on the art.
 - **Layout** (2026-11-17): the statistics pages use the app's wide container (`max-w-[1800px]`) and fill it:
-  the tier list flows into two columns, the card breakdown goes to eight or ten columns of art, and the deck
-  list into two columns. The period, kind and field-size choices are dropdowns (`LinkSelect`).
+  the tier list flows into two columns and the card breakdown goes to eight or ten columns of art. Lists of
+  rows stay one column: data you scan down is not split in two. The period, kind and field-size choices are dropdowns (`LinkSelect`).
 
 - **The period selector** (`?period=<meta id>` or `?period=all`), shown once a `metas` row exists, narrows
   every one of these: chips up to four choices, a menu beyond. **The default is the current meta** (the

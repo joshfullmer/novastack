@@ -80,21 +80,14 @@
 	</form>
 </header>
 
-<!-- Two columns of decks on a wide screen, so a long list does not run down a half-empty page. -->
-<div class="mt-3 grid gap-x-8 xl:grid-cols-2" aria-hidden="true">
-	{#each [0, 1] as column (column)}
-		<div
-			class="grid grid-cols-[3.5rem_1fr_1fr_4.5rem] gap-x-3 px-2 font-mono text-[11px] tracking-wide text-muted uppercase {column ===
-			1
-				? 'max-xl:hidden'
-				: ''}"
-		>
-			<span>Finish</span><span>Deck</span><span>Event</span><span class="text-right">W-L-D</span>
-		</div>
-	{/each}
+<div
+	class="mt-3 grid grid-cols-[3.5rem_1fr_1fr_4.5rem] gap-x-3 px-2 font-mono text-[11px] tracking-wide text-muted uppercase"
+	aria-hidden="true"
+>
+	<span>Finish</span><span>Deck</span><span>Event</span><span class="text-right">W-L-D</span>
 </div>
 
-<ul class="mt-1 grid gap-x-8 gap-y-0.5 xl:grid-cols-2">
+<ul class="mt-1 space-y-0.5">
 	{#each data.rows as deck (deck.guid)}
 		<li>
 			<a
