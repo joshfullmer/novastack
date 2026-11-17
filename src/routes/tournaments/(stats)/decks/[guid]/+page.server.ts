@@ -1,5 +1,6 @@
 import { error } from '@sveltejs/kit';
 import { getDeckDetail } from '#lib/server/db/tournament-decks.js';
+import { DECK_VIEWS } from '#lib/decks/view.js';
 import { readViewPref } from '#lib/server/view-pref.js';
 import type { PageServerLoad } from './$types';
 
@@ -12,6 +13,6 @@ export const load: PageServerLoad = async ({ locals, params, cookies }) => {
 	if (!deck) error(404, 'Deck not found');
 	return {
 		deck,
-		deckView: readViewPref(cookies, 'deck-cards-view', ['list', 'gallery'], 'gallery')
+		deckView: readViewPref(cookies, 'deck-cards-view', DECK_VIEWS, 'gallery')
 	};
 };

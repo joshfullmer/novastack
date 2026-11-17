@@ -18,6 +18,7 @@ import {
 } from '#lib/server/db/decks.js';
 import { featuresFor } from '#lib/server/db/entitlements.js';
 import { ensureDeckShareCode } from '#lib/server/db/share-codes.js';
+import { DECK_VIEWS } from '#lib/decks/view.js';
 import { readViewPref } from '#lib/server/view-pref.js';
 import type { Actions, PageServerLoad } from './$types';
 
@@ -130,7 +131,7 @@ export const load: PageServerLoad = async (event) => {
 		history,
 		// Shared with the editor (`/decks/[id]/edit`) — "how I like browsing a deck's cards" is
 		// one preference, not two.
-		deckView: readViewPref(event.cookies, 'deck-cards-view', ['list', 'gallery'], 'gallery')
+		deckView: readViewPref(event.cookies, 'deck-cards-view', DECK_VIEWS, 'gallery')
 	};
 };
 

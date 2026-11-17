@@ -8,6 +8,7 @@
 	import { COLOR_TEXT } from '#lib/components/color.js';
 	import type { Card } from '#lib/cards/schema.js';
 	import type { DeckEntryGroup } from '#lib/decks/grouping.js';
+	import type { DeckView } from '#lib/decks/view.js';
 	import { deckPrinting } from '#lib/decks/printing.js';
 
 	let {
@@ -17,13 +18,19 @@
 		galleryColumns = 'grid-cols-5'
 	}: {
 		groups: readonly DeckEntryGroup[];
-		view: 'list' | 'gallery';
+		view: DeckView;
 		onfocus: (card: Card) => void;
 		/** Whole Tailwind class, so the scanner finds it: art across, in the gallery. */
 		galleryColumns?: string;
 	} = $props();
 
 	const columns = 'grid-cols-[2rem_6fr_1fr_1fr_1fr]';
+
+	// How far each copy behind the front one is lowered, as a share of a card's height; and what that
+	// is as a share of a card's width (a card is 1024 tall to 733 wide), which is what the pile's own
+	// padding is measured against.
+	const FAN = 15;
+	const FAN_WIDTH = Math.round((FAN * 1024) / 733);
 </script>
 
 {#if view === 'list'}
@@ -67,6 +74,52 @@
 			<li class="p-4 text-sm text-muted">No cards yet.</li>
 		{/each}
 	</ul>
+{:else if view === 'stacks'}
+	<!-- Piles, as on a table: each card once, its copies fanned down behind it so only their bottom edges
+	     show (where a card prints its name). A pile of three reads as three before anything is counted. -->
+	<div>
+		{#each groups as group (group.cardType)}
+			<p
+				class="mt-3 mb-1.5 rounded-md bg-raised px-3 py-1.5 text-xs tracking-wide uppercase first:mt-0"
+			>
+				<span class="font-semibold text-bright">{group.label}</span>
+				<span class="text-muted tabular-nums">{group.quantity}</span>
+			</p>
+			<ul class="grid {galleryColumns} gap-x-2 gap-y-3">
+				{#each group.entries as entry (entry.card.slug)}
+					{@const printing = deckPrinting(entry.card, entry.printingId)}
+					<li>
+						<a
+							href={resolve('/cards/[slug]', { slug: entry.card.slug })}
+							class="relative block"
+							title="{entry.quantity}× {entry.card.name}"
+							style:padding-bottom="{(entry.quantity - 1) * FAN_WIDTH}%"
+							onmouseenter={() => onfocus(entry.card)}
+						>
+							{#each Array.from({ length: entry.quantity }, (_, copy) => copy) as copy (copy)}
+								<span
+									class="block {copy === 0 ? 'relative' : 'absolute inset-x-0 top-0'}
+									overflow-hidden rounded-md"
+									style:transform="translateY({copy * FAN}%)"
+									style:z-index={entry.quantity - copy}
+								>
+									<CardImage
+										printingId={printing.id}
+										thumbhash={printing.thumbhash}
+										color={entry.card.color}
+										alt={copy === 0 ? entry.card.name : ''}
+										sizes="150px"
+									/>
+								</span>
+							{/each}
+						</a>
+					</li>
+				{/each}
+			</ul>
+		{:else}
+			<p class="p-4 text-sm text-muted">No cards yet.</p>
+		{/each}
+	</div>
 {:else}
 	<div>
 		{#each groups as group (group.cardType)}

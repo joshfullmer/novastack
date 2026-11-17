@@ -20,6 +20,14 @@ export type RaritySlice = { rarity: Rarity; quantity: number };
  * curve with a silent gap at 7 (because nothing happens to cost 7) reads as missing data, not as
  * "zero cards cost 7."
  */
+/** One bar of the cost curve picked to narrow the list: a cost, or `null` for the cards with none. */
+export type CostPick = { cost: number | null } | null;
+
+/** The entries at the picked cost, or all of them when nothing is picked. */
+export function atCost<T extends DeckEntry>(entries: readonly T[], pick: CostPick): readonly T[] {
+	return pick === null ? entries : entries.filter((entry) => entry.card.cost === pick.cost);
+}
+
 export function costCurve(entries: readonly DeckEntry[]): CostBucket[] {
 	const byCost = new Map<number | null, number>();
 	for (const entry of entries) {

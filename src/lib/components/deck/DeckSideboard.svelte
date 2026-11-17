@@ -11,6 +11,7 @@
 	import { COLOR_TEXT } from '#lib/components/color.js';
 	import type { Card } from '#lib/cards/schema.js';
 	import { deckPrinting } from '#lib/decks/printing.js';
+	import type { DeckView } from '#lib/decks/view.js';
 	import { SIDEBOARD_SIZE, type DeckEntry } from '#lib/decks/legality.js';
 
 	let {
@@ -21,7 +22,7 @@
 		legal
 	}: {
 		entries: readonly DeckEntry[];
-		view: 'list' | 'gallery';
+		view: DeckView;
 		onfocus: (card: Card) => void;
 		/** Copies in it, of `SIDEBOARD_SIZE`. */
 		cards: number;
@@ -45,6 +46,7 @@
 			{cards}/{SIDEBOARD_SIZE}
 		</span>
 	</div>
+	<!-- Stacks is for the main deck; seven cards, mostly singles, read as art either way. -->
 	{#if view === 'list'}
 		<!-- No type-group headers: at 7 cards they'd outnumber the rows they label. -->
 		<ul class="overflow-hidden rounded-md border border-edge/60">

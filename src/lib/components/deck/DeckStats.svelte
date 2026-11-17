@@ -1,6 +1,7 @@
 <script lang="ts">
 	// A deck at a glance: its cost curve, colours, how much of it is Eddiable and its rarities. Cards
 	// stacked in a column, shared by a saved deck's page and the tournament deck.
+	import { cn } from '#lib/cn.js';
 	import { COLOR_DOT, COLOR_TINT } from '#lib/components/color.js';
 	import type { DeckEntry } from '#lib/decks/legality.js';
 	import { rarityTint } from '#lib/decks/rarity-tone.js';
@@ -8,10 +9,25 @@
 		colorComposition,
 		costCurve,
 		eddiableStat,
-		rarityComposition
+		rarityComposition,
+		type CostPick
 	} from '#lib/decks/stats.js';
 
-	let { entries, total }: { entries: readonly DeckEntry[]; total: number } = $props();
+	// `pick` and `onpick` turn the cost curve into a filter: a bar is the cards at that cost, and the
+	// page lists just those. Without `onpick` the curve is a plain chart.
+	let {
+		entries,
+		total,
+		pick = null,
+		onpick
+	}: {
+		entries: readonly DeckEntry[];
+		total: number;
+		pick?: CostPick;
+		onpick?: (next: CostPick) => void;
+	} = $props();
+
+	const same = (a: CostPick, cost: number | null) => a !== null && a.cost === cost;
 
 	const curve = $derived(costCurve(entries));
 	const curveMax = $derived(Math.max(1, ...curve.map((bucket) => bucket.quantity)));
@@ -23,6 +39,19 @@
 	);
 </script>
 
+{#snippet bar(bucket: { cost: number | null; quantity: number }, chosen: boolean)}
+	<span class="text-[0.65rem] text-muted tabular-nums">{bucket.quantity}</span>
+	<div class="flex h-16 w-full items-end">
+		<div
+			class={cn('w-full rounded-sm', chosen ? 'bg-neon' : 'bg-neon-dim')}
+			style="height: {(bucket.quantity / curveMax) * 100}%"
+		></div>
+	</div>
+	<span class={cn('text-[0.65rem] tabular-nums', chosen ? 'text-bright' : 'text-muted')}
+		>{bucket.cost ?? '—'}</span
+	>
+{/snippet}
+
 <div class="rounded-md border border-edge bg-shell p-4">
 	<p class="mb-3 text-xs font-medium tracking-wide text-muted uppercase">Cost curve</p>
 	{#if curve.length === 0}
@@ -30,16 +59,20 @@
 	{:else}
 		<div class="flex items-end gap-1.5">
 			{#each curve as bucket (bucket.cost ?? 'null')}
-				<div class="flex flex-1 flex-col items-center gap-1">
-					<span class="text-[0.65rem] text-muted tabular-nums">{bucket.quantity}</span>
-					<div class="flex h-16 w-full items-end">
-						<div
-							class="w-full rounded-sm bg-neon-dim"
-							style="height: {(bucket.quantity / curveMax) * 100}%"
-						></div>
-					</div>
-					<span class="text-[0.65rem] text-muted tabular-nums">{bucket.cost ?? '—'}</span>
-				</div>
+				{@const chosen = same(pick, bucket.cost)}
+				{#if onpick}
+					<button
+						type="button"
+						aria-pressed={chosen}
+						title="Show the {bucket.cost ?? 'no-cost'} cost cards"
+						onclick={() => onpick(chosen ? null : { cost: bucket.cost })}
+						class="flex flex-1 cursor-pointer flex-col items-center gap-1 rounded-sm hover:bg-raised/60"
+					>
+						{@render bar(bucket, chosen)}
+					</button>
+				{:else}
+					<div class="flex flex-1 flex-col items-center gap-1">{@render bar(bucket, chosen)}</div>
+				{/if}
 			{/each}
 		</div>
 	{/if}

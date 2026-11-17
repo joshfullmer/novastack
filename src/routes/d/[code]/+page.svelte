@@ -23,6 +23,8 @@
 	import DeckSideboard from '#lib/components/deck/DeckSideboard.svelte';
 	import DeckStats from '#lib/components/deck/DeckStats.svelte';
 	import ViewToggle from '#lib/components/deck/ViewToggle.svelte';
+	import { DECK_VIEWS } from '#lib/decks/view.js';
+	import { atCost, type CostPick } from '#lib/decks/stats.js';
 	import { COLOR_BADGE_IMAGE, COLOR_TEXT } from '#lib/components/color.js';
 	import { dataset } from '#lib/cards/index.js';
 	import Meta from '#lib/components/Meta.svelte';
@@ -209,6 +211,9 @@
 	const shown = $derived(focused ?? fallback);
 
 	const mainGroups = $derived(groupDeckEntries(dataset, deck.entries));
+	// A bar on the cost curve narrows the list to that cost; export and the image keep every card.
+	let pick = $state<CostPick>(null);
+	const shownGroups = $derived(groupDeckEntries(dataset, atCost(deck.entries, pick)));
 
 	// Everything needed to field this list, as the Collection tab and the price panel both read it:
 	// the Legends count like any other card, and so does the sideboard (tournament rules §D.1 wants
@@ -587,8 +592,8 @@
 						{/if}
 						<ViewToggle
 							value={deckView.value}
+							options={DECK_VIEWS}
 							onchange={(next) => (deckView.value = next)}
-							first="gallery"
 						/>
 					</div>
 				</div>
@@ -764,7 +769,7 @@
 					</ul>
 				{:else}
 					<DeckCardList
-						groups={mainGroups}
+						groups={shownGroups}
 						view={deckView.value}
 						onfocus={(card) => (focused = card)}
 					/>
@@ -795,7 +800,12 @@
 			<div class="flex flex-col gap-4">
 				<DeckPrice entries={listEntries} ownerCanChoosePrinting={data.ownerCanChoosePrinting} />
 
-				<DeckStats entries={deck.entries} total={deck.totalCards} />
+				<DeckStats
+					entries={deck.entries}
+					total={deck.totalCards}
+					{pick}
+					onpick={(next) => (pick = next)}
+				/>
 			</div>
 		</div>
 	</div>

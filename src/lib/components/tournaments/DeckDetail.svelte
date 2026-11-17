@@ -10,6 +10,7 @@
 	import RamCode from '#lib/components/tournaments/RamCode.svelte';
 	import TournamentDeckView from '#lib/components/tournaments/TournamentDeckView.svelte';
 	import { formatDate, legendNames } from '#lib/tournaments/present.js';
+	import type { DeckView } from '#lib/decks/view.js';
 	import type { DeckDetail, PathRow } from '#lib/tournaments/deck-views.js';
 
 	let {
@@ -20,8 +21,8 @@
 		onopen
 	}: {
 		deck: DeckDetail;
-		/** The visitor's List / Gallery choice (a cookie, read on the server). */
-		view: 'list' | 'gallery';
+		/** The visitor's choice of view (a cookie, read on the server). */
+		view: DeckView;
 		layout?: 'page' | 'pane';
 		/** Where an opponent's deck is. */
 		hrefFor: (guid: string) => string;

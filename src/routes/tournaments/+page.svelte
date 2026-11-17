@@ -23,6 +23,7 @@
 
 	// svelte-ignore state_referenced_locally
 	const view = cookieState('tournaments-list-view', data.view);
+	const VIEWS = ['list', 'gallery'] as const;
 	const go = (n: number) => withParams(page.url, { page: n === 1 ? null : n });
 
 	const TINT = {
@@ -89,7 +90,7 @@
 					{data.total} events · {data.players} players
 				</p>
 			</div>
-			<ViewToggle value={view.value} onchange={(next) => (view.value = next)} />
+			<ViewToggle value={view.value} options={VIEWS} onchange={(next) => (view.value = next)} />
 		</header>
 
 		{#snippet chip(label: string, href: string, active: boolean, count?: number)}

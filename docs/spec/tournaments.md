@@ -482,8 +482,13 @@ read-only, dynamic and `noindex`:
   share and rarities sit beside it. Cards resolve through the dataset by slug; a line it does not know is
   left out and counted in `unresolved`. The **path through the event is walkable**: a round against an
   opponent who has a list links to it (`PathRow.oppDeck`, null for a bye or a player with no list), and in
-  the deck list's pane that swaps the pane. Not done yet, from `docs/research/swubase-deck-view.md`: export
-  and "open as a new deck", clickable cost bars, a Stacks layout, price, comparing decks.
+  It also has Export and Deck image (the saved deck's dialogs), **Open as a new deck** (the list becomes
+  the builder's local draft, so it needs no account until Save, and asks before replacing a draft in
+  progress), the deck's price, a **Stacks** view (copies fanned behind a card, bottom edges showing) beside
+  List and Gallery, and a **clickable cost curve** (a bar lists just the cards at that cost; clicking it
+  again, or the chip, shows them all). The saved deck's page shares the Stacks view and the curve filter.
+  Not done, from `docs/research/swubase-deck-view.md`: comparing decks (needs a design: an average-deck
+  view is the place to start) and URL state for a card dialog.
 - **Layout** (2026-11-17): the statistics pages use the app's wide container (`max-w-[1800px]`) and fill it:
   the tier list flows into two columns and the card breakdown goes to eight or ten columns of art. Lists of
   rows stay one column: data you scan down is not split in two. The period, kind and field-size choices are dropdowns (`LinkSelect`).
