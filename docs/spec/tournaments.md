@@ -141,7 +141,8 @@ tournament_decks   // PK guid
   unresolved       integer           // count of lines that named no single Card; derived
   idx: tournamentId, legendLine
 
-tournament_deck_cards   // PK (deckGuid, cardSlug, board): a derived index of `text`
+tournament_deck_cards   // PK (deckGuid, cardSlug, board): a derived index of `text`; tournamentId repeats the deck's,
+                        // indexed (board, tournamentId, cardSlug), so a period aggregate never joins decks
   deckGuid, cardSlug, board ('main' | 'legend' | 'side'), quantity
   idx: cardSlug
 
@@ -390,8 +391,12 @@ tournament_decks.legendLine`. A matchup is a group against a group: games won, e
 
 **Cost control.** D1 returns `meta.rows_read` with every query; each aggregate is written with the index
 it needs (§3) and its `rows_read` is measured on a realistic corpus before the page that uses it ships.
-Pages send `Cache-Control: public, s-maxage=…` so an aggregate is computed once per window, not once per
-view. These are the two things that keep filterable stats affordable.
+Every list a page returns is bounded by a constant and says what it left out
+(`docs/research/scale-audit.md`, "Status"), and a period aggregate filters on
+`tournament_deck_cards.tournament_id`. These are the two things that keep filterable stats affordable.
+Caching the rendered pages is **not** built: a `Cache-Control: s-maxage` header alone does not cache a
+Worker's response, and the Cache API that does is per data center, so it is a staleness decision, not a
+header (audit, "Request path").
 
 **Escalation.** If a measured aggregate is still too slow or too row-hungry, precompute it into counter
 tables after each ingest, as swubase does (per meta and per Legend: `deck_count`, main/side counts,
