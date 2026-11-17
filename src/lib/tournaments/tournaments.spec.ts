@@ -6,12 +6,18 @@
  * real one.
  */
 import { readFileSync } from 'node:fs';
+import { parse } from 'node-html-parser';
 import * as v from 'valibot';
 import { describe, expect, it } from 'vitest';
 import { dataset } from '../cards/index.ts';
 import { checkTournament, recordsFromMatches, reviewDecks } from './assertions.ts';
 import { buildTournament, matchKind, type BuildInput } from './build.ts';
-import { MeleeSignInError, parseDecklistPage, parseTournamentView } from './html.ts';
+import {
+	MeleeSignInError,
+	parseDecklistPage,
+	parseTournamentInfo,
+	parseTournamentView
+} from './html.ts';
 import {
 	MeleeDetailsSchema,
 	MeleeMatchSchema,
@@ -42,6 +48,7 @@ const onlyWinnerHasADeck = standings.map((standing) =>
 
 const input = (overrides: Partial<BuildInput> = {}): BuildInput => ({
 	details,
+	info: view.info,
 	rounds: view.rounds,
 	standings: onlyWinnerHasADeck,
 	matches,
@@ -113,6 +120,64 @@ describe('the Tournament page', () => {
 			[4, 'Finals']
 		]);
 		expect(result.finalStandingsRoundId).toBe(14);
+	});
+});
+
+describe("the Tournament page's header", () => {
+	it('reads Melee’s own metadata for the captured event', () => {
+		expect(view.info).toEqual({
+			tournamentType: 'Tabletop',
+			venue: 'the hungry dragon',
+			entryFee: '$20.00 (External to Melee)',
+			registration: 'Open Registration',
+			capacity: 32
+		});
+	});
+
+	const info = (html: string) => parseTournamentInfo(parse(html));
+
+	it('reads an invite-only event with a different venue and fee', () => {
+		expect(
+			info(`<p id="tournament-headline-platform">Tournament Type: Tabletop</p>
+				<a data-type="venue" href="#"><i></i> Nexus Entertainment - Tempe</a>
+				<p id="tournament-headline-registration">Entry Fee: $30.00 (External to Melee) |
+					<i></i>Invite Only | Format: Constructed | <i></i>Ended | <i></i>26 of 32 Enrolled Players</p>`)
+		).toEqual({
+			tournamentType: 'Tabletop',
+			venue: 'Nexus Entertainment - Tempe',
+			entryFee: '$30.00 (External to Melee)',
+			registration: 'Invite Only',
+			capacity: 32
+		});
+	});
+
+	it('synthetic: an event with no fee or venue leaves those null rather than failing', () => {
+		const result = info(`<p id="tournament-headline-platform">Tournament Type: Online</p>
+			<p id="tournament-headline-registration">Open Registration | Format: Constructed | Ended | 8 of 16 Enrolled Players</p>`);
+		expect(result).toEqual({
+			tournamentType: 'Online',
+			venue: null,
+			entryFee: null,
+			registration: 'Open Registration',
+			capacity: 16
+		});
+	});
+
+	it('does not guess the registration mode when it is ambiguous', () => {
+		const result = info(
+			`<p id="tournament-headline-registration">Open Registration | Waitlist | Format: Constructed | Ended</p>`
+		);
+		expect(result.registration).toBeNull();
+	});
+
+	it('is all null for a page with no header at all', () => {
+		expect(info('<div></div>')).toEqual({
+			tournamentType: null,
+			venue: null,
+			entryFee: null,
+			registration: null,
+			capacity: null
+		});
 	});
 });
 
@@ -203,6 +268,16 @@ describe('building the captured tournament', () => {
 			playerCount: 14
 		});
 		expect(built.tournament.startsAt).toEqual(new Date('2026-11-16T00:30:00Z'));
+	});
+
+	it("writes the page header's fields onto the Tournament", () => {
+		expect(built.tournament).toMatchObject({
+			venue: 'the hungry dragon',
+			tournamentType: 'Tabletop',
+			entryFee: '$20.00 (External to Melee)',
+			registration: 'Open Registration',
+			capacity: 32
+		});
 	});
 
 	it('keeps 14 standings with Melee ranks and numeric records', () => {

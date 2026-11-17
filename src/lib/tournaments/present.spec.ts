@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { fieldByColour, ordinal } from './present.ts';
+import { fieldByColour, ordinal, wherePlayed } from './present.ts';
 
 describe('ordinal', () => {
 	it.each([
@@ -32,5 +32,31 @@ describe('fieldByColour', () => {
 		]);
 		expect(known).toHaveLength(1);
 		expect(known[0].width).toBeCloseTo(100);
+	});
+});
+
+describe('wherePlayed', () => {
+	it('shows just the organizer when there is no venue', () => {
+		expect(wherePlayed('Holodex', null)).toBe('Holodex');
+	});
+
+	it('does not repeat an organizer that is also the venue', () => {
+		expect(wherePlayed('Holodex', 'Holodex')).toBe('Holodex');
+		expect(wherePlayed('Holodex', 'HOLODEX')).toBe('HOLODEX');
+	});
+
+	it('shows the more specific one when one contains the other', () => {
+		expect(wherePlayed('Nexus Entertainment', 'Nexus Entertainment - Tempe')).toBe(
+			'Nexus Entertainment - Tempe'
+		);
+		expect(wherePlayed('Eternal Universe Games Lubbock', 'Eternal Universe Games')).toBe(
+			'Eternal Universe Games Lubbock'
+		);
+	});
+
+	it('shows both when they are different places', () => {
+		expect(wherePlayed('The_hungry_dragon', 'the hungry dragon')).toBe(
+			'The_hungry_dragon · the hungry dragon'
+		);
 	});
 });

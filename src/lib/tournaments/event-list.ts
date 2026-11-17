@@ -6,6 +6,7 @@
  * do it. Cards are slugs; resolving them to art is the view's job.
  */
 import type { tournaments } from '../server/db/schema.ts';
+import { eventKind, type EventKind } from './kind.ts';
 
 export type EventListRows = {
 	tournaments: (typeof tournaments.$inferSelect)[];
@@ -25,6 +26,9 @@ export type EventListItem = {
 	/** Milliseconds since the epoch, UTC. */
 	startsAt: number;
 	organizer: string;
+	/** Derived from the name (`kind.ts`), not stored. */
+	kind: EventKind;
+	venue: string | null;
 	playerCount: number;
 	deckCount: number;
 	roundCount: number;
@@ -63,6 +67,8 @@ export function buildEventList(rows: EventListRows): EventListItem[] {
 				name: t.name,
 				startsAt: t.startsAt.getTime(),
 				organizer: t.organizerName,
+				kind: eventKind(t.name),
+				venue: t.venue,
 				playerCount: t.playerCount,
 				deckCount: decks.get(t.id) ?? 0,
 				roundCount: rounds.get(t.id) ?? 0,

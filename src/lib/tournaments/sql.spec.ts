@@ -21,7 +21,7 @@ import {
 	writeStatements,
 	type OwnedTable
 } from './sql.ts';
-import { ID, WINNER_DECK, deckText, details, matches, standings, view } from './testing.ts';
+import { ID, WINNER_DECK, deckText, details, info, matches, standings, view } from './testing.ts';
 
 const MIGRATIONS = new URL('../../../drizzle/', import.meta.url);
 
@@ -48,6 +48,7 @@ const onlyWinnerHasADeck = standings.map((standing) =>
 const build = (overrides: Partial<Parameters<typeof buildTournament>[0]> = {}) =>
 	buildTournament({
 		details,
+		info,
 		rounds: view.rounds,
 		standings: onlyWinnerHasADeck,
 		matches,

@@ -21,6 +21,7 @@ export const json = (name: string): unknown => JSON.parse(read(name));
 
 export const details = v.parse(MeleeDetailsSchema, json('details.json'));
 export const view = parseTournamentView(read('view-rounds.html'), ID);
+export const info = view.info;
 export const standings: MeleeStanding[] = v.parse(
 	MeleeStandingsPageSchema,
 	json('standings-final.json')

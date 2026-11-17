@@ -110,6 +110,11 @@ tournaments        // one per ingested Melee event
   format           text              // "Constructed" — Melee's word, not interpreted
   formatId         text              // Melee's format GUID (the one in the Decklists filter URL)
   playerCount      integer           // ParticipatorCount
+  venue            text null         // the page header's "Event Venue" (migration 0015)
+  tournamentType   text null         // header's "Tournament Type": how it's played ("Tabletop"), NOT a category
+  entryFee         text null         // as shown, currency and caveat included; not parsed to a number
+  registration     text null         // "Open Registration" / "Invite Only"
+  capacity         integer null      // the cap in "14 of 32 Enrolled Players"
   ingestedAt       integer (ms)
   idx: startsAt
 
@@ -171,6 +176,17 @@ assigned**, so adding or moving a meta needs no edit to any Tournament.
   import renumbers; revisit if a real event shows it matters).
 - **Several decklists per player** can exist; keep the one whose `FormatId` equals the Tournament's
   `formatId`, and fail the run if more than one matches.
+
+- **Event kind is derived from the name, never stored.** Melee has no event-type field (research
+  `melee-ingest.md`): "Showdown" exists only in what an organizer typed. `eventKind(name)` in
+  `src/lib/tournaments/kind.ts` is an ordered list of name rules (first match wins), applied when a page is
+  built. The categories are **Regional, Showdown, Brawl, Prerelease and Other**, named by the project
+  owner; `Other` is what no rule matches, never a guess. Rules are tried most-specific first (Regional,
+  Prerelease, Brawl, Showdown), so a name that says two things is the bigger event. A rule is a rule, not
+  data, so a new one covers every event already ingested with no re-ingest. **Only Showdown has been
+  seen in real data** (all five events); the other patterns are the obvious spellings, to be checked against
+  the first real Regional, Brawl or Prerelease. The header fields above are stored because they are Melee's
+  data, and are all nullable because a header we can't read must not stop an ingest.
 
 ### 3.2 `text` is the source; the card rows are an index
 
@@ -237,7 +253,8 @@ non-empty `GetPlayerDetails`, paging above 500 rows.
 ```
 GET  /Tournament/GetTournamentDetails?id=      → status, name, organizer, start, player count, format
        └─ not "Ended"? refuse: "still {status}; try again when it's over" (exit 2).
-GET  /Tournament/View/{id}                      → round ids/names/order (HTML round buttons)
+GET  /Tournament/View/{id}                      → round ids/names/order (HTML round buttons) and the header
+                                                  (venue, type, fee, registration, capacity: each may be null)
 POST /Standing/GetRoundStandings  roundId=last  → final Standings (+ decklist guids); page by 500
 GET  /Player/GetPlayerDetails?id=  × players    → ONLY for Standings whose Decklists is empty
 POST /Match/GetRoundMatches/{roundId}  × rounds → every match; page by 500

@@ -4,7 +4,13 @@
 	import { page } from '$app/state';
 	import Meta from '#lib/components/Meta.svelte';
 	import LegendArt from '#lib/components/tournaments/LegendArt.svelte';
-	import { fieldByColour, formatDate, legendNames, ordinal } from '#lib/tournaments/present.js';
+	import {
+		fieldByColour,
+		formatDate,
+		legendNames,
+		ordinal,
+		wherePlayed
+	} from '#lib/tournaments/present.js';
 
 	let { data } = $props();
 
@@ -82,7 +88,8 @@
 							<span class="min-w-0">
 								<span class="block truncate text-bright">{event.name}</span>
 								<span class="block truncate text-xs text-muted">
-									{event.organizer} · {event.roundCount} rounds
+									{#if event.kind !== 'Other'}<span class="text-neon">{event.kind}</span> ·
+									{/if}{wherePlayed(event.organizer, event.venue)} · {event.roundCount} rounds
 								</span>
 							</span>
 							<span class="text-right font-mono text-sm">{event.playerCount}</span>
@@ -175,7 +182,9 @@
 									{/each}
 								</div>
 								<p class="font-mono text-[11px] text-muted">
-									{event.organizer} · {event.roundCount} rounds · {event.deckCount} decks
+									{#if event.kind !== 'Other'}<span class="text-neon">{event.kind}</span> ·
+									{/if}{wherePlayed(event.organizer, event.venue)} · {event.roundCount} rounds · {event.deckCount}
+									decks
 								</p>
 							</div>
 						</a>

@@ -13,6 +13,17 @@
 		{ href: `${base}/rounds`, label: 'Rounds' }
 	]);
 
+	/** Melee's own header fields, whichever it gave us, in reading order. */
+	const details = $derived(
+		[
+			event.venue,
+			event.tournamentType,
+			event.registration,
+			event.entryFee,
+			event.capacity === null ? null : `${event.playerCount} of ${event.capacity} enrolled`
+		].filter((detail): detail is string => detail !== null)
+	);
+
 	const description = $derived(
 		`${event.name}: ${event.playerCount} players, ${event.rounds.length} rounds` +
 			(event.deckCount > 0 ? `, ${event.deckCount} decklists.` : '.')
@@ -44,6 +55,19 @@
 					target="_blank">on Melee</a
 				>
 			</p>
+
+			{#if details.length > 0 || event.kind !== 'Other'}
+				<ul class="mt-3 flex flex-wrap gap-1.5 text-[11px]" aria-label="Event details">
+					{#if event.kind !== 'Other'}
+						<li class="rounded-full border border-neon-dim bg-neon/10 px-2.5 py-0.5 text-neon">
+							{event.kind}
+						</li>
+					{/if}
+					{#each details as detail (detail)}
+						<li class="rounded-full border border-edge px-2.5 py-0.5 text-muted">{detail}</li>
+					{/each}
+				</ul>
+			{/if}
 
 			<nav class="mt-4 flex gap-1.5" aria-label="Views">
 				{#each views as view (view.href)}

@@ -57,3 +57,16 @@ export function ordinal(n: number): string {
 		: (({ 1: 'st', 2: 'nd', 3: 'rd' } as Record<number, string>)[n % 10] ?? 'th');
 	return `${n}${suffix}`;
 }
+
+/**
+ * "Who and where" on one line without saying the same thing twice. An organizer is often also the
+ * venue ("Holodex" at "Holodex"), or the venue extends it ("Nexus Entertainment" at "Nexus
+ * Entertainment - Tempe"); then only the more specific one is shown.
+ */
+export function wherePlayed(organizer: string, venue: string | null): string {
+	if (!venue) return organizer;
+	const [o, v] = [organizer.toLowerCase(), venue.toLowerCase()];
+	if (v.includes(o)) return venue;
+	if (o.includes(v)) return organizer;
+	return `${organizer} · ${venue}`;
+}

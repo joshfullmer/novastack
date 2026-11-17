@@ -7,7 +7,7 @@ import { describe, expect, it } from 'vitest';
 import { dataset } from '../cards/index.ts';
 import { buildTournament } from './build.ts';
 import { buildEventView, type EventRows } from './event-view.ts';
-import { ID, WINNER_DECK, deckText, details, matches, standings, view } from './testing.ts';
+import { ID, WINNER_DECK, deckText, details, info, matches, standings, view } from './testing.ts';
 
 const onlyWinnerHasADeck = standings.map((standing) =>
 	standing.Rank === 1 ? standing : { ...standing, Decklists: [] }
@@ -17,6 +17,7 @@ const onlyWinnerHasADeck = standings.map((standing) =>
 function rowsFor(
 	built = buildTournament({
 		details,
+		info,
 		rounds: view.rounds,
 		standings: onlyWinnerHasADeck,
 		matches,
@@ -30,7 +31,16 @@ function rowsFor(
 		return { id, displayName: found.displayName, username: found.username ?? null };
 	};
 	return {
-		tournament: { ...built.tournament, id: ID, ingestedAt: new Date(0) },
+		tournament: {
+			...built.tournament,
+			id: ID,
+			venue: built.tournament.venue ?? null,
+			tournamentType: built.tournament.tournamentType ?? null,
+			entryFee: built.tournament.entryFee ?? null,
+			registration: built.tournament.registration ?? null,
+			capacity: built.tournament.capacity ?? null,
+			ingestedAt: new Date(0)
+		},
 		rounds: built.rounds,
 		standings: built.standings.map((standing) => ({
 			standing: { ...standing, deckGuid: standing.deckGuid ?? null },
@@ -64,6 +74,17 @@ describe('the event view', () => {
 			meleeUrl: 'https://melee.gg/Tournament/View/485070'
 		});
 		expect(event.startsAt).toBe(Date.parse('2026-11-16T00:30:00Z'));
+	});
+
+	it("carries the header's fields and a kind derived from the name", () => {
+		expect(event).toMatchObject({
+			kind: 'Showdown',
+			venue: 'the hungry dragon',
+			tournamentType: 'Tabletop',
+			entryFee: '$20.00 (External to Melee)',
+			registration: 'Open Registration',
+			capacity: 32
+		});
 	});
 
 	it('lists every standing in rank order with numeric records', () => {

@@ -173,6 +173,7 @@ export async function ingestTournament(
 
 	const built = buildTournament({
 		details,
+		info: view.info,
 		rounds: view.rounds,
 		standings,
 		matches,
@@ -188,7 +189,12 @@ export async function ingestTournament(
 			...reviewDecks(built),
 			...built.notes.blankDecks.map(
 				(guid) => `${guid}: registered a blank list; treated as no deck.`
-			)
+			),
+			...(Object.values(view.info).every((value) => value === null)
+				? [
+						'The tournament page header could not be read: venue, type, fee, registration and capacity are all empty.'
+					]
+				: [])
 		]
 	};
 }

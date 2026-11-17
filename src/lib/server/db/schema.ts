@@ -391,6 +391,16 @@ export const tournaments = sqliteTable(
 		/** Melee's format GUID — the one in the Decklists filter URL. */
 		formatId: text('format_id').notNull(),
 		playerCount: integer('player_count').notNull(),
+		/** From the tournament page's header; all null when the header couldn't be read. */
+		venue: text('venue'),
+		/** How it is played, as Melee names it (`Tabletop`). Not a category: see `kind.ts`. */
+		tournamentType: text('tournament_type'),
+		/** As shown, currency and caveat included. */
+		entryFee: text('entry_fee'),
+		/** `Open Registration`, `Invite Only`, … */
+		registration: text('registration'),
+		/** The registration cap. */
+		capacity: integer('capacity'),
 		ingestedAt: integer('ingested_at', { mode: 'timestamp_ms' }).notNull().default(now)
 	},
 	(table) => [index('tournaments_starts_at_idx').on(table.startsAt)]

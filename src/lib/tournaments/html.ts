@@ -30,10 +30,30 @@ export type MeleeRound = {
 	name: string;
 };
 
+/**
+ * What the page's header says about the event, as Melee's own text — `Tournament Type: Tabletop`,
+ * `Event Venue: …`, `Entry Fee: $20.00 (External to Melee)`. **Every field may be `null`**: this is
+ * metadata, not results, so a header we can't read must not stop a Tournament from being ingested.
+ * Nothing here is a category: "Showdown" is in the event's *name*, not in any field (research
+ * `melee-ingest.md`).
+ */
+export type TournamentInfo = {
+	/** How it is played, as Melee names it; `Tabletop` on every event seen so far. */
+	tournamentType: string | null;
+	venue: string | null;
+	/** As shown, currency and caveat included: `$20.00 (External to Melee)`. Not parsed to a number. */
+	entryFee: string | null;
+	/** `Open Registration`, `Invite Only`, … */
+	registration: string | null;
+	/** The registration cap (the 32 in `14 of 32 Enrolled Players`). */
+	capacity: number | null;
+};
+
 export type TournamentView = {
 	rounds: MeleeRound[];
 	/** The last round whose standings are published: an event's final results. */
 	finalStandingsRoundId: number;
+	info: TournamentInfo;
 };
 
 function isSignInPage(html: string): boolean {
@@ -51,8 +71,51 @@ function buttons(root: HTMLElement, container: string) {
 	});
 }
 
+const clean = (text: string | undefined) => text?.replace(/\s+/g, ' ').trim() || null;
+
+/** The part of `Label: value` after the label, or null when the text doesn't start with it. */
+const after = (text: string | null, label: string) =>
+	text?.startsWith(label) ? clean(text.slice(label.length)) : null;
+
 /**
- * `GET /Tournament/View/{id}` → its rounds.
+ * The header block. Its parts have stable element ids; the registration line is one `|`-separated
+ * run (`Entry Fee: … | Open Registration | Format: … | Ended | 14 of 32 Enrolled Players`), whose one
+ * unlabelled segment is the registration mode, so that is found by elimination and only trusted if
+ * exactly one segment is left.
+ */
+export function parseTournamentInfo(root: HTMLElement): TournamentInfo {
+	const segments = (clean(root.querySelector('#tournament-headline-registration')?.text) ?? '')
+		.split('|')
+		.map((segment) => segment.trim())
+		.filter(Boolean);
+
+	const enrolled = segments.find((segment) => /^\d+ of \d+ Enrolled Players?$/i.test(segment));
+	const capacity = enrolled ? Number(/ of (\d+) /.exec(enrolled)?.[1]) : null;
+	const remaining = segments.filter(
+		(segment) =>
+			segment !== enrolled &&
+			!segment.startsWith('Entry Fee:') &&
+			!segment.startsWith('Format:') &&
+			!/^(Ended|Started|Not Started|Upcoming|In Progress|Registration Open)$/i.test(segment)
+	);
+
+	return {
+		tournamentType: after(
+			clean(root.querySelector('#tournament-headline-platform')?.text),
+			'Tournament Type:'
+		),
+		venue: clean(root.querySelector('a[data-type="venue"]')?.text),
+		entryFee: after(
+			segments.find((segment) => segment.startsWith('Entry Fee:')) ?? null,
+			'Entry Fee:'
+		),
+		registration: remaining.length === 1 ? remaining[0] : null,
+		capacity: capacity !== null && Number.isInteger(capacity) ? capacity : null
+	};
+}
+
+/**
+ * `GET /Tournament/View/{id}` → its rounds and header.
  *
  * Rounds are numbered by **the order of the buttons** — `Quarterfinals`, `Semifinals` and `Finals`
  * come after the numbered Swiss rounds and have no number in their names — taking the standings
@@ -82,7 +145,7 @@ export function parseTournamentView(html: string, expectedId: number): Tournamen
 
 	const finalStandingsRoundId = (standings.at(-1) ?? pairings.at(-1))?.meleeRoundId;
 	if (finalStandingsRoundId === undefined) throw new Error(`${where}: no rounds listed.`);
-	return { rounds, finalStandingsRoundId };
+	return { rounds, finalStandingsRoundId, info: parseTournamentInfo(root) };
 }
 
 /**

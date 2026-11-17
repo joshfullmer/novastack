@@ -19,11 +19,13 @@ import type {
 	tournaments
 } from '../server/db/schema.ts';
 import { formatIdOf, indexDeck, pickDecklist } from './decks.ts';
-import type { MeleeRound } from './html.ts';
+import type { MeleeRound, TournamentInfo } from './html.ts';
 import type { MeleeDetails, MeleeMatch, MeleeStanding } from './sources.ts';
 
 export type BuildInput = {
 	details: MeleeDetails;
+	/** The tournament page's header. */
+	info: TournamentInfo;
 	rounds: readonly MeleeRound[];
 	/** The final round's standings, every page. */
 	standings: readonly MeleeStanding[];
@@ -198,7 +200,12 @@ export function buildTournament(input: BuildInput): BuiltTournament {
 			organizerName: details.OrganizationName,
 			format: details.Format,
 			formatId,
-			playerCount: details.ParticipatorCount
+			playerCount: details.ParticipatorCount,
+			venue: input.info.venue,
+			tournamentType: input.info.tournamentType,
+			entryFee: input.info.entryFee,
+			registration: input.info.registration,
+			capacity: input.info.capacity
 		},
 		rounds: rounds.map((round) => ({
 			tournamentId,

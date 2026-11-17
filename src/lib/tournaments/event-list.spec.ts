@@ -10,6 +10,11 @@ const event = (id: number, startsAt: string, name = `Event ${id}`) => ({
 	format: 'Constructed',
 	formatId: 'f',
 	playerCount: 10,
+	venue: 'Venue',
+	tournamentType: 'Tabletop',
+	entryFee: '$20.00',
+	registration: 'Open Registration',
+	capacity: 32,
 	ingestedAt: new Date(0)
 });
 
@@ -39,6 +44,19 @@ const rows = (over: Partial<EventListRows> = {}): EventListRows => ({
 describe('the tournament list', () => {
 	it('lists the newest event first', () => {
 		expect(buildEventList(rows()).map((e) => e.id)).toEqual([2, 1]);
+	});
+
+	it('derives the kind from the name and carries the venue', () => {
+		const [named, other] = buildEventList(
+			rows({
+				tournaments: [
+					event(1, '2026-11-16T00:00:00Z', 'Night City Showdown @ Nexus'),
+					event(2, '2026-11-15T00:00:00Z', 'Friday Night Cyberpunk')
+				]
+			})
+		);
+		expect(named).toMatchObject({ kind: 'Showdown', venue: 'Venue' });
+		expect(other.kind).toBe('Other');
 	});
 
 	it('breaks a tie on start time by id, so the order is stable', () => {
