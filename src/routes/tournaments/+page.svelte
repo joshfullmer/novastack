@@ -29,10 +29,11 @@
 		Blue: 'bg-card-blue'
 	};
 	/**
-	 * On hover each Legend rises a beat after the one before it. `group-hover:` scopes the delay to the
-	 * way in, so moving off the tile drops them together. Whole class names, so Tailwind finds them.
+	 * On hover the middle Legend rises first, then the left, then the right. Indexed like the tile's
+	 * layout below. `group-hover:` scopes the delay to the way in, so moving off the tile drops them
+	 * together. Whole class names, so Tailwind finds them.
 	 */
-	const HOVER_DELAY = ['', 'group-hover:delay-75', 'group-hover:delay-150'];
+	const HOVER_DELAY = ['group-hover:delay-75', '', 'group-hover:delay-150'];
 
 	/** This page's own query with some of it changed; a filter or view change starts again at page 1. */
 	const link = (patch: Record<string, string | number | null>) =>
