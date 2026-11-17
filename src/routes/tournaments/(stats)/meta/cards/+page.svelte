@@ -3,6 +3,7 @@
 	// What's played: the Cards, not the archetypes. Pick a Legend line (or all decks) and see the Cards
 	// people ran, as art, with the share of decks that included each. Each tile opens that Card's usage.
 	import LegendArt from '#lib/components/tournaments/LegendArt.svelte';
+	import RamCode from '#lib/components/tournaments/RamCode.svelte';
 	import { cardName, legendNames } from '#lib/tournaments/present.js';
 	import { href } from '#lib/tournaments/url.js';
 
@@ -22,8 +23,8 @@
 			.slice(0, SHOWN)
 	);
 	const percent = (n: number) => `${Math.round(n * 100)}%`;
-	const mine = (line: string | null) =>
-		href('/tournaments/meta/cards', { ...periodParams(data.period), line });
+	const mine = (line: string | null, ram: string | null = null) =>
+		href('/tournaments/meta/cards', { ...periodParams(data.period), line, ram });
 </script>
 
 <div class="grid gap-6 lg:grid-cols-[17rem_1fr]">
@@ -33,14 +34,31 @@
 			<li>
 				<a
 					href={mine(null)}
-					aria-current={data.line === null ? 'true' : undefined}
-					class="block rounded-lg border px-3 py-2 text-sm {data.line === null
+					aria-current={data.line === null && data.ram === null ? 'true' : undefined}
+					class="block rounded-lg border px-3 py-2 text-sm {data.line === null && data.ram === null
 						? 'border-neon bg-neon/10 text-bright'
 						: 'border-edge text-muted hover:text-body'}"
 				>
 					All decks
 				</a>
 			</li>
+			<li class="px-1 pt-2 font-mono text-[11px] tracking-wide text-muted uppercase">By RAM</li>
+			{#each data.rams as choice (choice.ram)}
+				<li>
+					<a
+						href={mine(null, choice.ram)}
+						aria-current={data.ram === choice.ram ? 'true' : undefined}
+						class="flex items-center justify-between rounded-lg border px-3 py-2 {data.ram ===
+						choice.ram
+							? 'border-neon bg-neon/10'
+							: 'border-edge hover:bg-surface'}"
+					>
+						<RamCode ram={choice.ram} class="text-sm" />
+						<span class="font-mono text-xs text-muted">{choice.decks}</span>
+					</a>
+				</li>
+			{/each}
+			<li class="px-1 pt-2 font-mono text-[11px] tracking-wide text-muted uppercase">By Legends</li>
 			{#each data.lines as line (line.key)}
 				<li>
 					<a

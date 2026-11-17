@@ -138,8 +138,9 @@ tournament_decks   // PK guid
   name             text              // the player's own label — NOT an archetype
   text             text              // the deck page's decklist text, verbatim — the source of truth
   legendLine       text null         // the three Legend slugs, sorted, joined by "+"; derived
+  ram              text null         // what the Legends provide together, as a `legends:` value (`rryyyy`); derived
   unresolved       integer           // count of lines that named no single Card; derived
-  idx: tournamentId, legendLine
+  idx: tournamentId, legendLine, ram
 
 tournament_deck_cards   // PK (deckGuid, cardSlug, board): a derived index of `text`; tournamentId repeats the deck's,
                         // indexed (board, tournamentId, cardSlug), so a period aggregate never joins decks
@@ -369,11 +370,30 @@ Computed with SQL over the tables in §3, from `tournament_decks` + `tournament_
 
 **Grouping.** A deck is grouped by its Legends, from `board = 'legend'`:
 
-| group            | key                                                                          |
-| ---------------- | ---------------------------------------------------------------------------- |
-| a Legend         | one Legend slug; a deck counts once per Legend, so shares sum to 3×          |
-| a Legend line    | `tournament_decks.legendLine` (the sorted trio), stored so grouping is cheap |
-| a RAM colour set | the colours the three Legends provide, from `cards.json` at read time        |
+| group         | key                                                                          |
+| ------------- | ---------------------------------------------------------------------------- |
+| a Legend      | one Legend slug; a deck counts once per Legend, so shares sum to 3×          |
+| a Legend line | `tournament_decks.legendLine` (the sorted trio), stored so grouping is cheap |
+| a RAM         | `tournament_decks.ram`, what the three Legends provide together (below)      |
+
+**RAM is how players name a deck** (decided 2026-11-17): YYR, BBG, GGR, RRG. Two decks that share colours
+but not RAM (GGR and RRG) are different decks, and decks with different Legends but the same RAM (Viktor and
+Muamar in a YYR) are close cousins, so RAM is the middle level: RAM, then Legend line, then deck. It replaces
+the old colour-set grouping, which merged GGR with RRG.
+
+- **The spelling is the query language's own `legends:` value**, one letter per **RAM**, not per Legend
+  (`yyyyrr` is Yellow 4, Red 2), parsed and formatted by `parseLegendsValue` / `formatLegendsValue`. A Legend
+  that does not provide 2 RAM needs no special case, and the same string searches the card database for what
+  the deck may play (`/cards?q=legends:rryyyy`).
+- **Stored canonical, shown as said.** `tournament_decks.ram` holds the canonical order (colours
+  alphabetical: `rryyyy`) so equality and grouping are plain SQL; the pages show it dominant colour first
+  (`yyyyrr`, ties in R, Y, G, B order), each run in its colour (`RamCode`). Parsing accepts any order.
+- **Null when it cannot be known**: not three Legends, or one the dataset does not know. Such a deck is
+  left out of the RAM groups (and counted in none of their shares) until `pnpm melee --reparse` fills it in.
+  It is stamped at ingest and rewritten by `--reparse`, which is also how it follows a change to Legend RAM.
+- **Where it shows**: the tier list's RAM group (the default), the matchup matrix (by RAM by default, `?by=line`
+  for Legend lines; a RAM matrix is far denser at small event counts), the `ram=` filter on `/decks`, "what's
+  played" within one RAM, "which RAMs run it" on a card's Fit page, and a badge on every deck.
 
 What a Cyberpunk TCG "archetype" is beyond these is open (§7).
 
@@ -422,14 +442,14 @@ their list empty (2 of the 5 events ingested so far); the page says which rank's
 **Built: the statistics pages (2026-11-17).** Every view from the prototype round, as real routes, all
 read-only, dynamic and `noindex`:
 
-- **`/tournaments/meta`** (tier list: group by Legend line, Legend or colours; count all decks, top 8 or
-  winners; conversion columns), **`/meta/matchups`** (the matrix, for the eight most-played lines) and
-  **`/meta/cards`** ("what's played", optionally within one Legend line).
-- **`/tournaments/decks`** (filter by Legend, by a card the deck runs, by player; paged on the server),
+- **`/tournaments/meta`** (tier list: group by RAM, Legend line or Legend; count all decks, top 8 or
+  winners; conversion columns), **`/meta/matchups`** (the matrix, for the eight most-played RAMs or lines) and
+  **`/meta/cards`** ("what's played", optionally within one RAM or Legend line).
+- **`/tournaments/decks`** (filter by Legend, RAM, a card the deck runs, or player; paged on the server),
   **`/decks/lines`** (shelves per Legend line) and **`/decks/[guid]`** (a deck's path through its event, and
   its list).
 - **`/tournaments/cards/[slug]`** (usage and finishes) and **`/cards/[slug]/fit`** (does it do better at the
-  top; which lines run it). `/tournaments/cards` is a front door that redirects to a card.
+  top; which RAMs and lines run it). `/tournaments/cards` is a front door that redirects to a card.
 - **The period selector** (`?period=<meta id>` or `?period=all`), shown once a `metas` row exists, narrows
   every one of these: chips up to four choices, a menu beyond. **The default is the current meta** (the
   newest that has started), so a link that names none shows it and the default adds no param to any link;
@@ -475,9 +495,9 @@ a shared-cache header, a site-nav link, and production (migrations `0014` and `0
 
 ### Open
 
-1. **What is an archetype?** §6 groups by Legend, Legend line, and colour set because those are
-   readable straight off a deck. Whether players name decks some finer way (by a key non-Legend Card,
-   say) is a game-knowledge question, not a data one.
+1. **What is an archetype?** §6 groups by RAM, Legend line and Legend because those are readable
+   straight off a deck. Whether players name decks some finer way still (by a key non-Legend Card, say) is a
+   game-knowledge question, not a data one.
 2. **Which metas?** Decided 2026-11-17: a meta is a name and a **date range**, and anything that changes the
    game can start one (a set release, a banlist or errata). For now there is one, **WNC** (Welcome to Night
    City), from its retail release, 2026-11-06, open-ended. **Where the rows live is open**: the `metas`

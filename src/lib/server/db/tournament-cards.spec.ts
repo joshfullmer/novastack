@@ -20,7 +20,7 @@ const world = () => buildWorld().db;
 
 describe('getCardStats', () => {
 	it('counts main-deck inclusion, average copies and sideboard use per card', async () => {
-		const { decks, cards } = await getCardStats(world(), ALL_TIME, null);
+		const { decks, cards } = await getCardStats(world(), ALL_TIME);
 		expect(decks).toBe(6);
 		const by = new Map(cards.map((c) => [c.slug, c]));
 		// m1 is in four main decks (3+3+2+3 = 11 copies) and one sideboard (D6)
@@ -35,7 +35,7 @@ describe('getCardStats', () => {
 	});
 
 	it('keeps a sideboard-only card, with no inclusion and no copies', async () => {
-		const { cards } = await getCardStats(world(), ALL_TIME, null);
+		const { cards } = await getCardStats(world(), ALL_TIME);
 		expect(cards.find((c) => c.slug === 's1')).toMatchObject({
 			decks: 0,
 			inclusion: 0,
@@ -45,17 +45,17 @@ describe('getCardStats', () => {
 	});
 
 	it('does not count a Legend as a card in the deck', async () => {
-		const { cards } = await getCardStats(world(), ALL_TIME, null);
+		const { cards } = await getCardStats(world(), ALL_TIME);
 		expect(cards.map((c) => c.slug)).not.toContain('a');
 	});
 
 	it('orders by inclusion, most first', async () => {
-		const { cards } = await getCardStats(world(), ALL_TIME, null);
+		const { cards } = await getCardStats(world(), ALL_TIME);
 		expect(cards.map((c) => c.slug)).toEqual(['m1', 'm2', 'm3', 's1']);
 	});
 
 	it('narrows to one Legend line, using that line’s decks as the denominator', async () => {
-		const { decks, cards } = await getCardStats(world(), ALL_TIME, 'a+b+c'); // D1 D2 D6
+		const { decks, cards } = await getCardStats(world(), ALL_TIME, { line: 'a+b+c', ram: null }); // D1 D2 D6
 		expect(decks).toBe(3);
 		const by = new Map(cards.map((c) => [c.slug, c]));
 		expect(by.get('m1')).toMatchObject({ decks: 2, sideDecks: 1 }); // D1 D2 main; D6 side
@@ -73,13 +73,31 @@ describe('getCardStats', () => {
 			param: null,
 			...ANY_EVENTS
 		};
-		const { decks, cards } = await getCardStats(world(), nov16, null); // D5 D6
+		const { decks, cards } = await getCardStats(world(), nov16); // D5 D6
 		expect(decks).toBe(2);
 		expect(cards.find((c) => c.slug === 'm1')).toMatchObject({ decks: 1, sideDecks: 1 });
 	});
 });
 
+describe('getCardStats, by RAM', () => {
+	it('narrows to the decks whose Legends provide that RAM', async () => {
+		const { decks, cards } = await getCardStats(world(), ALL_TIME, { line: null, ram: 'rrrryy' });
+		expect(decks).toBe(2); // D3 D5
+		expect(cards.find((c) => c.slug === 'm1')).toMatchObject({ decks: 2, inclusion: 1 });
+	});
+});
+
 describe('getCardUsage', () => {
+	it('says which RAMs run the card, with how many of each RAM’s decks do', async () => {
+		const usage = await getCardUsage(world(), ALL_TIME, 'm3');
+		// m3: D4 (bbbbgg, its only deck) and D5 (rrrryy, of 2).
+		expect(usage.byRam).toEqual([
+			{ ram: 'bbbbgg', decks: 1, withCard: 1, rate: 1 },
+			{ ram: 'rrrryy', decks: 2, withCard: 1, rate: 0.5 }
+		]);
+		expect(usage.ramCount).toBe(2);
+	});
+
 	it('lists every deck that ran the card anywhere, best finish first', async () => {
 		const usage = await getCardUsage(world(), ALL_TIME, 'm1');
 		// D1 D2 D3 D5 in the main deck, D6 in the sideboard

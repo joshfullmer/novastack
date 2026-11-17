@@ -10,6 +10,8 @@ export type SeedDeck = {
 	guid: string;
 	/** Legend slugs; the deck's `legend_line` is these, sorted and joined with `+`. */
 	legends: string[];
+	/** What the Legends provide together (`tournament_decks.ram`); null when it can't be known. */
+	ram?: string | null;
 	main?: Record<string, number>;
 	side?: Record<string, number>;
 	name?: string;
@@ -80,13 +82,14 @@ export function seedEvent(sqlite: DatabaseSync, event: SeedEvent): void {
 		if (p.deck) {
 			const d = p.deck;
 			run(
-				`INSERT INTO tournament_decks (guid, tournament_id, player_id, name, text, legend_line, unresolved)
-				 VALUES (?, ?, ?, ?, 'x', ?, 0)`,
+				`INSERT INTO tournament_decks (guid, tournament_id, player_id, name, text, legend_line, ram, unresolved)
+				 VALUES (?, ?, ?, ?, 'x', ?, ?, 0)`,
 				d.guid,
 				event.id,
 				p.id,
 				d.name ?? 'deck',
-				d.legends.length === 3 ? [...d.legends].sort().join('+') : null
+				d.legends.length === 3 ? [...d.legends].sort().join('+') : null,
+				d.ram ?? null
 			);
 			const card = (slug: string, board: string, quantity: number) =>
 				run(

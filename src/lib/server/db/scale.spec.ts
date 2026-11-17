@@ -31,7 +31,14 @@ function emit(text: string) {
 		appendFileSync(process.env.TOURNAMENT_SCALE_OUT, `${text}\n`);
 }
 
-const base: DeckFilters = { legend: null, cards: [], player: null, sort: 'finish', page: 1 };
+const base: DeckFilters = {
+	legend: null,
+	ram: null,
+	cards: [],
+	player: null,
+	sort: 'finish',
+	page: 1
+};
 
 type Capture = { sql: string; params: unknown[] };
 
@@ -110,19 +117,22 @@ describe.skipIf(sizes.length === 0)('scale audit', () => {
 				['one event page', () => getEventView(db, mid)],
 				[
 					'meta tier list, all time',
-					() => getMeta(db, ALL_TIME, { legends: true, matchups: false })
+					() => getMeta(db, ALL_TIME, { legends: true, rams: true, matchups: false })
 				],
 				[
 					'meta matchup matrix, all time',
-					() => getMeta(db, ALL_TIME, { legends: false, matchups: true })
+					() => getMeta(db, ALL_TIME, { legends: false, rams: false, matchups: 'line' })
 				],
 				[
 					'meta tier list, last 30 days',
-					() => getMeta(db, last30, { legends: true, matchups: false })
+					() => getMeta(db, last30, { legends: true, rams: true, matchups: false })
 				],
-				["what's played, all decks, all time", () => getCardStats(db, ALL_TIME, null)],
-				["what's played, one line, all time", () => getCardStats(db, ALL_TIME, topLine.key)],
-				["what's played, all decks, last 30 days", () => getCardStats(db, last30, null)],
+				["what's played, all decks, all time", () => getCardStats(db, ALL_TIME)],
+				[
+					"what's played, one line, all time",
+					() => getCardStats(db, ALL_TIME, { line: topLine.key, ram: null })
+				],
+				["what's played, all decks, last 30 days", () => getCardStats(db, last30)],
 				['card page, staple card (all time)', () => getCardUsage(db, ALL_TIME, 'card-0')],
 				['card page, rare card (all time)', () => getCardUsage(db, ALL_TIME, 'card-140')],
 				['deck list, best finish, page 1', () => getDeckList(db, ALL_TIME, base)],

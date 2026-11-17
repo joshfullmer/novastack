@@ -127,6 +127,13 @@
       "when": 1794918423665,
       "tag": "0017_fuzzy_changeling",
       "breakpoints": true
+    },
+    {
+      "idx": 18,
+      "version": "6",
+      "when": 1794934016514,
+      "tag": "0018_amazing_solo",
+      "breakpoints": true
     }
   ]
 }

@@ -19,6 +19,13 @@ import { seedEvent } from './test-seed.js';
 export const X = ['a', 'b', 'c'];
 export const Y = ['a', 'b', 'd'];
 export const Z = ['e', 'f', 'g'];
+/**
+ * What each line provides together. X and Y share colours (Red and Yellow) but not RAM, as YYR and
+ * RRY do: the pair a colour-set grouping would wrongly merge.
+ */
+export const X_RAM = 'rryyyy';
+export const Y_RAM = 'rrrryy';
+export const Z_RAM = 'bbbbgg';
 
 export function world() {
 	const { db, sqlite } = createTestDb();
@@ -35,7 +42,7 @@ export function world() {
 				rank: 1,
 				wins: 3,
 				losses: 0,
-				deck: { guid: 'D1', legends: X, main: { m1: 3, m2: 2 }, side: { s1: 1 } }
+				deck: { guid: 'D1', legends: X, ram: X_RAM, main: { m1: 3, m2: 2 }, side: { s1: 1 } }
 			},
 			{
 				id: 2,
@@ -43,7 +50,7 @@ export function world() {
 				rank: 2,
 				wins: 2,
 				losses: 1,
-				deck: { guid: 'D2', legends: X, main: { m1: 3 } }
+				deck: { guid: 'D2', legends: X, ram: X_RAM, main: { m1: 3 } }
 			},
 			{
 				id: 3,
@@ -51,7 +58,7 @@ export function world() {
 				rank: 3,
 				wins: 1,
 				losses: 2,
-				deck: { guid: 'D3', legends: Y, main: { m1: 2, m2: 3 }, side: { m2: 1 } }
+				deck: { guid: 'D3', legends: Y, ram: Y_RAM, main: { m1: 2, m2: 3 }, side: { m2: 1 } }
 			},
 			{
 				id: 4,
@@ -59,7 +66,7 @@ export function world() {
 				rank: 4,
 				wins: 0,
 				losses: 3,
-				deck: { guid: 'D4', legends: Z, main: { m3: 3 } }
+				deck: { guid: 'D4', legends: Z, ram: Z_RAM, main: { m3: 3 } }
 			}
 		],
 		matches: [
@@ -84,7 +91,7 @@ export function world() {
 				rank: 1,
 				wins: 2,
 				losses: 0,
-				deck: { guid: 'D5', legends: Y, main: { m1: 3, m3: 1 } }
+				deck: { guid: 'D5', legends: Y, ram: Y_RAM, main: { m1: 3, m3: 1 } }
 			},
 			{
 				id: 6,
@@ -92,7 +99,7 @@ export function world() {
 				rank: 2,
 				wins: 1,
 				losses: 1,
-				deck: { guid: 'D6', legends: X, main: { m2: 2 }, side: { m1: 1 } }
+				deck: { guid: 'D6', legends: X, ram: X_RAM, main: { m2: 2 }, side: { m1: 1 } }
 			},
 			{ id: 7, name: 'P7', rank: 3, wins: 0, losses: 2 }
 		],

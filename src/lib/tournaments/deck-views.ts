@@ -20,11 +20,15 @@ export type DeckListRow = {
 	draws: number;
 	/** The deck's Legend slugs, sorted. */
 	legends: string[];
+	/** What they provide together, as a `legends:` value (`ram.ts`); null when unknown. */
+	ram: string | null;
 };
 
 export type DeckFilters = {
 	/** A Legend's slug: decks that run it as one of their Legends. */
 	legend: string | null;
+	/** A canonical RAM (`ram.ts`): decks whose Legends provide exactly that. */
+	ram: string | null;
 	/** Card slugs, any of which the deck runs (main or sideboard). */
 	cards: string[];
 	/** A fragment of the player's name. */

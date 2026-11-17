@@ -141,6 +141,7 @@ export function buildTournament(input: BuildInput): BuiltTournament {
 					name: picked.name,
 					text,
 					legendLine: index.legendLine,
+					ram: index.ram,
 					unresolved: index.unresolved
 				});
 				deckCards.push(...index.cards);

@@ -5,6 +5,7 @@
 	// opponent's Legends and the result), and the list.
 	import LegendArt from '#lib/components/tournaments/LegendArt.svelte';
 	import TournamentDeck from '#lib/components/tournaments/TournamentDeck.svelte';
+	import RamCode from '#lib/components/tournaments/RamCode.svelte';
 	import { formatDate, legendNames } from '#lib/tournaments/present.js';
 	import { href } from '#lib/tournaments/url.js';
 
@@ -36,7 +37,15 @@
 	</div>
 	<div class="min-w-0">
 		<h1 class="text-2xl font-semibold text-bright">{deck.player}</h1>
-		<p class="text-sm text-muted">{legendNames(deck.legends)}</p>
+		<p class="text-sm text-muted">
+			{#if deck.ram}
+				<a
+					href="/cards?q=legends:{deck.ram}"
+					class="mr-1 text-base hover:underline"
+					title="The cards this deck's Legends allow"><RamCode ram={deck.ram} /></a
+				>
+			{/if}{legendNames(deck.legends)}
+		</p>
 		<p class="mt-1 font-mono text-xs text-muted">
 			Finished {deck.rank} of {deck.playerCount} · {deck.wins}-{deck.losses}-{deck.draws} ·
 			<a href="/tournaments/{deck.eventId}" class="text-neon hover:underline">{deck.eventName}</a>

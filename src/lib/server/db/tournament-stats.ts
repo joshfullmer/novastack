@@ -7,7 +7,7 @@
  * `Period`: a Tournament counts when its start falls in the window.
  */
 import { and, count, eq, gte, inArray, isNotNull, lt, min, ne, sql, type SQL } from 'drizzle-orm';
-import { alias } from 'drizzle-orm/sqlite-core';
+import { alias, type SQLiteColumn } from 'drizzle-orm/sqlite-core';
 import {
 	buildCardStats,
 	buildCardUsage,
@@ -73,16 +73,32 @@ const recordColumns = {
 	best: min(standings.rank).mapWith(Number)
 };
 
-/** One row per Legend line with its record: the first half of `getMeta`, for pages that only need that. */
-export async function lineRows(db: Db, period: Period): Promise<LineRow[]> {
+/** How decks are grouped into archetypes: by their three Legends, or by the RAM those provide together. */
+export type Grouping = 'line' | 'ram';
+
+/** The column a grouping reads, on `tournament_decks` or an alias of it. */
+const groupColumn = <T extends { ram: SQLiteColumn; legendLine: SQLiteColumn }>(
+	by: Grouping,
+	decks: T
+) => (by === 'ram' ? decks.ram : decks.legendLine);
+
+/** One row per group with its record. The key is in `line`, whichever grouping it is. */
+async function groupRows(db: Db, period: Period, by: Grouping): Promise<LineRow[]> {
+	const column = groupColumn(by, tournamentDecks);
 	return db
-		.select({ line: tournamentDecks.legendLine, ...recordColumns })
+		.select({ line: column, ...recordColumns })
 		.from(tournamentDecks)
 		.innerJoin(standings, eq(standings.deckGuid, tournamentDecks.guid))
 		.innerJoin(tournaments, eq(tournaments.id, tournamentDecks.tournamentId))
-		.where(and(isNotNull(tournamentDecks.legendLine), inPeriod(period)))
-		.groupBy(tournamentDecks.legendLine);
+		.where(and(isNotNull(column), inPeriod(period)))
+		.groupBy(column);
 }
+
+/** One row per Legend line with its record: the first half of `getMeta`, for pages that only need that. */
+export const lineRows = (db: Db, period: Period) => groupRows(db, period, 'line');
+
+/** One row per RAM (`rryyyy`) with its record. */
+export const ramRows = (db: Db, period: Period) => groupRows(db, period, 'ram');
 
 /** The Legend lines in a period, most-played first. */
 export async function getLines(db: Db, period: Period): Promise<GroupStat[]> {
@@ -97,10 +113,15 @@ export async function getMeta(
 	db: Db,
 	period: Period,
 	/** Which expensive parts to compute; a view that doesn't draw one shouldn't pay for it. */
-	parts: { legends: boolean; matchups: boolean } = { legends: true, matchups: true }
+	parts: { legends: boolean; rams: boolean; matchups: Grouping | false } = {
+		legends: true,
+		rams: true,
+		matchups: 'line'
+	}
 ): Promise<MetaView> {
-	const [lines, legends] = await Promise.all([
+	const [lines, rams, legends] = await Promise.all([
 		lineRows(db, period),
+		parts.rams || parts.matchups === 'ram' ? ramRows(db, period) : Promise.resolve([]),
 		parts.legends
 			? db
 					.select({ line: tournamentDeckCards.cardSlug, ...recordColumns })
@@ -119,9 +140,9 @@ export async function getMeta(
 			: Promise.resolve([])
 	]);
 
-	// The matrix is drawn for the most-played lines only, so those are found first and then used to
+	// The matrix is drawn for the most-played groups only, so those are found first and then used to
 	// bound the matches query.
-	const top = lines
+	const top = (parts.matchups === 'ram' ? rams : lines)
 		.flatMap((row) => (row.line ? [row] : []))
 		.sort(
 			(a, b) => b.decks - a.decks || b.wins - a.wins || (a.line ?? '').localeCompare(b.line ?? '')
@@ -130,13 +151,23 @@ export async function getMeta(
 		.flatMap((row) => (row.line ? [row.line] : []));
 
 	const [matchups, crossMatchesTotal] = parts.matchups
-		? await Promise.all([getMatchups(db, period, top), countCrossMatches(db, period)])
+		? await Promise.all([
+				getMatchups(db, period, parts.matchups, top),
+				countCrossMatches(db, period, parts.matchups)
+			])
 		: [[], undefined];
-	return buildMeta({ lines, legends, matchups, crossMatchesTotal });
+	return buildMeta({
+		lines,
+		rams,
+		legends,
+		matchups,
+		matrixBy: parts.matchups || 'line',
+		crossMatchesTotal
+	});
 }
 
-/** Every match between two decks of different Legend lines, whichever lines: the matrix's context. */
-async function countCrossMatches(db: Db, period: Period): Promise<number> {
+/** Every match between two decks of different groups, whichever: the matrix's context. */
+async function countCrossMatches(db: Db, period: Period, by: Grouping): Promise<number> {
 	const sa = alias(standings, 'sa');
 	const sb = alias(standings, 'sb');
 	const da = alias(tournamentDecks, 'da');
@@ -154,21 +185,21 @@ async function countCrossMatches(db: Db, period: Period): Promise<number> {
 			and(
 				inPeriod(period),
 				inArray(m.kind, ['played', 'draw']),
-				isNotNull(da.legendLine),
-				isNotNull(db2.legendLine),
-				ne(da.legendLine, db2.legendLine)
+				isNotNull(groupColumn(by, da)),
+				isNotNull(groupColumn(by, db2)),
+				ne(groupColumn(by, da), groupColumn(by, db2))
 			)
 		);
 	return row?.n ?? 0;
 }
 
 /**
- * Matches between two decks of different Legend lines, both among `lines`, grouped by the pair as they
- * were drawn. `score` is the first side's: a win is 1, a draw (or equal games) 0.5, a loss 0. Byes and
- * forfeits, mirrors, and players with no deck are left out.
+ * Matches between two decks of different groups (Legend lines, or RAMs), both among `keys`, grouped by the
+ * pair as they were drawn. `score` is the first side's: a win is 1, a draw (or equal games) 0.5, a loss 0.
+ * Byes and forfeits, mirrors, and players with no deck are left out.
  */
-async function getMatchups(db: Db, period: Period, lines: string[]) {
-	if (lines.length < 2) return [];
+async function getMatchups(db: Db, period: Period, by: Grouping, keys: string[]) {
+	if (keys.length < 2) return [];
 	const sa = alias(standings, 'sa');
 	const sb = alias(standings, 'sb');
 	const da = alias(tournamentDecks, 'da');
@@ -177,8 +208,8 @@ async function getMatchups(db: Db, period: Period, lines: string[]) {
 
 	return db
 		.select({
-			a: da.legendLine,
-			b: db2.legendLine,
+			a: groupColumn(by, da),
+			b: groupColumn(by, db2),
 			matches: count(),
 			score: total(
 				sql`case when ${m.kind} = 'draw' or ${m.gamesA} = ${m.gamesB} then 0.5 when ${m.gamesA} > ${m.gamesB} then 1 else 0 end`
@@ -194,36 +225,45 @@ async function getMatchups(db: Db, period: Period, lines: string[]) {
 			and(
 				inPeriod(period),
 				inArray(m.kind, ['played', 'draw']),
-				inArray(da.legendLine, lines),
-				inArray(db2.legendLine, lines),
-				ne(da.legendLine, db2.legendLine)
+				inArray(groupColumn(by, da), keys),
+				inArray(groupColumn(by, db2), keys),
+				ne(groupColumn(by, da), groupColumn(by, db2))
 			)
 		)
-		.groupBy(da.legendLine, db2.legendLine);
+		.groupBy(groupColumn(by, da), groupColumn(by, db2));
 }
 
 // ---------------------------------------------------------------------------
 // Cards
 // ---------------------------------------------------------------------------
 
-/** Decks in scope (a period, and optionally one Legend line): the denominator of a Card's inclusion. */
-async function countDecks(db: Db, period: Period, line: string | null): Promise<number> {
+/** What a Card's stats are narrowed to besides the period: one Legend line, one RAM, both or neither. */
+export type DeckScope = { line: string | null; ram: string | null };
+
+const scopeCondition = (scope: DeckScope) =>
+	and(
+		scope.line === null ? undefined : eq(tournamentDecks.legendLine, scope.line),
+		scope.ram === null ? undefined : eq(tournamentDecks.ram, scope.ram)
+	);
+
+/** Decks in scope (a period, and optionally a line or a RAM): the denominator of a Card's inclusion. */
+async function countDecks(db: Db, period: Period, scope: DeckScope): Promise<number> {
 	const [row] = await db
 		.select({ n: count() })
 		.from(tournamentDecks)
 		.innerJoin(tournaments, eq(tournaments.id, tournamentDecks.tournamentId))
-		.where(and(inPeriod(period), line === null ? undefined : eq(tournamentDecks.legendLine, line)));
+		.where(and(inPeriod(period), scopeCondition(scope)));
 	return row?.n ?? 0;
 }
 
 /**
  * What is played: every Card's main-deck and sideboard usage across the decks in scope, optionally
- * narrowed to one Legend line. Legends are left out: they are a Legend, not a "card in the deck".
+ * narrowed to one Legend line or one RAM. Legends are left out: they are a Legend, not a "card in the deck".
  */
 export async function getCardStats(
 	db: Db,
 	period: Period,
-	line: string | null
+	scope: DeckScope = { line: null, ram: null }
 ): Promise<{ decks: number; cards: CardStat[] }> {
 	const columns = {
 		slug: tournamentDeckCards.cardSlug,
@@ -234,13 +274,13 @@ export async function getCardStats(
 		sideDecks: total(one(sql`${tournamentDeckCards.board} = 'side'`))
 	};
 	const [decks, rows] = await Promise.all([
-		countDecks(db, period, line),
+		countDecks(db, period, scope),
 		// Two shapes, because each wants a different driving table. Across every deck the rows are found
 		// by `(board, tournament_id, card_slug)`, so a window is a range and no deck is joined. For one
 		// Legend line the few decks that ran it are found first and their cards read by deck; there the
 		// board test is deliberately `<>`, which that index cannot serve, or the planner prefers walking
 		// every card row to starting from the line (measured: 4 ms vs 255 ms at 1,000 events).
-		line === null
+		scope.line === null && scope.ram === null
 			? db
 					.select(columns)
 					.from(tournamentDeckCards)
@@ -260,11 +300,7 @@ export async function getCardStats(
 					.innerJoin(tournamentDecks, eq(tournamentDecks.guid, tournamentDeckCards.deckGuid))
 					.innerJoin(tournaments, eq(tournaments.id, tournamentDecks.tournamentId))
 					.where(
-						and(
-							ne(tournamentDeckCards.board, 'legend'),
-							inPeriod(period),
-							eq(tournamentDecks.legendLine, line)
-						)
+						and(ne(tournamentDeckCards.board, 'legend'), inPeriod(period), scopeCondition(scope))
 					)
 					.groupBy(tournamentDeckCards.cardSlug)
 	]);
@@ -273,7 +309,7 @@ export async function getCardStats(
 
 /** One Card's usage: every deck that ran it, with its finish, and how it compares with the field. */
 export async function getCardUsage(db: Db, period: Period, slug: string): Promise<CardUsage> {
-	const [rows, totals, lines] = await Promise.all([
+	const [rows, totals, lines, rams] = await Promise.all([
 		db
 			.select({
 				guid: tournamentDecks.guid,
@@ -287,6 +323,7 @@ export async function getCardUsage(db: Db, period: Period, slug: string): Promis
 				losses: standings.matchLosses,
 				draws: standings.matchDraws,
 				line: tournamentDecks.legendLine,
+				ram: tournamentDecks.ram,
 				main: total(
 					sql`case when ${tournamentDeckCards.board} = 'main' then ${tournamentDeckCards.quantity} else 0 end`
 				),
@@ -317,7 +354,13 @@ export async function getCardUsage(db: Db, period: Period, slug: string): Promis
 			.from(tournamentDecks)
 			.innerJoin(tournaments, eq(tournaments.id, tournamentDecks.tournamentId))
 			.where(and(isNotNull(tournamentDecks.legendLine), inPeriod(period)))
-			.groupBy(tournamentDecks.legendLine)
+			.groupBy(tournamentDecks.legendLine),
+		db
+			.select({ line: tournamentDecks.ram, decks: count() })
+			.from(tournamentDecks)
+			.innerJoin(tournaments, eq(tournaments.id, tournamentDecks.tournamentId))
+			.where(and(isNotNull(tournamentDecks.ram), inPeriod(period)))
+			.groupBy(tournamentDecks.ram)
 	]);
 
 	return buildCardUsage({
@@ -334,11 +377,13 @@ export async function getCardUsage(db: Db, period: Period, slug: string): Promis
 			losses: row.losses,
 			draws: row.draws,
 			line: row.line,
+			ram: row.ram,
 			main: row.main,
 			side: row.side,
 			asLegend: row.legend > 0
 		})),
 		totals: totals[0] ?? { decks: 0, winners: 0, top8: 0 },
-		lines
+		lines,
+		rams
 	});
 }

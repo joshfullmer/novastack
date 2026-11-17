@@ -50,6 +50,7 @@ function rowsFor(
 		decks: built.decks.map((deck) => ({
 			...deck,
 			legendLine: deck.legendLine ?? null,
+			ram: deck.ram ?? null,
 			unresolved: deck.unresolved ?? 0
 		})),
 		deckCards: built.deckCards,

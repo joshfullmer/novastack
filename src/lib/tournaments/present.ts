@@ -5,7 +5,6 @@
 import { legendBaseName } from '../cards/derive.ts';
 import { dataset } from '../cards/index.ts';
 import type { Color } from '../cards/vocabulary.ts';
-import type { GroupStat } from './meta.ts';
 
 const bySlug = new Map(dataset.cards.map((card) => [card.slug, card]));
 
@@ -70,46 +69,4 @@ export function wherePlayed(organizer: string, venue: string | null): string {
 	if (v.includes(o)) return venue;
 	if (o.includes(v)) return organizer;
 	return `${organizer} · ${venue}`;
-}
-
-/** The Colours a set of Legends provides, in the fixed order Red, Yellow, Green, Blue. */
-export function coloursOf(slugs: readonly string[]): Color[] {
-	const have = new Set<Color>();
-	for (const slug of slugs) {
-		const colour = bySlug.get(slug)?.color;
-		if (colour) have.add(colour);
-	}
-	return COLOUR_ORDER.filter((c) => have.has(c));
-}
-
-/**
- * Legend-line stats rolled up by the colours their Legends provide. The key is the colours joined by
- * `+` (`Red+Blue`); a line whose Legends are all unknown to the dataset lands under `—`.
- */
-export function groupByColours(lines: readonly GroupStat[]): GroupStat[] {
-	const groups = new Map<string, GroupStat & { won: number }>();
-	for (const line of lines) {
-		const key = coloursOf(line.legends).join('+') || '—';
-		const group = groups.get(key) ?? {
-			key,
-			legends: [],
-			decks: 0,
-			share: 0,
-			winRate: null,
-			matches: 0,
-			top8: 0,
-			wins: 0,
-			won: 0
-		};
-		group.decks += line.decks;
-		group.share += line.share;
-		group.matches += line.matches;
-		group.top8 += line.top8;
-		group.wins += line.wins;
-		group.won += (line.winRate ?? 0) * line.matches;
-		groups.set(key, group);
-	}
-	return [...groups.values()]
-		.map(({ won, ...group }) => ({ ...group, winRate: group.matches ? won / group.matches : null }))
-		.sort((a, b) => b.decks - a.decks || a.key.localeCompare(b.key));
 }

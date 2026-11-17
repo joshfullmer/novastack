@@ -1,7 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { dataset } from '../cards/index.ts';
-import type { GroupStat } from './meta.ts';
-import { coloursOf, fieldByColour, groupByColours, ordinal, wherePlayed } from './present.ts';
+import { fieldByColour, ordinal, wherePlayed } from './present.ts';
 
 describe('ordinal', () => {
 	it.each([
@@ -60,56 +58,5 @@ describe('wherePlayed', () => {
 		expect(wherePlayed('The_hungry_dragon', 'the hungry dragon')).toBe(
 			'The_hungry_dragon · the hungry dragon'
 		);
-	});
-});
-
-describe('colours', () => {
-	const legendOf = (colour: string) => {
-		const card = dataset.cards.find((c) => c.cardType === 'Legend' && c.color === colour);
-		if (!card) throw new Error(`no ${colour} Legend in the dataset`);
-		return card.slug;
-	};
-	const red = legendOf('Red');
-	const blue = legendOf('Blue');
-	const line = (
-		legends: string[],
-		decks: number,
-		winRate: number | null,
-		matches: number
-	): GroupStat => ({
-		key: legends.join('+'),
-		legends,
-		decks,
-		share: decks / 10,
-		winRate,
-		matches,
-		top8: decks,
-		wins: 1
-	});
-
-	it('lists the colours of a set of Legends in a fixed order, once each', () => {
-		expect(coloursOf([blue, red, red])).toEqual(['Red', 'Blue']);
-		expect(coloursOf(['not-a-card'])).toEqual([]);
-	});
-
-	it('rolls Legend lines up by colour, summing decks and weighting the win rate by matches', () => {
-		const groups = groupByColours([
-			line([red, blue], 4, 0.5, 8), // Red+Blue
-			line([blue, red], 2, 1, 2), // Red+Blue again: 8 + 2 matches
-			line([red], 1, 0, 3) // Red only
-		]);
-		const redBlue = groups.find((g) => g.key === 'Red+Blue');
-		expect(redBlue).toMatchObject({ decks: 6, matches: 10, top8: 6, wins: 2 });
-		expect(redBlue?.share).toBeCloseTo(0.6);
-		expect(redBlue?.winRate).toBeCloseTo((0.5 * 8 + 1 * 2) / 10);
-		expect(groups.find((g) => g.key === 'Red')).toMatchObject({ decks: 1, winRate: 0 });
-		expect(groups[0].key).toBe('Red+Blue'); // most decks first
-	});
-
-	it('files a line of unknown Legends under a placeholder rather than dropping it', () => {
-		expect(groupByColours([line(['nope'], 1, null, 0)])[0]).toMatchObject({
-			key: '—',
-			winRate: null
-		});
 	});
 });

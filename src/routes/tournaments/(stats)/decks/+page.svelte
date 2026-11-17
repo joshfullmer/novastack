@@ -6,6 +6,8 @@
 	// is a link, and works without JavaScript.
 	import { page } from '$app/state';
 	import LegendArt from '#lib/components/tournaments/LegendArt.svelte';
+	import RamCode from '#lib/components/tournaments/RamCode.svelte';
+	import { ramLabel } from '#lib/tournaments/ram.js';
 	import { formatDate, legendNames } from '#lib/tournaments/present.js';
 	import { href, withParams } from '#lib/tournaments/url.js';
 
@@ -39,6 +41,14 @@
 				<option value={legend.slug} selected={filters.legend === legend.slug}>{legend.name}</option>
 			{/each}
 		</select>
+		<select name="ram" class="rounded border border-edge bg-shell px-2 py-1.5" aria-label="RAM">
+			<option value="">Any RAM</option>
+			{#each data.rams as choice (choice.ram)}
+				<option value={choice.ram} selected={filters.ram === choice.ram}>
+					{ramLabel(choice.ram)} ({choice.decks})
+				</option>
+			{/each}
+		</select>
 		<input
 			name="card"
 			value={filters.card ?? ''}
@@ -58,7 +68,7 @@
 			<option value="recent" selected={filters.sort === 'recent'}>Most recent</option>
 		</select>
 		<button class="rounded border border-neon-dim bg-neon/10 px-3 py-1.5 text-neon">Filter</button>
-		{#if filters.legend || filters.card || filters.player}
+		{#if filters.legend || filters.ram || filters.card || filters.player}
 			<a
 				href={href('/tournaments/decks', periodParams(data.period))}
 				class="text-muted hover:text-body"
@@ -94,7 +104,9 @@
 					</span>
 					<span class="min-w-0">
 						<span class="block truncate text-sm text-bright">{deck.player}</span>
-						<span class="block truncate text-[11px] text-muted">{legendNames(deck.legends)}</span>
+						<span class="block truncate text-[11px] text-muted">
+							{#if deck.ram}<RamCode ram={deck.ram} class="mr-1" />{/if}{legendNames(deck.legends)}
+						</span>
 					</span>
 				</span>
 				<span class="min-w-0">

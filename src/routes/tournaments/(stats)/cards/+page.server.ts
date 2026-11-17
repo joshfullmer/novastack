@@ -16,7 +16,7 @@ export const load: PageServerLoad = async ({ locals, parent, url }) => {
 		redirect(302, href(`/tournaments/cards/${asked}`, periodParams(period)));
 	}
 
-	const { cards } = await getCardStats(locals.db, period, null);
+	const { cards } = await getCardStats(locals.db, period);
 	const top = cards[0]?.slug;
 	if (top) redirect(302, href(`/tournaments/cards/${top}`, periodParams(period)));
 	return {};

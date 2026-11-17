@@ -5,8 +5,8 @@
  * occurrences — one rule, so `rryyyy`, `r2y4`, and `rry4` all reduce to the same value. No
  * separator is required; an optional comma between tokens is accepted as chrome.
  */
-import { COLORS, type Color } from '#lib/cards/vocabulary.js';
-import { EMPTY_BUDGET, type ColorBudget } from '#lib/filters/budget.js';
+import { COLORS, type Color } from '../cards/vocabulary.ts';
+import { EMPTY_BUDGET, type ColorBudget } from '../filters/budget.ts';
 
 const LETTER_TO_COLOR: Readonly<Record<string, Color>> = {
 	r: 'Red',

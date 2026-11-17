@@ -1,4 +1,5 @@
-import { getCardStats, getLines } from '#lib/server/db/tournament-stats.js';
+import { getCardStats, getLines, ramRows } from '#lib/server/db/tournament-stats.js';
+import { parseRam } from '#lib/tournaments/ram.js';
 import type { PageServerLoad } from './$types';
 
 /** A Legend line's key: three card slugs joined by `+`. Anything else is not a line. */
@@ -8,10 +9,22 @@ export const load: PageServerLoad = async ({ locals, parent, url }) => {
 	const { period } = await parent();
 	const asked = url.searchParams.get('line');
 	const line = asked !== null && LINE.test(asked) ? asked : null;
+	const ram = parseRam(url.searchParams.get('ram'));
 
-	const [lines, stats] = await Promise.all([
+	const [lines, rams, stats] = await Promise.all([
 		getLines(locals.db, period),
-		getCardStats(locals.db, period, line)
+		ramRows(locals.db, period),
+		getCardStats(locals.db, period, { line, ram })
 	]);
-	return { lines: lines.slice(0, 8), line, decks: stats.decks, cards: stats.cards };
+	return {
+		lines: lines.slice(0, 8),
+		rams: rams
+			.flatMap((row) => (row.line ? [{ ram: row.line, decks: row.decks }] : []))
+			.sort((a, b) => b.decks - a.decks || a.ram.localeCompare(b.ram))
+			.slice(0, 8),
+		line,
+		ram,
+		decks: stats.decks,
+		cards: stats.cards
+	};
 };

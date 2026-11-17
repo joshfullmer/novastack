@@ -1,40 +1,37 @@
 <script lang="ts">
 	// Tier list: a ranked ladder, one row per deck archetype, ordered by how much of the field played it.
-	// Group by Legend line, a single Legend, or just the colours; count every deck, only the top 8, or
+	// Group by RAM (how players name a deck: yyyyrr), Legend line, or a single Legend; count every deck, only the top 8, or
 	// only the winners; conversion columns say how often an archetype reached the top 8 or won. A win
 	// rate is quoted only from MIN_DECKS decks up: fewer is noise.
 	import { cn } from '#lib/cn.js';
 	import LegendArt from '#lib/components/tournaments/LegendArt.svelte';
+	import RamCode from '#lib/components/tournaments/RamCode.svelte';
 	import { MIN_DECKS, type GroupStat } from '#lib/tournaments/meta.js';
+	import { periodParams } from '#lib/tournaments/period.js';
 	import { legendNames } from '#lib/tournaments/present.js';
+	import { href } from '#lib/tournaments/url.js';
 
 	let { data } = $props();
 	const meta = $derived(data.meta);
 
-	let by = $state<'line' | 'legend' | 'colours'>('line');
+	let by = $state<'ram' | 'line' | 'legend'>('ram');
 	let part = $state<'decks' | 'top8' | 'wins'>('decks');
 
-	const DOT: Record<string, string> = {
-		Red: cn('bg-card-red'),
-		Yellow: cn('bg-card-yellow'),
-		Green: cn('bg-card-green'),
-		Blue: cn('bg-card-blue')
-	};
 	const PARTS = [
 		['decks', 'All decks'],
 		['top8', 'Top 8'],
 		['wins', 'Winners']
 	] as const;
 	const GROUPS = [
+		['ram', 'RAM'],
 		['line', 'Legend line'],
-		['legend', 'Legend'],
-		['colours', 'Colours']
+		['legend', 'Legend']
 	] as const;
 
 	const base = $derived.by((): GroupStat[] => {
 		if (by === 'line') return meta.byLine;
 		if (by === 'legend') return meta.byLegend;
-		return meta.byColours;
+		return meta.byRam;
 	});
 	/** Who is counted: every deck, only those that made the top 8, or only event winners. */
 	const rows = $derived.by(() => {
@@ -112,13 +109,14 @@
 		>
 			<span class="font-mono text-sm {i < 3 ? 'text-neon' : 'text-muted'}">{i + 1}</span>
 			<span class="flex min-w-0 items-center gap-3">
-				{#if by === 'colours'}
-					<span class="flex gap-1">
-						{#each group.key.split('+') as colour (colour)}
-							<span class="size-5 rounded-full {DOT[colour] ?? 'bg-edge'}"></span>
-						{/each}
-					</span>
-					<span class="text-bright">{group.key.replaceAll('+', ' / ')}</span>
+				{#if by === 'ram'}
+					<a
+						href={href('/tournaments/decks', { ...periodParams(data.period), ram: group.key })}
+						class="text-base hover:underline"
+						title="See these decks"
+					>
+						<RamCode ram={group.key} />
+					</a>
 				{:else}
 					<span class="flex shrink-0 -space-x-3">
 						{#each group.legends as slug (slug)}
@@ -172,7 +170,12 @@
 		</li>
 	{/each}
 </ol>
-{#if by === 'legend'}
+{#if by === 'ram'}
+	<p class="mt-3 text-xs text-muted">
+		One letter per RAM the three Legends provide together: <RamCode ram="rryyyy" /> is Yellow 4, Red 2.
+		Decks whose Legends aren't in the card data yet aren't counted.
+	</p>
+{:else if by === 'legend'}
 	<p class="mt-3 text-xs text-muted">Each deck counts once per Legend, so shares add up to 300%.</p>
 {:else if by === 'line' && meta.unlisted.lines > 0}
 	<p class="mt-3 text-xs text-muted">

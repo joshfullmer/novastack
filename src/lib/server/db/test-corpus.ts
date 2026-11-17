@@ -32,6 +32,16 @@ function rng(seed: number) {
 	};
 }
 
+const COLOUR_LETTERS = ['r', 'y', 'g', 'b'];
+/** A made-up RAM for a made-up line: each Legend gives 2 of a colour its number picks. */
+function ramOfLegends(slugs: string[]): string {
+	const letters = slugs.map((slug) => COLOUR_LETTERS[Number(slug.replace('legend-', '')) % 4]);
+	return [...COLOUR_LETTERS]
+		.sort()
+		.map((letter) => letter.repeat(2 * letters.filter((l) => l === letter).length))
+		.join('');
+}
+
 /** Index 0..n-1, heavily favouring the low ones (a Zipf-ish long tail). */
 const skewed = (random: () => number, n: number) => Math.min(n - 1, Math.floor(n * random() ** 3));
 
@@ -55,7 +65,7 @@ export function seedCorpus(sqlite: DatabaseSync, size: CorpusSize) {
 		`INSERT OR IGNORE INTO players (id, display_name, username) VALUES (?, ?, NULL)`
 	);
 	const insertDeck = stmt(
-		`INSERT INTO tournament_decks (guid, tournament_id, player_id, name, text, legend_line, unresolved) VALUES (?, ?, ?, 'deck', 'x', ?, 0)`
+		`INSERT INTO tournament_decks (guid, tournament_id, player_id, name, text, legend_line, ram, unresolved) VALUES (?, ?, ?, 'deck', 'x', ?, ?, 0)`
 	);
 	const insertCard = stmt(
 		`INSERT INTO tournament_deck_cards (deck_guid, tournament_id, card_slug, board, quantity) VALUES (?, ?, ?, ?, ?)`
@@ -103,7 +113,7 @@ export function seedCorpus(sqlite: DatabaseSync, size: CorpusSize) {
 				const legends = new Set<string>();
 				while (legends.size < 3) legends.add(`legend-${skewed(random, legendCount)}`);
 				const line = [...legends].sort().join('+');
-				insertDeck.run(guid, e, id, line);
+				insertDeck.run(guid, e, id, line, ramOfLegends([...legends]));
 				for (const l of legends) insertCard.run(guid, e, l, 'legend', 1);
 				// ~25 distinct main-deck cards summing to ~40 copies, ~4 sideboard cards
 				const main = new Set<string>();

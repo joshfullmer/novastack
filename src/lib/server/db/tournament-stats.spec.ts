@@ -15,7 +15,7 @@ import { ALL_TIME, type Period, ANY_EVENTS } from '#lib/tournaments/period.js';
 import { getEventKinds, getLines, getMeta, getMetas } from './tournament-stats.js';
 import { createTestDb } from './test-db.js';
 import { seedEvent } from './test-seed.js';
-import { world as buildWorld } from './test-world.js';
+import { world as buildWorld, X, X_RAM, Y, Y_RAM } from './test-world.js';
 
 const world = () => buildWorld().db;
 
@@ -81,6 +81,102 @@ describe('getMeta, all time', () => {
 			matches: 0,
 			winRate: null
 		});
+	});
+});
+
+describe('getMeta, by RAM', () => {
+	it('groups decks by what their Legends provide together, one group per RAM', async () => {
+		const meta = await getMeta(world(), ALL_TIME);
+		// X (3 decks) is rryyyy, Y (2) is rrrryy, Z (1) is bbbbgg.
+		expect(meta.byRam.map((g) => [g.key, g.decks])).toEqual([
+			['rryyyy', 3],
+			['rrrryy', 2],
+			['bbbbgg', 1]
+		]);
+		expect(meta.byRam[0]).toMatchObject({ legends: [], winRate: 6 / 8, top8: 3, wins: 1 });
+		expect(meta.byRam.map((g) => g.share)).toEqual([3 / 6, 2 / 6, 1 / 6]);
+	});
+
+	it('keeps YYR and RRY apart, though both are Red and Yellow', async () => {
+		const meta = await getMeta(world(), ALL_TIME);
+		expect(meta.byRam.filter((g) => g.key.includes('y') && g.key.includes('r'))).toHaveLength(2);
+	});
+
+	it('leaves out decks whose RAM is unknown, and counts shares of the rest', async () => {
+		const { db, sqlite } = createTestDb();
+		seedEvent(sqlite, {
+			id: 1,
+			name: 'E',
+			startsAt: '2026-11-15T12:00:00Z',
+			players: [
+				{
+					id: 1,
+					name: 'P1',
+					rank: 1,
+					wins: 1,
+					losses: 0,
+					deck: { guid: 'A', legends: X, ram: X_RAM }
+				},
+				{ id: 2, name: 'P2', rank: 2, wins: 0, losses: 1, deck: { guid: 'B', legends: Y } }
+			],
+			matches: [{ round: 1, a: 1, b: 2, gamesA: 2, gamesB: 0 }]
+		});
+		const meta = await getMeta(db, ALL_TIME);
+		expect(meta.byRam.map((g) => [g.key, g.decks, g.share])).toEqual([['rryyyy', 1, 1]]);
+		expect(meta.byLine).toHaveLength(2); // the lines are still known
+	});
+
+	it('draws the matrix over RAMs, where two lines with the same RAM are one deck and do not meet', async () => {
+		const { db, sqlite } = createTestDb();
+		// Two different Legend lines that both come to rryyyy (Smasher/River/Viktor, Smasher/River/Muamar),
+		// and one rrrryy. P1 and P2 play the same RAM, so that match is a mirror.
+		seedEvent(sqlite, {
+			id: 1,
+			name: 'E',
+			startsAt: '2026-11-15T12:00:00Z',
+			players: [
+				{
+					id: 1,
+					name: 'P1',
+					rank: 1,
+					wins: 2,
+					losses: 0,
+					deck: { guid: 'A', legends: X, ram: X_RAM }
+				},
+				{
+					id: 2,
+					name: 'P2',
+					rank: 2,
+					wins: 1,
+					losses: 1,
+					deck: { guid: 'B', legends: ['a', 'b', 'm'], ram: X_RAM }
+				},
+				{
+					id: 3,
+					name: 'P3',
+					rank: 3,
+					wins: 0,
+					losses: 2,
+					deck: { guid: 'C', legends: Y, ram: Y_RAM }
+				}
+			],
+			matches: [
+				{ round: 1, a: 1, b: 2, gamesA: 2, gamesB: 0 },
+				{ round: 2, a: 1, b: 3, gamesA: 2, gamesB: 0 },
+				{ round: 3, a: 2, b: 3, gamesA: 2, gamesB: 1 }
+			]
+		});
+		const byLine = await getMeta(db, ALL_TIME, { legends: false, rams: false, matchups: 'line' });
+		expect(byLine.matrixLines).toHaveLength(3);
+		expect(byLine.crossMatches).toBe(3);
+
+		const byRam = await getMeta(db, ALL_TIME, { legends: false, rams: true, matchups: 'ram' });
+		expect(byRam.matrixBy).toBe('ram');
+		expect(byRam.matrixLines).toEqual(['rryyyy', 'rrrryy']);
+		expect(byRam.crossMatches).toBe(2); // A and B beat C; A v B is a mirror
+		expect(byRam.crossMatchesTotal).toBe(2);
+		const cell = byRam.matrix.find((c) => c.a === 'rryyyy' && c.b === 'rrrryy');
+		expect(cell).toMatchObject({ matches: 2, winRate: 1 });
 	});
 });
 

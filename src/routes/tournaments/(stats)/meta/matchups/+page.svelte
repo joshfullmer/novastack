@@ -1,20 +1,32 @@
 <script lang="ts">
 	// Matchup matrix: the page is one heat-map. A row's win rate against a column is cyan above 50% and
-	// red below; fainter means fewer matches behind it. Only the most-played Legend lines are drawn, and
-	// only matches between two decks of different lines count (no mirrors, byes, forfeits or deck-less players).
+	// red below; fainter means fewer matches behind it. Only the most-played decks are drawn (by RAM, as
+	// players name them, or by Legend line), and only matches between two decks of different groups count
+	// (no mirrors, byes, forfeits or deck-less players).
 	import LegendArt from '#lib/components/tournaments/LegendArt.svelte';
+	import RamCode from '#lib/components/tournaments/RamCode.svelte';
+	import { periodParams } from '#lib/tournaments/period.js';
+	import { ramLabel } from '#lib/tournaments/ram.js';
 	import { legendNames } from '#lib/tournaments/present.js';
+	import { href } from '#lib/tournaments/url.js';
 
 	let { data } = $props();
 	const meta = $derived(data.meta);
 
 	const groups = $derived(
 		meta.matrixLines.flatMap((key) => {
-			const group = meta.byLine.find((g) => g.key === key);
+			const group = (meta.matrixBy === 'ram' ? meta.byRam : meta.byLine).find((g) => g.key === key);
 			return group ? [group] : [];
 		})
 	);
+	/** A group named in words, for tooltips: its Legends, or its RAM as players say it. */
+	const label = (group: { key: string; legends: string[] }) =>
+		meta.matrixBy === 'ram' ? ramLabel(group.key) : legendNames(group.legends);
 	const cellAt = (a: string, b: string) => meta.matrix.find((c) => c.a === a && c.b === b);
+	const BY = [
+		['ram', 'RAM'],
+		['line', 'Legend line']
+	] as const;
 	const percent = (n: number | null) => (n === null ? '—' : `${Math.round(n * 100)}%`);
 
 	/** Win rate → colour: cyan above 50%, red below, chroma by distance, faded by sample size. */
@@ -26,19 +38,39 @@
 	}
 </script>
 
-<header class="border-b border-edge pb-4">
-	<h1 class="font-mono text-xl text-bright">Matchups</h1>
-	<p class="font-mono text-xs text-muted">
-		The row's win rate against the column · {meta.crossMatches} matches between these lines{meta.crossMatchesTotal >
-		meta.crossMatches
-			? ` (of ${meta.crossMatchesTotal} between decks of different lines)`
-			: ''} · a draw counts half
-	</p>
+<header class="flex flex-wrap items-end justify-between gap-3 border-b border-edge pb-4">
+	<div>
+		<h1 class="font-mono text-xl text-bright">Matchups</h1>
+		<p class="font-mono text-xs text-muted">
+			The row's win rate against the column · {meta.crossMatches} matches between these {meta.matrixBy ===
+			'ram'
+				? 'RAMs'
+				: 'lines'}{meta.crossMatchesTotal > meta.crossMatches
+				? ` (of ${meta.crossMatchesTotal} between decks of different ${meta.matrixBy === 'ram' ? 'RAMs' : 'lines'})`
+				: ''} · a draw counts half
+		</p>
+	</div>
+	<div
+		class="flex rounded-full border border-edge p-0.5 font-mono text-xs"
+		role="group"
+		aria-label="Group by"
+	>
+		{#each BY as [key, label] (key)}
+			<a
+				href={href('/tournaments/meta/matchups', { ...periodParams(data.period), by: key })}
+				aria-current={data.by === key ? 'true' : undefined}
+				class="rounded-full px-3 py-1 {data.by === key
+					? 'bg-neon text-void'
+					: 'text-muted hover:text-body'}">{label}</a
+			>
+		{/each}
+	</div>
 </header>
 
 {#if groups.length < 2}
 	<p class="mt-8 text-center text-sm text-muted">
-		A matrix needs at least two Legend lines with decks; this period has {groups.length}.
+		A matrix needs at least two {meta.matrixBy === 'ram' ? 'RAMs' : 'Legend lines'} with decks; this period
+		has {groups.length}.
 	</p>
 {:else}
 	<div class="mt-6 overflow-x-auto">
@@ -49,14 +81,18 @@
 						>Deck · share</th
 					>
 					{#each groups as group (group.key)}
-						<th class="w-20 align-bottom font-normal" title={legendNames(group.legends)}>
-							<span class="mx-auto flex w-14 flex-col gap-0.5">
-								{#each group.legends as slug (slug)}<LegendArt
-										{slug}
-										sizes="40px"
-										class="w-full"
-									/>{/each}
-							</span>
+						<th class="w-20 align-bottom font-normal" title={label(group)}>
+							{#if meta.matrixBy === 'ram'}
+								<RamCode ram={group.key} class="text-sm" />
+							{:else}
+								<span class="mx-auto flex w-14 flex-col gap-0.5">
+									{#each group.legends as slug (slug)}<LegendArt
+											{slug}
+											sizes="40px"
+											class="w-full"
+										/>{/each}
+								</span>
+							{/if}
 						</th>
 					{/each}
 				</tr>
@@ -66,15 +102,22 @@
 					<tr>
 						<th class="rounded-lg bg-shell p-2 text-left font-normal">
 							<span class="flex items-center gap-2">
-								<span class="flex -space-x-2">
-									{#each row.legends as slug (slug)}<LegendArt
-											{slug}
-											sizes="40px"
-											class="w-6 ring-1 ring-void"
-										/>{/each}
-								</span>
+								{#if meta.matrixBy !== 'ram'}
+									<span class="flex -space-x-2">
+										{#each row.legends as slug (slug)}<LegendArt
+												{slug}
+												sizes="40px"
+												class="w-6 ring-1 ring-void"
+											/>{/each}
+									</span>
+								{/if}
 								<span class="min-w-0">
-									<span class="block truncate text-xs text-bright">{legendNames(row.legends)}</span>
+									<span class="block truncate text-xs text-bright">
+										{#if meta.matrixBy === 'ram'}<RamCode
+												ram={row.key}
+												class="text-sm"
+											/>{:else}{legendNames(row.legends)}{/if}
+									</span>
 									<span class="font-mono text-[11px] text-muted"
 										>{percent(row.share)} · {row.decks} decks</span
 									>
@@ -88,8 +131,7 @@
 								style:background={row.key === col.key
 									? 'transparent'
 									: background(cell?.winRate ?? null, cell?.matches ?? 0)}
-								title="{legendNames(row.legends)} vs {legendNames(col.legends)}: {cell?.matches ??
-									0} matches"
+								title="{label(row)} vs {label(col)}: {cell?.matches ?? 0} matches"
 							>
 								{#if row.key === col.key}
 									<span class="text-edge">—</span>

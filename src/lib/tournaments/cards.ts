@@ -48,6 +48,7 @@ export type UsageRow = {
 	losses: number;
 	draws: number;
 	line: string | null;
+	ram: string | null;
 	/** Copies in the main deck and in the sideboard; both 0 when it was a Legend. */
 	main: number;
 	side: number;
@@ -56,7 +57,7 @@ export type UsageRow = {
 
 /** The decks listed on a Card's page: its best finishes. A staple is in most of the field's decks. */
 export const ENTRY_LIMIT = 100;
-/** The Legend lines listed as running a Card, most-using first. */
+/** The Legend lines, and the RAMs, listed as running a Card, most-using first. */
 export const FIT_LIMIT = 25;
 
 export type CardUsage = {
@@ -79,6 +80,10 @@ export type CardUsage = {
 	byLine: { line: string; legends: string[]; decks: number; withCard: number; rate: number }[];
 	/** How many lines ran it, of which `byLine` lists the first `FIT_LIMIT`. */
 	lineCount: number;
+	/** The same for each RAM (`rryyyy`): how many of that RAM's decks ran it. */
+	byRam: { ram: string; decks: number; withCard: number; rate: number }[];
+	/** How many RAMs ran it, of which `byRam` lists the first `FIT_LIMIT`. */
+	ramCount: number;
 	/** The best `ENTRY_LIMIT` of the `decks` that ran it. */
 	entries: UsageRow[];
 };
@@ -89,6 +94,8 @@ export function buildCardUsage(input: {
 	totals: { decks: number; winners: number; top8: number };
 	/** Every Legend line in scope with its deck count: the denominator of each line's rate. */
 	lines: readonly Pick<LineRow, 'line' | 'decks'>[];
+	/** Every RAM in scope with its deck count, likewise. */
+	rams: readonly Pick<LineRow, 'line' | 'decks'>[];
 }): CardUsage {
 	const { rows, totals } = input;
 	const inMain = rows.filter((row) => row.main > 0);
@@ -96,6 +103,19 @@ export function buildCardUsage(input: {
 	for (const row of rows) {
 		if (row.line) withCard.set(row.line, (withCard.get(row.line) ?? 0) + 1);
 	}
+
+	const ramsWith = new Map<string, number>();
+	for (const row of rows) {
+		if (row.ram) ramsWith.set(row.ram, (ramsWith.get(row.ram) ?? 0) + 1);
+	}
+	const ramFits = input.rams
+		.flatMap((group) => {
+			const n = group.line ? (ramsWith.get(group.line) ?? 0) : 0;
+			return group.line && n > 0
+				? [{ ram: group.line, decks: group.decks, withCard: n, rate: n / group.decks }]
+				: [];
+		})
+		.sort((a, b) => b.withCard - a.withCard || b.rate - a.rate || a.ram.localeCompare(b.ram));
 
 	const fits = input.lines
 		.flatMap((line) => {
@@ -128,6 +148,8 @@ export function buildCardUsage(input: {
 		allTop8: totals.top8,
 		byLine: fits.slice(0, FIT_LIMIT),
 		lineCount: fits.length,
+		byRam: ramFits.slice(0, FIT_LIMIT),
+		ramCount: ramFits.length,
 		entries: [...rows]
 			.sort((a, b) => a.rank - b.rank || b.startsAt - a.startsAt)
 			.slice(0, ENTRY_LIMIT)

@@ -442,7 +442,7 @@ export const players = sqliteTable('players', {
 
 /**
  * The Tournament Deck — the list one player registered for one event (`CONTEXT.md`). `text` is the
- * source of truth, entity-decoded; `legendLine`, `unresolved` and `tournament_deck_cards` are derived
+ * source of truth, entity-decoded; `legendLine`, `ram`, `unresolved` and `tournament_deck_cards` are derived
  * from it by `parseDeckImport` and are rebuilt by `pnpm melee --reparse` whenever how we read card
  * names changes.
  */
@@ -462,12 +462,18 @@ export const tournamentDecks = sqliteTable(
 		text: text('text').notNull(),
 		/** The three Legend slugs, sorted, joined by `+`; null when the deck doesn't name three. */
 		legendLine: text('legend_line'),
+		/**
+		 * The RAM the three Legends provide together, as a `legends:` value in its canonical spelling
+		 * (`rryyyy`: one letter per RAM, colours in alphabetical order); null when a Legend is unknown.
+		 */
+		ram: text('ram'),
 		/** Lines that named no single Card — counted, never dropped silently. */
 		unresolved: integer('unresolved').notNull().default(0)
 	},
 	(table) => [
 		index('tournament_decks_tournament_idx').on(table.tournamentId),
-		index('tournament_decks_legend_line_idx').on(table.legendLine)
+		index('tournament_decks_legend_line_idx').on(table.legendLine),
+		index('tournament_decks_ram_idx').on(table.ram)
 	]
 );
 

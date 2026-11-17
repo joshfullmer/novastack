@@ -86,7 +86,7 @@ export function reindexStatements(
 	return decks.flatMap(({ guid, tournamentId, text }) => {
 		const index = indexDeck(guid, tournamentId, text, cards);
 		return [
-			`UPDATE tournament_decks SET legend_line = ${literal(index.legendLine)}, unresolved = ${literal(index.unresolved)} WHERE guid = ${literal(guid)};`,
+			`UPDATE tournament_decks SET legend_line = ${literal(index.legendLine)}, ram = ${literal(index.ram)}, unresolved = ${literal(index.unresolved)} WHERE guid = ${literal(guid)};`,
 			`DELETE FROM tournament_deck_cards WHERE deck_guid = ${literal(guid)};`,
 			...index.cards.map((row) => insert('tournament_deck_cards', row))
 		];

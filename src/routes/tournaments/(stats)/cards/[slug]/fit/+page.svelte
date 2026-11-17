@@ -3,6 +3,7 @@
 	// the whole field, and which Legend lines run it (with how many of each line's decks do)? A
 	// comparison drawn from fewer than 5 decks is shown as a count only.
 	import LegendArt from '#lib/components/tournaments/LegendArt.svelte';
+	import RamCode from '#lib/components/tournaments/RamCode.svelte';
 	import { MIN_DECKS } from '#lib/tournaments/meta.js';
 	import { legendNames } from '#lib/tournaments/present.js';
 
@@ -46,6 +47,30 @@
 		{/each}
 	</ul>
 	<p class="mt-1 text-[11px] text-muted">The white tick is the whole-field rate.</p>
+</section>
+
+<section class="mt-8">
+	<h2 class="mb-3 font-mono text-[11px] tracking-wide text-muted uppercase">Which RAMs run it</h2>
+	<ul class="space-y-2">
+		{#each usage.byRam as group (group.ram)}
+			<li class="grid grid-cols-[14rem_1fr_6rem] items-center gap-3">
+				<RamCode ram={group.ram} class="text-sm" />
+				<span class="h-3 rounded bg-edge/40">
+					<span class="block h-3 rounded bg-neon/80" style:width="{group.rate * 100}%"></span>
+				</span>
+				<span class="text-right font-mono text-xs text-muted"
+					>{group.withCard} of {group.decks}</span
+				>
+			</li>
+		{:else}
+			<li class="text-sm text-muted">No deck in this period ran it.</li>
+		{/each}
+	</ul>
+	{#if usage.ramCount > usage.byRam.length}
+		<p class="mt-2 text-[11px] text-muted">
+			The {usage.byRam.length} RAMs that run it most, of {usage.ramCount}.
+		</p>
+	{/if}
 </section>
 
 <section class="mt-8">

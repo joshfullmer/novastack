@@ -233,9 +233,10 @@ describe('--reparse: rebuild the derived columns from stored text', () => {
 	it('restores what was derived, from nothing but the text', () => {
 		const db = migrated();
 		write(db);
-		const before = db.prepare('SELECT legend_line, unresolved FROM tournament_decks').get();
+		const before = db.prepare('SELECT legend_line, ram, unresolved FROM tournament_decks').get();
+		expect(before?.ram).toMatch(/^[bgry]+$/); // the Legends in the fixture are real cards
 		db.exec(
-			'UPDATE tournament_decks SET legend_line = NULL, unresolved = 9; DELETE FROM tournament_deck_cards;'
+			'UPDATE tournament_decks SET legend_line = NULL, ram = NULL, unresolved = 9; DELETE FROM tournament_deck_cards;'
 		);
 		expect(count(db, 'tournament_deck_cards')).toBe(0);
 
@@ -252,7 +253,7 @@ describe('--reparse: rebuild the derived columns from stored text', () => {
 				)
 			)
 		);
-		expect(db.prepare('SELECT legend_line, unresolved FROM tournament_decks').get()).toEqual(
+		expect(db.prepare('SELECT legend_line, ram, unresolved FROM tournament_decks').get()).toEqual(
 			before
 		);
 		expect(count(db, 'tournament_deck_cards')).toBe(build().deckCards.length);

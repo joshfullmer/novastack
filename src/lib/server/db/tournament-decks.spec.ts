@@ -19,7 +19,14 @@ import { seedEvent } from './test-seed.js';
 import { world as buildWorld } from './test-world.js';
 
 const world = () => buildWorld().db;
-const none: DeckFilters = { legend: null, cards: [], player: null, sort: 'finish', page: 1 };
+const none: DeckFilters = {
+	legend: null,
+	ram: null,
+	cards: [],
+	player: null,
+	sort: 'finish',
+	page: 1
+};
 const guids = async (filters: Partial<DeckFilters>, period: Period = ALL_TIME) =>
 	(await getDeckList(world(), period, { ...none, ...filters })).rows.map((r) => r.guid);
 
@@ -51,6 +58,12 @@ describe('getDeckList', () => {
 		expect((await guids({ legend: 'e' })).sort()).toEqual(['D4']);
 		expect((await guids({ legend: 'c' })).sort()).toEqual(['D1', 'D2', 'D6']);
 		expect((await guids({ legend: 'a' })).sort()).toEqual(['D1', 'D2', 'D3', 'D5', 'D6']);
+	});
+
+	it('filters by the RAM the Legends provide, so YYR and RRY are different decks', async () => {
+		expect((await guids({ ram: 'rryyyy' })).sort()).toEqual(['D1', 'D2', 'D6']); // X
+		expect((await guids({ ram: 'rrrryy' })).sort()).toEqual(['D3', 'D5']); // Y: same colours, other RAM
+		expect(await guids({ ram: 'bbbb' })).toEqual([]);
 	});
 
 	it('filters by a card, main deck or sideboard, any of several', async () => {

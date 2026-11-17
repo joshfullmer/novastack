@@ -7,6 +7,7 @@
 import type { Card } from '../cards/schema.ts';
 import { importDeck } from '../decks/import.ts';
 import type { tournamentDeckCards } from '../server/db/schema.ts';
+import { ramOf } from './ram.ts';
 import type { MeleeStanding } from './sources.ts';
 
 /** Every Standing of one event carries the same format id; anything else isn't one event. */
@@ -45,6 +46,8 @@ export function pickDecklist(
 export type DeckIndex = {
 	/** The three Legend slugs, sorted, joined by `+`; null when the deck doesn't name three. */
 	legendLine: string | null;
+	/** What the Legends provide together, as a `legends:` value (`ram.ts`); null when it can't be known. */
+	ram: string | null;
 	unresolved: number;
 	cards: (typeof tournamentDeckCards.$inferInsert)[];
 	/** What `reviewDecks` looks at. */
@@ -85,6 +88,7 @@ export function indexDeck(
 	];
 	return {
 		legendLine: legendSlugs.length === 3 ? legendSlugs.join('+') : null,
+		ram: ramOf(reading.legends),
 		unresolved: reading.unresolved.length,
 		cards: rows,
 		reading: {

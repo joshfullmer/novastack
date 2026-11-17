@@ -39,6 +39,7 @@ const deckColumns = {
 	eventName: tournaments.name,
 	startsAt: tournaments.startsAt,
 	playerCount: tournaments.playerCount,
+	ram: tournamentDecks.ram,
 	player: players.displayName,
 	rank: standings.rank,
 	wins: standings.matchWins,
@@ -94,6 +95,7 @@ export async function getDeckList(
 			)
 		);
 	}
+	if (filters.ram) conditions.push(eq(tournamentDecks.ram, filters.ram));
 	if (filters.cards.length > 0) {
 		conditions.push(
 			exists(
@@ -233,6 +235,7 @@ export async function getDeckDetail(db: Db, guid: string): Promise<DeckDetail | 
 		eventName: row.eventName,
 		startsAt: row.startsAt.getTime(),
 		playerCount: row.playerCount,
+		ram: row.ram,
 		player: row.player,
 		rank: row.rank,
 		wins: row.wins,

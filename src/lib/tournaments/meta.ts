@@ -8,8 +8,6 @@
  * so its Legends are recoverable from the key and need no join.
  */
 
-import { groupByColours } from './present.ts';
-
 /** A group needs at least this many decks before a win rate is quoted: fewer is noise, not a rate. */
 export const MIN_DECKS = 5;
 
@@ -62,9 +60,11 @@ export type MetaView = {
 	/** The lines left out of `byLine`, so the page can say so rather than pass the list off as whole. */
 	unlisted: { lines: number; decks: number; top8: number; wins: number };
 	byLegend: GroupStat[];
-	/** The colour pairs, folded over every line, listed or not. */
-	byColours: GroupStat[];
-	/** The matrix's rows and columns: the most-played lines, in order. */
+	/** Every RAM in play (`tournament_decks.ram`, so `legends` is empty), most-played first. */
+	byRam: GroupStat[];
+	/** What the matrix is drawn over: Legend lines, or RAMs. */
+	matrixBy: 'line' | 'ram';
+	/** The matrix's rows and columns: the most-played groups, in order. */
 	matrixLines: string[];
 	/** Every ordered pair of `matrixLines`, including those nobody played (matches 0). */
 	matrix: MatrixCell[];
@@ -107,10 +107,14 @@ export function buildLines(rows: readonly LineRow[]): GroupStat[] {
 
 export function buildMeta(input: {
 	lines: readonly LineRow[];
+	/** One row per RAM (the `line` field holds it), counted the same way. */
+	rams: readonly LineRow[];
 	/** One row per Legend slug (the `line` field holds the slug), counted the same way. */
 	legends: readonly LineRow[];
 	matchups: readonly MatchupRow[];
-	/** All matches between decks of different lines; defaults to the matrix's own count. */
+	/** What `matchups` is over; the matrix's rows and columns are its most-played groups. */
+	matrixBy?: 'line' | 'ram';
+	/** All matches between decks of different groups; defaults to the matrix's own count. */
 	crossMatchesTotal?: number;
 }): MetaView {
 	const total = input.lines.reduce((n, row) => n + row.decks, 0);
@@ -122,7 +126,14 @@ export function buildMeta(input: {
 		.flatMap((row) => (row.line ? [toStat(row, row.line, [row.line], total)] : []))
 		.sort(ranked);
 
-	const matrixLines = byLine.slice(0, MATRIX_SIZE).map((g) => g.key);
+	const ramTotal = input.rams.reduce((n, row) => n + row.decks, 0);
+	const byRam = input.rams
+		.flatMap((row) => (row.line ? [toStat(row, row.line, [], ramTotal)] : []))
+		.sort(ranked)
+		.slice(0, LINE_LIMIT);
+
+	const matrixBy = input.matrixBy ?? 'line';
+	const matrixLines = (matrixBy === 'ram' ? byRam : byLine).slice(0, MATRIX_SIZE).map((g) => g.key);
 
 	// Each stored row is one direction (a's Legends played b's); the matrix wants both, so credit
 	// the other side with what is left of each match.
@@ -158,7 +169,8 @@ export function buildMeta(input: {
 			wins: unlisted.reduce((n, g) => n + g.wins, 0)
 		},
 		byLegend,
-		byColours: groupByColours(everyLine),
+		byRam,
+		matrixBy,
 		matrixLines,
 		matrix,
 		crossMatches,
