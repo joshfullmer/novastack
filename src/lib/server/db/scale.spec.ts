@@ -95,6 +95,7 @@ describe.skipIf(sizes.length === 0)('scale audit', () => {
 				name: 'last 30 days',
 				from: end - 30 * 86_400_000,
 				to: null,
+				param: null,
 				...ANY_EVENTS
 			};
 			const [topLine] = await getLines(db, ALL_TIME);

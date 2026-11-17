@@ -133,6 +133,7 @@ describe('getMeta, by period', () => {
 		name: 'Nov 16',
 		from: Date.parse('2026-11-16T00:00:00Z'),
 		to: Date.parse('2026-11-17T00:00:00Z'),
+		param: null,
 		...ANY_EVENTS
 	};
 
@@ -152,6 +153,7 @@ describe('getMeta, by period', () => {
 			name: 'x',
 			from: null,
 			to: Date.parse('2026-11-16T12:00:00Z'),
+			param: null,
 			...ANY_EVENTS
 		};
 		expect((await getMeta(world(), upToNov16)).decks).toBe(4); // event 2 starts exactly at `to`
@@ -160,6 +162,7 @@ describe('getMeta, by period', () => {
 			name: 'y',
 			from: Date.parse('2026-11-16T12:00:00Z'),
 			to: null,
+			param: null,
 			...ANY_EVENTS
 		};
 		expect((await getMeta(world(), fromNov16)).decks).toBe(2); // and `from` is inclusive
@@ -171,6 +174,7 @@ describe('getMeta, by period', () => {
 			name: 'none',
 			from: Date.parse('2030-01-01'),
 			to: null,
+			param: null,
 			...ANY_EVENTS
 		};
 		const meta = await getMeta(world(), none);

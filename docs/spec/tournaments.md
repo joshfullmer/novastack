@@ -430,9 +430,11 @@ read-only, dynamic and `noindex`:
   its list).
 - **`/tournaments/cards/[slug]`** (usage and finishes) and **`/cards/[slug]/fit`** (does it do better at the
   top; which lines run it). `/tournaments/cards` is a front door that redirects to a card.
-- **The period selector** (`?period=<meta id>`), shown only once a `metas` row exists, narrows every one of
-  these. Anything unrecognised means all time. Nothing is seeded in production; locally two demo rows
-  (Nov 15, Nov 16) exist for testing.
+- **The period selector** (`?period=<meta id>` or `?period=all`), shown once a `metas` row exists, narrows
+  every one of these: chips up to four choices, a menu beyond. **The default is the current meta** (the
+  newest that has started), so a link that names none shows it and the default adds no param to any link;
+  all time is `?period=all`. Anything unrecognised means the default. With no meta started, a bare link is
+  all time. Nothing is seeded in production; locally one row, WNC, is.
 - **Which events count** narrows them the same way: `?kind=<Regional|Showdown|…>` (offered once more than
   one kind has been ingested) and `?min=<8|16|32|64>`, a floor on field size. Both are part of the `Period`,
   so every aggregate honours them, and every link and GET form carries them. Anything unrecognised means
@@ -476,8 +478,12 @@ a shared-cache header, a site-nav link, and production (migrations `0014` and `0
 1. **What is an archetype?** §6 groups by Legend, Legend line, and colour set because those are
    readable straight off a deck. Whether players name decks some finer way (by a key non-Legend Card,
    say) is a game-knowledge question, not a data one.
-2. **Which metas?** The `metas` table needs rows: a name and a start date per period ("since Set X").
-   Hand-seeded; not yet decided. Until then, all-time and trailing windows work with no meta.
+2. **Which metas?** Decided 2026-11-17: a meta is a name and a **date range**, and anything that changes the
+   game can start one (a set release, a banlist or errata). For now there is one, **WNC** (Welcome to Night
+   City), from its retail release, 2026-11-06, open-ended. **Where the rows live is open**: the `metas`
+   table, hand-seeded, or a constant in code (a meta changes a few times a year, needs a deploy anyway, and
+   a constant needs no seeding on prod). Not decided; to settle in the schema review. Locally the one row
+   is seeded by hand, replacing the two demo rows.
 3. **Finding ids.** Where does a new Cyberpunk tournament id come from? From the person running the job,
    who has it from the Decklists page, Discord, or an organizer. If that gets tedious, swubase reads a
    player's public history from `POST /Profile/GetResults/{username}` (tournament id, game, rank,

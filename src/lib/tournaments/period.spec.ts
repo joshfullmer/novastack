@@ -19,32 +19,79 @@ const metas: MetaRow[] = [
 	{ id: 2, name: 'Edgerunners', startsOn: new Date('2026-11-01T00:00:00Z'), endsOn: null }
 ];
 
+const NOW = Date.parse('2026-12-01T00:00:00Z');
+const at = (asked: string | null, narrowing = ANY_EVENTS) =>
+	resolvePeriod(metas, asked, narrowing, NOW);
+
 describe('periods', () => {
-	it('lists all time first, then metas newest first', () => {
-		expect(periodChoices(metas).map((p) => p.name)).toEqual(['All time', 'Edgerunners', 'Launch']);
+	it('lists the metas newest first, then all time', () => {
+		expect(periodChoices(metas, NOW).map((p) => p.name)).toEqual([
+			'Edgerunners',
+			'Launch',
+			'All time'
+		]);
 	});
 
 	it('is just all time when nothing has been seeded', () => {
-		expect(periodChoices([])).toEqual([ALL_TIME]);
+		expect(periodChoices([], NOW)).toEqual([ALL_TIME]);
+		expect(resolvePeriod([], null, ANY_EVENTS, NOW)).toEqual(ALL_TIME);
 	});
 
 	it('resolves a meta id to its window, open-ended when it has no end', () => {
-		expect(resolvePeriod(metas, '2')).toEqual({
-			id: 2,
-			name: 'Edgerunners',
-			from: Date.parse('2026-11-01T00:00:00Z'),
-			to: null,
+		expect(at('1')).toEqual({
+			id: 1,
+			name: 'Launch',
+			from: Date.parse('2026-09-01T00:00:00Z'),
+			to: Date.parse('2026-11-01T00:00:00Z'),
+			param: '1',
 			...ANY_EVENTS
 		});
-		expect(resolvePeriod(metas, '1').to).toBe(Date.parse('2026-11-01T00:00:00Z'));
+		expect(at('2').to).toBeNull();
 	});
 
-	it.each([[null], [''], ['abc'], ['-1'], ['1.5'], ['99'], ['1; DROP TABLE'], ['9999999999999']])(
-		'treats %j as all time rather than an error',
+	it('resolves "all" to all time', () => {
+		expect(at('all')).toMatchObject({ id: null, from: null, to: null, name: 'All time' });
+	});
+});
+
+describe('the default period', () => {
+	it('is the newest meta that has started, for a request that names none', () => {
+		expect(at(null)).toMatchObject({ id: 2, name: 'Edgerunners' });
+	});
+
+	it('skips a meta that has not started yet', () => {
+		const before = resolvePeriod(metas, null, ANY_EVENTS, Date.parse('2026-10-01T00:00:00Z'));
+		expect(before).toMatchObject({ id: 1, name: 'Launch' });
+		expect(resolvePeriod(metas, null, ANY_EVENTS, Date.parse('2026-01-01T00:00:00Z'))).toEqual(
+			ALL_TIME
+		);
+	});
+
+	it.each([[''], ['abc'], ['-1'], ['1.5'], ['99'], ['1; DROP TABLE'], ['9999999999999']])(
+		'is what an unrecognised %j gets, not an error',
 		(asked) => {
-			expect(resolvePeriod(metas, asked)).toEqual(ALL_TIME);
+			expect(at(asked)).toEqual(at(null));
 		}
 	);
+
+	it('is left out of links, while everything else says what it is', () => {
+		const named = (asked: string | null) => periodParams(at(asked)).period;
+		expect(named(null)).toBeNull();
+		expect(named('2')).toBeNull();
+		expect(named('1')).toBe('1');
+		expect(named('all')).toBe('all');
+	});
+
+	it('gives the selector the same params, so every link round-trips', () => {
+		for (const choice of periodChoices(metas, NOW)) {
+			const back = at(choice.param);
+			expect([back.id, back.param]).toEqual([choice.id, choice.param]);
+		}
+	});
+
+	it('adds no param for all time while there is no meta to default to', () => {
+		expect(periodParams(resolvePeriod([], 'all', ANY_EVENTS, NOW)).period).toBeNull();
+	});
 });
 
 describe('narrowing', () => {
@@ -62,17 +109,17 @@ describe('narrowing', () => {
 	);
 
 	it('rides along with whichever window was asked for', () => {
-		const period = resolvePeriod(metas, '2', { kind: 'Showdown', minPlayers: 16 });
+		const period = at('2', { kind: 'Showdown', minPlayers: 16 });
 		expect(period).toMatchObject({ id: 2, name: 'Edgerunners', kind: 'Showdown', minPlayers: 16 });
-		expect(resolvePeriod(metas, 'nope', { kind: 'Showdown', minPlayers: null })).toMatchObject({
+		expect(at('all', { kind: 'Showdown', minPlayers: null })).toMatchObject({
 			id: null,
 			kind: 'Showdown'
 		});
 	});
 
 	it('is carried by every link through periodParams, and only what is set is a param', () => {
-		expect(periodParams(resolvePeriod(metas, '2', { kind: 'Brawl', minPlayers: 8 }))).toEqual({
-			period: 2,
+		expect(periodParams(at('1', { kind: 'Brawl', minPlayers: 8 }))).toEqual({
+			period: '1',
 			kind: 'Brawl',
 			min: 8
 		});

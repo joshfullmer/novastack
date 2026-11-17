@@ -84,6 +84,7 @@ describe('getDeckList', () => {
 			name: 'n',
 			from: Date.parse('2026-11-16T00:00:00Z'),
 			to: null,
+			param: null,
 			...ANY_EVENTS
 		};
 		expect(await guids({}, nov16)).toEqual(['D5', 'D6']);

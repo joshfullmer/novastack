@@ -70,6 +70,7 @@ describe('getCardStats', () => {
 			name: 'n',
 			from: Date.parse('2026-11-16T00:00:00Z'),
 			to: null,
+			param: null,
 			...ANY_EVENTS
 		};
 		const { decks, cards } = await getCardStats(world(), nov16, null); // D5 D6
@@ -153,6 +154,7 @@ describe('getCardUsage', () => {
 			name: 'n',
 			from: Date.parse('2026-11-16T00:00:00Z'),
 			to: null,
+			param: null,
 			...ANY_EVENTS
 		};
 		const usage = await getCardUsage(world(), nov16, 'm1');
