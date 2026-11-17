@@ -30,6 +30,10 @@ export const EXAMPLES: readonly Example[] = [
 	},
 	{ query: 'legends:rryyyy', description: 'The colored RAM budget — Red 2, Yellow 4.' },
 	{ query: 'legends:r2y4', description: 'The same budget, digit spelling.' },
+	{
+		query: 'legends:YYR',
+		description: 'The same budget, by Legend: Yellow, Yellow, Red (uppercase counts Legends).'
+	},
 	{ query: 'name:v', description: 'Scoped to the card name only.' },
 	{ query: 'rules:"a rival unit"', description: 'Scoped to rules text, an exact phrase.' },
 	{ query: '/bloc+ker/', description: 'A regex pattern, scoped to the free-text field.' }

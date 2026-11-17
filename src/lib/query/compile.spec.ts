@@ -426,6 +426,13 @@ describe('legends: the colored RAM budget', () => {
 		});
 	});
 
+	it('reads an uppercase value as Legends: each is worth what a Legend provides', () => {
+		const { predicate } = run('legends:R');
+		expect(predicate).toMatchObject({ kind: 'ramBudget' });
+		expect(run('legends:R').slugs).toEqual(run('legends:rr').slugs); // the fixture's Legends provide 2
+		expect(run('legends:YYR').predicate).toEqual(run('legends:yyyyrr').predicate);
+	});
+
 	it('admits on-color cards clearing the threshold, Legends included', () => {
 		expect(run('legends:rr').slugs).toEqual(['red-unit', 'red-legend']);
 	});

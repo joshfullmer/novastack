@@ -10,6 +10,7 @@
 	 * picking it up. **Every worked example is asserted to parse** in `examples.spec.ts`, against
 	 * the real, current dataset — the second anti-drift mechanism spec §11 calls for.
 	 */
+	import { dataset } from '#lib/cards/index.js';
 	import { FIELDS, type FieldKind } from '#lib/query/index.js';
 	import { EXAMPLES } from '#lib/query/examples.js';
 	import Meta from '#lib/components/Meta.svelte';
@@ -150,8 +151,12 @@
 			<code class="rounded bg-raised px-1 py-0.5 text-sm">b</code>), each optionally followed by a
 			number: a bare letter is worth 1, a number after it sets that amount, and repeats add up.
 			<code class="rounded bg-raised px-1 py-0.5 text-sm">legends:rryyyy</code>
-			and <code class="rounded bg-raised px-1 py-0.5 text-sm">legends:r2y4</code> both mean Red 2, Yellow
-			4.
+			and <code class="rounded bg-raised px-1 py-0.5 text-sm">legends:r2y4</code> both mean Red 2,
+			Yellow 4. Lowercase counts RAM exactly;
+			<strong class="font-semibold">UPPERCASE counts Legends</strong>, each providing {dataset.ramPerLegend}
+			RAM, the shorthand players use:
+			<code class="rounded bg-raised px-1 py-0.5 text-sm">legends:YYR</code> is
+			<code class="rounded bg-raised px-1 py-0.5 text-sm">legends:yyyyrr</code>.
 		</p>
 	</section>
 

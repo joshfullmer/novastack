@@ -7,9 +7,10 @@
  * what that deck may play. Stored in canonical order (`tournament_decks.ram`, so equality and
  * grouping are plain SQL) and shown in the order players say it, dominant colour first.
  *
- * **`YYR` is shorthand for `yyyyrr`**: three letters, one per Legend, each providing the standard RAM
- * (`dataset.ramPerLegend`). It is only ever a way to *say* a RAM whose Legends are all alike; a RAM
- * that cannot be put that way has no shorthand, and nothing stored depends on it.
+ * **`YYR` is shorthand for `yyyyrr`**: an uppercase letter is a Legend, providing the standard RAM
+ * (`dataset.ramPerLegend`); a lowercase one is a RAM, exactly (the `legends:` grammar's own rule). The
+ * shorthand is only ever a way to *say* a RAM whose Legends are all alike; a RAM that cannot be put
+ * that way has none, and nothing stored depends on it.
  *
  * Imported by the ingest script, which runs under plain node: relative `.ts` specifiers only.
  */
@@ -39,31 +40,18 @@ export function ramOf(legends: readonly Pick<Card, 'color' | 'ramProvided'>[]): 
 }
 
 /**
- * A RAM from outside (a URL) as the canonical RAM, or null if it isn't one: a `legends:` value
- * (`yyyyrr`, `r2y4`), or the three-letter shorthand (`YYR`) where each letter is a Legend providing
- * `perLegend` RAM. Exactly three letters and nothing else is the shorthand; to spell a three-RAM
- * value, give a count (`y2r1`).
+ * A RAM from outside (a URL) as the canonical RAM, or null if it isn't one: a `legends:` value, in
+ * which `yyyyrr` and `r2y4` count RAM and `YYR` counts Legends of `perLegend` RAM each.
  */
 export function parseRam(raw: string | null, perLegend: number): string | null {
 	if (raw === null || raw.length > MAX_LENGTH) return null;
-	const budget = SHORTHAND.test(raw) ? fromLegends(raw, perLegend) : parseLegendsValue(raw);
+	const budget = parseLegendsValue(raw, perLegend);
 	return budget === null ? null : formatLegendsValue(budget) || null;
-}
-
-const SHORTHAND = /^[rygb]{3}$/i;
-
-function fromLegends(letters: string, perLegend: number) {
-	const budget: Record<Color, number> = { ...EMPTY_BUDGET };
-	for (const letter of letters.toLowerCase()) {
-		const colour = SAY_ORDER.find((c) => c[0].toLowerCase() === letter);
-		if (colour) budget[colour] += perLegend;
-	}
-	return budget;
 }
 
 /** The colours of a RAM and how much of each, most first, as players say it. */
 export function ramParts(ram: string): { colour: Color; amount: number }[] {
-	const budget = parseLegendsValue(ram);
+	const budget = parseLegendsValue(ram, 1); // canonical RAM is lowercase, so the unit never applies
 	if (budget === null) return [];
 	return SAY_ORDER.filter((colour) => budget[colour] > 0)
 		.map((colour) => ({ colour, amount: budget[colour] }))

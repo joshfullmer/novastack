@@ -10,46 +10,60 @@ import { parseLegendsValue } from './legends-value.ts';
 
 describe('parseLegendsValue', () => {
 	it('parses a tally spelling', () => {
-		expect(parseLegendsValue('rryyyy')).toEqual({ ...EMPTY_BUDGET, Red: 2, Yellow: 4 });
+		expect(parseLegendsValue('rryyyy', 2)).toEqual({ ...EMPTY_BUDGET, Red: 2, Yellow: 4 });
 	});
 
 	it('parses a digit spelling identically', () => {
-		expect(parseLegendsValue('r2y4')).toEqual({ ...EMPTY_BUDGET, Red: 2, Yellow: 4 });
+		expect(parseLegendsValue('r2y4', 2)).toEqual({ ...EMPTY_BUDGET, Red: 2, Yellow: 4 });
 	});
 
 	it('parses a mix of tally and digit spellings for the same value', () => {
-		expect(parseLegendsValue('rry4')).toEqual({ ...EMPTY_BUDGET, Red: 2, Yellow: 4 });
+		expect(parseLegendsValue('rry4', 2)).toEqual({ ...EMPTY_BUDGET, Red: 2, Yellow: 4 });
 	});
 
-	it('is case-insensitive', () => {
-		expect(parseLegendsValue('R2Y4')).toEqual({ ...EMPTY_BUDGET, Red: 2, Yellow: 4 });
+	it('counts a lowercase letter as RAM and an uppercase one as a Legend', () => {
+		// YYR: two Legends of yellow, one of red, each providing 2.
+		expect(parseLegendsValue('YYR', 2)).toEqual({ ...EMPTY_BUDGET, Red: 2, Yellow: 4 });
+		expect(parseLegendsValue('YYR', 2)).toEqual(parseLegendsValue('yyyyrr', 2));
+		expect(parseLegendsValue('yyr', 2)).toEqual({ ...EMPTY_BUDGET, Red: 1, Yellow: 2 });
+	});
+
+	it('takes the size of a Legend from what Legends provide, but never changes lowercase', () => {
+		expect(parseLegendsValue('YYR', 3)).toEqual({ ...EMPTY_BUDGET, Red: 3, Yellow: 6 });
+		expect(parseLegendsValue('yyyyrr', 3)).toEqual({ ...EMPTY_BUDGET, Red: 2, Yellow: 4 });
+	});
+
+	it('lets a count scale either unit, and the two cases mix', () => {
+		expect(parseLegendsValue('Y2', 2)).toEqual({ ...EMPTY_BUDGET, Yellow: 4 }); // two Legends
+		expect(parseLegendsValue('y2', 2)).toEqual({ ...EMPTY_BUDGET, Yellow: 2 }); // two RAM
+		expect(parseLegendsValue('YYr', 2)).toEqual({ ...EMPTY_BUDGET, Red: 1, Yellow: 4 });
 	});
 
 	it('accepts an optional comma as chrome between tokens', () => {
-		expect(parseLegendsValue('r2,y4')).toEqual({ ...EMPTY_BUDGET, Red: 2, Yellow: 4 });
+		expect(parseLegendsValue('r2,y4', 2)).toEqual({ ...EMPTY_BUDGET, Red: 2, Yellow: 4 });
 	});
 
 	it('does not care about order or interleaving', () => {
-		expect(parseLegendsValue('ryry')).toEqual({ ...EMPTY_BUDGET, Red: 2, Yellow: 2 });
+		expect(parseLegendsValue('ryry', 2)).toEqual({ ...EMPTY_BUDGET, Red: 2, Yellow: 2 });
 	});
 
 	it('defaults unmentioned colors to 0', () => {
-		expect(parseLegendsValue('r2')).toEqual({ ...EMPTY_BUDGET, Red: 2 });
+		expect(parseLegendsValue('r2', 2)).toEqual({ ...EMPTY_BUDGET, Red: 2 });
 	});
 
 	it('has no upper bound', () => {
-		expect(parseLegendsValue('r99')).toEqual({ ...EMPTY_BUDGET, Red: 99 });
+		expect(parseLegendsValue('r99', 2)).toEqual({ ...EMPTY_BUDGET, Red: 99 });
 	});
 
 	it('rejects an empty value as malformed', () => {
-		expect(parseLegendsValue('')).toBeNull();
+		expect(parseLegendsValue('', 2)).toBeNull();
 	});
 
 	it('rejects an unknown color letter as malformed', () => {
-		expect(parseLegendsValue('x2')).toBeNull();
+		expect(parseLegendsValue('x2', 2)).toBeNull();
 	});
 
 	it('rejects a negative number as malformed', () => {
-		expect(parseLegendsValue('r-2')).toBeNull();
+		expect(parseLegendsValue('r-2', 2)).toBeNull();
 	});
 });

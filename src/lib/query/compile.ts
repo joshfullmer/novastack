@@ -295,7 +295,7 @@ export function compileField(
 		case 'text':
 			return compileText(node, warnings, 'both');
 		case 'legends':
-			return compileLegends(node, warnings);
+			return compileLegends(node, ctx, warnings);
 	}
 }
 
@@ -760,11 +760,15 @@ function compileText(
 // legends: — the colored RAM budget
 // ---------------------------------------------------------------------------
 
-function compileLegends(node: FieldNode, warnings: ParseWarning[]): Predicate | null {
+function compileLegends(
+	node: FieldNode,
+	ctx: CompileContext,
+	warnings: ParseWarning[]
+): Predicate | null {
 	if (!requireSimpleOperator(node, warnings)) return null;
 	if (node.value.type === 'regex') return malformed(node, warnings);
 
-	const budget = parseLegendsValue(node.value.text);
+	const budget = parseLegendsValue(node.value.text, ctx.dataset.ramPerLegend);
 	if (budget === null) return malformed(node, warnings);
 	return { kind: 'ramBudget', budget };
 }

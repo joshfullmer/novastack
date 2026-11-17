@@ -223,22 +223,32 @@ inclusive bound: `cost>3` ≡ `cost >= 4`.
 ### 3.3 `legends:` — the colored RAM budget
 
 The one predicate with no Scryfall analogue and no scalar value — entirely novastack-original
-syntax. It encodes **raw per-color RAM numbers directly**, not Legend slot-counts: `legends:r2y4`
-means "Red pool 2, Yellow pool 4," full stop. This is deliberately decoupled from
-`ramPerLegend` (currently uniform at 2) ever becoming non-uniform per Legend — the query's
-meaning never has to change if that happens, since it was never expressed in terms of "how many
-Legends," only in terms of the resulting pool.
+syntax. In its precise, lowercase form it encodes **raw per-color RAM numbers directly**, not Legend
+slot-counts: `legends:r2y4` means "Red pool 2, Yellow pool 4," full stop. This is deliberately
+decoupled from `ramPerLegend` (currently uniform at 2) ever becoming non-uniform per Legend — the
+meaning of a lowercase query never has to change if that happens, since it was never expressed in
+terms of "how many Legends," only in terms of the resulting pool. The uppercase shorthand below is
+the one spelling that does depend on `ramPerLegend`, and says so.
 
 **One unified rule** produces both a tally spelling and a digit spelling for free, not two
-features. A value is a sequence of color-letter tokens (`r`/`y`/`g`/`b`, case-insensitive); each
-token is a color letter optionally followed by digits. A bare letter contributes 1 to that
-color's running total; a digit-suffixed letter contributes that number. **The final total per
-color is the sum of all its occurrences.**
+features. A value is a sequence of color-letter tokens (`r`/`y`/`g`/`b`); each token is a color
+letter optionally followed by digits. A bare letter contributes 1 to that color's running total; a
+digit-suffixed letter contributes that number. **The final total per color is the sum of all its
+occurrences.**
+
+**Case carries the unit** (decided 2026-11-17). A **lowercase** letter counts **RAM**, exactly. An
+**UPPERCASE** letter counts **Legends**, each providing `ramPerLegend` RAM (2 today): the shorthand
+players use for a deck, `YYR` for `yyyyrr`. A count scales whichever unit its letter is in (`y2` is two
+RAM; `Y2` is two Legends), and the two cases mix within one value (`YYr` is Yellow 4, Red 1). Only the
+uppercase spelling depends on what a Legend provides, so the lowercase one stays precise if Legends
+ever stop providing alike; `ramPerLegend` is read from the dataset, never assumed.
 
 ```
 legends:rryyyy    Red 2, Yellow 4
 legends:r2y4      Red 2, Yellow 4   — identical to the above
 legends:rry4      Red 2, Yellow 4   — mixing spellings within one value is fine
+legends:YYR       Red 2, Yellow 4   — shorthand: Yellow, Yellow, Red Legends (2 RAM each today)
+legends:yyr       Red 1, Yellow 2   — lowercase is RAM, exactly
 ```
 
 No separator is ever required — a color letter always unambiguously starts a new token, since
@@ -252,7 +262,8 @@ values are dropped as malformed, per §6's ordinary treatment of nonsensical num
 
 **Canonical form is tally.** Today's chips can only ever produce 0/2/4/6 per color (0–3 slots ×
 the current uniform 2), so tally output never exceeds six characters per color in any real case;
-chips serialise tally. Digit form remains an accepted, equally-valid input spelling.
+chips serialise lowercase tally, so a typed `YYR` becomes `rryyyy` once a chip edits it. Digit form
+remains an accepted, equally-valid input spelling.
 
 **Negation** uses the generic `not` node, not operator inversion: `admits()` is a flat boolean
 with no direction to invert, and it already resolves `ramRequired ?? 0` before negation would ever

@@ -38,24 +38,22 @@ describe('ramOf', () => {
 describe('parseRam', () => {
 	it('canonicalises any spelling the query language accepts', () => {
 		expect(parseRam('yyyyrr', 2)).toBe('rryyyy');
-		expect(parseRam('YYYYRR', 2)).toBe('rryyyy');
 		expect(parseRam('r2y4', 2)).toBe('rryyyy');
 	});
 
-	it('reads three letters as a Legend each: YYR is yyyyrr', () => {
+	it('reads uppercase as a Legend each: YYR is yyyyrr', () => {
 		expect(parseRam('YYR', 2)).toBe('rryyyy');
-		expect(parseRam('yyr', 2)).toBe('rryyyy');
 		expect(parseRam('RYY', 2)).toBe('rryyyy');
 		expect(parseRam('GGR', 2)).not.toBe(parseRam('RRG', 2));
 		expect(parseRam('RYG', 2)).toBe('ggrryy');
 		expect(parseRam('BBB', 2)).toBe('bbbbbb');
 	});
 
-	it('follows what a Legend provides, and still lets a count spell a three-RAM value', () => {
-		expect(parseRam('YYR', 3)).toBe('rrryyyyyy');
+	it('reads lowercase as RAM, exactly, whatever a Legend provides', () => {
+		expect(parseRam('yyr', 2)).toBe('ryy'); // Yellow 2, Red 1: not a deck, but what it says
 		expect(parseRam('y2r1', 2)).toBe('ryy');
-		expect(parseRam('yr', 2)).toBe('ry'); // two letters are RAM, not Legends
-		expect(parseRam('yyrr', 2)).toBe('rryy');
+		expect(parseRam('yyyyrr', 3)).toBe('rryyyy');
+		expect(parseRam('YYR', 3)).toBe('rrryyyyyy');
 	});
 
 	it('rejects what is not a RAM', () => {

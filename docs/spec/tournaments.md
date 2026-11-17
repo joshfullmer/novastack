@@ -385,11 +385,12 @@ the old colour-set grouping, which merged GGR with RRG.
   (`yyyyrr` is Yellow 4, Red 2), parsed and formatted by `parseLegendsValue` / `formatLegendsValue`. A Legend
   that does not provide 2 RAM needs no special case, and the same string searches the card database for what
   the deck may play (`/cards?q=legends:rryyyy`).
-- **`YYR` is shorthand for `yyyyrr`**: exactly three letters, one per Legend, each providing the standard
-  RAM (`dataset.ramPerLegend`). It is what the pages show, and accepted wherever a RAM is typed (`?ram=YYR`). It is only a way to say a RAM whose Legends are all alike: a RAM that cannot be put that
-  way has no shorthand, and nothing stored depends on it. Longer or counted forms (`yyyyrr`, `r2y4`) are the
-  `legends:` grammar unchanged; a three-RAM value needs a count (`y2r1`). The card search's own `legends:`
-  value is not changed by this: there `yyr` is still Yellow 2, Red 1.
+- **`YYR` is shorthand for `yyyyrr`**: an uppercase letter is a Legend providing the standard RAM
+  (`dataset.ramPerLegend`), a lowercase one is a RAM, exactly: the `legends:` grammar's own rule (query
+  language §3.3). The shorthand is what the pages show, and is accepted wherever a RAM is typed (`?ram=YYR`);
+  `?ram=yyr` is Yellow 2, Red 1. It is only a way to say a RAM whose Legends are all alike: a RAM that cannot be put that
+  way has no shorthand, and nothing stored depends on it. The card search takes the same
+  spelling (`/cards?q=legends:YYR`).
 - **Stored canonical, shown as said.** `tournament_decks.ram` holds the canonical order (colours
   alphabetical: `rryyyy`) so equality and grouping are plain SQL; the pages show it dominant colour first
   (ties in R, Y, G, B order), each letter in its colour (`RamCode`): as the shorthand `YYR` where it has one (every deck today), else one letter per RAM (`yyyyrr`). Parsing accepts any order.
