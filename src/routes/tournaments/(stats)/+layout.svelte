@@ -3,6 +3,7 @@
 	// kind of event (hidden until more than one kind has been ingested), and a floor on field size.
 	// All three live in the URL, so a link carries them (`periodParams`).
 	import { page } from '$app/state';
+	import KindSelect from '#lib/components/tournaments/KindSelect.svelte';
 	import { FIELD_FLOORS } from '#lib/tournaments/period.js';
 	import { withParams } from '#lib/tournaments/url.js';
 
@@ -73,13 +74,11 @@
 			{/if}
 		{/if}
 		{#if data.kinds.length > 1 || data.period.kind !== null}
-			<nav class="flex flex-wrap items-center gap-1" aria-label="Kind of event">
-				<span class="mr-1 text-muted">Kind</span>
-				{@render chip('Any', linkTo({ kind: null }), data.period.kind === null)}
-				{#each data.kinds as kind (kind)}
-					{@render chip(kind, linkTo({ kind }), data.period.kind === kind)}
-				{/each}
-			</nav>
+			<KindSelect
+				kinds={data.kinds.map((kind) => ({ kind }))}
+				value={data.period.kind}
+				href={(kind) => linkTo({ kind })}
+			/>
 		{/if}
 		<nav class="flex flex-wrap items-center gap-1" aria-label="Field size">
 			<span class="mr-1 text-muted">Players</span>

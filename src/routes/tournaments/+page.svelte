@@ -5,6 +5,7 @@
 	import { page } from '$app/state';
 	import Meta from '#lib/components/Meta.svelte';
 	import { cookieState } from '#lib/cookie-state.svelte.js';
+	import KindSelect from '#lib/components/tournaments/KindSelect.svelte';
 	import LegendArt from '#lib/components/tournaments/LegendArt.svelte';
 	import {
 		fieldByColour,
@@ -27,6 +28,12 @@
 		Green: 'bg-card-green',
 		Blue: 'bg-card-blue'
 	};
+	/**
+	 * On hover each Legend rises a beat after the one before it. `group-hover:` scopes the delay to the
+	 * way in, so moving off the tile drops them together. Whole class names, so Tailwind finds them.
+	 */
+	const HOVER_DELAY = ['', 'group-hover:delay-75', 'group-hover:delay-150'];
+
 	/** This page's own query with some of it changed; a filter or view change starts again at page 1. */
 	const link = (patch: Record<string, string | number | null>) =>
 		withParams(page.url, patch, ['page']);
@@ -103,12 +110,7 @@
 					Search
 				</button>
 			</form>
-			<div class="flex flex-wrap gap-1.5" aria-label="Kind">
-				{@render chip('All kinds', link({ kind: null }), query.kind === null)}
-				{#each data.kinds as { kind, count } (kind)}
-					{@render chip(kind, link({ kind }), query.kind === kind, count)}
-				{/each}
-			</div>
+			<KindSelect kinds={data.kinds} value={query.kind} href={(kind) => link({ kind })} />
 			{#if data.years.length > 1}
 				<div class="flex flex-wrap gap-1.5" aria-label="Year">
 					{@render chip('Any year', link({ year: null }), query.year === null)}
@@ -198,7 +200,9 @@
 										<LegendArt
 											{slug}
 											sizes="160px"
-											class="w-24 shadow-xl transition group-hover:-translate-y-1 {i === 0
+											class="w-24 shadow-xl transition duration-300 ease-out group-hover:-translate-y-2 motion-reduce:transition-none {HOVER_DELAY[
+												i
+											] ?? ''} {i === 0
 												? '-rotate-6'
 												: i === 2
 													? 'rotate-6'
