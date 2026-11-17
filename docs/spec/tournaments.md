@@ -503,6 +503,13 @@ a shared-cache header, a site-nav link, and production (migrations `0014` and `0
 1. **What is an archetype?** §6 groups by RAM, Legend line and Legend because those are readable
    straight off a deck. Whether players name decks some finer way still (by a key non-Legend Card, say) is a
    game-knowledge question, not a data one.
+   **Deferred until there is more data (2026-11-17):** cluster decks within a RAM by card overlap, so YYR
+   lists that share most of their cards count as one deck whatever their Legends, and the rest as another.
+   Measured on 32 decks / 5 events: YYR pairs span 32–85% shared main-deck copies (a gap between 62% and 45%;
+   some same-Legend pairs share only a third, some different-Legend pairs 85%), and pairs across different
+   RAMs have a median 14% (max 68%). Open: the threshold (about 60% on that sample, too few to fix), whether
+   clusters are stored (a column filled by a batch pass, so identity stays stable) or computed per request
+   (reads every deck's cards), what to call and label a cluster, and excluding decks with incomplete lists.
 2. **Which metas?** Decided 2026-11-17: a meta is a name and a **date range**, and anything that changes the
    game can start one (a set release, a banlist or errata). For now there is one, **WNC** (Welcome to Night
    City), from its retail release, 2026-11-06, open-ended. **Where the rows live is open**: the `metas`
