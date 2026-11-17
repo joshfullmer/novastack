@@ -41,6 +41,7 @@ export type SeedEvent = {
 	/** ISO, UTC. */
 	startsAt: string;
 	organizer?: string;
+	kind?: string;
 	players: SeedPlayer[];
 	matches?: SeedMatch[];
 	rounds?: number;
@@ -51,10 +52,11 @@ export function seedEvent(sqlite: DatabaseSync, event: SeedEvent): void {
 		sqlite.prepare(sql).run(...params);
 
 	run(
-		`INSERT INTO tournaments (id, name, starts_at, organizer_id, organizer_name, format, format_id, player_count)
-		 VALUES (?, ?, ?, 1, ?, 'Constructed', 'f', ?)`,
+		`INSERT INTO tournaments (id, name, kind, starts_at, organizer_id, organizer_name, format, format_id, player_count)
+		 VALUES (?, ?, ?, ?, 1, ?, 'Constructed', 'f', ?)`,
 		event.id,
 		event.name,
+		event.kind ?? 'Other',
 		Date.parse(event.startsAt),
 		event.organizer ?? 'Organizer',
 		event.players.length

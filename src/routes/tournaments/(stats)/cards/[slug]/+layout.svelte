@@ -1,4 +1,6 @@
 <script lang="ts">
+	import PeriodFields from '#lib/components/tournaments/PeriodFields.svelte';
+	import { periodParams } from '#lib/tournaments/period.js';
 	// A Card's tournament record: its art and headline numbers, a picker for another card, and two views
 	// of the same usage (every deck that ran it; where it fits). The picker is a plain GET form to
 	// `/tournaments/cards`, which redirects, so it works without JavaScript.
@@ -49,11 +51,7 @@
 				action="/tournaments/cards"
 				class="flex items-center gap-2 font-mono text-xs text-muted"
 			>
-				{#if data.period.id !== null}<input
-						type="hidden"
-						name="period"
-						value={data.period.id}
-					/>{/if}
+				<PeriodFields period={data.period} />
 				<label for="card-picker">Card</label>
 				<select
 					id="card-picker"
@@ -87,7 +85,7 @@
 				<nav class="mb-4 flex gap-1.5" aria-label="Card views">
 					{#each views as view (view.path)}
 						<a
-							href={href(view.path, { period: data.period.id })}
+							href={href(view.path, periodParams(data.period))}
 							aria-current={page.url.pathname === view.path ? 'page' : undefined}
 							class="rounded-full border px-3 py-1 font-mono text-xs {page.url.pathname ===
 							view.path

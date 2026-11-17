@@ -11,7 +11,7 @@
  */
 import { appendFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
-import { ALL_TIME, type Period } from '#lib/tournaments/period.js';
+import { ALL_TIME, type Period, ANY_EVENTS } from '#lib/tournaments/period.js';
 import type { DeckFilters } from '#lib/tournaments/deck-views.js';
 import { createTestDb } from './test-db.js';
 import { seedCorpus } from './test-corpus.js';
@@ -90,7 +90,13 @@ describe.skipIf(sizes.length === 0)('scale audit', () => {
 			);
 
 			const end = Number(sqlite.prepare('SELECT max(starts_at) AS m FROM tournaments').get()?.m);
-			const last30: Period = { id: 1, name: 'last 30 days', from: end - 30 * 86_400_000, to: null };
+			const last30: Period = {
+				id: 1,
+				name: 'last 30 days',
+				from: end - 30 * 86_400_000,
+				to: null,
+				...ANY_EVENTS
+			};
 			const [topLine] = await getLines(db, ALL_TIME);
 			const mid = Math.ceil(events / 2);
 

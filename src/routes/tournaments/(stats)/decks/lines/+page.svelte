@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { periodParams } from '#lib/tournaments/period.js';
 	// The same decks as shelves, one per Legend line: its art and record on the left, every deck that ran
 	// it as a tile, the best-placed few. Reads like browsing a collection rather than querying a table. A win rate appears
 	// only from 5 decks up.
@@ -43,7 +44,7 @@
 					{#each shelf.decks as deck (deck.guid)}
 						<li>
 							<a
-								href={href(`/tournaments/decks/${deck.guid}`, { period: data.period.id })}
+								href={href(`/tournaments/decks/${deck.guid}`, periodParams(data.period))}
 								class="block rounded-lg border border-edge px-3 py-1.5 text-xs hover:border-neon-dim"
 							>
 								<span class="block font-mono {deck.rank === 1 ? 'text-neon' : 'text-muted'}">

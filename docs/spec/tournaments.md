@@ -433,6 +433,10 @@ read-only, dynamic and `noindex`:
 - **The period selector** (`?period=<meta id>`), shown only once a `metas` row exists, narrows every one of
   these. Anything unrecognised means all time. Nothing is seeded in production; locally two demo rows
   (Nov 15, Nov 16) exist for testing.
+- **Which events count** narrows them the same way: `?kind=<Regional|Showdown|…>` (offered once more than
+  one kind has been ingested) and `?min=<8|16|32|64>`, a floor on field size. Both are part of the `Period`,
+  so every aggregate honours them, and every link and GET form carries them. Anything unrecognised means
+  "any events".
 
 **How it was checked.** The queries are grouped SQL aggregates (`tournament-stats.ts`,
 `tournament-decks.ts`), and each is run in tests against a **real SQLite built from our own

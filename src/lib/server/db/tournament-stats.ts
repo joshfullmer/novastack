@@ -22,6 +22,7 @@ import {
 	type LineRow,
 	type MetaView
 } from '#lib/tournaments/meta.js';
+import { EVENT_KINDS, type EventKind } from '#lib/tournaments/kind.js';
 import type { MetaRow, Period } from '#lib/tournaments/period.js';
 import type { Db } from './tournaments.js';
 import {
@@ -34,17 +35,28 @@ import {
 	tournaments
 } from './schema.js';
 
-/** The window as a condition on the Tournament's start; no condition for an unbounded side. */
+/**
+ * The scope as a condition on the Tournament: its start within the window, and, when set, its kind and
+ * size. No condition for anything unbounded.
+ */
 export const inPeriod = (period: Period): SQL | undefined =>
 	and(
 		period.from === null ? undefined : gte(tournaments.startsAt, new Date(period.from)),
-		period.to === null ? undefined : lt(tournaments.startsAt, new Date(period.to))
+		period.to === null ? undefined : lt(tournaments.startsAt, new Date(period.to)),
+		period.kind === null ? undefined : eq(tournaments.kind, period.kind),
+		period.minPlayers === null ? undefined : gte(tournaments.playerCount, period.minPlayers)
 	);
 
 /** `SUM(expr)` that is 0 rather than NULL for an empty group, as a number. */
 const total = (expression: SQL) => sql<number>`coalesce(sum(${expression}), 0)`.mapWith(Number);
 
 const one = (condition: SQL) => sql`case when ${condition} then 1 else 0 end`;
+
+/** The kinds of event ingested so far, so a selector offers only choices that can match something. */
+export async function getEventKinds(db: Db): Promise<EventKind[]> {
+	const rows = await db.selectDistinct({ kind: tournaments.kind }).from(tournaments);
+	return EVENT_KINDS.filter((kind) => rows.some((row) => row.kind === kind));
+}
 
 /** Every `metas` row, for the period selector. */
 export async function getMetas(db: Db): Promise<MetaRow[]> {

@@ -1,4 +1,6 @@
 <script lang="ts">
+	import PeriodFields from '#lib/components/tournaments/PeriodFields.svelte';
+	import { periodParams } from '#lib/tournaments/period.js';
 	// Every Tournament Deck in the period, filtered and paged on the server: by a Legend it runs, by a
 	// card it runs (main or sideboard), by player. The filters are a plain GET form, so a filtered list
 	// is a link, and works without JavaScript.
@@ -26,7 +28,7 @@
 	</p>
 
 	<form method="GET" class="mt-4 flex flex-wrap items-center gap-2 text-xs">
-		{#if data.period.id !== null}<input type="hidden" name="period" value={data.period.id} />{/if}
+		<PeriodFields period={data.period} />
 		<select
 			name="legend"
 			class="rounded border border-edge bg-shell px-2 py-1.5"
@@ -58,7 +60,7 @@
 		<button class="rounded border border-neon-dim bg-neon/10 px-3 py-1.5 text-neon">Filter</button>
 		{#if filters.legend || filters.card || filters.player}
 			<a
-				href={href('/tournaments/decks', { period: data.period.id })}
+				href={href('/tournaments/decks', periodParams(data.period))}
 				class="text-muted hover:text-body"
 			>
 				Clear
@@ -78,7 +80,7 @@
 	{#each data.rows as deck (deck.guid)}
 		<li>
 			<a
-				href={href(`/tournaments/decks/${deck.guid}`, { period: data.period.id })}
+				href={href(`/tournaments/decks/${deck.guid}`, periodParams(data.period))}
 				class="grid grid-cols-[3.5rem_1fr_1fr_4.5rem] items-center gap-x-3 rounded-lg px-2 py-2 hover:bg-surface"
 			>
 				<span class="font-mono text-sm {deck.rank === 1 ? 'text-neon' : 'text-muted'}">

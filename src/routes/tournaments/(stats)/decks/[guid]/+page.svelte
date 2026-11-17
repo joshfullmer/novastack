@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { periodParams } from '#lib/tournaments/period.js';
 	// One Tournament Deck: who played it and how it did, its path through the event (every round, the
 	// opponent's Legends and the result), and the list.
 	import LegendArt from '#lib/components/tournaments/LegendArt.svelte';
@@ -18,7 +19,7 @@
 </script>
 
 <a
-	href={href('/tournaments/decks', { period: data.period.id })}
+	href={href('/tournaments/decks', periodParams(data.period))}
 	class="font-mono text-xs text-muted hover:text-body"
 >
 	← All decks

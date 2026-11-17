@@ -12,7 +12,7 @@
  *   D6    X     2 (ev2) m2×2               m1×1
  */
 import { describe, expect, it } from 'vitest';
-import { ALL_TIME, type Period } from '#lib/tournaments/period.js';
+import { ALL_TIME, type Period, ANY_EVENTS } from '#lib/tournaments/period.js';
 import { getCardStats, getCardUsage } from './tournament-stats.js';
 import { world as buildWorld } from './test-world.js';
 
@@ -65,7 +65,13 @@ describe('getCardStats', () => {
 	});
 
 	it('cuts by period', async () => {
-		const nov16: Period = { id: 1, name: 'n', from: Date.parse('2026-11-16T00:00:00Z'), to: null };
+		const nov16: Period = {
+			id: 1,
+			name: 'n',
+			from: Date.parse('2026-11-16T00:00:00Z'),
+			to: null,
+			...ANY_EVENTS
+		};
 		const { decks, cards } = await getCardStats(world(), nov16, null); // D5 D6
 		expect(decks).toBe(2);
 		expect(cards.find((c) => c.slug === 'm1')).toMatchObject({ decks: 1, sideDecks: 1 });
@@ -142,7 +148,13 @@ describe('getCardUsage', () => {
 	});
 
 	it('cuts by period', async () => {
-		const nov16: Period = { id: 1, name: 'n', from: Date.parse('2026-11-16T00:00:00Z'), to: null };
+		const nov16: Period = {
+			id: 1,
+			name: 'n',
+			from: Date.parse('2026-11-16T00:00:00Z'),
+			to: null,
+			...ANY_EVENTS
+		};
 		const usage = await getCardUsage(world(), nov16, 'm1');
 		expect(usage.entries.map((e) => e.guid).sort()).toEqual(['D5', 'D6']);
 		expect(usage.totalDecks).toBe(2);

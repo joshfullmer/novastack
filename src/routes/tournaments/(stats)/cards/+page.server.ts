@@ -1,3 +1,4 @@
+import { periodParams } from '#lib/tournaments/period.js';
 import { redirect } from '@sveltejs/kit';
 import { getCardStats } from '#lib/server/db/tournament-stats.js';
 import { cardOf } from '#lib/tournaments/present.js';
@@ -12,11 +13,11 @@ export const load: PageServerLoad = async ({ locals, parent, url }) => {
 	const { period } = await parent();
 	const asked = url.searchParams.get('card');
 	if (asked !== null && cardOf(asked)) {
-		redirect(302, href(`/tournaments/cards/${asked}`, { period: period.id }));
+		redirect(302, href(`/tournaments/cards/${asked}`, periodParams(period)));
 	}
 
 	const { cards } = await getCardStats(locals.db, period, null);
 	const top = cards[0]?.slug;
-	if (top) redirect(302, href(`/tournaments/cards/${top}`, { period: period.id }));
+	if (top) redirect(302, href(`/tournaments/cards/${top}`, periodParams(period)));
 	return {};
 };

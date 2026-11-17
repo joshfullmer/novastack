@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { periodParams } from '#lib/tournaments/period.js';
 	import { page } from '$app/state';
 	import Meta from '#lib/components/Meta.svelte';
 	import { href } from '#lib/tournaments/url.js';
@@ -27,7 +28,7 @@
 			<nav class="mb-6 flex gap-1.5" aria-label="Deck views">
 				{#each views as view (view.path)}
 					<a
-						href={href(view.path, { period: data.period.id })}
+						href={href(view.path, periodParams(data.period))}
 						aria-current={page.url.pathname === view.path ? 'page' : undefined}
 						class="rounded-full border px-3 py-1 font-mono text-xs {page.url.pathname === view.path
 							? 'border-neon bg-neon/10 text-bright'

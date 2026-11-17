@@ -1,6 +1,8 @@
 /**
  * The small tournament world the data-layer specs share, hand-countable on purpose. Only for tests.
  *
+ * Event 1 is a Showdown, event 2 a Regional.
+ *
  * Three Legend lines: X = a+b+c, Y = a+b+d, Z = e+f+g. Cards: m1 m2 m3 (main decks), s1 (a sideboard).
  *
  *   Nov 15, event 1 (4 players, 3 rounds)         Nov 16, event 2 (3 players, 2 rounds)
@@ -23,6 +25,7 @@ export function world() {
 	seedEvent(sqlite, {
 		id: 1,
 		name: 'Event 1',
+		kind: 'Showdown',
 		startsAt: '2026-11-15T12:00:00Z',
 		rounds: 3,
 		players: [
@@ -71,6 +74,7 @@ export function world() {
 	seedEvent(sqlite, {
 		id: 2,
 		name: 'Event 2',
+		kind: 'Regional',
 		startsAt: '2026-11-16T12:00:00Z',
 		rounds: 2,
 		players: [

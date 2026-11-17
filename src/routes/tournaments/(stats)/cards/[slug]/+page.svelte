@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { periodParams } from '#lib/tournaments/period.js';
 	// Usage & finishes: the decks that ran this Card, best finish first, up to ENTRY_LIMIT of them.
 	import LegendArt from '#lib/components/tournaments/LegendArt.svelte';
 	import { formatDate, legendNames } from '#lib/tournaments/present.js';
@@ -19,7 +20,7 @@
 	{#each entries as entry (entry.guid)}
 		<li>
 			<a
-				href={href(`/tournaments/decks/${entry.guid}`, { period: data.period.id })}
+				href={href(`/tournaments/decks/${entry.guid}`, periodParams(data.period))}
 				class="grid grid-cols-[3.5rem_1fr_1fr_5.5rem] items-center gap-x-3 rounded-lg px-2 py-2 odd:bg-shell/60 hover:bg-surface"
 			>
 				<span class="font-mono text-sm {entry.rank === 1 ? 'text-neon' : 'text-muted'}">

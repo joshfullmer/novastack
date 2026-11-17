@@ -11,8 +11,8 @@
  *   P4 rank 4  0-3  Z
  */
 import { describe, expect, it } from 'vitest';
-import { ALL_TIME, type Period } from '#lib/tournaments/period.js';
-import { getMeta, getMetas } from './tournament-stats.js';
+import { ALL_TIME, type Period, ANY_EVENTS } from '#lib/tournaments/period.js';
+import { getEventKinds, getLines, getMeta, getMetas } from './tournament-stats.js';
 import { createTestDb } from './test-db.js';
 import { seedEvent } from './test-seed.js';
 import { world as buildWorld } from './test-world.js';
@@ -132,7 +132,8 @@ describe('getMeta, by period', () => {
 		id: 2,
 		name: 'Nov 16',
 		from: Date.parse('2026-11-16T00:00:00Z'),
-		to: Date.parse('2026-11-17T00:00:00Z')
+		to: Date.parse('2026-11-17T00:00:00Z'),
+		...ANY_EVENTS
 	};
 
 	it('counts only the events that started inside the window', async () => {
@@ -150,20 +151,28 @@ describe('getMeta, by period', () => {
 			id: 3,
 			name: 'x',
 			from: null,
-			to: Date.parse('2026-11-16T12:00:00Z')
+			to: Date.parse('2026-11-16T12:00:00Z'),
+			...ANY_EVENTS
 		};
 		expect((await getMeta(world(), upToNov16)).decks).toBe(4); // event 2 starts exactly at `to`
 		const fromNov16: Period = {
 			id: 4,
 			name: 'y',
 			from: Date.parse('2026-11-16T12:00:00Z'),
-			to: null
+			to: null,
+			...ANY_EVENTS
 		};
 		expect((await getMeta(world(), fromNov16)).decks).toBe(2); // and `from` is inclusive
 	});
 
 	it('is empty, not an error, for a window with nothing in it', async () => {
-		const none: Period = { id: 9, name: 'none', from: Date.parse('2030-01-01'), to: null };
+		const none: Period = {
+			id: 9,
+			name: 'none',
+			from: Date.parse('2030-01-01'),
+			to: null,
+			...ANY_EVENTS
+		};
 		const meta = await getMeta(world(), none);
 		expect(meta).toMatchObject({ decks: 0, byLine: [], byLegend: [], matrixLines: [], matrix: [] });
 	});
@@ -177,5 +186,51 @@ describe('getMetas', () => {
 		const [meta] = await getMetas(db);
 		expect(meta).toMatchObject({ name: 'Launch', endsOn: null });
 		expect(meta.startsOn.getTime()).toBe(1000);
+	});
+});
+
+describe('narrowing which events count', () => {
+	const counts = async (scope: Partial<Period>) =>
+		Object.fromEntries(
+			(await getLines(world(), { ...ALL_TIME, ...scope })).map((g) => [g.key, g.decks])
+		);
+
+	it('counts every event by default: X 3, Y 2, Z 1', async () => {
+		expect(await counts({})).toEqual({ 'a+b+c': 3, 'a+b+d': 2, 'e+f+g': 1 });
+	});
+
+	it('keeps only events with enough players: event 1 has 4, event 2 has 3', async () => {
+		expect(await counts({ minPlayers: 4 })).toEqual({ 'a+b+c': 2, 'a+b+d': 1, 'e+f+g': 1 });
+		expect(await counts({ minPlayers: 5 })).toEqual({});
+	});
+
+	it('keeps only events of a kind: event 1 is a Showdown, event 2 a Regional', async () => {
+		expect(await counts({ kind: 'Regional' })).toEqual({ 'a+b+c': 1, 'a+b+d': 1 });
+		expect(await counts({ kind: 'Brawl' })).toEqual({});
+	});
+
+	it('combines with the window and with each other', async () => {
+		const nov16 = Date.parse('2026-11-16T00:00:00Z');
+		expect(await counts({ from: nov16, kind: 'Showdown' })).toEqual({});
+		expect(await counts({ from: nov16, kind: 'Regional', minPlayers: 3 })).toEqual({
+			'a+b+c': 1,
+			'a+b+d': 1
+		});
+	});
+
+	it('reaches the Legend and card aggregates, not just the lines', async () => {
+		const meta = await getMeta(world(), { ...ALL_TIME, kind: 'Regional' });
+		expect(meta.byLegend.map((g) => [g.key, g.decks])).toEqual([
+			['a', 2],
+			['b', 2],
+			// c and d are tied on decks; d is in D5, the event winner's, so it ranks first.
+			['d', 1],
+			['c', 1]
+		]);
+	});
+
+	it('lists the kinds that exist, in the usual order, so a selector offers only real choices', async () => {
+		expect(await getEventKinds(world())).toEqual(['Regional', 'Showdown']);
+		expect(await getEventKinds(createTestDb().db)).toEqual([]);
 	});
 });

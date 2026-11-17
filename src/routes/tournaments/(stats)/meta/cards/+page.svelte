@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { periodParams } from '#lib/tournaments/period.js';
 	// What's played: the Cards, not the archetypes. Pick a Legend line (or all decks) and see the Cards
 	// people ran, as art, with the share of decks that included each. Each tile opens that Card's usage.
 	import LegendArt from '#lib/components/tournaments/LegendArt.svelte';
@@ -22,7 +23,7 @@
 	);
 	const percent = (n: number) => `${Math.round(n * 100)}%`;
 	const mine = (line: string | null) =>
-		href('/tournaments/meta/cards', { period: data.period.id, line });
+		href('/tournaments/meta/cards', { ...periodParams(data.period), line });
 </script>
 
 <div class="grid gap-6 lg:grid-cols-[17rem_1fr]">
@@ -94,7 +95,7 @@
 			{#each cards as card (card.slug)}
 				<li>
 					<a
-						href={href(`/tournaments/cards/${card.slug}`, { period: data.period.id })}
+						href={href(`/tournaments/cards/${card.slug}`, periodParams(data.period))}
 						title="{cardName(
 							card.slug
 						)}: in {card.decks} of {data.decks} decks, {card.avgCopies.toFixed(

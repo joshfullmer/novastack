@@ -11,7 +11,7 @@ import {
 	type DeckFilters
 } from '#lib/tournaments/deck-views.js';
 import type { LineRow } from '#lib/tournaments/meta.js';
-import { ALL_TIME, type Period } from '#lib/tournaments/period.js';
+import { ALL_TIME, type Period, ANY_EVENTS } from '#lib/tournaments/period.js';
 import { getDeckDetail, getDeckList, getDecksByLine } from './tournament-decks.js';
 import { seedCorpus } from './test-corpus.js';
 import { createTestDb } from './test-db.js';
@@ -79,7 +79,13 @@ describe('getDeckList', () => {
 	});
 
 	it('cuts by period', async () => {
-		const nov16: Period = { id: 1, name: 'n', from: Date.parse('2026-11-16T00:00:00Z'), to: null };
+		const nov16: Period = {
+			id: 1,
+			name: 'n',
+			from: Date.parse('2026-11-16T00:00:00Z'),
+			to: null,
+			...ANY_EVENTS
+		};
 		expect(await guids({}, nov16)).toEqual(['D5', 'D6']);
 	});
 

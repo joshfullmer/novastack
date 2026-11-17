@@ -64,8 +64,10 @@ Measured on the same 1,000-event corpus, before → after. **[measured]**
   default `Other`; ingest writes it and `pnpm melee --reparse` recomputes it from the name). The list filters by
   kind, calendar year and a name/organizer search, shows each kind with its count under the other filters, and
   keeps the choice through paging and the table/cards switch. With a filter on, the list is still ~26 ms and
-  24 KB at 1,000 events. **Not applied to production.** Kind and field-size filters on the meta, decks and
-  cards pages are not built.
+  24 KB at 1,000 events. **Not applied to production.** The meta, decks and cards pages filter by kind and by a
+  field-size floor (8, 16, 32, 64 players) too: both ride in the URL beside `?period=`, are part of the `Period`
+  every statistic is cut by (so every aggregate honours them through `inPeriod`), and are carried by every
+  link and GET form (`periodParams`, `PeriodFields.svelte`).
 - **Row 3, half built.** The auth-free hook branch is built (`public-routes.ts`): a GET or HEAD of
   `/tournaments/**` gets `locals.db` and skips `createAuth` and the session lookup. Edge caching is **not**
   built, and the claim made in this audit's first version was wrong; see the correction under "Request path".

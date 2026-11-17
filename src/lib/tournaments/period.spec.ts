@@ -1,5 +1,13 @@
 import { describe, expect, it } from 'vitest';
-import { ALL_TIME, periodChoices, resolvePeriod, type MetaRow } from './period.ts';
+import {
+	ALL_TIME,
+	ANY_EVENTS,
+	parseNarrowing,
+	periodChoices,
+	periodParams,
+	resolvePeriod,
+	type MetaRow
+} from './period.ts';
 
 const metas: MetaRow[] = [
 	{
@@ -25,7 +33,8 @@ describe('periods', () => {
 			id: 2,
 			name: 'Edgerunners',
 			from: Date.parse('2026-11-01T00:00:00Z'),
-			to: null
+			to: null,
+			...ANY_EVENTS
 		});
 		expect(resolvePeriod(metas, '1').to).toBe(Date.parse('2026-11-01T00:00:00Z'));
 	});
@@ -36,4 +45,37 @@ describe('periods', () => {
 			expect(resolvePeriod(metas, asked)).toEqual(ALL_TIME);
 		}
 	);
+});
+
+describe('narrowing', () => {
+	const parse = (query: string) => parseNarrowing(new URLSearchParams(query));
+
+	it('reads a kind and a field-size floor', () => {
+		expect(parse('kind=Regional&min=32')).toEqual({ kind: 'Regional', minPlayers: 32 });
+	});
+
+	it.each([['kind=regional'], ['kind=&min='], ['min=10'], ['min=-8'], ['min=8.5'], ['min=abc']])(
+		'treats %j as "any events", not an error',
+		(query) => {
+			expect(parse(query)).toEqual(ANY_EVENTS);
+		}
+	);
+
+	it('rides along with whichever window was asked for', () => {
+		const period = resolvePeriod(metas, '2', { kind: 'Showdown', minPlayers: 16 });
+		expect(period).toMatchObject({ id: 2, name: 'Edgerunners', kind: 'Showdown', minPlayers: 16 });
+		expect(resolvePeriod(metas, 'nope', { kind: 'Showdown', minPlayers: null })).toMatchObject({
+			id: null,
+			kind: 'Showdown'
+		});
+	});
+
+	it('is carried by every link through periodParams, and only what is set is a param', () => {
+		expect(periodParams(resolvePeriod(metas, '2', { kind: 'Brawl', minPlayers: 8 }))).toEqual({
+			period: 2,
+			kind: 'Brawl',
+			min: 8
+		});
+		expect(periodParams(ALL_TIME)).toEqual({ period: null, kind: null, min: null });
+	});
 });
