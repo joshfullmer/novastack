@@ -468,6 +468,10 @@ read-only, dynamic and `noindex`:
   Legend". The page of cards is the **card breakdown** (the top-level Cards tab is a different thing: one
   card's usage). The breakdown orders by Percentage (the share of decks that ran a card) or Count (its
   copies), and shows both on the art.
+- **The deck pane** (2026-11-17): on a screen 1280px wide or more, `/tournaments/decks` shows the chosen deck
+  in a sticky right half instead of going to a new page. The choice is `?deck=<guid>` (so a link, and Back,
+  keep it); it stays open as filters change; a plain click on a narrower screen, or a modified click or a
+  link opened without JavaScript, still goes to `/decks/[guid]`, which shows the same `DeckDetail`.
 - **Layout** (2026-11-17): the statistics pages use the app's wide container (`max-w-[1800px]`) and fill it:
   the tier list flows into two columns and the card breakdown goes to eight or ten columns of art. Lists of
   rows stay one column: data you scan down is not split in two. The period, kind and field-size choices are dropdowns (`LinkSelect`).
