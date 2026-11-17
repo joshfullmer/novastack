@@ -127,93 +127,97 @@
 	<!-- Two columns on a wide screen: the tiers flow down the first, then the second. -->
 	<div class="mt-4 gap-x-8 xl:columns-2">
 		{#each tiers as { tier, rows: group } (tier ?? 'unranked')}
-			<section class="mb-5 break-inside-avoid">
+			<!-- A tier is one bracket: a rail with its letter on the left, its decks to the right. -->
+			<section class="mb-4 flex break-inside-avoid overflow-hidden rounded-xl border border-edge">
 				<div
-					class="grid items-center gap-x-3 px-3 pb-1 font-mono text-[11px] tracking-wide text-muted uppercase {COLUMNS}"
+					class="grid w-14 shrink-0 place-items-center text-3xl font-semibold {tier
+						? BADGE[tier]
+						: 'bg-edge/40 text-muted'}"
+					title={tier ? `Win rate ${BAND[tier]}` : `Fewer than ${MIN_DECKS} decks`}
 				>
-					<span class="flex items-center gap-2.5 normal-case">
-						{#if tier}
-							<span
-								class="grid size-8 place-items-center rounded-md text-lg font-semibold {BADGE[
-									tier
-								]}">{tier}</span
-							>
-							<span class="text-xs tracking-normal">win rate {BAND[tier]}</span>
-						{:else}
-							<span class="text-xs tracking-normal">Unranked: fewer than {MIN_DECKS} decks</span>
-						{/if}
-					</span>
-					<span>Share of {part === 'decks' ? 'field' : part === 'top8' ? 'top 8' : 'winners'}</span>
-					<span class="text-right">Win</span>
-					<span class="text-right" title="Of its decks, how many reached the top 8">→ Top 8</span>
-					<span class="text-right" title="Of its decks, how many won an event">→ Won</span>
-					<span class="text-right">Decks</span>
+					{tier ?? '?'}
 				</div>
-				<ol class="space-y-0.5">
-					{#each group as row (row.key)}
-						<li class="grid items-center gap-x-3 rounded-lg px-3 py-2 odd:bg-shell/60 {COLUMNS}">
-							<span class="flex min-w-0 items-center gap-3">
-								{#if by === 'ram'}
-									<a
-										href={href('/tournaments/decks', {
-											...periodParams(data.period),
-											ram: row.key
-										})}
-										class="text-base hover:underline"
-										title="See these decks"
-									>
-										<RamCode ram={row.key} />
-									</a>
-								{:else}
-									<span class="flex shrink-0 -space-x-3">
-										{#each row.legends as slug (slug)}
-											<LegendArt
-												{slug}
-												sizes="64px"
-												class="{by === 'legend' ? 'w-10' : 'w-9'} ring-1 ring-void"
-											/>
-										{/each}
+				<div class="min-w-0 flex-1">
+					<div
+						class="grid items-center gap-x-3 border-b border-edge/60 px-3 py-1.5 font-mono text-[11px] tracking-wide text-muted uppercase {COLUMNS}"
+					>
+						<span class="tracking-normal normal-case"
+							>{tier ? `win rate ${BAND[tier]}` : `fewer than ${MIN_DECKS} decks: unranked`}</span
+						>
+						<span
+							>Share of {part === 'decks' ? 'field' : part === 'top8' ? 'top 8' : 'winners'}</span
+						>
+						<span class="text-right">Win</span>
+						<span class="text-right" title="Of its decks, how many reached the top 8">→ Top 8</span>
+						<span class="text-right" title="Of its decks, how many won an event">→ Won</span>
+						<span class="text-right">Decks</span>
+					</div>
+					<ol>
+						{#each group as row (row.key)}
+							<li class="grid items-center gap-x-3 rounded-lg px-3 py-2 odd:bg-shell/60 {COLUMNS}">
+								<span class="flex min-w-0 items-center gap-3">
+									{#if by === 'ram'}
+										<a
+											href={href('/tournaments/decks', {
+												...periodParams(data.period),
+												ram: row.key
+											})}
+											class="text-base hover:underline"
+											title="See these decks"
+										>
+											<RamCode ram={row.key} />
+										</a>
+									{:else}
+										<span class="flex shrink-0 -space-x-3">
+											{#each row.legends as slug (slug)}
+												<LegendArt
+													{slug}
+													sizes="64px"
+													class="{by === 'legend' ? 'w-10' : 'w-9'} ring-1 ring-void"
+												/>
+											{/each}
+										</span>
+										<span class="min-w-0 truncate text-bright">{legendNames(row.legends)}</span>
+									{/if}
+								</span>
+								<span class="flex items-center gap-2">
+									<span class="h-2 flex-1 rounded-full bg-edge/50">
+										<span
+											class="block h-2 rounded-full bg-neon"
+											style:width="{(row.partShare / widest) * 100}%"
+										></span>
 									</span>
-									<span class="min-w-0 truncate text-bright">{legendNames(row.legends)}</span>
-								{/if}
-							</span>
-							<span class="flex items-center gap-2">
-								<span class="h-2 flex-1 rounded-full bg-edge/50">
+									<span class="w-9 text-right font-mono text-xs">{percent(row.partShare)}</span>
+								</span>
+								{#if row.decks >= MIN_DECKS}
 									<span
-										class="block h-2 rounded-full bg-neon"
-										style:width="{(row.partShare / widest) * 100}%"
-									></span>
+										class="text-right font-mono text-sm {tone(row.winRate)}"
+										title="{row.matches} matches; tiered on {percent(row.power)}"
+									>
+										{percent(row.winRate)}
+									</span>
+								{:else}
+									<span
+										class="text-right font-mono text-xs text-muted"
+										title="Fewer than {MIN_DECKS} decks: not enough to quote a rate"
+										>n&lt;{MIN_DECKS}</span
+									>
+								{/if}
+								<span class="text-right font-mono text-sm">
+									{row.top8}<span class="ml-1 text-[10px] text-muted"
+										>{percent(row.top8 / row.decks)}</span
+									>
 								</span>
-								<span class="w-9 text-right font-mono text-xs">{percent(row.partShare)}</span>
-							</span>
-							{#if row.decks >= MIN_DECKS}
-								<span
-									class="text-right font-mono text-sm {tone(row.winRate)}"
-									title="{row.matches} matches; tiered on {percent(row.power)}"
-								>
-									{percent(row.winRate)}
+								<span class="text-right font-mono text-sm">
+									{row.wins}<span class="ml-1 text-[10px] text-muted"
+										>{percent(row.wins / row.decks)}</span
+									>
 								</span>
-							{:else}
-								<span
-									class="text-right font-mono text-xs text-muted"
-									title="Fewer than {MIN_DECKS} decks: not enough to quote a rate"
-									>n&lt;{MIN_DECKS}</span
-								>
-							{/if}
-							<span class="text-right font-mono text-sm">
-								{row.top8}<span class="ml-1 text-[10px] text-muted"
-									>{percent(row.top8 / row.decks)}</span
-								>
-							</span>
-							<span class="text-right font-mono text-sm">
-								{row.wins}<span class="ml-1 text-[10px] text-muted"
-									>{percent(row.wins / row.decks)}</span
-								>
-							</span>
-							<span class="text-right font-mono text-sm text-muted">{row.decks}</span>
-						</li>
-					{/each}
-				</ol>
+								<span class="text-right font-mono text-sm text-muted">{row.decks}</span>
+							</li>
+						{/each}
+					</ol>
+				</div>
 			</section>
 		{/each}
 	</div>
