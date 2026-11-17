@@ -172,9 +172,9 @@
 </ol>
 {#if by === 'ram'}
 	<p class="mt-3 text-xs text-muted">
-		One letter per RAM the three Legends provide together: <RamCode ram="rryyyy" /> is Yellow 4, Red 2,
-		or YYR for short (a letter per Legend, each providing {RAM_PER_LEGEND} RAM). Decks whose Legends aren't
-		in the card data yet aren't counted.
+		A deck is named by the RAM its three Legends provide together: <RamCode ram="rryyyy" /> is a Yellow,
+		a Yellow and a Red Legend, {RAM_PER_LEGEND} RAM each. Decks whose Legends aren't in the card data
+		yet aren't counted.
 	</p>
 {:else if by === 'legend'}
 	<p class="mt-3 text-xs text-muted">Each deck counts once per Legend, so shares add up to 300%.</p>

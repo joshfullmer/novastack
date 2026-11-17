@@ -6,8 +6,8 @@
 	import LegendArt from '#lib/components/tournaments/LegendArt.svelte';
 	import RamCode from '#lib/components/tournaments/RamCode.svelte';
 	import { periodParams } from '#lib/tournaments/period.js';
-	import { ramLabel } from '#lib/tournaments/ram.js';
-	import { legendNames } from '#lib/tournaments/present.js';
+	import { ramLabel, ramShorthand } from '#lib/tournaments/ram.js';
+	import { legendNames, RAM_PER_LEGEND } from '#lib/tournaments/present.js';
 	import { href } from '#lib/tournaments/url.js';
 
 	let { data } = $props();
@@ -21,7 +21,9 @@
 	);
 	/** A group named in words, for tooltips: its Legends, or its RAM as players say it. */
 	const label = (group: { key: string; legends: string[] }) =>
-		meta.matrixBy === 'ram' ? ramLabel(group.key) : legendNames(group.legends);
+		meta.matrixBy === 'ram'
+			? (ramShorthand(group.key, RAM_PER_LEGEND) ?? ramLabel(group.key))
+			: legendNames(group.legends);
 	const cellAt = (a: string, b: string) => meta.matrix.find((c) => c.a === a && c.b === b);
 	const BY = [
 		['ram', 'RAM'],
