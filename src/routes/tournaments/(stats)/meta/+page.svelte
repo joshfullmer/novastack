@@ -8,7 +8,7 @@
 	import RamCode from '#lib/components/tournaments/RamCode.svelte';
 	import { MIN_DECKS, type GroupStat } from '#lib/tournaments/meta.js';
 	import { periodParams } from '#lib/tournaments/period.js';
-	import { legendNames } from '#lib/tournaments/present.js';
+	import { legendNames, RAM_PER_LEGEND } from '#lib/tournaments/present.js';
 	import { href } from '#lib/tournaments/url.js';
 
 	let { data } = $props();
@@ -172,8 +172,9 @@
 </ol>
 {#if by === 'ram'}
 	<p class="mt-3 text-xs text-muted">
-		One letter per RAM the three Legends provide together: <RamCode ram="rryyyy" /> is Yellow 4, Red 2.
-		Decks whose Legends aren't in the card data yet aren't counted.
+		One letter per RAM the three Legends provide together: <RamCode ram="rryyyy" /> is Yellow 4, Red 2,
+		or YYR for short (a letter per Legend, each providing {RAM_PER_LEGEND} RAM). Decks whose Legends aren't
+		in the card data yet aren't counted.
 	</p>
 {:else if by === 'legend'}
 	<p class="mt-3 text-xs text-muted">Each deck counts once per Legend, so shares add up to 300%.</p>

@@ -1,4 +1,5 @@
 import { getCardStats, getLines, ramRows } from '#lib/server/db/tournament-stats.js';
+import { RAM_PER_LEGEND } from '#lib/tournaments/present.js';
 import { parseRam } from '#lib/tournaments/ram.js';
 import type { PageServerLoad } from './$types';
 
@@ -9,7 +10,7 @@ export const load: PageServerLoad = async ({ locals, parent, url }) => {
 	const { period } = await parent();
 	const asked = url.searchParams.get('line');
 	const line = asked !== null && LINE.test(asked) ? asked : null;
-	const ram = parseRam(url.searchParams.get('ram'));
+	const ram = parseRam(url.searchParams.get('ram'), RAM_PER_LEGEND);
 
 	const [lines, rams, stats] = await Promise.all([
 		getLines(locals.db, period),

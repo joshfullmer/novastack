@@ -2,6 +2,7 @@ import { dataset } from '#lib/cards/index.js';
 import { getDeckList } from '#lib/server/db/tournament-decks.js';
 import { ramRows } from '#lib/server/db/tournament-stats.js';
 import { DECKS_PER_PAGE, type DeckFilters } from '#lib/tournaments/deck-views.js';
+import { RAM_PER_LEGEND } from '#lib/tournaments/present.js';
 import { parseRam } from '#lib/tournaments/ram.js';
 import { resolveCards } from '#lib/tournaments/search.js';
 import type { PageServerLoad } from './$types';
@@ -24,7 +25,7 @@ export const load: PageServerLoad = async ({ locals, parent, url }) => {
 	const legend = q.get('legend');
 	const filters: DeckFilters = {
 		legend: legend !== null && SLUG.test(legend) ? legend : null,
-		ram: parseRam(q.get('ram')),
+		ram: parseRam(q.get('ram'), RAM_PER_LEGEND),
 		cards,
 		player: clip(q.get('player')),
 		sort: q.get('sort') === 'recent' ? 'recent' : 'finish',

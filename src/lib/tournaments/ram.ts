@@ -7,6 +7,10 @@
  * what that deck may play. Stored in canonical order (`tournament_decks.ram`, so equality and
  * grouping are plain SQL) and shown in the order players say it, dominant colour first.
  *
+ * **`YYR` is shorthand for `yyyyrr`**: three letters, one per Legend, each providing the standard RAM
+ * (`dataset.ramPerLegend`). It is only ever a way to *say* a RAM whose Legends are all alike; a RAM
+ * that cannot be put that way has no shorthand, and nothing stored depends on it.
+ *
  * Imported by the ingest script, which runs under plain node: relative `.ts` specifiers only.
  */
 import type { Card } from '../cards/schema.ts';
@@ -34,11 +38,27 @@ export function ramOf(legends: readonly Pick<Card, 'color' | 'ramProvided'>[]): 
 	return formatLegendsValue(budget) || null;
 }
 
-/** A `legends:`-style value from outside (a URL) as the canonical RAM, or null if it isn't one. */
-export function parseRam(raw: string | null): string | null {
+/**
+ * A RAM from outside (a URL) as the canonical RAM, or null if it isn't one: a `legends:` value
+ * (`yyyyrr`, `r2y4`), or the three-letter shorthand (`YYR`) where each letter is a Legend providing
+ * `perLegend` RAM. Exactly three letters and nothing else is the shorthand; to spell a three-RAM
+ * value, give a count (`y2r1`).
+ */
+export function parseRam(raw: string | null, perLegend: number): string | null {
 	if (raw === null || raw.length > MAX_LENGTH) return null;
-	const budget = parseLegendsValue(raw);
+	const budget = SHORTHAND.test(raw) ? fromLegends(raw, perLegend) : parseLegendsValue(raw);
 	return budget === null ? null : formatLegendsValue(budget) || null;
+}
+
+const SHORTHAND = /^[rygb]{3}$/i;
+
+function fromLegends(letters: string, perLegend: number) {
+	const budget: Record<Color, number> = { ...EMPTY_BUDGET };
+	for (const letter of letters.toLowerCase()) {
+		const colour = SAY_ORDER.find((c) => c[0].toLowerCase() === letter);
+		if (colour) budget[colour] += perLegend;
+	}
+	return budget;
 }
 
 /** The colours of a RAM and how much of each, most first, as players say it. */
@@ -48,6 +68,17 @@ export function ramParts(ram: string): { colour: Color; amount: number }[] {
 	return SAY_ORDER.filter((colour) => budget[colour] > 0)
 		.map((colour) => ({ colour, amount: budget[colour] }))
 		.sort((a, b) => b.amount - a.amount);
+}
+
+/**
+ * The shorthand for a RAM (`YYR`), or null when it has none: its RAM is not three Legends of
+ * `perLegend` each, which is every RAM once Legends stop providing alike.
+ */
+export function ramShorthand(ram: string, perLegend: number): string | null {
+	const parts = ramParts(ram);
+	const legends = parts.reduce((n, { amount }) => n + amount / perLegend, 0);
+	if (legends !== 3 || parts.some(({ amount }) => amount % perLegend !== 0)) return null;
+	return parts.map(({ colour, amount }) => colour[0].repeat(amount / perLegend)).join('');
 }
 
 /** The RAM as said: `yyyyrr`. */

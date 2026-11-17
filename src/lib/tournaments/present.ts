@@ -10,6 +10,9 @@ const bySlug = new Map(dataset.cards.map((card) => [card.slug, card]));
 
 export const cardOf = (slug: string) => bySlug.get(slug);
 
+/** What each Legend provides today: the RAM a letter of the `YYR` shorthand stands for. */
+export const RAM_PER_LEGEND = dataset.ramPerLegend;
+
 /** A Card's full name, or its slug for one the dataset doesn't have (a newer set than our data). */
 export const cardName = (slug: string) => bySlug.get(slug)?.name ?? slug;
 

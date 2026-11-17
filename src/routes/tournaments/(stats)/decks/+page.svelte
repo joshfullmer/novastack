@@ -7,7 +7,8 @@
 	import { page } from '$app/state';
 	import LegendArt from '#lib/components/tournaments/LegendArt.svelte';
 	import RamCode from '#lib/components/tournaments/RamCode.svelte';
-	import { ramLabel } from '#lib/tournaments/ram.js';
+	import { RAM_PER_LEGEND } from '#lib/tournaments/present.js';
+	import { ramLabel, ramShorthand } from '#lib/tournaments/ram.js';
 	import { formatDate, legendNames } from '#lib/tournaments/present.js';
 	import { href, withParams } from '#lib/tournaments/url.js';
 
@@ -45,7 +46,7 @@
 			<option value="">Any RAM</option>
 			{#each data.rams as choice (choice.ram)}
 				<option value={choice.ram} selected={filters.ram === choice.ram}>
-					{ramLabel(choice.ram)} ({choice.decks})
+					{ramShorthand(choice.ram, RAM_PER_LEGEND) ?? ramLabel(choice.ram)} ({choice.decks})
 				</option>
 			{/each}
 		</select>

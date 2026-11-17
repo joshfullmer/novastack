@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { parseRam, ramLabel, ramOf, ramParts } from './ram.ts';
+import { parseRam, ramLabel, ramOf, ramParts, ramShorthand } from './ram.ts';
 
 const legend = (color: 'Red' | 'Yellow' | 'Green' | 'Blue', ramProvided: number | null = 2) => ({
 	color,
@@ -37,17 +37,33 @@ describe('ramOf', () => {
 
 describe('parseRam', () => {
 	it('canonicalises any spelling the query language accepts', () => {
-		expect(parseRam('yyyyrr')).toBe('rryyyy');
-		expect(parseRam('YYYYRR')).toBe('rryyyy');
-		expect(parseRam('r2y4')).toBe('rryyyy');
+		expect(parseRam('yyyyrr', 2)).toBe('rryyyy');
+		expect(parseRam('YYYYRR', 2)).toBe('rryyyy');
+		expect(parseRam('r2y4', 2)).toBe('rryyyy');
+	});
+
+	it('reads three letters as a Legend each: YYR is yyyyrr', () => {
+		expect(parseRam('YYR', 2)).toBe('rryyyy');
+		expect(parseRam('yyr', 2)).toBe('rryyyy');
+		expect(parseRam('RYY', 2)).toBe('rryyyy');
+		expect(parseRam('GGR', 2)).not.toBe(parseRam('RRG', 2));
+		expect(parseRam('RYG', 2)).toBe('ggrryy');
+		expect(parseRam('BBB', 2)).toBe('bbbbbb');
+	});
+
+	it('follows what a Legend provides, and still lets a count spell a three-RAM value', () => {
+		expect(parseRam('YYR', 3)).toBe('rrryyyyyy');
+		expect(parseRam('y2r1', 2)).toBe('ryy');
+		expect(parseRam('yr', 2)).toBe('ry'); // two letters are RAM, not Legends
+		expect(parseRam('yyrr', 2)).toBe('rryy');
 	});
 
 	it('rejects what is not a RAM', () => {
-		expect(parseRam(null)).toBeNull();
-		expect(parseRam('')).toBeNull();
-		expect(parseRam('yyxr')).toBeNull();
-		expect(parseRam('r0')).toBeNull();
-		expect(parseRam('y'.repeat(41))).toBeNull();
+		expect(parseRam(null, 2)).toBeNull();
+		expect(parseRam('', 2)).toBeNull();
+		expect(parseRam('yyxr', 2)).toBeNull();
+		expect(parseRam('r0', 2)).toBeNull();
+		expect(parseRam('y'.repeat(41), 2)).toBeNull();
 	});
 });
 
@@ -67,5 +83,27 @@ describe('how a RAM is said', () => {
 			{ colour: 'Yellow', amount: 4 },
 			{ colour: 'Red', amount: 2 }
 		]);
+	});
+});
+
+describe('the shorthand for a RAM', () => {
+	it('says YYR for yyyyrr, dominant colour first', () => {
+		expect(ramShorthand('rryyyy', 2)).toBe('YYR');
+		expect(ramShorthand('ggrrrr', 2)).toBe('RRG');
+		expect(ramShorthand('bbggrryy', 2)).toBeNull(); // four Legends' worth
+	});
+
+	it('round-trips with parseRam', () => {
+		for (const ram of ['rryyyy', 'ggggrr', 'bbbbbb', 'bbggrr']) {
+			const short = ramShorthand(ram, 2);
+			expect(short).not.toBeNull();
+			expect(parseRam(short, 2)).toBe(ram);
+		}
+	});
+
+	it('has none when the Legends do not provide alike', () => {
+		expect(ramShorthand('rryyyy', 3)).toBeNull();
+		expect(ramShorthand('bbbbrr', 1)).toBeNull();
+		expect(ramShorthand('bbbbbrr', 2)).toBeNull(); // an odd amount of one colour
 	});
 });
