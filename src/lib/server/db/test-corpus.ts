@@ -45,8 +45,8 @@ export function seedCorpus(sqlite: DatabaseSync, size: CorpusSize) {
 
 	const stmt = (sql: string) => sqlite.prepare(sql);
 	const insertEvent = stmt(
-		`INSERT INTO tournaments (id, name, starts_at, organizer_id, organizer_name, format, format_id, player_count, venue, tournament_type, registration, capacity)
-		 VALUES (?, ?, ?, ?, ?, 'Constructed', 'f', ?, 'Venue', 'Tabletop', 'Open Registration', 64)`
+		`INSERT INTO tournaments (id, name, kind, starts_at, organizer_id, organizer_name, format, format_id, player_count, venue, tournament_type, registration, capacity)
+		 VALUES (?, ?, ?, ?, ?, ?, 'Constructed', 'f', ?, 'Venue', 'Tabletop', 'Open Registration', 64)`
 	);
 	const insertRound = stmt(
 		`INSERT INTO tournament_rounds (tournament_id, number, melee_round_id, name) VALUES (?, ?, ?, ?)`
@@ -74,9 +74,12 @@ export function seedCorpus(sqlite: DatabaseSync, size: CorpusSize) {
 	for (let e = 1; e <= size.events; e += 1) {
 		const players = 12 + Math.floor(random() * 40); // 12..51, about 30 on average
 		const rounds = Math.max(3, Math.ceil(Math.log2(players)));
+		// Mostly Showdowns, a Regional now and then, as the real mix is expected to be.
+		const regional = e % 12 === 0;
 		insertEvent.run(
 			e,
-			`Night City Showdown ${e}`,
+			regional ? `Night City Regional ${e}` : `Night City Showdown ${e}`,
+			regional ? 'Regional' : 'Showdown',
 			start + e * 43 * 3600_000,
 			1 + (e % 25),
 			`Organizer ${e % 25}`,

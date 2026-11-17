@@ -21,6 +21,7 @@ import {
 	type LineShelf
 } from '#lib/tournaments/deck-views.js';
 import type { Period } from '#lib/tournaments/period.js';
+import { contains } from './like.js';
 import { inPeriod, lineRows } from './tournament-stats.js';
 import type { Db } from './tournaments.js';
 import {
@@ -31,9 +32,6 @@ import {
 	tournamentMatches,
 	tournaments
 } from './schema.js';
-
-/** `%` and `_` in what a person typed are text, not wildcards. */
-const likeFragment = (text: string) => `%${text.replace(/[\\%_]/g, (c) => `\\${c}`)}%`;
 
 const deckColumns = {
 	guid: tournamentDecks.guid,
@@ -113,7 +111,7 @@ export async function getDeckList(
 		);
 	}
 	if (filters.player) {
-		conditions.push(sql`${players.displayName} like ${likeFragment(filters.player)} escape '\\'`);
+		conditions.push(contains(players.displayName, filters.player));
 	}
 	const where = and(...conditions);
 

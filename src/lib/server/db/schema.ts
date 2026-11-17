@@ -18,6 +18,7 @@ import {
 	uniqueIndex
 } from 'drizzle-orm/sqlite-core';
 import type { DeckEntryPayload, LegendEntryPayload } from '#lib/decks/schema.js';
+import { EVENT_KINDS } from '../../tournaments/kind.ts';
 import { user } from './auth.schema.js';
 
 const now = sql`(cast(unixepoch('subsecond') * 1000 as integer))`;
@@ -386,6 +387,12 @@ export const tournaments = sqliteTable(
 		startsAt: integer('starts_at', { mode: 'timestamp_ms' }).notNull(),
 		organizerId: integer('organizer_id').notNull(),
 		organizerName: text('organizer_name').notNull(),
+		/**
+		 * Regional, Showdown, … decided from `name` by `kind.ts` when the event is ingested, and again by
+		 * `pnpm melee --reparse` whenever those rules change. Stored so a list can filter and count by it;
+		 * `Other` until something says otherwise.
+		 */
+		kind: text('kind', { enum: EVENT_KINDS }).notNull().default('Other'),
 		/** Melee's word ("Constructed"); not interpreted. */
 		format: text('format').notNull(),
 		/** Melee's format GUID — the one in the Decklists filter URL. */
@@ -403,7 +410,10 @@ export const tournaments = sqliteTable(
 		capacity: integer('capacity'),
 		ingestedAt: integer('ingested_at', { mode: 'timestamp_ms' }).notNull().default(now)
 	},
-	(table) => [index('tournaments_starts_at_idx').on(table.startsAt)]
+	(table) => [
+		index('tournaments_starts_at_idx').on(table.startsAt),
+		index('tournaments_kind_idx').on(table.kind, table.startsAt)
+	]
 );
 
 /** Swiss rounds, then any top cut — `number` is the order of Melee's round buttons. */

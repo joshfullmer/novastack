@@ -19,6 +19,7 @@ import type {
 	tournaments
 } from '../server/db/schema.ts';
 import { formatIdOf, indexDeck, pickDecklist } from './decks.ts';
+import { eventKind } from './kind.ts';
 import type { MeleeRound, TournamentInfo } from './html.ts';
 import type { MeleeDetails, MeleeMatch, MeleeStanding } from './sources.ts';
 
@@ -195,6 +196,7 @@ export function buildTournament(input: BuildInput): BuiltTournament {
 		tournament: {
 			id: tournamentId,
 			name: details.Name,
+			kind: eventKind(details.Name),
 			startsAt: new Date(details.StartDate),
 			organizerId: details.OrganizationId,
 			organizerName: details.OrganizationName,

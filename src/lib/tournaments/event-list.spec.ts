@@ -1,9 +1,11 @@
 import { describe, expect, it } from 'vitest';
-import { buildEventList, type EventListRows } from './event-list.ts';
+import { ANY_EVENT, buildEventList, parseEventQuery, type EventListRows } from './event-list.ts';
+import type { EventKind } from './kind.ts';
 
-const event = (id: number, startsAt: string, name = `Event ${id}`) => ({
+const event = (id: number, startsAt: string, name = `Event ${id}`, kind: EventKind = 'Other') => ({
 	id,
 	name,
+	kind,
 	startsAt: new Date(startsAt),
 	organizerId: 1,
 	organizerName: 'Organizer',
@@ -46,11 +48,11 @@ describe('the tournament list', () => {
 		expect(buildEventList(rows()).map((e) => e.id)).toEqual([2, 1]);
 	});
 
-	it('derives the kind from the name and carries the venue', () => {
+	it('carries the stored kind and the venue', () => {
 		const [named, other] = buildEventList(
 			rows({
 				tournaments: [
-					event(1, '2026-11-16T00:00:00Z', 'Night City Showdown @ Nexus'),
+					event(1, '2026-11-16T00:00:00Z', 'Night City Showdown @ Nexus', 'Showdown'),
 					event(2, '2026-11-15T00:00:00Z', 'Friday Night Cyberpunk')
 				]
 			})
@@ -105,5 +107,36 @@ describe('the tournament list', () => {
 
 	it('is empty when nothing has been ingested', () => {
 		expect(buildEventList(rows({ tournaments: [] }))).toEqual([]);
+	});
+});
+
+describe('parseEventQuery', () => {
+	const parse = (query: string) => parseEventQuery(new URLSearchParams(query));
+
+	it('means "any" for an empty query', () => {
+		expect(parse('')).toEqual(ANY_EVENT);
+	});
+
+	it('reads each filter', () => {
+		expect(parse('kind=Showdown&year=2026&q=%20night%20&page=3')).toEqual({
+			page: 3,
+			kind: 'Showdown',
+			year: 2026,
+			q: 'night'
+		});
+	});
+
+	it('treats anything it does not recognise as "any", not an error', () => {
+		expect(parse('kind=showdown&year=26&q=&page=-4')).toEqual(ANY_EVENT);
+		expect(parse('kind=Other&year=2026.5&page=x')).toMatchObject({
+			kind: 'Other',
+			year: null,
+			page: 1
+		});
+		expect(parse('year=1999').year).toBeNull();
+	});
+
+	it('clips what is searched for', () => {
+		expect(parse(`q=${'a'.repeat(200)}`).q).toHaveLength(60);
 	});
 });

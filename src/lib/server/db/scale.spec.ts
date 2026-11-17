@@ -95,8 +95,11 @@ describe.skipIf(sizes.length === 0)('scale audit', () => {
 			const mid = Math.ceil(events / 2);
 
 			const cases: [string, () => Promise<unknown>][] = [
-				['event list, page 1', () => getEventList(db, 1)],
-				['event list, last page', () => getEventList(db, 9999)],
+				['event list, page 1', () => getEventList(db, { page: 1 })],
+				['event list, last page', () => getEventList(db, { page: 9999 })],
+				['event list, one kind', () => getEventList(db, { kind: 'Showdown' })],
+				['event list, one year', () => getEventList(db, { year: 2024 })],
+				['event list, name search', () => getEventList(db, { q: 'showdown' })],
 				['one event page', () => getEventView(db, mid)],
 				[
 					'meta tier list, all time',

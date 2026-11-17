@@ -178,13 +178,14 @@ assigned**, so adding or moving a meta needs no edit to any Tournament.
 - **Several decklists per player** can exist; keep the one whose `FormatId` equals the Tournament's
   `formatId`, and fail the run if more than one matches.
 
-- **Event kind is derived from the name, never stored.** Melee has no event-type field (research
+- **Event kind is decided from the name, and stored** (`tournaments.kind`, migration 0017: the list filters and counts by it in SQL; it was derived at read time until then). Melee has no event-type field (research
   `melee-ingest.md`): "Showdown" exists only in what an organizer typed. `eventKind(name)` in
-  `src/lib/tournaments/kind.ts` is an ordered list of name rules (first match wins), applied when a page is
-  built. The categories are **Regional, Showdown, Brawl, Prerelease and Other**, named by the project
+  `src/lib/tournaments/kind.ts` is an ordered list of name rules (first match wins), applied when an event is
+  ingested. The categories are **Regional, Showdown, Brawl, Prerelease and Other**, named by the project
   owner; `Other` is what no rule matches, never a guess. Rules are tried most-specific first (Regional,
   Prerelease, Brawl, Showdown), so a name that says two things is the bigger event. A rule is a rule, not
-  data, so a new one covers every event already ingested with no re-ingest. **Only Showdown has been
+  data: adding one means `pnpm melee --reparse`, which recomputes every stored kind from its name with
+  no re-fetch. **Only Showdown has been
   seen in real data** (all five events); the other patterns are the obvious spellings, to be checked against
   the first real Regional, Brawl or Prerelease. The header fields above are stored because they are Melee's
   data, and are all nullable because a header we can't read must not stop an ingest.

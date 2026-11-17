@@ -7,7 +7,7 @@
  * are slugs here, not `Card`s: resolving them to names and art is the view's job, which keeps this
  * module free of the dataset and free to run on the server.
  */
-import { eventKind, type EventKind } from './kind.ts';
+import type { EventKind } from './kind.ts';
 import type {
 	players,
 	standings,
@@ -77,7 +77,7 @@ export type EventView = {
 	organizer: string;
 	playerCount: number;
 	deckCount: number;
-	/** Derived from the name (`kind.ts`), not stored. */
+	/** Decided from the name by `kind.ts` when ingested; see `tournaments.kind`. */
 	kind: EventKind;
 	/** From Melee's page header; each null when it couldn't be read. */
 	venue: string | null;
@@ -164,7 +164,7 @@ export function buildEventView(rows: EventRows): EventView {
 		organizer: tournament.organizerName,
 		playerCount: tournament.playerCount,
 		deckCount: standingViews.filter((s) => s.deck).length,
-		kind: eventKind(tournament.name),
+		kind: tournament.kind,
 		venue: tournament.venue,
 		tournamentType: tournament.tournamentType,
 		entryFee: tournament.entryFee,

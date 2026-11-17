@@ -33,6 +33,7 @@ function rowsFor(
 	return {
 		tournament: {
 			...built.tournament,
+			kind: built.tournament.kind ?? 'Other',
 			id: ID,
 			venue: built.tournament.venue ?? null,
 			tournamentType: built.tournament.tournamentType ?? null,

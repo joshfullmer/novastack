@@ -6,15 +6,19 @@
  * tested. Six small queries rather than one wide join: each is a primary-key or indexed lookup, and a
  * wide join would repeat every deck's cards once per standing.
  */
-import { and, count, desc, eq, inArray, isNotNull, min, sum } from 'drizzle-orm';
+import { and, count, desc, eq, gte, inArray, isNotNull, lt, max, min, or, sum } from 'drizzle-orm';
 import {
+	ANY_EVENT,
 	buildEventList,
 	eventPageCount,
 	EVENTS_PER_PAGE,
-	type EventListPage
+	type EventListPage,
+	type EventQuery
 } from '#lib/tournaments/event-list.js';
+import { EVENT_KINDS } from '#lib/tournaments/kind.js';
 import { buildEventView, type EventView } from '#lib/tournaments/event-view.js';
 import type { BaseSQLiteDatabase } from 'drizzle-orm/sqlite-core';
+import { contains } from './like.js';
 import type * as schema from './schema.js';
 import {
 	players,
@@ -67,22 +71,64 @@ export async function getEventView(db: Db, id: number): Promise<EventView | null
  * belong to the event page, which wants them). The "showcase" is the best-placed player who registered
  * a deck, found by joining each event's minimum deck-holding rank back to its standing.
  */
-export async function getEventList(db: Db, requested = 1): Promise<EventListPage> {
-	const [totals] = await db
-		.select({ total: count(), players: sum(tournaments.playerCount).mapWith(Number) })
-		.from(tournaments);
+export async function getEventList(
+	db: Db,
+	requested: Partial<EventQuery> = {}
+): Promise<EventListPage> {
+	const asked = { ...ANY_EVENT, ...requested };
+	const inYear =
+		asked.year === null
+			? undefined
+			: and(
+					gte(tournaments.startsAt, new Date(Date.UTC(asked.year, 0, 1))),
+					lt(tournaments.startsAt, new Date(Date.UTC(asked.year + 1, 0, 1)))
+				);
+	const matchesText =
+		asked.q === null
+			? undefined
+			: or(contains(tournaments.name, asked.q), contains(tournaments.organizerName, asked.q));
+	const others = and(inYear, matchesText);
+	const where = and(others, asked.kind === null ? undefined : eq(tournaments.kind, asked.kind));
+
+	const [[totals], kindCounts, [span]] = await Promise.all([
+		db
+			.select({ total: count(), players: sum(tournaments.playerCount).mapWith(Number) })
+			.from(tournaments)
+			.where(where),
+		db
+			.select({ kind: tournaments.kind, count: count() })
+			.from(tournaments)
+			.where(others)
+			.groupBy(tournaments.kind),
+		db
+			.select({ first: min(tournaments.startsAt), last: max(tournaments.startsAt) })
+			.from(tournaments)
+	]);
 	const total = totals?.total ?? 0;
 	const pages = eventPageCount(total);
-	const page = Math.min(Math.max(1, requested), pages);
+	const page = Math.min(Math.max(1, asked.page), pages);
+
+	const kinds = EVENT_KINDS.flatMap((kind) => {
+		const n = kindCounts.find((row) => row.kind === kind)?.count ?? 0;
+		return n > 0 || kind === asked.kind ? [{ kind, count: n }] : [];
+	});
+	const newest = span?.last ? new Date(span.last).getUTCFullYear() : null;
+	const oldest = span?.first ? new Date(span.first).getUTCFullYear() : null;
+	const years =
+		newest === null || oldest === null
+			? []
+			: Array.from({ length: newest - oldest + 1 }, (_, i) => newest - i);
+	const frame = { total, page, pages, query: { ...asked, page }, kinds, years };
 
 	const events = await db
 		.select()
 		.from(tournaments)
+		.where(where)
 		.orderBy(desc(tournaments.startsAt), desc(tournaments.id))
 		.limit(EVENTS_PER_PAGE)
 		.offset((page - 1) * EVENTS_PER_PAGE);
 	const ids = events.map((event) => event.id);
-	if (ids.length === 0) return { events: [], total, players: 0, page, pages };
+	if (ids.length === 0) return { events: [], players: 0, ...frame };
 
 	const best = db
 		.select({ tournamentId: standings.tournamentId, rank: min(standings.rank).as('best_rank') })
@@ -142,9 +188,7 @@ export async function getEventList(db: Db, requested = 1): Promise<EventListPage
 
 	return {
 		events: buildEventList({ tournaments: events, rounds, decks, winners, showcase, legends }),
-		total,
 		players: totals?.players ?? 0,
-		page,
-		pages
+		...frame
 	};
 }

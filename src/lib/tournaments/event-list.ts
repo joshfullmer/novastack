@@ -6,23 +6,56 @@
  * do it. Cards are slugs; resolving them to art is the view's job.
  */
 import type { tournaments } from '../server/db/schema.ts';
-import { eventKind, type EventKind } from './kind.ts';
+import { EVENT_KINDS, type EventKind } from './kind.ts';
 
 /** Events on one page of the list. */
 export const EVENTS_PER_PAGE = 24;
 
 export const eventPageCount = (total: number) => Math.max(1, Math.ceil(total / EVENTS_PER_PAGE));
 
-/** One page of the list, with the totals the header quotes. */
+/** What the list is narrowed to. A null is "any". */
+export type EventQuery = {
+	page: number;
+	kind: EventKind | null;
+	/** A calendar year, UTC. */
+	year: number | null;
+	/** Text in the event's or its organizer's name. */
+	q: string | null;
+};
+
+export const ANY_EVENT: EventQuery = { page: 1, kind: null, year: null, q: null };
+
+/** The URL's say, with anything unrecognised meaning "any" rather than an error. */
+export function parseEventQuery(params: URLSearchParams): EventQuery {
+	const kind = params.get('kind');
+	const year = Number(params.get('year'));
+	return {
+		page: Math.max(1, Math.floor(Number(params.get('page'))) || 1),
+		kind: EVENT_KINDS.find((k) => k === kind) ?? null,
+		year: Number.isInteger(year) && year >= 2000 && year <= 2100 ? year : null,
+		q: params.get('q')?.trim().slice(0, 60) || null
+	};
+}
+
+/** One page of the list, with the totals the header quotes. Totals are of the events that match. */
 export type EventListPage = {
 	events: EventListItem[];
-	/** Every ingested event, not just this page's. */
+	/** Every event matching the query, not just this page's. */
 	total: number;
-	/** Players across every event. */
+	/** Players across them. */
 	players: number;
 	/** The page these events are, after clamping a request to the last one. */
 	page: number;
 	pages: number;
+	/** The query as applied: the page is the clamped one. */
+	query: EventQuery;
+	/**
+	 * Each kind with how many events match the *other* filters, so choosing one shows what you'd get;
+	 * the kinds nothing matches are left out, except one that is chosen.
+	 */
+	kinds: { kind: EventKind; count: number }[];
+	/** Every year from the newest event's back to the oldest's, newest first, so a filter can name one. */
+	years: number[];
 };
 
 export type EventListRows = {
@@ -43,7 +76,7 @@ export type EventListItem = {
 	/** Milliseconds since the epoch, UTC. */
 	startsAt: number;
 	organizer: string;
-	/** Derived from the name (`kind.ts`), not stored. */
+	/** Decided from the name by `kind.ts` when ingested; see `tournaments.kind`. */
 	kind: EventKind;
 	venue: string | null;
 	playerCount: number;
@@ -84,7 +117,7 @@ export function buildEventList(rows: EventListRows): EventListItem[] {
 				name: t.name,
 				startsAt: t.startsAt.getTime(),
 				organizer: t.organizerName,
-				kind: eventKind(t.name),
+				kind: t.kind,
 				venue: t.venue,
 				playerCount: t.playerCount,
 				deckCount: decks.get(t.id) ?? 0,

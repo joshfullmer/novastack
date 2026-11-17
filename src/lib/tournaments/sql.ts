@@ -13,6 +13,7 @@
 import type { Card } from '../cards/schema.ts';
 import type { BuiltTournament } from './build.ts';
 import { indexDeck } from './decks.ts';
+import { eventKind } from './kind.ts';
 
 type Row = Readonly<Record<string, unknown>>;
 
@@ -89,6 +90,21 @@ export function reindexStatements(
 			`DELETE FROM tournament_deck_cards WHERE deck_guid = ${literal(guid)};`,
 			...index.cards.map((row) => insert('tournament_deck_cards', row))
 		];
+	});
+}
+
+/**
+ * `--reparse`, the other half: each event's kind again from its name, for when `kind.ts` gains a rule.
+ * Only rows that would change are written, so a run that changes nothing writes nothing.
+ */
+export function rekindStatements(
+	events: readonly { id: number; name: string; kind: string }[]
+): string[] {
+	return events.flatMap(({ id, name, kind }) => {
+		const now = eventKind(name);
+		return now === kind
+			? []
+			: [`UPDATE tournaments SET kind = ${literal(now)} WHERE id = ${literal(id)};`];
 	});
 }
 

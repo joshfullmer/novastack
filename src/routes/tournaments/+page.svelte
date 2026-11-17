@@ -24,10 +24,15 @@
 		Green: 'bg-card-green',
 		Blue: 'bg-card-blue'
 	};
-	const VIEWS = [
-		{ key: 'table', label: 'Table', href: '/tournaments' },
-		{ key: 'cards', label: 'Cards', href: '/tournaments?view=cards' }
-	] as const;
+	/** This page's own query with some of it changed; a filter or view change starts again at page 1. */
+	const link = (patch: Record<string, string | number | null>) =>
+		withParams(page.url, patch, ['page']);
+	const VIEWS = $derived([
+		{ key: 'table', label: 'Table', href: link({ view: null }) },
+		{ key: 'cards', label: 'Cards', href: link({ view: 'cards' }) }
+	] as const);
+	const query = $derived(data.query);
+	const filtered = $derived(query.kind !== null || query.year !== null || query.q !== null);
 </script>
 
 <!-- `noindex` until the tournament pages launch (production has no tournament tables yet, and nothing links here). -->
@@ -65,8 +70,62 @@
 			</nav>
 		</header>
 
+		{#snippet chip(label: string, href: string, active: boolean, count?: number)}
+			<a
+				{href}
+				aria-current={active ? 'true' : undefined}
+				class="rounded-full border px-2.5 py-0.5 font-mono text-[11px] {active
+					? 'border-neon bg-neon/10 text-bright'
+					: 'border-edge text-muted hover:text-body'}"
+			>
+				{label}{#if count !== undefined}<span class="ml-1 text-muted">{count}</span>{/if}
+			</a>
+		{/snippet}
+
+		<div class="mt-3 flex flex-wrap items-center gap-x-6 gap-y-2" role="group" aria-label="Filter">
+			<form method="get" action="/tournaments" class="flex gap-1.5" role="search">
+				{#if view === 'cards'}<input type="hidden" name="view" value="cards" />{/if}
+				{#if query.kind}<input type="hidden" name="kind" value={query.kind} />{/if}
+				{#if query.year}<input type="hidden" name="year" value={query.year} />{/if}
+				<input
+					type="search"
+					name="q"
+					value={query.q ?? ''}
+					maxlength="60"
+					placeholder="Event or organizer"
+					aria-label="Search events"
+					class="w-52 rounded border border-edge bg-shell px-2.5 py-1 font-mono text-xs text-body placeholder:text-muted"
+				/>
+				<button class="rounded border border-edge px-2.5 py-1 font-mono text-xs hover:text-bright">
+					Search
+				</button>
+			</form>
+			<div class="flex flex-wrap gap-1.5" aria-label="Kind">
+				{@render chip('All kinds', link({ kind: null }), query.kind === null)}
+				{#each data.kinds as { kind, count } (kind)}
+					{@render chip(kind, link({ kind }), query.kind === kind, count)}
+				{/each}
+			</div>
+			{#if data.years.length > 1}
+				<div class="flex flex-wrap gap-1.5" aria-label="Year">
+					{@render chip('Any year', link({ year: null }), query.year === null)}
+					{#each data.years as year (year)}
+						{@render chip(String(year), link({ year }), query.year === year)}
+					{/each}
+				</div>
+			{/if}
+			{#if filtered}
+				<a
+					href={link({ kind: null, year: null, q: null })}
+					class="font-mono text-[11px] text-muted underline hover:text-body">Clear filters</a
+				>
+			{/if}
+		</div>
+
 		{#if data.events.length === 0}
-			<p class="mt-8 text-center text-sm text-muted">No tournaments have been added yet.</p>
+			<p class="mt-8 text-center text-sm text-muted">
+				{filtered ? 'No events match those filters.' : 'No tournaments have been added yet.'}
+			</p>
 		{:else if view === 'table'}
 			<div
 				class="mt-3 grid grid-cols-[6.5rem_1fr_3rem_3rem_16rem] gap-x-4 px-2 font-mono text-[11px] tracking-wide text-muted uppercase"

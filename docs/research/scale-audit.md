@@ -60,6 +60,12 @@ Measured on the same 1,000-event corpus, before → after. **[measured]**
   best finishes of N and 25 lines; event list 24 a page (`?page=`); shelves 12 lines × 12 decks with true
   counts and "+N more". The 1,000-deck silent cap is gone. Filters on the event list (kind, year,
   organizer) are **not** built.
+- **Row 6 and the list's filters, built after (2026-11-17).** `tournaments.kind` is stored (migration 0017, additive,
+  default `Other`; ingest writes it and `pnpm melee --reparse` recomputes it from the name). The list filters by
+  kind, calendar year and a name/organizer search, shows each kind with its count under the other filters, and
+  keeps the choice through paging and the table/cards switch. With a filter on, the list is still ~26 ms and
+  24 KB at 1,000 events. **Not applied to production.** Kind and field-size filters on the meta, decks and
+  cards pages are not built.
 - **Row 3, half built.** The auth-free hook branch is built (`public-routes.ts`): a GET or HEAD of
   `/tournaments/**` gets `locals.db` and skips `createAuth` and the session lookup. Edge caching is **not**
   built, and the claim made in this audit's first version was wrong; see the correction under "Request path".
@@ -183,8 +189,8 @@ changes but the page does (see below).
   keep (say per-game results) means re-crawling Melee, which we are not formally permitted to do at volume
   (`docs/spec/tournaments.md` §5). Storing each event's raw responses (the 14-player event's JSON and one deck page were ~100 KB; each
   deck page is ~20 KB, mostly page chrome, so keep the JSON and the decklist text) in R2 makes rebuilds free and protects against Melee changing or removing data.
-- **Event kind can't be filtered in SQL.** It is derived from the name in TypeScript. "The Showdown meta"
-  across hundreds of events needs a column. That reverses an earlier decision for a good reason.
+- **Event kind couldn't be filtered in SQL** (derived in TypeScript); "the Showdown meta" across hundreds
+  of events needs a column. **Built since** (migration 0017); see "Status".
 - **Removing a player.** `players` has no cascade on purpose, so a removal request means deleting every row
   that names them; a hidden/anonymised flag is the safer shape.
 

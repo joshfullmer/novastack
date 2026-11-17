@@ -26,6 +26,7 @@ import {
 	OWNED_TABLES,
 	diffAgainstStored,
 	reindexStatements,
+	rekindStatements,
 	storedQueries,
 	toFile,
 	writeStatements
@@ -54,24 +55,28 @@ async function reparse(target: Target, cards: readonly Card[], yes: boolean): Pr
 		v.array(v.object({ guid: v.string(), tournament_id: v.number(), text: v.string() })),
 		select(target, 'SELECT guid, tournament_id, text FROM tournament_decks ORDER BY guid')
 	);
-	if (decks.length === 0) {
-		say(`No decks in the ${targetName(target)} database; nothing to re-read.`);
+	const events = v.parse(
+		v.array(v.object({ id: v.number(), name: v.string(), kind: v.string() })),
+		select(target, 'SELECT id, name, kind FROM tournaments ORDER BY id')
+	);
+	const kinds = rekindStatements(events);
+	if (decks.length === 0 && kinds.length === 0) {
+		say(`Nothing in the ${targetName(target)} database to re-read.`);
 		return 0;
 	}
-	if (!(await approved(target, `Re-read ${decks.length} decks.`, yes))) return 2;
+	const summary = `Re-read ${decks.length} decks; ${kinds.length} of ${events.length} events change kind.`;
+	if (!(await approved(target, summary, yes))) return 2;
 	await runFile(
 		target,
-		toFile(
-			reindexStatements(
+		toFile([
+			...kinds,
+			...reindexStatements(
 				decks.map(({ guid, tournament_id, text }) => ({ guid, tournamentId: tournament_id, text })),
 				cards
 			)
-		)
+		])
 	);
-	say(
-		paint.ok(`✓ re-read ${decks.length} decks`) +
-			paint.dim(` in the ${targetName(target)} database`)
-	);
+	say(paint.ok(`✓ ${summary}`) + paint.dim(` (${targetName(target)} database)`));
 	return 0;
 }
 

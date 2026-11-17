@@ -2,8 +2,9 @@
  * What kind of event a Tournament is, decided from its **name**.
  *
  * Melee has no such field (research `melee-ingest.md`): "Showdown" lives only in the name an organizer
- * typed. So the kind is derived, not stored: it is a rule over text, and rules change. Keeping it out of
- * the database means a new rule applies to every event already ingested, with no re-ingest.
+ * typed. So the kind is derived from it, by rules, and rules change. It is **stored** on
+ * `tournaments.kind` (ingest writes it) because the list filters and counts by it in SQL; when a rule
+ * is added, `pnpm melee --reparse` recomputes every event's kind from its name, with no re-fetch.
  *
  * The categories are the program's own, named by the project owner: Regional, Showdown, Brawl,
  * Prerelease, and `Other` for anything no rule matches (a guess would be worse than "Other").

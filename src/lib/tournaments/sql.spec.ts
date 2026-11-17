@@ -16,6 +16,7 @@ import {
 	diffAgainstStored,
 	literal,
 	reindexStatements,
+	rekindStatements,
 	storedQueries,
 	toFile,
 	writeStatements,
@@ -255,5 +256,32 @@ describe('--reparse: rebuild the derived columns from stored text', () => {
 			before
 		);
 		expect(count(db, 'tournament_deck_cards')).toBe(build().deckCards.length);
+	});
+});
+
+describe('--reparse: the kind of each event, again from its name', () => {
+	it('is stored when ingested', () => {
+		const db = migrated();
+		write(db);
+		expect(db.prepare('SELECT kind FROM tournaments').get()).toEqual({ kind: 'Showdown' });
+	});
+
+	it('writes only the events whose kind changes', () => {
+		const events = [
+			{ id: 1, name: 'Night City Showdown', kind: 'Showdown' },
+			{ id: 2, name: 'Night City Showdown', kind: 'Other' },
+			{ id: 3, name: "Josh's Brawl Night", kind: 'Other' },
+			{ id: 4, name: 'Friday Night Cyberpunk', kind: 'Other' }
+		];
+		expect(rekindStatements(events)).toEqual([
+			"UPDATE tournaments SET kind = 'Showdown' WHERE id = 2;",
+			"UPDATE tournaments SET kind = 'Brawl' WHERE id = 3;"
+		]);
+	});
+
+	it('writes nothing when every kind is current', () => {
+		expect(rekindStatements([{ id: 1, name: 'Night City Showdown', kind: 'Showdown' }])).toEqual(
+			[]
+		);
 	});
 });

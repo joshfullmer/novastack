@@ -3,7 +3,7 @@
  * two awkward events: one whose champion registered no deck, and one with no decks at all.
  */
 import { describe, expect, it } from 'vitest';
-import { EVENTS_PER_PAGE } from '#lib/tournaments/event-list.js';
+import { ANY_EVENT, EVENTS_PER_PAGE } from '#lib/tournaments/event-list.js';
 import { getEventList, getEventView } from './tournaments.js';
 import { seedEvent } from './test-seed.js';
 import { world } from './test-world.js';
@@ -92,7 +92,78 @@ describe('getEventList', () => {
 			total: 0,
 			players: 0,
 			page: 1,
-			pages: 1
+			pages: 1,
+			query: ANY_EVENT,
+			kinds: [],
+			years: []
+		});
+	});
+
+	describe('filters', () => {
+		const stocked = async () => {
+			const { createTestDb } = await import('./test-db.js');
+			const { db, sqlite } = createTestDb();
+			const add = sqlite.prepare(
+				`INSERT INTO tournaments (id, name, kind, starts_at, organizer_id, organizer_name, format, format_id, player_count)
+				 VALUES (?, ?, ?, ?, 1, ?, 'Constructed', 'f', ?)`
+			);
+			const at = (iso: string) => Date.parse(iso);
+			add.run(1, 'Night City Showdown', 'Showdown', at('2025-12-31T23:00:00Z'), 'Nexus', 10);
+			add.run(2, 'Night City Showdown II', 'Showdown', at('2026-01-01T00:00:00Z'), 'Nexus', 20);
+			add.run(3, 'Spring Regional', 'Regional', at('2026-03-01T00:00:00Z'), 'Arasaka Games', 100);
+			add.run(4, '100% Cyberpunk Night', 'Other', at('2026-06-01T00:00:00Z'), 'Nexus', 8);
+			return db;
+		};
+		const ids = async (query: Parameters<typeof getEventList>[1]) =>
+			(await getEventList(await stocked(), query)).events.map((e) => e.id);
+
+		it('filters by kind', async () => {
+			expect(await ids({ kind: 'Showdown' })).toEqual([2, 1]);
+			expect(await ids({ kind: 'Brawl' })).toEqual([]);
+		});
+
+		it('filters by calendar year, UTC, on its boundaries', async () => {
+			expect(await ids({ year: 2026 })).toEqual([4, 3, 2]);
+			expect(await ids({ year: 2025 })).toEqual([1]);
+		});
+
+		it('searches the event name and the organizer, with % and _ as plain text', async () => {
+			expect(await ids({ q: 'regional' })).toEqual([3]);
+			expect(await ids({ q: 'arasaka' })).toEqual([3]);
+			expect(await ids({ q: '100%' })).toEqual([4]);
+			expect(await ids({ q: '%' })).toEqual([4]);
+		});
+
+		it('combines filters, and totals are of what matches', async () => {
+			const page = await getEventList(await stocked(), { kind: 'Showdown', year: 2026 });
+			expect(page.events.map((e) => e.id)).toEqual([2]);
+			expect([page.total, page.players]).toEqual([1, 20]);
+		});
+
+		it('counts each kind under the other filters, leaving out kinds with none', async () => {
+			const all = await getEventList(await stocked());
+			expect(all.kinds).toEqual([
+				{ kind: 'Regional', count: 1 },
+				{ kind: 'Showdown', count: 2 },
+				{ kind: 'Other', count: 1 }
+			]);
+			// Choosing a year changes the counts but not the kind you are on, even at zero.
+			const y = await getEventList(await stocked(), { year: 2025, kind: 'Regional' });
+			expect(y.kinds).toEqual([
+				{ kind: 'Regional', count: 0 },
+				{ kind: 'Showdown', count: 1 }
+			]);
+		});
+
+		it('lists every year the events span, newest first, whatever is filtered', async () => {
+			expect((await getEventList(await stocked(), { kind: 'Regional' })).years).toEqual([
+				2026, 2025
+			]);
+		});
+
+		it('says so when nothing matches, rather than erroring', async () => {
+			const page = await getEventList(await stocked(), { q: 'zzz', page: 5 });
+			expect(page).toMatchObject({ events: [], total: 0, players: 0, page: 1, pages: 1 });
 		});
 	});
 
@@ -107,8 +178,8 @@ describe('getEventList', () => {
 
 		it('returns one page of events with totals over all of them', async () => {
 			const db = await corpus();
-			const first = await getEventList(db, 1);
-			const second = await getEventList(db, 2);
+			const first = await getEventList(db, { page: 1 });
+			const second = await getEventList(db, { page: 2 });
 			expect(first.events).toHaveLength(EVENTS_PER_PAGE);
 			expect(second.events).toHaveLength(6);
 			expect([first.total, first.pages, second.page]).toEqual([EVENTS_PER_PAGE + 6, 2, 2]);
@@ -118,7 +189,10 @@ describe('getEventList', () => {
 
 		it('is newest first across pages, with no event twice', async () => {
 			const db = await corpus();
-			const all = [...(await getEventList(db, 1)).events, ...(await getEventList(db, 2)).events];
+			const all = [
+				...(await getEventList(db, { page: 1 })).events,
+				...(await getEventList(db, { page: 2 })).events
+			];
 			expect(new Set(all.map((e) => e.id)).size).toBe(all.length);
 			expect(all.map((e) => e.startsAt)).toEqual(
 				[...all.map((e) => e.startsAt)].sort((a, b) => b - a)
@@ -127,8 +201,8 @@ describe('getEventList', () => {
 
 		it('clamps a page past the end or before the start', async () => {
 			const db = await corpus();
-			expect((await getEventList(db, 99)).page).toBe(2);
-			expect((await getEventList(db, -3)).page).toBe(1);
+			expect((await getEventList(db, { page: 99 })).page).toBe(2);
+			expect((await getEventList(db, { page: -3 })).page).toBe(1);
 		});
 	});
 });
