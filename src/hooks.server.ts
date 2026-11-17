@@ -2,6 +2,7 @@ import type { Handle } from '@sveltejs/kit/hooks';
 import { building } from '$app/env';
 import { createAuth } from '#lib/server/auth.js';
 import { getDb } from '#lib/server/db/index.js';
+import { isPublicRead } from '#lib/server/public-routes.js';
 import { syncSignedInHint } from '#lib/server/signed-in-hint.js';
 import { svelteKitHandler } from 'better-auth/svelte-kit';
 
@@ -57,6 +58,10 @@ const handleBetterAuth: Handle = async ({ event, resolve }) => {
 
 	// Set once here so route code never repeats the `event.platform?.env?.DB` guard itself.
 	event.locals.db = getDb(event.platform.env.DB);
+
+	// Same for everyone, read-only: no auth to build and no session to look up (`public-routes.ts`).
+	if (isPublicRead(event.request.method, event.url.pathname)) return resolve(event);
+
 	event.locals.auth = createAuth(event.platform.env.DB);
 
 	const { auth } = event.locals;
