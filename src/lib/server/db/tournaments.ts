@@ -9,7 +9,8 @@
 import { and, count, eq, isNotNull, min } from 'drizzle-orm';
 import { buildEventList, type EventListItem } from '#lib/tournaments/event-list.js';
 import { buildEventView, type EventView } from '#lib/tournaments/event-view.js';
-import type { getDb } from './index.js';
+import type { BaseSQLiteDatabase } from 'drizzle-orm/sqlite-core';
+import type * as schema from './schema.js';
 import {
 	players,
 	standings,
@@ -20,7 +21,11 @@ import {
 	tournaments
 } from './schema.js';
 
-type Db = ReturnType<typeof getDb>;
+/**
+ * The common base of D1's Drizzle database and the test harness's (`test-db.ts`), so these functions
+ * run in production against D1 and in tests against a real SQLite, unchanged.
+ */
+export type Db = BaseSQLiteDatabase<'async', unknown, typeof schema>;
 
 /** One Tournament as its page needs it, or `null` when no such event has been ingested. */
 export async function getEventView(db: Db, id: number): Promise<EventView | null> {
