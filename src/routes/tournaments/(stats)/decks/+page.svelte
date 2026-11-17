@@ -1,17 +1,19 @@
 <script lang="ts">
-	import PeriodFields from '#lib/components/tournaments/PeriodFields.svelte';
-	import { periodParams } from '#lib/tournaments/period.js';
-	// Every Tournament Deck in the period, filtered and paged on the server: by a Legend it runs, by a
-	// card it runs (main or sideboard), by player. The filters are a plain GET form, so a filtered list
-	// is a link, and works without JavaScript.
+	// Every Tournament Deck in the period, filtered and paged on the server: by a Legend it runs, by a RAM,
+	// by a card it runs (main or sideboard), by player. The filters are a plain GET form, so a filtered
+	// list is a link and works without JavaScript; with it, a choice applies at once and typing applies a
+	// beat after the last keystroke. On a wide screen the list is a narrow column and the chosen deck
+	// takes the rest, so the list shows only what picks a deck out.
 	import { goto } from '$app/navigation';
 	import { page } from '$app/state';
+	import { SvelteURLSearchParams } from 'svelte/reactivity';
 	import DeckDetail from '#lib/components/tournaments/DeckDetail.svelte';
 	import LegendArt from '#lib/components/tournaments/LegendArt.svelte';
+	import PeriodFields from '#lib/components/tournaments/PeriodFields.svelte';
 	import RamCode from '#lib/components/tournaments/RamCode.svelte';
-	import { RAM_PER_LEGEND } from '#lib/tournaments/present.js';
+	import { periodParams } from '#lib/tournaments/period.js';
+	import { formatDate, legendNames, RAM_PER_LEGEND } from '#lib/tournaments/present.js';
 	import { ramLabel, ramShorthand } from '#lib/tournaments/ram.js';
-	import { formatDate, legendNames } from '#lib/tournaments/present.js';
 	import { href, withParams } from '#lib/tournaments/url.js';
 
 	let { data } = $props();
@@ -38,84 +40,118 @@
 		void data.deck?.guid;
 		pane?.scrollTo(0, 0);
 	});
+
+	// The form as a link: whatever it holds, no empty fields, and back to page 1.
+	let form = $state<HTMLFormElement>();
+	function apply() {
+		if (!form) return;
+		const query = new SvelteURLSearchParams();
+		for (const [name, value] of new FormData(form)) {
+			if (typeof value === 'string' && value !== '') query.set(name, value);
+		}
+		void goto(`?${query}`, { replace: true, reset: false });
+	}
+	const TYPING_DELAY = 300;
+	let pending: ReturnType<typeof setTimeout> | undefined;
+	function typed() {
+		clearTimeout(pending);
+		pending = setTimeout(apply, TYPING_DELAY);
+	}
+	$effect(() => () => clearTimeout(pending));
+
+	// The two boxes keep what is being typed, which runs ahead of the results; they follow the address
+	// (Back, Clear) only when not being typed in.
+	let cardBox = $state<HTMLInputElement>();
+	let playerBox = $state<HTMLInputElement>();
+	// svelte-ignore state_referenced_locally
+	let card = $state(filters.card ?? '');
+	// svelte-ignore state_referenced_locally
+	let player = $state(filters.player ?? '');
+	$effect(() => {
+		const [c, p] = [filters.card ?? '', filters.player ?? ''];
+		if (document.activeElement !== cardBox) card = c;
+		if (document.activeElement !== playerBox) player = p;
+	});
+
+	const CONTROL = 'rounded border border-edge bg-shell px-2 py-1.5';
 </script>
 
-<div class="grid gap-6 xl:grid-cols-2 xl:items-start">
+<header class="border-b border-edge pb-4">
+	<div class="flex flex-wrap items-baseline gap-x-4">
+		<h1 class="font-mono text-xl text-bright">All decks</h1>
+		<p class="font-mono text-xs text-muted">
+			{#if data.total === 0}
+				No decks match
+			{:else}
+				{first}–{first + shown - 1} of {data.total} decks
+			{/if}
+		</p>
+	</div>
+
+	<form
+		bind:this={form}
+		method="GET"
+		onsubmit={() => clearTimeout(pending)}
+		class="mt-3 flex flex-wrap items-center gap-2 text-xs"
+	>
+		<PeriodFields period={data.period} />
+		{#if data.deck}<input type="hidden" name="deck" value={data.deck.guid} />{/if}
+		<select name="legend" class={CONTROL} aria-label="Legend" onchange={apply}>
+			<option value="">Any Legend</option>
+			{#each data.legendChoices as legend (legend.slug)}
+				<option value={legend.slug} selected={filters.legend === legend.slug}>{legend.name}</option>
+			{/each}
+		</select>
+		<select name="ram" class={CONTROL} aria-label="RAM" onchange={apply}>
+			<option value="">Any RAM</option>
+			{#each data.rams as choice (choice.ram)}
+				<option value={choice.ram} selected={filters.ram === choice.ram}>
+					{ramShorthand(choice.ram, RAM_PER_LEGEND) ?? ramLabel(choice.ram)} ({choice.decks})
+				</option>
+			{/each}
+		</select>
+		<input
+			bind:this={cardBox}
+			bind:value={card}
+			oninput={typed}
+			name="card"
+			placeholder="Runs card…"
+			class="w-44 {CONTROL}"
+			aria-label="Runs card"
+		/>
+		<input
+			bind:this={playerBox}
+			bind:value={player}
+			oninput={typed}
+			name="player"
+			placeholder="Player…"
+			class="w-36 {CONTROL}"
+			aria-label="Player"
+		/>
+		<select name="sort" class={CONTROL} aria-label="Sort" onchange={apply}>
+			<option value="finish" selected={filters.sort === 'finish'}>Best finish</option>
+			<option value="recent" selected={filters.sort === 'recent'}>Most recent</option>
+		</select>
+		<!-- Enter in a box submits the form; with no button, a form of several fields would not. -->
+		<button class="sr-only">Filter</button>
+		{#if filters.legend || filters.ram || filters.card || filters.player}
+			<a
+				href={href('/tournaments/decks', periodParams(data.period))}
+				class="text-muted hover:text-body"
+			>
+				Clear
+			</a>
+		{/if}
+	</form>
+</header>
+
+<div class="mt-4 grid gap-6 xl:grid-cols-[28rem_minmax(0,1fr)] xl:items-start">
 	<div class="min-w-0">
-		<header class="border-b border-edge pb-4">
-			<h1 class="font-mono text-xl text-bright">All decks</h1>
-			<p class="font-mono text-xs text-muted">
-				{#if data.total === 0}
-					No decks match
-				{:else}
-					{first}–{first + shown - 1} of {data.total} decks
-				{/if}
-			</p>
-
-			<form method="GET" class="mt-4 flex flex-wrap items-center gap-2 text-xs">
-				<PeriodFields period={data.period} />
-				{#if data.deck}<input type="hidden" name="deck" value={data.deck.guid} />{/if}
-				<select
-					name="legend"
-					class="rounded border border-edge bg-shell px-2 py-1.5"
-					aria-label="Legend"
-				>
-					<option value="">Any Legend</option>
-					{#each data.legendChoices as legend (legend.slug)}
-						<option value={legend.slug} selected={filters.legend === legend.slug}
-							>{legend.name}</option
-						>
-					{/each}
-				</select>
-				<select name="ram" class="rounded border border-edge bg-shell px-2 py-1.5" aria-label="RAM">
-					<option value="">Any RAM</option>
-					{#each data.rams as choice (choice.ram)}
-						<option value={choice.ram} selected={filters.ram === choice.ram}>
-							{ramShorthand(choice.ram, RAM_PER_LEGEND) ?? ramLabel(choice.ram)} ({choice.decks})
-						</option>
-					{/each}
-				</select>
-				<input
-					name="card"
-					value={filters.card ?? ''}
-					placeholder="Runs card…"
-					class="w-44 rounded border border-edge bg-shell px-2 py-1.5"
-					aria-label="Runs card"
-				/>
-				<input
-					name="player"
-					value={filters.player ?? ''}
-					placeholder="Player…"
-					class="w-36 rounded border border-edge bg-shell px-2 py-1.5"
-					aria-label="Player"
-				/>
-				<select
-					name="sort"
-					class="rounded border border-edge bg-shell px-2 py-1.5"
-					aria-label="Sort"
-				>
-					<option value="finish" selected={filters.sort === 'finish'}>Best finish</option>
-					<option value="recent" selected={filters.sort === 'recent'}>Most recent</option>
-				</select>
-				<button class="rounded border border-neon-dim bg-neon/10 px-3 py-1.5 text-neon"
-					>Filter</button
-				>
-				{#if filters.legend || filters.ram || filters.card || filters.player}
-					<a
-						href={href('/tournaments/decks', periodParams(data.period))}
-						class="text-muted hover:text-body"
-					>
-						Clear
-					</a>
-				{/if}
-			</form>
-		</header>
-
 		<div
-			class="mt-3 grid grid-cols-[3.5rem_1fr_1fr_4.5rem] gap-x-3 px-2 font-mono text-[11px] tracking-wide text-muted uppercase"
+			class="grid grid-cols-[3.25rem_1fr_4.25rem] gap-x-3 px-2 font-mono text-[11px] tracking-wide text-muted uppercase"
 			aria-hidden="true"
 		>
-			<span>Finish</span><span>Deck</span><span>Event</span><span class="text-right">W-L-D</span>
+			<span>Finish</span><span>Deck</span><span class="text-right">W-L-D</span>
 		</div>
 
 		<ul class="mt-1 space-y-0.5">
@@ -125,7 +161,8 @@
 						href={href(`/tournaments/decks/${deck.guid}`, periodParams(data.period))}
 						onclick={(event) => open(event, deck.guid)}
 						aria-current={deck.guid === data.deck?.guid ? 'true' : undefined}
-						class="grid grid-cols-[3.5rem_1fr_1fr_4.5rem] items-center gap-x-3 rounded-lg px-2 py-2 hover:bg-surface {deck.guid ===
+						title="{legendNames(deck.legends)} · {deck.eventName}"
+						class="grid grid-cols-[3.25rem_1fr_4.25rem] items-center gap-x-3 rounded-lg px-2 py-2 hover:bg-surface {deck.guid ===
 						data.deck?.guid
 							? 'bg-surface ring-1 ring-neon/60'
 							: ''}"
@@ -142,15 +179,11 @@
 							<span class="min-w-0">
 								<span class="block truncate text-sm text-bright">{deck.player}</span>
 								<span class="block truncate text-[11px] text-muted">
-									{#if deck.ram}<RamCode ram={deck.ram} class="mr-1" />{/if}{legendNames(
-										deck.legends
+									{#if deck.ram}<RamCode ram={deck.ram} class="mr-1.5" />{/if}{formatDate(
+										deck.startsAt
 									)}
 								</span>
 							</span>
-						</span>
-						<span class="min-w-0">
-							<span class="block truncate text-xs text-body">{deck.eventName}</span>
-							<span class="font-mono text-[11px] text-muted">{formatDate(deck.startsAt)}</span>
 						</span>
 						<span class="text-right font-mono text-sm">{deck.wins}-{deck.losses}-{deck.draws}</span>
 					</a>
@@ -170,7 +203,7 @@
 				{:else}
 					<span></span>
 				{/if}
-				<span class="text-muted">Page {data.page} of {data.pages}</span>
+				<span class="text-muted">{data.page} / {data.pages}</span>
 				{#if data.page < data.pages}
 					<a
 						href={go(data.page + 1)}
@@ -184,7 +217,7 @@
 	</div>
 
 	<!-- The pane: the open deck on a wide screen. Narrower, a deck chosen from a shared link shows above
-     the list, and with none chosen there is nothing to show. -->
+	     the list, and with none chosen there is nothing to show. -->
 	<aside
 		bind:this={pane}
 		aria-label="Deck"

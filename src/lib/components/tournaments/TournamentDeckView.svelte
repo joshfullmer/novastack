@@ -4,6 +4,7 @@
 	// deck's curve, colours and rarities. The same components, so the two views of a deck cannot drift.
 	// A tournament deck is a list of card slugs and counts, resolved here through the card dataset; a line
 	// the dataset does not know is left out (and `unresolved` already says so).
+	import type { Snippet } from 'svelte';
 	import { dataset } from '#lib/cards/index.js';
 	import type { Card } from '#lib/cards/schema.js';
 	import DeckCardList from '#lib/components/deck/DeckCardList.svelte';
@@ -20,13 +21,16 @@
 	let {
 		deck,
 		view,
-		layout = 'page'
+		layout = 'page',
+		rail
 	}: {
 		deck: DeckDetail;
 		/** The visitor's List / Gallery choice, read from its cookie on the server. */
 		view: 'list' | 'gallery';
 		/** `page` sets the preview, list and stats side by side; `pane` fits half a screen. */
 		layout?: 'page' | 'pane';
+		/** Extra for the pane's narrow rail, above the preview (the path through the event). */
+		rail?: Snippet;
 	} = $props();
 
 	// Shared with the saved deck's page and the editor: how I like browsing a deck's cards is one preference.
@@ -59,7 +63,7 @@
 <div
 	class="grid gap-6 {layout === 'page'
 		? 'lg:grid-cols-[240px_1fr_280px]'
-		: 'lg:grid-cols-[minmax(0,1fr)_14rem]'}"
+		: 'lg:grid-cols-[minmax(0,1fr)_16rem]'}"
 >
 	{#if layout === 'page'}
 		<div class="hidden lg:sticky lg:top-6 lg:block lg:self-start">
@@ -82,7 +86,7 @@
 			{groups}
 			view={choice.value}
 			onfocus={(card) => (focused = card)}
-			galleryColumns={layout === 'pane' ? 'grid-cols-4' : 'grid-cols-5'}
+			galleryColumns={layout === 'pane' ? 'grid-cols-4 2xl:grid-cols-5' : 'grid-cols-5'}
 		/>
 		{#if side.length > 0}
 			<DeckSideboard
@@ -101,8 +105,9 @@
 	</div>
 
 	<div class="flex flex-col gap-4">
+		{@render rail?.()}
 		{#if layout === 'pane'}
-			<div class="hidden lg:block"><DeckPreview card={shown} sizes="224px" /></div>
+			<div class="hidden lg:block"><DeckPreview card={shown} sizes="256px" /></div>
 		{/if}
 		<DeckStats entries={main} total={mainCards} />
 	</div>

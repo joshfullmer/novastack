@@ -472,6 +472,9 @@ read-only, dynamic and `noindex`:
   in a sticky right half instead of going to a new page. The choice is `?deck=<guid>` (so a link, and Back,
   keep it); it stays open as filters change; a plain click on a narrower screen, or a modified click or a
   link opened without JavaScript, still goes to `/decks/[guid]`, which shows the same `DeckDetail`.
+  The list is a narrow column (finish, player and RAM, W-L-D; the event is in the pane and the row's
+  tooltip) so the pane takes the rest; the filters run in one row above both and apply as you choose or type;
+  in the pane the path through the event goes down the rail above the preview, so the cards start high.
 - **A tournament deck reads like a saved deck** (2026-11-17): `DeckDetail` draws the cards with the same
   components as `/d/[code]` (`components/deck/`: `DeckPreview`, `DeckCardList`, `DeckSideboard`,
   `DeckStats`, `ViewToggle`), so the card pointed at shows large beside the list, cards group by type with
