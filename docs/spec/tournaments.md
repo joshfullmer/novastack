@@ -413,6 +413,34 @@ event and one row per Legend), so its cost grows with events rather than decks. 
 their list empty (2 of the 5 events ingested so far); the page says which rank's deck it shows. Also
 `noindex`, and unlinked from the nav until launch.
 
+**Built: the statistics pages (2026-11-17).** Every view from the prototype round, as real routes, all
+read-only, dynamic and `noindex`:
+
+- **`/tournaments/meta`** (tier list: group by Legend line, Legend or colours; count all decks, top 8 or
+  winners; conversion columns), **`/meta/matchups`** (the matrix, for the eight most-played lines) and
+  **`/meta/cards`** ("what's played", optionally within one Legend line).
+- **`/tournaments/decks`** (filter by Legend, by a card the deck runs, by player; paged on the server),
+  **`/decks/lines`** (shelves per Legend line) and **`/decks/[guid]`** (a deck's path through its event, and
+  its list).
+- **`/tournaments/cards/[slug]`** (usage and finishes) and **`/cards/[slug]/fit`** (does it do better at the
+  top; which lines run it). `/tournaments/cards` is a front door that redirects to a card.
+- **The period selector** (`?period=<meta id>`), shown only once a `metas` row exists, narrows every one of
+  these. Anything unrecognised means all time. Nothing is seeded in production; locally two demo rows
+  (Nov 15, Nov 16) exist for testing.
+
+**How it was checked.** The queries are grouped SQL aggregates (`tournament-stats.ts`,
+`tournament-decks.ts`), and each is run in tests against a **real SQLite built from our own
+migrations** (`test-db.ts`, via `drizzle-orm/sqlite-proxy` over `node:sqlite`) on a six-deck world small
+enough to count by hand (`test-world.ts`): shares, win rates, the matrix both ways round, period
+boundaries, paging, filters, and a deck's path are each asserted against a number worked out on paper. Run
+on the five real events, the pages agree with the prototype's independently computed figures (30 decks,
+Mantis Blades in 19 of 32, the top line at 5 decks and 63%). One mismatch was caught that way: the matrix
+counted 11 matches against the prototype's 33, because the matrix draws only the eight most-played lines;
+the page now says "11 between these lines (of 33 between decks of different lines)".
+
+**Not yet measured or done:** D1 `rows_read` for these aggregates (the harness can't say; open question 7),
+a shared-cache header, a site-nav link, and production (migrations `0014` and `0015` are not applied).
+
 ---
 
 ## 7. Open questions
