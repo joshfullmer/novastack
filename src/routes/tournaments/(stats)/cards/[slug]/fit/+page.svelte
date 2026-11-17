@@ -1,6 +1,6 @@
 <script lang="ts">
 	// Where it fits: no deck list at all. Does the Card show up more among winners and top 8s than across
-	// the whole field, and which Legend lines run it (with how many of each line's decks do)? A
+	// the whole field, and which Legends run it (with how many of each line's decks do)? A
 	// comparison drawn from fewer than 5 decks is shown as a count only.
 	import LegendArt from '#lib/components/tournaments/LegendArt.svelte';
 	import RamCode from '#lib/components/tournaments/RamCode.svelte';
@@ -75,7 +75,7 @@
 
 <section class="mt-8">
 	<h2 class="mb-3 font-mono text-[11px] tracking-wide text-muted uppercase">
-		Which Legend lines run it
+		Which Legends run it
 	</h2>
 	<ul class="space-y-2">
 		{#each usage.byLine as line (line.line)}
@@ -99,7 +99,7 @@
 	</ul>
 	{#if usage.lineCount > usage.byLine.length}
 		<p class="mt-2 text-[11px] text-muted">
-			The {usage.byLine.length} lines that run it most, of {usage.lineCount}.
+			The {usage.byLine.length} sets of Legends that run it most, of {usage.lineCount}.
 		</p>
 	{/if}
 </section>

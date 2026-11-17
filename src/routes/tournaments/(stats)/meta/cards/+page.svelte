@@ -1,22 +1,24 @@
 <script lang="ts">
-	import { periodParams } from '#lib/tournaments/period.js';
-	// What's played: the Cards, not the archetypes. Pick a Legend line (or all decks) and see the Cards
-	// people ran, as art, with the share of decks that included each. Each tile opens that Card's usage.
+	// Card breakdown: the Cards, not the archetypes. Pick a RAM or a set of Legends (or all decks) and see
+	// the Cards people ran, as art: the share of decks that ran each, bottom right, and the copies in a
+	// deck that does, bottom left. Each tile opens that Card's usage.
 	import LegendArt from '#lib/components/tournaments/LegendArt.svelte';
 	import RamCode from '#lib/components/tournaments/RamCode.svelte';
+	import { periodParams } from '#lib/tournaments/period.js';
 	import { cardName, legendNames } from '#lib/tournaments/present.js';
 	import { href } from '#lib/tournaments/url.js';
 
 	let { data } = $props();
 
-	let sort = $state<'inclusion' | 'copies'>('inclusion');
-	const SHOWN = 48;
+	/** What the grid is ordered by: the share of decks that ran a card, or how many copies it gets. */
+	let sort = $state<'percentage' | 'count'>('percentage');
+	const SHOWN = 60;
 
 	const cards = $derived(
 		[...data.cards]
 			.filter((card) => card.decks > 0)
 			.sort((a, b) =>
-				sort === 'inclusion'
+				sort === 'percentage'
 					? b.inclusion - a.inclusion || a.slug.localeCompare(b.slug)
 					: b.avgCopies - a.avgCopies || b.inclusion - a.inclusion || a.slug.localeCompare(b.slug)
 			)
@@ -25,54 +27,62 @@
 	const percent = (n: number) => `${Math.round(n * 100)}%`;
 	const mine = (line: string | null, ram: string | null = null) =>
 		href('/tournaments/meta/cards', { ...periodParams(data.period), line, ram });
+	const all = $derived(data.line === null && data.ram === null);
+
+	const OPTIONS = [
+		['percentage', 'Percentage'],
+		['count', 'Count']
+	] as const;
 </script>
 
-<div class="grid gap-6 lg:grid-cols-[17rem_1fr]">
+<div class="grid gap-6 lg:grid-cols-[16rem_1fr]">
 	<aside class="lg:sticky lg:top-20 lg:self-start">
-		<h1 class="mb-3 font-mono text-xl text-bright">What's played</h1>
-		<ul class="space-y-1">
-			<li>
-				<a
-					href={mine(null)}
-					aria-current={data.line === null && data.ram === null ? 'true' : undefined}
-					class="block rounded-lg border px-3 py-2 text-sm {data.line === null && data.ram === null
-						? 'border-neon bg-neon/10 text-bright'
-						: 'border-edge text-muted hover:text-body'}"
-				>
-					All decks
-				</a>
-			</li>
-			<li class="px-1 pt-2 font-mono text-[11px] tracking-wide text-muted uppercase">By RAM</li>
+		<h1 class="mb-3 font-mono text-xl text-bright">Card breakdown</h1>
+
+		<a
+			href={mine(null)}
+			aria-current={all ? 'true' : undefined}
+			class="block rounded-lg border px-3 py-1.5 text-sm {all
+				? 'border-neon bg-neon/10 text-bright'
+				: 'border-edge text-muted hover:text-body'}"
+		>
+			All decks
+		</a>
+
+		<h2 class="mt-4 mb-1.5 font-mono text-[11px] tracking-wide text-muted uppercase">RAM</h2>
+		<div class="flex flex-wrap gap-1.5">
 			{#each data.rams as choice (choice.ram)}
-				<li>
-					<a
-						href={mine(null, choice.ram)}
-						aria-current={data.ram === choice.ram ? 'true' : undefined}
-						class="flex items-center justify-between rounded-lg border px-3 py-2 {data.ram ===
-						choice.ram
-							? 'border-neon bg-neon/10'
-							: 'border-edge hover:bg-surface'}"
-					>
-						<RamCode ram={choice.ram} class="text-sm" />
-						<span class="font-mono text-xs text-muted">{choice.decks}</span>
-					</a>
-				</li>
+				<a
+					href={mine(null, choice.ram)}
+					aria-current={data.ram === choice.ram ? 'true' : undefined}
+					title="{choice.decks} decks"
+					class="flex items-baseline gap-1.5 rounded-lg border px-2.5 py-1 {data.ram === choice.ram
+						? 'border-neon bg-neon/10'
+						: 'border-edge hover:bg-surface'}"
+				>
+					<RamCode ram={choice.ram} class="text-sm" />
+					<span class="font-mono text-[10px] text-muted">{choice.decks}</span>
+				</a>
 			{/each}
-			<li class="px-1 pt-2 font-mono text-[11px] tracking-wide text-muted uppercase">By Legends</li>
+		</div>
+
+		<h2 class="mt-4 mb-1.5 font-mono text-[11px] tracking-wide text-muted uppercase">Legends</h2>
+		<ul class="space-y-1">
 			{#each data.lines as line (line.key)}
 				<li>
 					<a
 						href={mine(line.key)}
 						aria-current={data.line === line.key ? 'true' : undefined}
-						class="flex items-center gap-2 rounded-lg border px-3 py-2 {data.line === line.key
+						title={legendNames(line.legends)}
+						class="flex items-center gap-2 rounded-lg border px-2.5 py-1.5 {data.line === line.key
 							? 'border-neon bg-neon/10'
 							: 'border-edge hover:bg-surface'}"
 					>
-						<span class="flex -space-x-2">
+						<span class="flex shrink-0 -space-x-2">
 							{#each line.legends as slug (slug)}<LegendArt
 									{slug}
 									sizes="40px"
-									class="w-6 ring-1 ring-void"
+									class="w-5 ring-1 ring-void"
 								/>{/each}
 						</span>
 						<span
@@ -82,7 +92,7 @@
 						>
 							{legendNames(line.legends)}
 						</span>
-						<span class="font-mono text-xs text-muted">{line.decks}</span>
+						<span class="font-mono text-[10px] text-muted">{line.decks}</span>
 					</a>
 				</li>
 			{/each}
@@ -95,9 +105,9 @@
 			<div
 				class="flex rounded-full border border-edge p-0.5 font-mono text-xs"
 				role="group"
-				aria-label="Sort"
+				aria-label="Order by"
 			>
-				{#each [['inclusion', 'In most decks'], ['copies', 'Most copies']] as const as [key, label] (key)}
+				{#each OPTIONS as [key, label] (key)}
 					<button
 						class="rounded-full px-3 py-1 {sort === key
 							? 'bg-neon text-void'
@@ -109,7 +119,9 @@
 			</div>
 		</div>
 
-		<ul class="grid grid-cols-3 gap-3 sm:grid-cols-4 md:grid-cols-5 xl:grid-cols-6">
+		<ul
+			class="grid grid-cols-3 gap-3 min-[1800px]:grid-cols-10 sm:grid-cols-4 md:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-8"
+		>
 			{#each cards as card (card.slug)}
 				<li>
 					<a
@@ -124,7 +136,14 @@
 						<span class="relative block">
 							<LegendArt slug={card.slug} sizes="180px" />
 							<span
+								class="absolute bottom-1 left-1 rounded bg-void/85 px-1.5 py-0.5 font-mono text-xs text-bright"
+								title="Copies, in a deck that runs it"
+							>
+								×{card.avgCopies.toFixed(1)}
+							</span>
+							<span
 								class="absolute right-1 bottom-1 rounded bg-void/85 px-1.5 py-0.5 font-mono text-xs text-bright"
+								title="Of decks, how many ran it"
 							>
 								{percent(card.inclusion)}
 							</span>
@@ -134,7 +153,6 @@
 							></span>
 						</span>
 						<span class="mt-1 block truncate text-[11px] text-body">{cardName(card.slug)}</span>
-						<span class="font-mono text-[10px] text-muted">×{card.avgCopies.toFixed(1)}</span>
 					</a>
 				</li>
 			{:else}

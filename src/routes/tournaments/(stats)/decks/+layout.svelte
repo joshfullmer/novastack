@@ -8,7 +8,7 @@
 
 	const views = [
 		{ path: '/tournaments/decks', label: 'All decks' },
-		{ path: '/tournaments/decks/lines', label: 'By Legend line' }
+		{ path: '/tournaments/decks/lines', label: 'By Legends' }
 	];
 </script>
 
@@ -22,7 +22,7 @@
 />
 
 <div>
-	<div class="mx-auto w-full max-w-6xl px-4 py-6">
+	<div class="mx-auto w-full max-w-[1800px] px-4 py-6 sm:px-6">
 		<!-- The tabs are for the two list views; one deck's own page has its own way back. -->
 		{#if views.some((view) => view.path === page.url.pathname)}
 			<nav class="mb-6 flex gap-1.5" aria-label="Deck views">

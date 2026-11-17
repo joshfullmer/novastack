@@ -1,7 +1,7 @@
 <script lang="ts">
 	// Matchup matrix: the page is one heat-map. A row's win rate against a column is cyan above 50% and
 	// red below; fainter means fewer matches behind it. Only the most-played decks are drawn (by RAM, as
-	// players name them, or by Legend line), and only matches between two decks of different groups count
+	// players name them, or by their Legends), and only matches between two decks of different groups count
 	// (no mirrors, byes, forfeits or deck-less players).
 	import LegendArt from '#lib/components/tournaments/LegendArt.svelte';
 	import RamCode from '#lib/components/tournaments/RamCode.svelte';
@@ -27,7 +27,7 @@
 	const cellAt = (a: string, b: string) => meta.matrix.find((c) => c.a === a && c.b === b);
 	const BY = [
 		['ram', 'RAM'],
-		['line', 'Legend line']
+		['line', 'Legends']
 	] as const;
 	const percent = (n: number | null) => (n === null ? '—' : `${Math.round(n * 100)}%`);
 
@@ -47,8 +47,8 @@
 			The row's win rate against the column · {meta.crossMatches} matches between these {meta.matrixBy ===
 			'ram'
 				? 'RAMs'
-				: 'lines'}{meta.crossMatchesTotal > meta.crossMatches
-				? ` (of ${meta.crossMatchesTotal} between decks of different ${meta.matrixBy === 'ram' ? 'RAMs' : 'lines'})`
+				: 'sets of Legends'}{meta.crossMatchesTotal > meta.crossMatches
+				? ` (of ${meta.crossMatchesTotal} between decks of different ${meta.matrixBy === 'ram' ? 'RAMs' : 'sets of Legends'})`
 				: ''} · a draw counts half
 		</p>
 	</div>
@@ -71,8 +71,8 @@
 
 {#if groups.length < 2}
 	<p class="mt-8 text-center text-sm text-muted">
-		A matrix needs at least two {meta.matrixBy === 'ram' ? 'RAMs' : 'Legend lines'} with decks; this period
-		has {groups.length}.
+		A matrix needs at least two {meta.matrixBy === 'ram' ? 'RAMs' : 'sets of Legends'} with decks; this
+		period has {groups.length}.
 	</p>
 {:else}
 	<div class="mt-6 overflow-x-auto">

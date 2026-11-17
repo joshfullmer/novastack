@@ -30,7 +30,7 @@
 </script>
 
 <div>
-	<div class="mx-auto w-full max-w-6xl px-4 pt-6">
+	<div class="mx-auto w-full max-w-[1800px] px-4 pt-6 sm:px-6">
 		<nav class="flex gap-5 border-b border-edge font-mono text-sm" aria-label="Tournaments">
 			{#each sections as section (section.href)}
 				<a

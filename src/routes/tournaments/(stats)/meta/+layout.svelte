@@ -9,7 +9,7 @@
 	const views = $derived([
 		{ path: '/tournaments/meta', label: 'Tier list' },
 		{ path: '/tournaments/meta/matchups', label: 'Matchups' },
-		{ path: '/tournaments/meta/cards', label: "What's played" }
+		{ path: '/tournaments/meta/cards', label: 'Card breakdown' }
 	]);
 </script>
 
@@ -23,7 +23,7 @@
 />
 
 <div>
-	<div class="mx-auto w-full max-w-6xl px-4 py-6">
+	<div class="mx-auto w-full max-w-[1800px] px-4 py-6 sm:px-6">
 		<nav class="mb-6 flex gap-1.5" aria-label="Meta views">
 			{#each views as view (view.path)}
 				<a

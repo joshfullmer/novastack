@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { periodParams } from '#lib/tournaments/period.js';
-	// The same decks as shelves, one per Legend line: its art and record on the left, every deck that ran
+	// The same decks as shelves, one per set of Legends: its art and record on the left, every deck that ran
 	// it as a tile, the best-placed few. Reads like browsing a collection rather than querying a table. A win rate appears
 	// only from 5 decks up.
 	import LegendArt from '#lib/components/tournaments/LegendArt.svelte';
@@ -12,7 +12,7 @@
 	const percent = (n: number | null) => (n === null ? '—' : `${Math.round(n * 100)}%`);
 </script>
 
-<h1 class="font-mono text-xl text-bright">Decks by Legend line</h1>
+<h1 class="font-mono text-xl text-bright">Decks by Legends</h1>
 <p class="font-mono text-xs text-muted">
 	The {data.shelves.length} most-played of {data.lines} lines · {data.decks} decks
 </p>

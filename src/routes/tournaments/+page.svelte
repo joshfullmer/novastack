@@ -7,7 +7,7 @@
 	import { page } from '$app/state';
 	import Meta from '#lib/components/Meta.svelte';
 	import { cookieState } from '#lib/cookie-state.svelte.js';
-	import KindSelect from '#lib/components/tournaments/KindSelect.svelte';
+	import LinkSelect from '#lib/components/tournaments/LinkSelect.svelte';
 	import LegendArt from '#lib/components/tournaments/LegendArt.svelte';
 	import {
 		fieldByColour,
@@ -80,7 +80,7 @@
 <!-- The extra plain wrapper matters: `<main>` (root layout) is a column flex container, and a
      `mx-auto max-w-…` box that is a *direct* flex child has its stretch behaviour disabled. -->
 <div>
-	<div class="mx-auto w-full max-w-6xl px-4 py-8">
+	<div class="mx-auto w-full max-w-[1800px] px-4 py-8 sm:px-6">
 		<header class="flex flex-wrap items-end justify-between gap-3 border-b border-edge pb-4">
 			<div>
 				<h1 class="font-mono text-xl text-bright">Tournaments</h1>
@@ -136,7 +136,18 @@
 					class="w-52 rounded border border-edge bg-shell px-2.5 py-1 font-mono text-xs text-body placeholder:text-muted"
 				/>
 			</form>
-			<KindSelect kinds={data.kinds} value={query.kind} href={(kind) => link({ kind })} />
+			<LinkSelect
+				label="Kind"
+				value={query.kind ?? ''}
+				options={[
+					{ value: '', label: 'All kinds', href: link({ kind: null }) },
+					...data.kinds.map(({ kind, count }) => ({
+						value: kind,
+						label: `${kind} (${count})`,
+						href: link({ kind })
+					}))
+				]}
+			/>
 			{#if data.years.length > 1}
 				<div class="flex flex-wrap gap-1.5" aria-label="Year">
 					{@render chip('Any year', link({ year: null }), query.year === null)}
@@ -213,7 +224,7 @@
 				{/each}
 			</ul>
 		{:else}
-			<ul class="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+			<ul class="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
 				{#each data.events as event (event.id)}
 					<li>
 						<a

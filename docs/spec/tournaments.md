@@ -448,14 +448,30 @@ their list empty (2 of the 5 events ingested so far); the page says which rank's
 **Built: the statistics pages (2026-11-17).** Every view from the prototype round, as real routes, all
 read-only, dynamic and `noindex`:
 
-- **`/tournaments/meta`** (tier list: group by RAM, Legend line or Legend; count all decks, top 8 or
+- **`/tournaments/meta`** (tier list: group by RAM, Legends or By Legend; count all decks, top 8 or
   winners; conversion columns), **`/meta/matchups`** (the matrix, for the eight most-played RAMs or lines) and
-  **`/meta/cards`** ("what's played", optionally within one RAM or Legend line).
+  **`/meta/cards`** ("card breakdown", optionally within one RAM or set of Legends).
 - **`/tournaments/decks`** (filter by Legend, RAM, a card the deck runs, or player; paged on the server),
   **`/decks/lines`** (shelves per Legend line) and **`/decks/[guid]`** (a deck's path through its event, and
   its list).
 - **`/tournaments/cards/[slug]`** (usage and finishes) and **`/cards/[slug]/fit`** (does it do better at the
   top; which RAMs and lines run it). `/tournaments/cards` is a front door that redirects to a card.
+- **Tiers** (2026-11-17). The tier list ranks how a deck _performs_, S down to D, and within a tier by how
+  much of the field plays it (the share bar stays beside it). A group's _power_ is its match win rate (a
+  draw counts half) pulled toward 50% as if it had also played 10 even matches (`TIER_PRIOR`), so a few
+  lucky matches cannot out-rank a long record; tiers are fixed bands of power (S 57%+, A 53–57, B 48–53,
+  C 44–48, D below), not a curve, so a thin meta has empty tiers. A group of fewer than `MIN_DECKS` (5)
+  decks has no power and is listed apart as unranked. The bands and the prior are constants in `meta.ts` to
+  tune against more data.
+- **Names in the interface** (2026-11-17): "Legends" is what the interface calls a deck's three Legends
+  together (code and this spec still say "Legend line"); the tier list's single-Legend grouping is "By
+  Legend". The page of cards is the **card breakdown** (the top-level Cards tab is a different thing: one
+  card's usage). The breakdown orders by Percentage (the share of decks that ran a card) or Count (its
+  copies), and shows both on the art.
+- **Layout** (2026-11-17): the statistics pages use the app's wide container (`max-w-[1800px]`) and fill it:
+  the tier list flows into two columns, the card breakdown goes to eight or ten columns of art, and the deck
+  list into two columns. The period, kind and field-size choices are dropdowns (`LinkSelect`).
+
 - **The period selector** (`?period=<meta id>` or `?period=all`), shown once a `metas` row exists, narrows
   every one of these: chips up to four choices, a menu beyond. **The default is the current meta** (the
   newest that has started), so a link that names none shows it and the default adds no param to any link;
