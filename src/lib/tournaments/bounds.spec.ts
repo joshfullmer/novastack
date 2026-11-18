@@ -3,7 +3,7 @@
  * left out, so a page can be honest about it. The shares and counts still cover everything.
  */
 import { describe, expect, it } from 'vitest';
-import { buildCardUsage, ENTRY_LIMIT, FIT_LIMIT, type UsageRow } from './cards.ts';
+import { buildCardUsage, FIT_LIMIT, type UsageRow } from './cards.ts';
 import { buildMeta, LINE_LIMIT, type LineRow } from './meta.ts';
 
 const lineRow = (n: number, decks: number): LineRow => ({
@@ -51,16 +51,7 @@ describe('buildMeta', () => {
 
 describe('buildCardUsage', () => {
 	const rows: UsageRow[] = Array.from({ length: 250 }, (_, i) => ({
-		guid: `g${i}`,
-		eventId: 1,
-		eventName: 'E',
-		startsAt: 1,
-		playerCount: 300,
-		player: `P${i}`,
 		rank: i + 1,
-		wins: 0,
-		losses: 0,
-		draws: 0,
 		line: `a-${i % 40}+b+c`,
 		ram: `r${'y'.repeat(1 + (i % 30))}`,
 		main: 3,
@@ -75,10 +66,7 @@ describe('buildCardUsage', () => {
 		rams: Array.from({ length: 30 }, (_, i) => ({ line: `r${'y'.repeat(1 + i)}`, decks: 20 }))
 	});
 
-	it('lists the best finishes, not every deck, while counting every deck', () => {
-		expect(usage.entries).toHaveLength(ENTRY_LIMIT);
-		expect(usage.entries[0]?.rank).toBe(1);
-		expect(usage.entries.at(-1)?.rank).toBe(ENTRY_LIMIT);
+	it('counts every deck that ran it', () => {
 		expect(usage.decks).toBe(250);
 		expect(usage.top8).toBe(8);
 	});

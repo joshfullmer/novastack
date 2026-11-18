@@ -454,8 +454,12 @@ read-only, dynamic and `noindex`:
 - **`/tournaments/decks`** (filter by Legend, RAM, a card the deck runs, or player; paged on the server),
   **`/decks/lines`** (shelves per Legend line) and **`/decks/[guid]`** (a deck's path through its event, and
   its list).
-- **`/tournaments/cards/[slug]`** (usage and finishes) and **`/cards/[slug]/fit`** (does it do better at the
-  top; which RAMs and lines run it). A card's page has no picker of its own: it is reached by clicking a card in the card breakdown.
+- **`/tournaments/cards/[slug]`**: a card's tournament record. Its art with the headline numbers under it
+  (share of decks, average copies, sideboard, wins, top 8), and where it fits: does it do better among the
+  top 8 and winners than across the field, and which RAMs and Legends run it, with the share of each one's
+  decks. It lists no decks (which decks ran a card was judged not worth reading, 2026-11-18). It has no
+  picker and no nav item: it is reached by clicking a card in the card breakdown, with a way back, and sits
+  under Card breakdown in the sidebar.
 - **Tiers** (2026-11-17). The tier list ranks how a deck _performs_, S down to D, and within a tier by how
   much of the field plays it (the share bar stays beside it). A group's _power_ is its match win rate (a
   draw counts half) pulled toward 50% as if it had also played 10 even matches (`TIER_PRIOR`), so a few

@@ -34,19 +34,9 @@ export function buildCardStats(rows: readonly CardStatRow[], decksInScope: numbe
 		.sort((a, b) => b.inclusion - a.inclusion || a.slug.localeCompare(b.slug));
 }
 
-/** One deck that ran the Card, with where it finished. */
+/** One deck that ran the Card: where it finished and what it was, nothing to list it by. */
 export type UsageRow = {
-	guid: string;
-	eventId: number;
-	eventName: string;
-	/** Milliseconds since the epoch, UTC. */
-	startsAt: number;
-	playerCount: number;
-	player: string;
 	rank: number;
-	wins: number;
-	losses: number;
-	draws: number;
 	line: string | null;
 	ram: string | null;
 	/** Copies in the main deck and in the sideboard; both 0 when it was a Legend. */
@@ -55,8 +45,6 @@ export type UsageRow = {
 	asLegend: boolean;
 };
 
-/** The decks listed on a Card's page: its best finishes. A staple is in most of the field's decks. */
-export const ENTRY_LIMIT = 100;
 /** The Legend lines, and the RAMs, listed as running a Card, most-using first. */
 export const FIT_LIMIT = 25;
 
@@ -84,8 +72,6 @@ export type CardUsage = {
 	byRam: { ram: string; decks: number; withCard: number; rate: number }[];
 	/** How many RAMs ran it, of which `byRam` lists the first `FIT_LIMIT`. */
 	ramCount: number;
-	/** The best `ENTRY_LIMIT` of the `decks` that ran it. */
-	entries: UsageRow[];
 };
 
 export function buildCardUsage(input: {
@@ -149,9 +135,6 @@ export function buildCardUsage(input: {
 		byLine: fits.slice(0, FIT_LIMIT),
 		lineCount: fits.length,
 		byRam: ramFits.slice(0, FIT_LIMIT),
-		ramCount: ramFits.length,
-		entries: [...rows]
-			.sort((a, b) => a.rank - b.rank || b.startsAt - a.startsAt)
-			.slice(0, ENTRY_LIMIT)
+		ramCount: ramFits.length
 	};
 }

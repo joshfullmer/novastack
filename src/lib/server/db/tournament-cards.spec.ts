@@ -98,13 +98,9 @@ describe('getCardUsage', () => {
 		expect(usage.ramCount).toBe(2);
 	});
 
-	it('lists every deck that ran the card anywhere, best finish first', async () => {
+	it('counts every deck that ran the card anywhere', async () => {
 		const usage = await getCardUsage(world(), ALL_TIME, 'm1');
 		// D1 D2 D3 D5 in the main deck, D6 in the sideboard
-		expect(usage.entries.map((e) => e.guid).sort()).toEqual(['D1', 'D2', 'D3', 'D5', 'D6']);
-		expect(usage.entries.map((e) => e.rank)).toEqual(
-			[...usage.entries.map((e) => e.rank)].sort((a, b) => a - b)
-		);
 		expect(usage.decks).toBe(5);
 		expect(usage.totalDecks).toBe(6);
 		expect(usage.inclusion).toBeCloseTo(5 / 6);
@@ -129,40 +125,23 @@ describe('getCardUsage', () => {
 		expect(usage.byLine[0]).toMatchObject({ rate: 1, legends: ['a', 'b', 'c'] });
 	});
 
-	it('carries the player, event and record on each entry', async () => {
-		const usage = await getCardUsage(world(), ALL_TIME, 'm1');
-		expect(usage.entries[0]).toMatchObject({ rank: 1, wins: expect.any(Number) });
-		const d2 = usage.entries.find((e) => e.guid === 'D2');
-		expect(d2).toMatchObject({
-			player: 'P2',
-			eventName: 'Event 1',
-			rank: 2,
-			wins: 2,
-			losses: 1,
-			main: 3,
-			side: 0,
-			asLegend: false,
-			line: 'a+b+c'
-		});
-	});
-
-	it('counts a card in both main and sideboard once, with both quantities', async () => {
+	it('counts a card in both main and sideboard once', async () => {
 		const usage = await getCardUsage(world(), ALL_TIME, 'm2');
-		const d3 = usage.entries.filter((e) => e.guid === 'D3');
-		expect(d3).toHaveLength(1);
-		expect(d3[0]).toMatchObject({ main: 3, side: 1 });
+		// D1 D3 D6 in the main deck (D3 also in its sideboard), D6's sideboard, D3 once: three decks, not four
+		expect(usage.decks).toBe(3);
+		expect(usage.inSide).toBe(1); // D3
 	});
 
 	it('also answers for a Legend, marking the decks that ran it as one', async () => {
 		const usage = await getCardUsage(world(), ALL_TIME, 'a');
 		expect(usage.decks).toBe(5); // every X and Y deck
 		expect(usage.asLegend).toBe(5);
-		expect(usage.entries.every((e) => e.main === 0 && e.asLegend)).toBe(true);
+		expect(usage.avgCopies).toBe(0); // never in a main deck
 	});
 
 	it('is empty, not an error, for a card nobody ran', async () => {
 		const usage = await getCardUsage(world(), ALL_TIME, 'nope');
-		expect(usage).toMatchObject({ decks: 0, inclusion: 0, avgCopies: 0, entries: [], byLine: [] });
+		expect(usage).toMatchObject({ decks: 0, inclusion: 0, avgCopies: 0, byLine: [] });
 		expect(usage.totalDecks).toBe(6);
 	});
 
@@ -176,7 +155,7 @@ describe('getCardUsage', () => {
 			...ANY_EVENTS
 		};
 		const usage = await getCardUsage(world(), nov16, 'm1');
-		expect(usage.entries.map((e) => e.guid).sort()).toEqual(['D5', 'D6']);
+		expect(usage.decks).toBe(2); // D5, D6
 		expect(usage.totalDecks).toBe(2);
 	});
 });

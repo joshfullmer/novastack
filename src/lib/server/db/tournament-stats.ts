@@ -27,7 +27,6 @@ import type { MetaRow, Period } from '#lib/tournaments/period.js';
 import type { Db } from './tournaments.js';
 import {
 	metas,
-	players,
 	standings,
 	tournamentDeckCards,
 	tournamentDecks,
@@ -312,16 +311,7 @@ export async function getCardUsage(db: Db, period: Period, slug: string): Promis
 	const [rows, totals, lines, rams] = await Promise.all([
 		db
 			.select({
-				guid: tournamentDecks.guid,
-				eventId: tournaments.id,
-				eventName: tournaments.name,
-				startsAt: tournaments.startsAt,
-				playerCount: tournaments.playerCount,
-				player: players.displayName,
 				rank: standings.rank,
-				wins: standings.matchWins,
-				losses: standings.matchLosses,
-				draws: standings.matchDraws,
 				line: tournamentDecks.legendLine,
 				ram: tournamentDecks.ram,
 				main: total(
@@ -335,7 +325,6 @@ export async function getCardUsage(db: Db, period: Period, slug: string): Promis
 			.from(tournamentDeckCards)
 			.innerJoin(tournamentDecks, eq(tournamentDecks.guid, tournamentDeckCards.deckGuid))
 			.innerJoin(standings, eq(standings.deckGuid, tournamentDecks.guid))
-			.innerJoin(players, eq(players.id, standings.playerId))
 			.innerJoin(tournaments, eq(tournaments.id, tournamentDecks.tournamentId))
 			.where(and(eq(tournamentDeckCards.cardSlug, slug), inPeriod(period)))
 			.groupBy(tournamentDecks.guid),
@@ -366,16 +355,7 @@ export async function getCardUsage(db: Db, period: Period, slug: string): Promis
 	return buildCardUsage({
 		slug,
 		rows: rows.map((row) => ({
-			guid: row.guid,
-			eventId: row.eventId,
-			eventName: row.eventName,
-			startsAt: row.startsAt.getTime(),
-			playerCount: row.playerCount,
-			player: row.player,
 			rank: row.rank,
-			wins: row.wins,
-			losses: row.losses,
-			draws: row.draws,
 			line: row.line,
 			ram: row.ram,
 			main: row.main,
