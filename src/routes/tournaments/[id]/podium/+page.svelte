@@ -43,7 +43,7 @@
 
 {#snippet seat(side: BracketSide, games: number, outcome: 'won' | 'lost' | 'open')}
 	{@const tone = cn(
-		'flex w-full items-center gap-2 border-l-2 px-2 py-1.5 text-left',
+		'group flex w-full items-center gap-2 border-l-2 px-2 py-1.5 text-left',
 		outcome === 'won' && 'border-neon text-bright',
 		outcome === 'lost' && 'border-transparent text-muted',
 		outcome === 'open' && 'border-transparent text-body',
@@ -54,6 +54,14 @@
 		<span class="min-w-0 flex-1 truncate {outcome === 'won' ? 'font-semibold' : ''}">
 			{side.name}
 		</span>
+		{#if side.deck}
+			<span
+				class="hidden font-mono text-[10px] text-neon group-hover:inline group-focus-visible:inline"
+				aria-hidden="true">→</span
+			>
+		{:else}
+			<span class="font-mono text-[10px] text-muted" title="No deck registered">no deck</span>
+		{/if}
 		<span
 			class="rounded px-1.5 font-mono text-xs tabular-nums {outcome === 'won'
 				? 'bg-neon/25 text-bright'
@@ -64,8 +72,8 @@
 		<a
 			href="/tournaments/decks/{side.deck}"
 			class="{tone} hover:bg-surface"
-			title="{side.name} · #{side.rank} · {side.record.wins}-{side.record.losses}-{side.record
-				.draws}"
+			title="Open {side.name}'s deck · #{side.rank} · {side.record.wins}-{side.record.losses}-{side
+				.record.draws}"
 			onmouseenter={() => follow(side.playerId)}
 			onmouseleave={unfollow}
 			onfocus={() => follow(side.playerId)}
@@ -90,6 +98,78 @@
 	{/if}
 {/snippet}
 
+{#snippet tileBody(side: BracketSide, champion: boolean)}
+	{#if champion}
+		<div class="w-full">
+			{#if side.legends.length > 0}
+				<div class="mb-2 flex gap-1">
+					{#each side.legends as slug (slug)}
+						<LegendArt {slug} sizes="96px" class="flex-1 shadow-lg" />
+					{/each}
+				</div>
+			{/if}
+			<div class="flex items-baseline justify-between gap-2">
+				<span class="min-w-0 truncate text-base font-semibold text-bright">{side.name}</span>
+				<span class="shrink-0 font-mono text-[11px] {side.deck ? 'text-neon' : 'text-muted'}">
+					{side.deck ? 'deck →' : 'no deck'}
+				</span>
+			</div>
+			<span class="font-mono text-[11px] text-muted">
+				{side.record.wins}-{side.record.losses}-{side.record.draws}
+			</span>
+		</div>
+	{:else}
+		{#if side.legends.length > 0}{@render face(side, 'w-6')}{/if}
+		<span class="min-w-0 flex-1">
+			<span class="block truncate text-sm text-bright">{side.name}</span>
+			<span class="font-mono text-[11px] text-muted">
+				{side.record.wins}-{side.record.losses}-{side.record.draws}
+			</span>
+		</span>
+		<span class="font-mono text-[11px] {side.deck ? 'text-neon' : 'text-muted'}">
+			{side.deck ? 'deck →' : 'no deck'}
+		</span>
+	{/if}
+{/snippet}
+
+<!-- A finisher in the rail. The whole tile opens their deck when they registered one. -->
+{#snippet tile(side: BracketSide, g: number)}
+	{@const tone = cn(
+		'flex items-center gap-2 rounded-lg border px-2 py-1.5',
+		following === side.playerId
+			? 'border-neon bg-neon/15'
+			: g === 0
+				? 'border-neon-dim bg-shell'
+				: 'border-edge bg-shell'
+	)}
+	{#if side.deck}
+		<a
+			href="/tournaments/decks/{side.deck}"
+			class="{tone} hover:bg-surface"
+			onmouseenter={() => follow(side.playerId)}
+			onmouseleave={unfollow}
+			onfocus={() => follow(side.playerId)}
+			onblur={unfollow}
+			onclick={(event) => tapped(event, side)}
+		>
+			{@render tileBody(side, g === 0)}
+		</a>
+	{:else}
+		<button
+			type="button"
+			class="{tone} w-full text-left"
+			title="No deck registered"
+			onmouseenter={() => follow(side.playerId)}
+			onmouseleave={unfollow}
+			onfocus={() => follow(side.playerId)}
+			onblur={unfollow}
+			onclick={() => (following = following === side.playerId ? null : side.playerId)}
+		>
+			{@render tileBody(side, g === 0)}
+		</button>
+	{/if}
+{/snippet}
+
 {#if bracket}
 	<div class="flex flex-col gap-6 lg:flex-row lg:items-start">
 		<aside class="shrink-0 lg:sticky lg:top-nav lg:w-60" aria-label="Placements">
@@ -101,61 +181,7 @@
 						</h2>
 						<ul class="space-y-1">
 							{#each group.players as side (side.playerId)}
-								<li>
-									<div
-										role="presentation"
-										class="flex items-center gap-2 rounded-lg border px-2 py-1.5 {following ===
-										side.playerId
-											? 'border-neon bg-neon/15'
-											: g === 0
-												? 'border-neon-dim bg-shell'
-												: 'border-edge bg-shell'}"
-										onmouseenter={() => follow(side.playerId)}
-										onmouseleave={unfollow}
-									>
-										{#if g === 0}
-											<div class="w-full">
-												{#if side.legends.length > 0}
-													<div class="mb-2 flex gap-1">
-														{#each side.legends as slug (slug)}
-															<LegendArt {slug} sizes="96px" class="flex-1 shadow-lg" />
-														{/each}
-													</div>
-												{/if}
-												<div class="flex items-baseline justify-between gap-2">
-													<span class="min-w-0 truncate text-base font-semibold text-bright"
-														>{side.name}</span
-													>
-													{#if side.deck}
-														<a
-															href="/tournaments/decks/{side.deck}"
-															class="shrink-0 font-mono text-[11px] text-neon hover:underline"
-															aria-label="Open {side.name}'s deck">deck →</a
-														>
-													{/if}
-												</div>
-												<span class="font-mono text-[11px] text-muted">
-													{side.record.wins}-{side.record.losses}-{side.record.draws}
-												</span>
-											</div>
-										{:else}
-											{#if side.legends.length > 0}{@render face(side, 'w-6')}{/if}
-											<span class="min-w-0 flex-1">
-												<span class="block truncate text-sm text-bright">{side.name}</span>
-												<span class="font-mono text-[11px] text-muted">
-													{side.record.wins}-{side.record.losses}-{side.record.draws}
-												</span>
-											</span>
-											{#if side.deck}
-												<a
-													href="/tournaments/decks/{side.deck}"
-													class="font-mono text-[11px] text-neon hover:underline"
-													aria-label="Open {side.name}'s deck">deck →</a
-												>
-											{/if}
-										{/if}
-									</div>
-								</li>
+								<li>{@render tile(side, g)}</li>
 							{/each}
 						</ul>
 					</section>
@@ -177,7 +203,9 @@
 						following {data.event.standings.find((s) => s.playerId === following)?.name} ✕
 					</button>
 				{:else}
-					<span class="text-muted">Point at a player to follow their path.</span>
+					<span class="text-muted"
+						>Point at a player to follow their path; click one to open their deck.</span
+					>
 				{/if}
 			</div>
 			<div class="flex min-w-max items-stretch gap-12">

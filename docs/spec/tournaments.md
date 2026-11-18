@@ -474,7 +474,7 @@ read-only, dynamic and `noindex`:
   final; on a touch screen a first tap follows and a second opens their deck, and a player with no deck is a
   button that toggles the follow. **A placements rail** beside it groups players by finish (Champion,
   Finalist, Top 4, Top 8, Top 16, as far as the cut went), each with their Legends, record and a deck link,
-  and follows the same highlight. A match card shows the winner's check and game score, the table and any
+  and follows the same highlight. A player's slot in the bracket and their tile in the rail are links to their deck (`/tournaments/decks/[guid]`); one with no registered deck says "no deck" and only follows. A match card shows the winner's check and game score, the table and any
   draws; a "Top N" chip names the cut. Not done: opening a deck in place, seeds on the card, a live bracket.
 - **Tiers** (2026-11-17). The tier list ranks how a deck _performs_, S down to D, and within a tier by how
   much of the field plays it (the share bar stays beside it). A group's _power_ is its match win rate (a
