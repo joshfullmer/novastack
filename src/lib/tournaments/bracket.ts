@@ -14,6 +14,8 @@ export type BracketSide = {
 	playerId: number;
 	name: string;
 	rank: number;
+	/** Their record over the whole event. */
+	record: { wins: number; losses: number; draws: number };
 	/** The deck's Melee guid, when they registered one. */
 	deck: string | null;
 	legends: string[];
@@ -24,6 +26,9 @@ export type BracketMatch = {
 	b: BracketSide;
 	gamesA: number;
 	gamesB: number;
+	/** Games neither side won. */
+	draws: number;
+	table: number | null;
 	/** Null for a draw, or a match with no result. */
 	winner: 'a' | 'b' | null;
 };
@@ -32,6 +37,8 @@ export type BracketRound = { number: number; name: string; matches: BracketMatch
 
 export type Bracket = {
 	rounds: BracketRound[];
+	/** How many players the playoff began with: 4 for a top 4. */
+	cut: number;
 	/** The winner of the last round, when it was one match with a result. */
 	champion: BracketSide | null;
 	/** Whether each round has half the matches of the one before, so lines can join them. */
@@ -45,6 +52,7 @@ const sideOf = (standing: StandingView): BracketSide => ({
 	playerId: standing.playerId,
 	name: standing.name,
 	rank: standing.rank,
+	record: { wins: standing.wins, losses: standing.losses, draws: standing.draws },
 	deck: standing.deck?.guid ?? null,
 	legends: standing.deck?.legends ?? []
 });
@@ -75,7 +83,17 @@ export function buildBracket(
 			if (match.round !== round.number || match.b === null || match.kind === 'bye') return [];
 			const [a, b] = [side(match.a.playerId), side(match.b.playerId)];
 			if (!a || !b) return [];
-			return [{ a, b, gamesA: match.gamesA, gamesB: match.gamesB, winner: winnerOf(match) }];
+			return [
+				{
+					a,
+					b,
+					gamesA: match.gamesA,
+					gamesB: match.gamesB,
+					draws: match.draws,
+					table: match.table,
+					winner: winnerOf(match)
+				}
+			];
 		})
 	}));
 
@@ -97,11 +115,43 @@ export function buildBracket(
 	const rounds = ordered.filter((round) => round.matches.length > 0);
 	const last = rounds.at(-1);
 	const final = last?.matches.length === 1 ? last.matches[0] : undefined;
+	const first = rounds[0];
 	return {
 		rounds,
+		cut: new Set(first.matches.flatMap((m) => [m.a.playerId, m.b.playerId])).size,
 		champion: final?.winner ? final[final.winner === 'a' ? 'a' : 'b'] : null,
 		joined: rounds.every(
 			(round, i) => i === 0 || round.matches.length * 2 === rounds[i - 1].matches.length
 		)
 	};
+}
+
+/** Finish groups, by the best rank each takes in: 1st, 2nd, then the top 4, 8 and 16. */
+const FINISHES = [
+	{ upTo: 1, label: 'Champion' },
+	{ upTo: 2, label: 'Finalist' },
+	{ upTo: 4, label: 'Top 4' },
+	{ upTo: 8, label: 'Top 8' },
+	{ upTo: 16, label: 'Top 16' }
+] as const;
+
+export type Placement = { label: string; players: BracketSide[] };
+
+/**
+ * Who finished where, as a bracket reader asks it: the champion, the finalist, the rest of the top 4,
+ * and on, as far as the playoff reached (`cut` players). By final rank, so a player the bracket draws
+ * far from the final still has their place. Groups with nobody in them are left out.
+ */
+export function placements(standings: readonly StandingView[], cut: number): Placement[] {
+	let from = 1;
+	return FINISHES.flatMap(({ upTo, label }) => {
+		const lowest = from;
+		from = upTo + 1;
+		if (lowest > cut) return [];
+		const players = standings
+			.filter((s) => s.rank >= lowest && s.rank <= upTo)
+			.sort((a, b) => a.rank - b.rank)
+			.map(sideOf);
+		return players.length > 0 ? [{ label, players }] : [];
+	});
 }

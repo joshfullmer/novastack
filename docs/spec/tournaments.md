@@ -468,8 +468,14 @@ read-only, dynamic and `noindex`:
   that feeds the next, working back from the final, since Melee lists matches by table; it leaves out byes,
   names a champion only from a final with a result, and says whether the rounds halve (so the lines can be
   drawn). An event that was Swiss alone has no bracket and keeps the old podium (top three as panels, the
-  rest as tiles and chips), and its tab stays "Podium". Not done: the path highlight swubase draws when you
-  point at a player.
+  rest as tiles and chips), and its tab stays "Podium".
+  **Following a player**: pointing at (or tabbing to) a player lights their rows in the bracket and in the
+  rail and thickens, in the accent colour, the lines they won along, ending where they lost or at the
+  final; on a touch screen a first tap follows and a second opens their deck, and a player with no deck is a
+  button that toggles the follow. **A placements rail** beside it groups players by finish (Champion,
+  Finalist, Top 4, Top 8, Top 16, as far as the cut went), each with their Legends, record and a deck link,
+  and follows the same highlight. A match card shows the winner's check and game score, the table and any
+  draws; a "Top N" chip names the cut. Not done: opening a deck in place, seeds on the card, a live bracket.
 - **Tiers** (2026-11-17). The tier list ranks how a deck _performs_, S down to D, and within a tier by how
   much of the field plays it (the share bar stays beside it). A group's _power_ is its match win rate (a
   draw counts half) pulled toward 50% as if it had also played 10 even matches (`TIER_PRIOR`), so a few

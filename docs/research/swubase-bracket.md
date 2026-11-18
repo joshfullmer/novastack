@@ -12,6 +12,11 @@ Malmo (90 players, **top 16**, the larger of only two top-16 events among about 
 top 4), Regional Open Utrecht (125, no cut), PQ Medellin (not imported). Counts of `bracketInfo` across all
 events [live, `/api/tournament`]: top8 about 1,220, top4 31, none 37, top16 2. There is no top 32 option.
 
+> **Status (2026-11-18):** built: the path highlight (with a touch fallback: a first tap follows, a second
+> opens the deck), the placements rail with cross-highlight, and the match-card polish (check, score chip,
+> table, draws, "Top N"). The deck's path through the event was already built (see `swubase-deck-view.md`).
+> Not built: opening a deck in place, URL state for the highlight, in-progress slots.
+
 ## 1. Inventory
 
 ### 1.1 Where it sits

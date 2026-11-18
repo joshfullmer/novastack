@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { buildBracket } from './bracket.ts';
+import { buildBracket, placements } from './bracket.ts';
 import type { MatchView, StandingView } from './event-view.ts';
 
 const standing = (playerId: number, rank: number): StandingView => ({
@@ -118,5 +118,49 @@ describe('buildBracket', () => {
 		});
 		expect(bracket?.rounds[0].matches).toHaveLength(2);
 		expect(bracket?.joined).toBe(false);
+	});
+});
+
+describe('the cut and the placements', () => {
+	const ranked = Array.from({ length: 10 }, (_, i) => standing(i + 1, i + 1));
+
+	it('counts how many players the playoff began with', () => {
+		const bracket = buildBracket({
+			rounds,
+			matches: [
+				match(2, 1, 8),
+				match(2, 2, 7),
+				match(2, 3, 6),
+				match(2, 4, 5),
+				match(3, 1, 2),
+				match(3, 3, 4),
+				match(4, 1, 3)
+			],
+			standings: players
+		});
+		expect(bracket?.cut).toBe(8);
+	});
+
+	it('groups a top 8 as champion, finalist, top 4 and top 8', () => {
+		const groups = placements(ranked, 8);
+		expect(groups.map((g) => [g.label, g.players.map((p) => p.rank)])).toEqual([
+			['Champion', [1]],
+			['Finalist', [2]],
+			['Top 4', [3, 4]],
+			['Top 8', [5, 6, 7, 8]]
+		]);
+	});
+
+	it('stops at the cut, and carries each player’s deck and record', () => {
+		const groups = placements(ranked, 4);
+		expect(groups.map((g) => g.label)).toEqual(['Champion', 'Finalist', 'Top 4']);
+		expect(groups[0].players[0]).toMatchObject({ playerId: 1, deck: 'D1', record: { wins: 0 } });
+	});
+
+	it('leaves out a group nobody is in', () => {
+		expect(placements([standing(1, 1), standing(2, 2)], 8).map((g) => g.label)).toEqual([
+			'Champion',
+			'Finalist'
+		]);
 	});
 });
