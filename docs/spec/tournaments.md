@@ -460,6 +460,16 @@ read-only, dynamic and `noindex`:
   decks. It lists no decks (which decks ran a card was judged not worth reading, 2026-11-18). It has no
   picker and no nav item: it is reached by clicking a card in the card breakdown, with a way back, and sits
   under Card breakdown in the sidebar.
+- **The bracket** (2026-11-18): an event that had playoff rounds (any round Melee names other than "Round N":
+  Quarterfinals, Semifinals, Finals) shows them at `/tournaments/[id]/podium`, the tab labelled **Bracket**,
+  as a bracket in the manner of swubase's: the champion above, then each playoff round as a column, each
+  match with both players' Legends and the games, the winner picked out, a click to the list they played,
+  and lines joining a round to the next. `buildBracket` (pure, `bracket.ts`) puts each round in the order
+  that feeds the next, working back from the final, since Melee lists matches by table; it leaves out byes,
+  names a champion only from a final with a result, and says whether the rounds halve (so the lines can be
+  drawn). An event that was Swiss alone has no bracket and keeps the old podium (top three as panels, the
+  rest as tiles and chips), and its tab stays "Podium". Not done: the path highlight swubase draws when you
+  point at a player.
 - **Tiers** (2026-11-17). The tier list ranks how a deck _performs_, S down to D, and within a tier by how
   much of the field plays it (the share bar stays beside it). A group's _power_ is its match win rate (a
   draw counts half) pulled toward 50% as if it had also played 10 even matches (`TIER_PRIOR`), so a few

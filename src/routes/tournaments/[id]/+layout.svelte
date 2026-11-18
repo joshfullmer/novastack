@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { page } from '$app/state';
 	import Meta from '#lib/components/Meta.svelte';
+	import { buildBracket } from '#lib/tournaments/bracket.js';
 	import { formatDate } from '#lib/tournaments/present.js';
 
 	let { data, children } = $props();
@@ -9,7 +10,7 @@
 	const base = $derived(`/tournaments/${event.id}`);
 	const views = $derived([
 		{ href: base, label: 'Standings' },
-		{ href: `${base}/podium`, label: 'Podium' },
+		{ href: `${base}/podium`, label: buildBracket(event) ? 'Bracket' : 'Podium' },
 		{ href: `${base}/rounds`, label: 'Rounds' }
 	]);
 
