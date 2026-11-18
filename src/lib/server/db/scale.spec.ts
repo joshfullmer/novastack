@@ -253,7 +253,7 @@ describe.skipIf(sizes.length === 0)('scale audit', () => {
 			time('card stats today, last 30 days', cards(todayJoin, 'AND t.starts_at >= ?'), since)
 		);
 
-		// shipped (migration 0016): tournament_id on each card row, indexed (board, tournament_id, card_slug).
+		// shipped (the tournament migration): tournament_id on each card row, indexed (board, tournament_id, card_slug).
 		const windowIds = `c.tournament_id IN (SELECT id FROM tournaments WHERE starts_at >= ?)`;
 		out.push(
 			time(

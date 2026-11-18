@@ -93,8 +93,9 @@ Tournament Decks apart from Decks, which carry owners, versions and visibility.
 ## 3. Schema
 
 Drizzle, in `src/lib/server/db/schema.ts` beside the other tables (the repo keeps them in one file);
-**built, as migration `drizzle/0014_*.sql`** (8 `CREATE TABLE`, 9 `CREATE INDEX`, nothing else; applied
-cleanly after 0000–0013 on a fresh local database). Foreign keys cascade from `tournaments`, so
+**built, as one migration, `drizzle/0014_*.sql`** (8 `CREATE TABLE` and their indexes, nothing else; the squash of
+what were five during development, none of which reached production; applied cleanly after 0000–0013, and
+it leaves every existing table as it was). Foreign keys cascade from `tournaments`, so
 **re-ingesting a Tournament is `DELETE FROM tournaments WHERE id = ?` plus inserts** and nothing is
 orphaned. The sketch below is the intent; `schema.ts` is the source of truth for column spellings.
 `standings.deckGuid` points at `tournament_decks.guid`, so decks are inserted before standings, and
@@ -110,7 +111,7 @@ tournaments        // one per ingested Melee event
   format           text              // "Constructed" — Melee's word, not interpreted
   formatId         text              // Melee's format GUID (the one in the Decklists filter URL)
   playerCount      integer           // ParticipatorCount
-  venue            text null         // the page header's "Event Venue" (migration 0015)
+  venue            text null         // the page header's "Event Venue"
   tournamentType   text null         // header's "Tournament Type": how it's played ("Tabletop"), NOT a category
   entryFee         text null         // as shown, currency and caveat included; not parsed to a number
   registration     text null         // "Open Registration" / "Invite Only"
@@ -179,7 +180,7 @@ assigned**, so adding or moving a meta needs no edit to any Tournament.
 - **Several decklists per player** can exist; keep the one whose `FormatId` equals the Tournament's
   `formatId`, and fail the run if more than one matches.
 
-- **Event kind is decided from the name, and stored** (`tournaments.kind`, migration 0017: the list filters and counts by it in SQL; it was derived at read time until then). Melee has no event-type field (research
+- **Event kind is decided from the name, and stored** (`tournaments.kind`: the list filters and counts by it in SQL; it was derived at read time until then). Melee has no event-type field (research
   `melee-ingest.md`): "Showdown" exists only in what an organizer typed. `eventKind(name)` in
   `src/lib/tournaments/kind.ts` is an ordered list of name rules (first match wins), applied when an event is
   ingested. The categories are **Regional, Showdown, Brawl, Prerelease and Other**, named by the project
@@ -436,7 +437,7 @@ selects) feeds all three; `buildEventView` (`src/lib/tournaments/event-view.ts`)
 against the ingest's own fixtures. Dynamic, not prerendered; `/tournaments` is in the hooks'
 `DYNAMIC_PREFIXES`. A non-integer or unknown id is a 404 before or after one lookup. Not yet done: a
 shared-cache header (a response that may carry a session cookie can't be `public` without care), a nav
-link (nothing to link to until the list page exists), and production (migration `0014` isn't applied).
+link (nothing to link to until the list page exists), and production (the tournament migration isn't applied).
 
 **Built: the list page (2026-11-16).** `/tournaments` with two views of the same events, `?view=table`
 (a dense ledger) and a Gallery (art-forward), chosen by the app's usual List/Gallery cookie toggle. `getEventList` reads **aggregates only** (counts per
@@ -548,7 +549,7 @@ counted 11 matches against the prototype's 33, because the matrix draws only the
 the page now says "11 between these lines (of 33 between decks of different lines)".
 
 **Not yet measured or done:** D1 `rows_read` for these aggregates (the harness can't say; open question 7),
-a shared-cache header, a site-nav link, and production (migrations `0014` and `0015` are not applied).
+a shared-cache header, a site-nav link, and production (the tournament migration is not applied; see `docs/runbooks/tournaments-rollout.md`).
 
 ---
 
@@ -568,7 +569,7 @@ a shared-cache header, a site-nav link, and production (migrations `0014` and `0
    collected) makes a surprise fail loudly rather than truncate.
 4. **Storage.** D1 (§2), over committed JSON, because the statistics are filtered queries.
 5. **Events without decklists.** Not ingested (§4.1). No results-only Tournaments and no `--no-decks`;
-   the `has_decks` column that recorded the distinction is gone from the schema and migration `0014`.
+   the `has_decks` column that recorded the distinction is gone from the schema and the migration.
 
 ### Open
 

@@ -97,7 +97,7 @@ Cyberpunk equivalent is `pre#decklist-text`.)
   every time, so it is how the event is played, not a category. "Showdown" appears only in the
   organizer-written **name** ("Night City Showdown", in all five) and in some descriptions. Checked
   2026-11-16 on 485070, 477190, 495716, 487802, 478979.
-  **Now ingested** (migration `0015`): venue, tournament type, entry fee, registration mode and capacity,
+  **Now ingested** (the tournament migration): venue, tournament type, entry fee, registration mode and capacity,
   read from the header's stable element ids (`#tournament-headline-platform`, `…-registration`, and the
   `data-type="venue"` link). Observed values: type `Tabletop` ×5; fee `$20.00`–`$30.00 (External to
 Melee)`; registration `Open Registration` ×4 and `Invite Only` ×1; capacities 16, 32, 32, 32, 128.

@@ -1,7 +1,7 @@
 {
   "version": "6",
   "dialect": "sqlite",
-  "id": "9a6e6549-20e6-4c83-abf0-768e73685db2",
+  "id": "41da6569-d6db-48cc-a77d-714d4cc1a011",
   "prevId": "58368397-9f09-4a02-8a13-19d8e69e7498",
   "tables": {
     "binder_pockets": {
@@ -881,6 +881,13 @@
           "notNull": true,
           "autoincrement": false
         },
+        "tournament_id": {
+          "name": "tournament_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
         "card_slug": {
           "name": "card_slug",
           "type": "text",
@@ -910,6 +917,15 @@
             "card_slug"
           ],
           "isUnique": false
+        },
+        "tournament_deck_cards_board_idx": {
+          "name": "tournament_deck_cards_board_idx",
+          "columns": [
+            "board",
+            "tournament_id",
+            "card_slug"
+          ],
+          "isUnique": false
         }
       },
       "foreignKeys": {
@@ -922,6 +938,19 @@
           ],
           "columnsTo": [
             "guid"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "tournament_deck_cards_tournament_id_tournaments_id_fk": {
+          "name": "tournament_deck_cards_tournament_id_tournaments_id_fk",
+          "tableFrom": "tournament_deck_cards",
+          "tableTo": "tournaments",
+          "columnsFrom": [
+            "tournament_id"
+          ],
+          "columnsTo": [
+            "id"
           ],
           "onDelete": "cascade",
           "onUpdate": "no action"
@@ -985,6 +1014,13 @@
           "notNull": false,
           "autoincrement": false
         },
+        "ram": {
+          "name": "ram",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
         "unresolved": {
           "name": "unresolved",
           "type": "integer",
@@ -1006,6 +1042,13 @@
           "name": "tournament_decks_legend_line_idx",
           "columns": [
             "legend_line"
+          ],
+          "isUnique": false
+        },
+        "tournament_decks_ram_idx": {
+          "name": "tournament_decks_ram_idx",
+          "columns": [
+            "ram"
           ],
           "isUnique": false
         }
@@ -1283,6 +1326,14 @@
           "notNull": true,
           "autoincrement": false
         },
+        "kind": {
+          "name": "kind",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'Other'"
+        },
         "format": {
           "name": "format",
           "type": "text",
@@ -1304,6 +1355,41 @@
           "notNull": true,
           "autoincrement": false
         },
+        "venue": {
+          "name": "venue",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "tournament_type": {
+          "name": "tournament_type",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "entry_fee": {
+          "name": "entry_fee",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "registration": {
+          "name": "registration",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "capacity": {
+          "name": "capacity",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
         "ingested_at": {
           "name": "ingested_at",
           "type": "integer",
@@ -1317,6 +1403,14 @@
         "tournaments_starts_at_idx": {
           "name": "tournaments_starts_at_idx",
           "columns": [
+            "starts_at"
+          ],
+          "isUnique": false
+        },
+        "tournaments_kind_idx": {
+          "name": "tournaments_kind_idx",
+          "columns": [
+            "kind",
             "starts_at"
           ],
           "isUnique": false
