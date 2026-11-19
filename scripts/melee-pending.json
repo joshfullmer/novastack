@@ -1,17 +1,52 @@
 {
+	"477201": {
+		"name": "Night City Showdown @ Fenris Gaming",
+		"reason": "Round 3 has results but Melee has no standings for it, so the final ranking isn't known. Try again once the organizer publishes them.",
+		"firstTried": "2026-11-19T17:10:12.717Z",
+		"lastTried": "2026-11-19T17:10:12.717Z",
+		"attempts": 1
+	},
+	"477469": {
+		"name": "J8 Saturday Night City Brawls",
+		"reason": "Round 3 has results but Melee has no standings for it, and the final ranking can't be read from them (it is not a playoff round). Try again once the organizer publishes them.",
+		"firstTried": "2026-11-19T17:22:18.120Z",
+		"lastTried": "2026-11-19T17:22:18.120Z",
+		"attempts": 1
+	},
 	"479192": {
 		"name": "Night City SHOWDOWN Saturday",
 		"reason": "Finals has results but Melee has no standings for it, so the final ranking isn't known. Try again once the organizer publishes them.",
 		"firstTried": "2026-11-19T17:07:01.248Z",
-		"lastTried": "2026-11-19T17:07:27.861Z",
-		"attempts": 2
+		"lastTried": "2026-11-19T17:09:26.738Z",
+		"attempts": 3
+	},
+	"479348": {
+		"name": "Layton Gaming Night City Showdown",
+		"reason": "Finals has results but Melee has no standings for it, so the final ranking isn't known. Try again once the organizer publishes them.",
+		"firstTried": "2026-11-19T17:09:29.244Z",
+		"lastTried": "2026-11-19T17:10:20.257Z",
+		"attempts": 3
+	},
+	"481194": {
+		"name": "Night City Showdown",
+		"reason": "Round 5 has results but Melee has no standings for it, and the final ranking can't be read from them (it is not a playoff round). Try again once the organizer publishes them.",
+		"firstTried": "2026-11-19T17:13:19.709Z",
+		"lastTried": "2026-11-19T17:13:54.349Z",
+		"attempts": 3
+	},
+	"481423": {
+		"name": "Cyberpunk TCG Night City Showdown @SpielRaum Wien",
+		"reason": "Finals has results but Melee has no standings for it, and the final ranking can't be read from them (standings stop partway through the playoff, at Semifinals). Try again once the organizer publishes them.",
+		"firstTried": "2026-11-19T17:11:58.155Z",
+		"lastTried": "2026-11-19T17:12:36.259Z",
+		"attempts": 4
 	},
 	"485839": {
 		"name": "Night City Showdown",
 		"reason": "Finals has results but Melee has no standings for it, so the final ranking isn't known. Try again once the organizer publishes them.",
 		"firstTried": "2026-11-19T17:06:44.604Z",
-		"lastTried": "2026-11-19T17:07:25.365Z",
-		"attempts": 2
+		"lastTried": "2026-11-19T17:09:24.232Z",
+		"attempts": 3
 	},
 	"486315": {
 		"name": "Guardian Games Aloha - Cyberpunk TCG Night City Showdown",
