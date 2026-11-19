@@ -325,6 +325,13 @@ is a browser's, not that it is current. HTML (round buttons, decklist text) need
 installed. Add one as a devDependency (script-side only) rather than regexing markup, and decode
 entities.
 
+### 4.3.1 Finding the id
+
+The command takes a bare Melee id, so `/tournaments/add` (unlisted, `noindex`) hosts a bookmarklet that,
+clicked on a `melee.gg/Tournament/View/<id>` page, copies `pnpm melee <id>`. It runs in the visitor's
+own browser, reads only the address, and sends nothing; ingest stays manual and one id at a time
+(§1.3). Melee's CSP allows inline `javascript:` URLs (checked 2026-11-19).
+
 ### 4.4 Writing to D1
 
 The job builds the whole Tournament in memory first, then applies one change set: delete, then insert.
