@@ -44,7 +44,7 @@
 					{#each shelf.decks as deck (deck.guid)}
 						<li>
 							<a
-								href={href(`/tournaments/decks/${deck.guid}`, periodParams(data.period))}
+								href={href(`/meta/decks/${deck.guid}`, periodParams(data.period))}
 								class="block rounded-lg border border-edge px-3 py-1.5 text-xs hover:border-neon-dim"
 							>
 								<span class="block font-mono {deck.rank === 1 ? 'text-neon' : 'text-muted'}">

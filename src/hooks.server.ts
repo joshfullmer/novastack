@@ -29,7 +29,7 @@ const DYNAMIC_PREFIXES = [
 	'/collection',
 	'/decks',
 	'/explore',
-	'/tournaments',
+	'/meta',
 	'/auth',
 	'/account',
 	'/api',

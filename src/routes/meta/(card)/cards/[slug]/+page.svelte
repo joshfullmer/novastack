@@ -54,7 +54,7 @@
 
 <div class="py-6">
 	<a
-		href={href('/tournaments/meta/cards', periodParams(data.period))}
+		href={href('/meta/cards', periodParams(data.period))}
 		class="font-mono text-xs text-muted hover:text-body">← Card breakdown</a
 	>
 

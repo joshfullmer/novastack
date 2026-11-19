@@ -166,7 +166,7 @@
 					legends={legends.map((card) => ({ card }))}
 					mainGroups={allGroups}
 					sideboard={side}
-					shareUrl={`${page.url.origin}/tournaments/decks/${deck.guid}`}
+					shareUrl={`${page.url.origin}/meta/decks/${deck.guid}`}
 				/>
 				<button
 					type="button"

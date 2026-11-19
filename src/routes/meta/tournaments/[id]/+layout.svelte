@@ -7,7 +7,7 @@
 	let { data, children } = $props();
 	const event = $derived(data.event);
 
-	const base = $derived(`/tournaments/${event.id}`);
+	const base = $derived(`/meta/tournaments/${event.id}`);
 	const views = $derived([
 		{ href: base, label: 'Standings' },
 		{ href: `${base}/podium`, label: buildBracket(event) ? 'Bracket' : 'Podium' },

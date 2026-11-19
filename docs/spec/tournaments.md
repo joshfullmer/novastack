@@ -6,7 +6,7 @@ tournament software, into D1. This is the "tournament/meta analytics" project th
 
 **Scope.** What is stored, the job that fills it, and what the meta statistics are computed from it
 (§6). Three outputs are wanted: **decklists**, **tournament results**, and **meta stats**. The pages
-that show them (`/tournaments`, a Tournament's page, meta breakdowns) are a separate spec.
+that show them (`/meta/tournaments`, a Tournament's page, meta breakdowns) are a separate spec.
 
 **Rationale lives elsewhere.** Every fact about Melee below — endpoints, shapes, the WAF, what works
 anonymously — was measured and is in `docs/research/melee-ingest.md`. Terms (**Tournament**,
@@ -357,7 +357,7 @@ entities.
 
 ### 4.3.1 Finding the id
 
-The command takes a bare Melee id, so `/tournaments/add` (unlisted, `noindex`) hosts a bookmarklet that,
+The command takes a bare Melee id, so `/meta/tournaments/add` (unlisted, `noindex`) hosts a bookmarklet that,
 clicked on a `melee.gg/Tournament/View/<id>` page, copies `pnpm melee <id>`; clicked on any other
 melee.gg page, such as the signed-in `/Decklists` search (its rows link `td.TournamentName-column a`
 to `/Tournament/View/<id>`), it copies one command for every distinct event linked, in page order. It
@@ -482,16 +482,16 @@ header (audit, "Request path").
 tables after each ingest, as swubase does (per meta and per Legend: `deck_count`, main/side counts,
 `match_win`, `match_lose`). That is a later, additive migration, not a v1 table.
 
-**Built: the event page (2026-11-16).** `/tournaments/[id]` with three views as sub-routes, so each is
-linkable: `/tournaments/[id]` (standings, each row opening to its deck), `/podium`, and `/rounds`
+**Built: the event page (2026-11-16).** `/meta/tournaments/[id]` with three views as sub-routes, so each is
+linkable: `/meta/tournaments/[id]` (standings, each row opening to its deck), `/podium`, and `/rounds`
 (`?round=N`). One layout load (`getEventView` in `src/lib/server/db/tournaments.ts`, six indexed
 selects) feeds all three; `buildEventView` (`src/lib/tournaments/event-view.ts`) shapes it and is tested
-against the ingest's own fixtures. Dynamic, not prerendered; `/tournaments` is in the hooks'
+against the ingest's own fixtures. Dynamic, not prerendered; `/meta/tournaments` is in the hooks'
 `DYNAMIC_PREFIXES`. A non-integer or unknown id is a 404 before or after one lookup. Not yet done: a
 shared-cache header (a response that may carry a session cookie can't be `public` without care), a nav
 link (nothing to link to until the list page exists), and production (the tournament migration isn't applied).
 
-**Built: the list page (2026-11-16).** `/tournaments` with two views of the same events, `?view=table`
+**Built: the list page (2026-11-16).** `/meta/tournaments` with two views of the same events, `?view=table`
 (a dense ledger) and a Gallery (art-forward), chosen by the app's usual List/Gallery cookie toggle. `getEventList` reads **aggregates only** (counts per
 event and one row per Legend), so its cost grows with events rather than decks. Each event carries a
 "showcase": the best-placed player who registered a deck, so a card isn't blank when the champion left
@@ -501,20 +501,20 @@ their list empty (2 of the 5 events ingested so far); the page says which rank's
 **Built: the statistics pages (2026-11-17).** Every view from the prototype round, as real routes, all
 read-only, dynamic and `noindex`:
 
-- **`/tournaments/meta`** (tier list: group by RAM, Legends or By Legend; count all decks, top 8 or
+- **`/meta`** (tier list: group by RAM, Legends or By Legend; count all decks, top 8 or
   winners; conversion columns), **`/meta/matchups`** (the matrix, for the eight most-played RAMs or lines) and
   **`/meta/cards`** ("card breakdown", optionally within one RAM or set of Legends).
-- **`/tournaments/decks`** (filter by Legend, RAM, a card the deck runs, or player; paged on the server),
+- **`/meta/decks`** (filter by Legend, RAM, a card the deck runs, or player; paged on the server),
   **`/decks/lines`** (shelves per Legend line) and **`/decks/[guid]`** (a deck's path through its event, and
   its list).
-- **`/tournaments/cards/[slug]`**: a card's tournament record. Its art with the headline numbers under it
+- **`/meta/cards/[slug]`**: a card's tournament record. Its art with the headline numbers under it
   (share of decks, average copies, sideboard, wins, top 8), and where it fits: does it do better among the
   top 8 and winners than across the field, and which RAMs and Legends run it, with the share of each one's
   decks. It lists no decks (which decks ran a card was judged not worth reading, 2026-11-18). It has no
   picker and no nav item: it is reached by clicking a card in the card breakdown, with a way back, and sits
   under Card breakdown in the sidebar.
 - **The bracket** (2026-11-18): an event that had playoff rounds (any round Melee names other than "Round N":
-  Quarterfinals, Semifinals, Finals) shows them at `/tournaments/[id]/podium`, the tab labelled **Bracket**,
+  Quarterfinals, Semifinals, Finals) shows them at `/meta/tournaments/[id]/podium`, the tab labelled **Bracket**,
   as a bracket in the manner of swubase's: the champion above, then each playoff round as a column, each
   match with both players' Legends and the games, the winner picked out, a click to the list they played,
   and lines joining a round to the next. `buildBracket` (pure, `bracket.ts`) puts each round in the order
@@ -527,7 +527,7 @@ read-only, dynamic and `noindex`:
   final; on a touch screen a first tap follows and a second opens their deck, and a player with no deck is a
   button that toggles the follow. **A placements rail** beside it groups players by finish (Champion,
   Finalist, Top 4, Top 8, Top 16, as far as the cut went), each with their Legends, record and a deck link,
-  and follows the same highlight. A player's slot in the bracket and their tile in the rail are links to their deck (`/tournaments/decks/[guid]`); one with no registered deck says "no deck" and only follows. A match card shows the winner's check and game score, the table and any
+  and follows the same highlight. A player's slot in the bracket and their tile in the rail are links to their deck (`/meta/decks/[guid]`); one with no registered deck says "no deck" and only follows. A match card shows the winner's check and game score, the table and any
   draws; a "Top N" chip names the cut. Not done: opening a deck in place, seeds on the card, a live bracket.
 - **Tiers** (2026-11-17). The tier list ranks how a deck _performs_, S down to D, and within a tier by how
   much of the field plays it (the share bar stays beside it). A group's _power_ is its match win rate (a
@@ -541,7 +541,7 @@ read-only, dynamic and `noindex`:
   Legend". The page of cards is the **card breakdown** (the top-level Cards tab is a different thing: one
   card's usage). The breakdown orders by Percentage (the share of decks that ran a card) or Count (its
   copies), and shows both on the art.
-- **The deck pane** (2026-11-17): on a screen 1280px wide or more, `/tournaments/decks` shows the chosen deck
+- **The deck pane** (2026-11-17): on a screen 1280px wide or more, `/meta/decks` shows the chosen deck
   in a sticky right half instead of going to a new page. The choice is `?deck=<guid>` (so a link, and Back,
   keep it); it stays open as filters change; a plain click on a narrower screen, or a modified click or a
   link opened without JavaScript, still goes to `/decks/[guid]`, which shows the same `DeckDetail`.
@@ -569,13 +569,22 @@ read-only, dynamic and `noindex`:
   view is the place to start) and URL state for a card dialog.
 - **Navigation is a sidebar** (2026-11-17): the section's tabs, the meta and deck sub-tabs and the
   period / kind / field-size row used to take about 300px off the top of every page. They are now one
-  collapsible left sidebar (`TournamentsNav`, in `/tournaments/+layout.svelte`): Events, Meta (Tier list,
-  Matchups, Card breakdown), Decks (All decks, By Legends), and, on the statistics pages only, the
+  collapsible left sidebar (`TournamentsNav`, in `/meta/+layout.svelte`): Meta (Tier list, Matchups,
+  Card breakdown), Tournaments, Decks (All decks, By Legends), and, on the statistics pages only, the
   scope (Period, Kind, Players) as stacked dropdowns. Collapsed, it is a rail of initials (and the period);
-  the choice is the `tournaments-nav` cookie. Below `lg` it is a menu above the page. There is no Cards item: a card's own page (`/tournaments/cards/[slug]`: its record, and where it fits) is reached from the card breakdown, and there is no `/tournaments/cards` index. Pages drop their own
-  titles (kept for screen readers) since the sidebar says where you are. The deck pane's split moved to
-  1536px wide, since the sidebar takes room. The scope loads in `/tournaments/+layout.server.ts` now, so
-  every page under it has `period`, `periods` and `kinds`.
+  the choice is the `tournaments-nav` cookie. Below `lg` it is a menu above the page. There is no Cards
+  item: a card's own page (`/meta/cards/[slug]`: its record, and where it fits) is reached from the card
+  breakdown. Pages drop their own titles (kept for screen readers) since the sidebar says where you are.
+  The deck pane's split moved to 1536px wide, since the sidebar takes room. The scope loads in
+  `/meta/+layout.server.ts`, so every page under it has `period`, `periods` and `kinds`.
+- **Meta is the front of it, Tournaments a sub-page** (2026-11-19): everything moved from `/tournaments/…`
+  to `/meta/…`, with no redirects, because no page was public or linked yet. `/meta` is the tier list;
+  `/meta/matchups`, `/meta/cards` (the card breakdown) and `/meta/cards/[slug]`; `/meta/decks`,
+  `/meta/decks/lines`, `/meta/decks/[guid]`; and the event list at `/meta/tournaments` with each event at
+  `/meta/tournaments/[id]` (`/podium`, `/rounds`) and the bookmarklet page at `/meta/tournaments/add`. The
+  sidebar leads with Meta, with Tournaments second and Decks after it. `/meta` is the public-read prefix and the dynamic
+  prefix in the hooks. **Not done on purpose:** the site header has no Meta link and the pages are still
+  `noindex`; adding the link is the launch step (`docs/runbooks/tournaments-rollout.md`).
 - **Layout** (2026-11-17): the statistics pages use the app's wide container (`max-w-[1800px]`) and fill it:
   the tier list flows into two columns and the card breakdown goes to eight or ten columns of art. Lists of
   rows stay one column: data you scan down is not split in two. The period, kind and field-size choices are dropdowns (`LinkSelect`).

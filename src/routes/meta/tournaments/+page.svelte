@@ -73,10 +73,10 @@
 
 <!-- `noindex` until the tournament pages launch (production has no tournament tables yet, and nothing links here). -->
 <Meta
-	title="Tournaments — novastack"
+	title="Tournaments — Meta — novastack"
 	description="Cyberpunk TCG tournament results and decklists."
 	origin={data.origin}
-	path="/tournaments"
+	path="/meta/tournaments"
 	noindex
 />
 
@@ -107,7 +107,12 @@
 		{/snippet}
 
 		<div class="mt-3 flex flex-wrap items-center gap-x-6 gap-y-2" role="group" aria-label="Filter">
-			<form method="get" action="/tournaments" role="search" onsubmit={() => clearTimeout(pending)}>
+			<form
+				method="get"
+				action="/meta/tournaments"
+				role="search"
+				onsubmit={() => clearTimeout(pending)}
+			>
 				{#if query.kinds.length > 0}<input
 						type="hidden"
 						name="kind"
@@ -186,7 +191,7 @@
 				{#each data.events as event (event.id)}
 					<li>
 						<a
-							href="/tournaments/{event.id}"
+							href="/meta/tournaments/{event.id}"
 							class="grid grid-cols-[6.5rem_1fr_3rem_3rem_16rem] items-center gap-x-4 rounded px-2 py-2.5 hover:bg-surface"
 						>
 							<span class="font-mono text-xs text-muted">{formatDate(event.startsAt)}</span>
@@ -231,7 +236,7 @@
 				{#each data.events as event (event.id)}
 					<li>
 						<a
-							href="/tournaments/{event.id}"
+							href="/meta/tournaments/{event.id}"
 							class="group block overflow-hidden rounded-xl border border-edge bg-shell transition hover:border-neon-dim"
 						>
 							<div class="relative flex h-44 items-center justify-center bg-surface px-6">

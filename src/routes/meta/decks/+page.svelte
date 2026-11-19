@@ -131,10 +131,7 @@
 			<!-- Enter in a box submits the form; with no button, a form of several fields would not. -->
 			<button class="sr-only">Filter</button>
 			{#if filters.legend || filters.ram || filters.card || filters.player}
-				<a
-					href={href('/tournaments/decks', periodParams(data.period))}
-					class="text-muted hover:text-body"
-				>
+				<a href={href('/meta/decks', periodParams(data.period))} class="text-muted hover:text-body">
 					Clear
 				</a>
 			{/if}
@@ -159,7 +156,7 @@
 					{#each data.rows as deck (deck.guid)}
 						<li>
 							<a
-								href={href(`/tournaments/decks/${deck.guid}`, periodParams(data.period))}
+								href={href(`/meta/decks/${deck.guid}`, periodParams(data.period))}
 								onclick={(event) => open(event, deck.guid)}
 								aria-current={deck.guid === data.deck?.guid ? 'true' : undefined}
 								title="{legendNames(deck.legends)} · {deck.eventName}"
@@ -234,7 +231,7 @@
 			{#if data.deck}
 				<div class="mb-3 flex shrink-0 items-center justify-between font-mono text-xs">
 					<a
-						href={href(`/tournaments/decks/${data.deck.guid}`, periodParams(data.period))}
+						href={href(`/meta/decks/${data.deck.guid}`, periodParams(data.period))}
 						class="text-muted hover:text-body">Open on its own page ↗</a
 					>
 					<a href={withParams(page.url, { deck: null })} class="text-muted hover:text-body"
@@ -245,7 +242,7 @@
 					deck={data.deck}
 					view={data.deckView}
 					layout="pane"
-					hrefFor={(guid) => href(`/tournaments/decks/${guid}`, periodParams(data.period))}
+					hrefFor={(guid) => href(`/meta/decks/${guid}`, periodParams(data.period))}
 					onopen={open}
 				/>
 			{:else}

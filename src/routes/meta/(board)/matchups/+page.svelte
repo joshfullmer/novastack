@@ -59,7 +59,7 @@
 	>
 		{#each BY as [key, label] (key)}
 			<a
-				href={href('/tournaments/meta/matchups', { ...periodParams(data.period), by: key })}
+				href={href('/meta/matchups', { ...periodParams(data.period), by: key })}
 				aria-current={data.by === key ? 'true' : undefined}
 				class="rounded-full px-3 py-1 {data.by === key
 					? 'bg-neon text-void'

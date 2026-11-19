@@ -10,7 +10,7 @@ the data loaded is invisible until you link it.
 ## Order, and why
 
 1. **Migrate** before the code: the new code queries the tournament tables, so deploying first would make
-   `/tournaments/*` error. The migration is additive, so the code already live ignores it.
+   `/meta/tournaments/*` error. The migration is additive, so the code already live ignores it.
 2. **Seed and populate** before the push if you can: `--check --remote` then proves prod matches a fresh
    fetch before anyone could land on a page. (Either order is safe; the pages are unlinked.)
 3. **Push** (a push to `main` deploys; the managed hook stops Claude from doing it).
@@ -54,7 +54,7 @@ pnpm exec wrangler d1 execute novastack-decks --remote --command \
   "select (select count(*) from tournaments) events, (select count(*) from tournament_decks) decks, (select count(*) from tournament_decks where ram is not null) with_ram, (select count(*) from standings) standings, (select count(*) from tournament_matches) matches"
 ```
 
-5. Push. Open `/tournaments` and a few pages (the period menu should default to WNC).
+5. Push. Open `/meta/tournaments` and a few pages (the period menu should default to WNC).
 
 ## If something goes wrong
 
@@ -79,8 +79,8 @@ pnpm exec wrangler d1 execute novastack-decks --remote --command \
   difference, `pnpm melee --promote` to apply it. Ids already in the database are
   skipped, so a pasted batch is safe; add `--force` to fetch and rewrite one anyway (a repair, or decks
   that arrived late). The id is the number in
-  `melee.gg/Tournament/View/<id>`; `/tournaments/add` hosts a bookmarklet that copies the command from
+  `melee.gg/Tournament/View/<id>`; `/meta/tournaments/add` hosts a bookmarklet that copies the command from
   that page, or from a `/Decklists` search page, where it copies one command for every event listed
   (`src/lib/tournaments/bookmarklet.ts`). It only reads the page and writes the clipboard.
 - A new meta is one `INSERT INTO metas` (name, start in ms UTC, end or NULL).
-- To show the pages to everyone: add the nav link and drop `noindex` (`Meta` component), when you are ready.
+- To show the pages to everyone: add a Meta link to the site header (they live under `/meta`) and drop `noindex` (`Meta` component), when you are ready.

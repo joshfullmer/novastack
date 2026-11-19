@@ -9,7 +9,7 @@
 </script>
 
 <a
-	href={href('/tournaments/decks', periodParams(data.period))}
+	href={href('/meta/decks', periodParams(data.period))}
 	class="font-mono text-xs text-muted hover:text-body"
 >
 	← All decks
@@ -19,6 +19,6 @@
 	<DeckDetail
 		deck={data.deck}
 		view={data.deckView}
-		hrefFor={(guid) => href(`/tournaments/decks/${guid}`, periodParams(data.period))}
+		hrefFor={(guid) => href(`/meta/decks/${guid}`, periodParams(data.period))}
 	/>
 </div>

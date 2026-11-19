@@ -26,7 +26,7 @@
 	);
 	const percent = (n: number) => `${Math.round(n * 100)}%`;
 	const mine = (line: string | null, ram: string | null = null) =>
-		href('/tournaments/meta/cards', { ...periodParams(data.period), line, ram });
+		href('/meta/cards', { ...periodParams(data.period), line, ram });
 	const all = $derived(data.line === null && data.ram === null);
 
 	const OPTIONS = [
@@ -125,7 +125,7 @@
 			{#each cards as card (card.slug)}
 				<li>
 					<a
-						href={href(`/tournaments/cards/${card.slug}`, periodParams(data.period))}
+						href={href(`/meta/cards/${card.slug}`, periodParams(data.period))}
 						title="{cardName(
 							card.slug
 						)}: in {card.decks} of {data.decks} decks, {card.avgCopies.toFixed(

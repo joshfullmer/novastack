@@ -1,5 +1,5 @@
 <script lang="ts">
-	// The tournaments section: a collapsible sidebar (navigation, and what the statistics are cut by) and
+	// The Meta section: a collapsible sidebar (navigation, and what the statistics are cut by) and
 	// the page beside it. Not in the site nav yet: the pages are unlaunched (production has no tournament
 	// tables), so they are reachable by URL and from each other only. Narrower than `lg` the sidebar is a
 	// menu above the page instead.
@@ -40,7 +40,7 @@
 		</aside>
 		<div class="min-w-0 flex-1 {full ? '2xl:flex 2xl:min-h-0 2xl:flex-col' : ''}">
 			<details class="pt-4 lg:hidden">
-				<summary class="cursor-pointer font-mono text-sm text-muted">Tournaments ▾</summary>
+				<summary class="cursor-pointer font-mono text-sm text-muted">Meta ▾</summary>
 				<div class="mt-3 rounded-lg border border-edge bg-shell p-3">
 					<TournamentsNav period={data.period} periods={data.periods} kinds={data.kinds} />
 				</div>

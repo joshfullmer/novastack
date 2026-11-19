@@ -1,5 +1,5 @@
 <script lang="ts">
-	// The tournaments section's navigation, and what the statistics pages are cut by (period, kind of
+	// The Meta section's navigation (tier list, matchups, cards, decks, and the tournaments behind them), and what the statistics pages are cut by (period, kind of
 	// event, field size), in one sidebar, so neither takes a row off the top of every page. Collapsed it is
 	// a rail of initials. The scope shows only on the statistics pages: an event's own page is not cut by
 	// a meta. A link carries the scope with it (`periodParams`).
@@ -39,50 +39,51 @@
 
 	const SECTIONS: Section[] = [
 		{
-			label: 'Events',
-			initial: 'E',
-			path: '/tournaments',
-			scoped: false,
-			on: (p) => p === '/tournaments' || /^\/tournaments\/\d/.test(p),
-			items: []
-		},
-		{
 			label: 'Meta',
 			initial: 'M',
-			path: '/tournaments/meta',
+			path: '/meta',
 			scoped: true,
 			// A card's own page is reached from the card breakdown, so it sits here.
-			on: (p) => p.startsWith('/tournaments/meta') || p.startsWith('/tournaments/cards'),
+			on: (p) => p === '/meta' || p.startsWith('/meta/matchups') || p.startsWith('/meta/cards'),
 			items: [
-				{ label: 'Tier list', path: '/tournaments/meta', on: (p) => p === '/tournaments/meta' },
+				{ label: 'Tier list', path: '/meta', on: (p) => p === '/meta' },
 				{
 					label: 'Matchups',
-					path: '/tournaments/meta/matchups',
-					on: (p) => p.startsWith('/tournaments/meta/matchups')
+					path: '/meta/matchups',
+					on: (p) => p.startsWith('/meta/matchups')
 				},
 				{
 					label: 'Card breakdown',
-					path: '/tournaments/meta/cards',
-					on: (p) => p.startsWith('/tournaments/meta/cards') || p.startsWith('/tournaments/cards')
+					path: '/meta/cards',
+					on: (p) => p.startsWith('/meta/cards')
 				}
 			]
 		},
 		{
+			// The events behind the numbers: a sub-page of Meta, and not cut by a period or a kind.
+			label: 'Tournaments',
+			initial: 'T',
+			path: '/meta/tournaments',
+			scoped: false,
+			on: (p) => p.startsWith('/meta/tournaments'),
+			items: []
+		},
+		{
 			label: 'Decks',
 			initial: 'D',
-			path: '/tournaments/decks',
+			path: '/meta/decks',
 			scoped: true,
-			on: (p) => p.startsWith('/tournaments/decks'),
+			on: (p) => p.startsWith('/meta/decks'),
 			items: [
 				{
 					label: 'All decks',
-					path: '/tournaments/decks',
-					on: (p) => p.startsWith('/tournaments/decks') && !p.startsWith('/tournaments/decks/lines')
+					path: '/meta/decks',
+					on: (p) => p.startsWith('/meta/decks') && !p.startsWith('/meta/decks/lines')
 				},
 				{
 					label: 'By Legends',
-					path: '/tournaments/decks/lines',
-					on: (p) => p.startsWith('/tournaments/decks/lines')
+					path: '/meta/decks/lines',
+					on: (p) => p.startsWith('/meta/decks/lines')
 				}
 			]
 		}

@@ -10,9 +10,9 @@
  * The signed-in hint cookie is not refreshed on them either; the next request to any other dynamic
  * route heals it, as `signed-in-hint.ts` describes.
  */
-const PUBLIC_PREFIXES = ['/tournaments'];
+const PUBLIC_PREFIXES = ['/meta'];
 
-/** `/tournaments` and what is under it, not `/tournaments-old`. */
+/** `/meta` and what is under it, not `/meta-old`. */
 const under = (pathname: string, prefix: string) =>
 	pathname === prefix || pathname.startsWith(`${prefix}/`);
 

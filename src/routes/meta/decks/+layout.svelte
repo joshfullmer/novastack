@@ -7,7 +7,7 @@
 
 <!-- `noindex` until the tournament pages launch. -->
 <Meta
-	title="Tournament decks — novastack"
+	title="Meta decks — novastack"
 	description="Decklists from Cyberpunk TCG tournaments."
 	origin={data.origin}
 	path={page.url.pathname}

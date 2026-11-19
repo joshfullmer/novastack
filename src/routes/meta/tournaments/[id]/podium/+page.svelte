@@ -70,7 +70,7 @@
 	{/snippet}
 	{#if side.deck}
 		<a
-			href="/tournaments/decks/{side.deck}"
+			href="/meta/decks/{side.deck}"
 			class="{tone} hover:bg-surface"
 			title="Open {side.name}'s deck · #{side.rank} · {side.record.wins}-{side.record.losses}-{side
 				.record.draws}"
@@ -144,7 +144,7 @@
 	)}
 	{#if side.deck}
 		<a
-			href="/tournaments/decks/{side.deck}"
+			href="/meta/decks/{side.deck}"
 			class="{tone} hover:bg-surface"
 			onmouseenter={() => follow(side.playerId)}
 			onmouseleave={unfollow}

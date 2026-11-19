@@ -111,7 +111,7 @@
 				</p>
 				<p class="mt-1 font-mono text-xs text-muted">
 					Finished {deck.rank} of {deck.playerCount} · {deck.wins}-{deck.losses}-{deck.draws} ·
-					<a href="/tournaments/{deck.eventId}" class="text-neon hover:underline"
+					<a href="/meta/tournaments/{deck.eventId}" class="text-neon hover:underline"
 						>{deck.eventName}</a
 					>
 					· {formatDate(deck.startsAt)}

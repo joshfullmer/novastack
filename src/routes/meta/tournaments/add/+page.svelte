@@ -11,7 +11,7 @@
 	title="Add a tournament — novastack"
 	description="Copy the ingest command for a Melee tournament."
 	origin={data.origin}
-	path="/tournaments/add"
+	path="/meta/tournaments/add"
 	noindex
 />
 
