@@ -315,7 +315,11 @@ time. Everything is sequential, so the gap is global.
   this goes wrong. It fails the run loudly, naming `MELEE_COOKIE` as the thing to supply.
 - `standings.length` is `playerCount` (or smaller only by the reported `0-0-0` skips).
 - Every `Standing.deckGuid` is in `tournament_decks`; every match `playerA/B` is a `Standing.playerId`.
-- Per Standing, `wins + losses + draws === GameCount`; match counts agree with the standings row.
+- Per Standing, `wins + losses + draws === GameCount`; match counts agree with the standings row. That
+  last one is the strongest check: the standings and the matches are two separate Melee endpoints, so
+  a dropped, doubled or misattributed match shows as a record that doesn't add up. A drawn _playoff_
+  match counts as a loss for both players, as Melee's records do (470955's Finals, `0-0-3 Draw`: both
+  finalists' records gained a loss); a drawn Swiss round is a draw. A player with a forfeit is skipped.
 - Ids are unique; the rounds are contiguous.
 
 With several ids, an invariant failure skips only that Tournament and the others are still written, but

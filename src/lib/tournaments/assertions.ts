@@ -6,6 +6,7 @@
  * of a deck and never blocks, because a Card we haven't ingested yet must not stop an event.
  */
 import type { BuiltTournament } from './build.ts';
+import { isPlayoffRound } from './rounds.ts';
 import type { MeleeStanding } from './sources.ts';
 
 const MAIN_DECK = { min: 40, max: 50 } as const;
@@ -17,7 +18,11 @@ type Tally = { wins: number; losses: number; draws: number };
  * player who has a forfeit is left out: who forfeited isn't recorded in anything we keep, so their
  * record can't be recomputed and must not be guessed.
  */
-export function recordsFromMatches(matches: BuiltTournament['matches']): Map<number, Tally> {
+export function recordsFromMatches(
+	matches: BuiltTournament['matches'],
+	/** Round numbers of the playoff, where a drawn match is not a draw (below). */
+	playoff: ReadonlySet<number> = new Set()
+): Map<number, Tally> {
 	const records = new Map<number, Tally>();
 	const skip = new Set<number>();
 	const of = (id: number) => {
@@ -38,7 +43,13 @@ export function recordsFromMatches(matches: BuiltTournament['matches']): Map<num
 			of(a).wins += 1;
 		} else if (b !== null) {
 			const draw = match.kind === 'draw' || match.gamesA === match.gamesB;
-			if (draw) {
+			if (draw && playoff.has(match.round)) {
+				// An elimination match can't end level, so Melee's records count it a loss for both
+				// players, while still adding its drawn games (the 470955 final: 0-0-3 "Draw", and
+				// each finalist's record gained a loss, not a draw).
+				of(a).losses += 1;
+				of(b).losses += 1;
+			} else if (draw) {
 				of(a).draws += 1;
 				of(b).draws += 1;
 			} else if (match.gamesA > match.gamesB) {
@@ -130,7 +141,10 @@ export function checkTournament(
 
 	// The strongest check we have: the results table and the matches table are two separate Melee
 	// endpoints, and they must tell the same story.
-	const fromMatches = recordsFromMatches(built.matches);
+	const playoff = new Set(
+		built.rounds.filter((round) => isPlayoffRound(round.name)).map((round) => round.number)
+	);
+	const fromMatches = recordsFromMatches(built.matches, playoff);
 	for (const row of built.standings) {
 		const computed = fromMatches.get(row.playerId);
 		if (!computed) continue;

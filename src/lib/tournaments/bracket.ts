@@ -7,6 +7,7 @@
  * matches the two finalists won to get there come first, and so on. A match that feeds nothing (a third
  * place playoff, say) follows the rest.
  */
+import { isPlayoffRound } from './rounds.ts';
 import type { EventView, MatchView, StandingView } from './event-view.ts';
 
 /** One player in a bracket match, with the list they played. */
@@ -45,9 +46,6 @@ export type Bracket = {
 	joined: boolean;
 };
 
-/** A Swiss round is "Round 4"; anything else is the playoff. */
-const SWISS = /^round\s+\d+$/i;
-
 const sideOf = (standing: StandingView): BracketSide => ({
 	playerId: standing.playerId,
 	name: standing.name,
@@ -66,7 +64,7 @@ function winnerOf(match: MatchView): 'a' | 'b' | null {
 export function buildBracket(
 	event: Pick<EventView, 'rounds' | 'matches' | 'standings'>
 ): Bracket | null {
-	const playoff = event.rounds.filter((round) => !SWISS.test(round.name.trim()));
+	const playoff = event.rounds.filter((round) => isPlayoffRound(round.name));
 	if (playoff.length === 0) return null;
 
 	const standing = new Map(event.standings.map((s) => [s.playerId, s]));

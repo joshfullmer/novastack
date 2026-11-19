@@ -335,6 +335,40 @@ describe('building the captured tournament', () => {
 		expect(reviewDecks(built)).toEqual([]);
 	});
 
+	it('counts a drawn playoff match as a loss for both players, as Melee does (470955)', () => {
+		const row = (
+			round: number,
+			a: number,
+			b: number,
+			kind: 'played' | 'draw',
+			gamesA = 0,
+			gamesB = 0
+		) => ({
+			tournamentId: 1,
+			round,
+			tableNumber: 1,
+			playerA: a,
+			playerB: b,
+			gamesA,
+			gamesB,
+			draws: kind === 'draw' ? 3 : 0,
+			kind
+		});
+		const matches = [row(1, 1, 2, 'played', 2, 0), row(2, 1, 2, 'draw'), row(3, 1, 2, 'draw')];
+		// Round 3 is the Finals: a drawn Swiss round is a draw, a drawn final is a loss each.
+		expect(recordsFromMatches(matches).get(1)).toEqual({ wins: 1, losses: 0, draws: 2 });
+		expect(recordsFromMatches(matches, new Set([3])).get(1)).toEqual({
+			wins: 1,
+			losses: 1,
+			draws: 1
+		});
+		expect(recordsFromMatches(matches, new Set([3])).get(2)).toEqual({
+			wins: 0,
+			losses: 2,
+			draws: 1
+		});
+	});
+
 	it('recomputes each player`s record from the matches alone', () => {
 		const records = recordsFromMatches(built.matches);
 		expect(records.size).toBe(14);
