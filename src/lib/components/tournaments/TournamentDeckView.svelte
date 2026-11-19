@@ -33,6 +33,7 @@
 		deck,
 		view,
 		layout = 'page',
+		pointed = null,
 		rail
 	}: {
 		deck: DeckDetail;
@@ -40,6 +41,8 @@
 		view: DeckView;
 		/** `page` sets the preview, list and stats side by side; `pane` fits half a screen. */
 		layout?: 'page' | 'pane';
+		/** A Legend the header is being pointed at, by slug: shown large while it is. */
+		pointed?: string | null;
 		/** Extra for the pane's narrow rail, below the preview (the path through the event). */
 		rail?: Snippet;
 	} = $props();
@@ -78,7 +81,9 @@
 		cardsColumn?.scrollTo(0, 0);
 		railColumn?.scrollTo(0, 0);
 	});
-	const shown = $derived(focused ?? legends[0] ?? main[0]?.card ?? null);
+	const shown = $derived(
+		legends.find((card) => card.slug === pointed) ?? focused ?? legends[0] ?? main[0]?.card ?? null
+	);
 
 	const name = $derived(`${deck.player} · ${deck.eventName}`.slice(0, 100));
 

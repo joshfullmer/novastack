@@ -31,6 +31,9 @@
 
 	const compact = $derived(layout === 'pane');
 
+	// The Legend being pointed at in the header: the big card preview shows it while the pointer is there.
+	let pointed = $state<string | null>(null);
+
 	const MARK = {
 		W: cn('text-card-green'),
 		L: cn('text-card-red'),
@@ -90,11 +93,16 @@
 	>
 		<header class="flex items-center gap-4 border-b border-edge pb-4">
 			<div class="flex {compact ? 'w-32' : 'w-64'} shrink-0 gap-1">
-				{#each deck.legends as slug (slug)}<LegendArt
-						{slug}
-						sizes="120px"
-						class="flex-1 shadow-lg"
-					/>{/each}
+				{#each deck.legends as slug (slug)}
+					<span
+						class="flex-1"
+						role="presentation"
+						onpointerenter={() => (pointed = slug)}
+						onpointerleave={() => (pointed = null)}
+					>
+						<LegendArt {slug} sizes="120px" class="w-full shadow-lg" />
+					</span>
+				{/each}
 			</div>
 			<div class="min-w-0">
 				<h1 class="truncate {compact ? 'text-xl' : 'text-2xl'} font-semibold text-bright">
@@ -125,6 +133,12 @@
 	</div>
 
 	<section class="mt-5 {compact ? '2xl:min-h-0 2xl:flex-1' : ''}" aria-label="Decklist">
-		<TournamentDeckView {deck} {view} {layout} rail={layout === 'pane' ? path : undefined} />
+		<TournamentDeckView
+			{deck}
+			{view}
+			{layout}
+			{pointed}
+			rail={layout === 'pane' ? path : undefined}
+		/>
 	</section>
 </div>
