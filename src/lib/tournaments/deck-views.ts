@@ -6,6 +6,12 @@ import { MIN_DECKS, type LineRow } from './meta.ts';
 
 export const DECKS_PER_PAGE = 30;
 
+/** Melee's decklist ids are GUIDs; anything else can't name a deck and shouldn't reach the database. */
+export const DECK_GUID = /^[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}$/i;
+
+/** A Legend line as `legend_line` stores it: up to six Legend slugs, joined by `+`. */
+export const LEGEND_LINE = /^[a-z0-9-]{1,100}(\+[a-z0-9-]{1,100}){0,5}$/;
+
 export type DeckListRow = {
 	guid: string;
 	eventId: number;
@@ -29,6 +35,8 @@ export type DeckFilters = {
 	legend: string | null;
 	/** A canonical RAM (`ram.ts`): decks whose Legends provide exactly that. */
 	ram: string | null;
+	/** A whole Legend line (`a+b+c`): decks whose Legends are exactly those, not just any one of them. */
+	line: string | null;
 	/** Card slugs, any of which the deck runs (main or sideboard). */
 	cards: string[];
 	/** A fragment of the player's name. */

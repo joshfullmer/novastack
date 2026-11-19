@@ -14,6 +14,7 @@ const standing = (playerId: number, rank: number): StandingView => ({
 		guid: `D${playerId}`,
 		name: '',
 		legends: [`l${playerId}`],
+		ram: null,
 		main: [],
 		side: [],
 		unresolved: 0

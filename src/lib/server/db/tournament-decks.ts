@@ -96,6 +96,7 @@ export async function getDeckList(
 		);
 	}
 	if (filters.ram) conditions.push(eq(tournamentDecks.ram, filters.ram));
+	if (filters.line) conditions.push(eq(tournamentDecks.legendLine, filters.line));
 	if (filters.cards.length > 0) {
 		conditions.push(
 			exists(

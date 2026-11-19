@@ -6,6 +6,8 @@
 
 	let { data, children } = $props();
 	const event = $derived(data.event);
+	// The standings fit the screen on a wide one, so every box above them hands its height down.
+	const full = $derived(page.data.fullHeight === true);
 
 	const base = $derived(`/meta/tournaments/${event.id}`);
 	const views = $derived([
@@ -42,9 +44,9 @@
 
 <!-- The extra plain wrapper matters: `<main>` (root layout) is a column flex container, and a
      `mx-auto max-w-…` box that is a *direct* flex child has its stretch behaviour disabled. -->
-<div>
-	<div class="py-6">
-		<header class="border-b border-edge pb-4">
+<div class={full ? '2xl:flex 2xl:min-h-0 2xl:flex-1 2xl:flex-col' : ''}>
+	<div class="py-6 {full ? '2xl:flex 2xl:min-h-0 2xl:flex-1 2xl:flex-col 2xl:pb-4' : ''}">
+		<header class="shrink-0 border-b border-edge pb-4">
 			<h1 class="text-2xl font-semibold text-bright">{event.name}</h1>
 			<p class="mt-1 font-mono text-xs text-muted">
 				{formatDate(event.startsAt)} · {event.organizer} · {event.playerCount} players · {event
@@ -85,6 +87,8 @@
 			</nav>
 		</header>
 
-		<div class="mt-6">{@render children()}</div>
+		<div class="mt-6 {full ? '2xl:flex 2xl:min-h-0 2xl:flex-1 2xl:flex-col' : ''}">
+			{@render children()}
+		</div>
 	</div>
 </div>

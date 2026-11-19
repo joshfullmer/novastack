@@ -1,7 +1,12 @@
 import { dataset } from '#lib/cards/index.js';
 import { getDeckDetail, getDeckList } from '#lib/server/db/tournament-decks.js';
 import { ramRows } from '#lib/server/db/tournament-stats.js';
-import { DECKS_PER_PAGE, type DeckFilters } from '#lib/tournaments/deck-views.js';
+import {
+	DECK_GUID,
+	DECKS_PER_PAGE,
+	LEGEND_LINE,
+	type DeckFilters
+} from '#lib/tournaments/deck-views.js';
 import { RAM_PER_LEGEND } from '#lib/tournaments/present.js';
 import { parseRam } from '#lib/tournaments/ram.js';
 import { DECK_VIEWS } from '#lib/decks/view.js';
@@ -10,8 +15,6 @@ import { resolveCards } from '#lib/tournaments/search.js';
 import type { PageServerLoad } from './$types';
 
 const SLUG = /^[a-z0-9-]{1,100}$/;
-// Melee's decklist ids are GUIDs.
-const GUID = /^[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}$/i;
 const clip = (text: string | null) => text?.trim().slice(0, 60) || null;
 
 /** Every Legend in the dataset, for the filter, by name. */
@@ -27,9 +30,11 @@ export const load: PageServerLoad = async ({ locals, parent, url, cookies }) => 
 	const cardText = clip(q.get('card'));
 	const cards = cardText ? resolveCards(cardText, dataset.cards) : [];
 	const legend = q.get('legend');
+	const line = q.get('line');
 	const filters: DeckFilters = {
 		legend: legend !== null && SLUG.test(legend) ? legend : null,
 		ram: parseRam(q.get('ram'), RAM_PER_LEGEND),
+		line: line !== null && LEGEND_LINE.test(line) ? line : null,
 		cards,
 		player: clip(q.get('player')),
 		sort: q.get('sort') === 'recent' ? 'recent' : 'finish',
@@ -45,7 +50,8 @@ export const load: PageServerLoad = async ({ locals, parent, url, cookies }) => 
 
 	// The deck open in the pane beside the list, if one is asked for and exists.
 	const asked = q.get('deck');
-	const deck = asked !== null && GUID.test(asked) ? await getDeckDetail(locals.db, asked) : null;
+	const deck =
+		asked !== null && DECK_GUID.test(asked) ? await getDeckDetail(locals.db, asked) : null;
 
 	return {
 		...result,

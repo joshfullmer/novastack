@@ -24,6 +24,12 @@
 		meta.matrixBy === 'ram'
 			? (ramShorthand(group.key, RAM_PER_LEGEND) ?? ramLabel(group.key))
 			: legendNames(group.legends);
+	/** The decks behind a row or a column: the list filtered to that RAM, or that exact set of Legends. */
+	const decksOf = (group: { key: string }) =>
+		href('/meta/decks', {
+			...periodParams(data.period),
+			[meta.matrixBy === 'ram' ? 'ram' : 'line']: group.key
+		});
 	const cellAt = (a: string, b: string) => meta.matrix.find((c) => c.a === a && c.b === b);
 	const BY = [
 		['ram', 'RAM'],
@@ -76,25 +82,31 @@
 	</p>
 {:else}
 	<div class="mt-6 overflow-x-auto">
-		<table class="border-separate border-spacing-1 text-center">
+		<table class="mx-auto border-separate border-spacing-1.5 text-center">
 			<thead>
 				<tr>
-					<th class="w-56 text-left font-mono text-[11px] font-normal text-muted uppercase"
+					<th class="w-64 text-left font-mono text-[11px] font-normal text-muted uppercase"
 						>Deck · share</th
 					>
 					{#each groups as group (group.key)}
-						<th class="w-20 align-bottom font-normal" title={label(group)}>
-							{#if meta.matrixBy === 'ram'}
-								<RamCode ram={group.key} class="text-sm" />
-							{:else}
-								<span class="mx-auto flex w-14 flex-col gap-0.5">
-									{#each group.legends as slug (slug)}<LegendArt
-											{slug}
-											sizes="40px"
-											class="w-full"
-										/>{/each}
-								</span>
-							{/if}
+						<th class="w-24 align-bottom font-normal">
+							<a
+								href={decksOf(group)}
+								title="{label(group)}: its decks"
+								class="block rounded-lg px-1 py-1.5 hover:bg-shell"
+							>
+								{#if meta.matrixBy === 'ram'}
+									<RamCode ram={group.key} class="text-base" />
+								{:else}
+									<span class="mx-auto flex w-16 flex-col gap-0.5">
+										{#each group.legends as slug (slug)}<LegendArt
+												{slug}
+												sizes="64px"
+												class="w-full"
+											/>{/each}
+									</span>
+								{/if}
+							</a>
 						</th>
 					{/each}
 				</tr>
@@ -102,34 +114,38 @@
 			<tbody>
 				{#each groups as row (row.key)}
 					<tr>
-						<th class="rounded-lg bg-shell p-2 text-left font-normal">
-							<span class="flex items-center gap-2">
+						<th class="rounded-lg bg-shell text-left font-normal hover:bg-surface">
+							<a
+								href={decksOf(row)}
+								title="{label(row)}: its decks"
+								class="flex items-center gap-2 p-2.5"
+							>
 								{#if meta.matrixBy !== 'ram'}
 									<span class="flex -space-x-2">
 										{#each row.legends as slug (slug)}<LegendArt
 												{slug}
 												sizes="40px"
-												class="w-6 ring-1 ring-void"
+												class="w-7 ring-1 ring-void"
 											/>{/each}
 									</span>
 								{/if}
 								<span class="min-w-0">
-									<span class="block truncate text-xs text-bright">
+									<span class="block truncate text-sm text-bright">
 										{#if meta.matrixBy === 'ram'}<RamCode
 												ram={row.key}
-												class="text-sm"
+												class="text-base"
 											/>{:else}{legendNames(row.legends)}{/if}
 									</span>
 									<span class="font-mono text-[11px] text-muted"
 										>{percent(row.share)} · {row.decks} decks</span
 									>
 								</span>
-							</span>
+							</a>
 						</th>
 						{#each groups as col (col.key)}
 							{@const cell = cellAt(row.key, col.key)}
 							<td
-								class="h-14 rounded-lg font-mono"
+								class="h-[4.5rem] rounded-lg font-mono"
 								style:background={row.key === col.key
 									? 'transparent'
 									: background(cell?.winRate ?? null, cell?.matches ?? 0)}
@@ -138,8 +154,8 @@
 								{#if row.key === col.key}
 									<span class="text-edge">—</span>
 								{:else if cell && cell.matches > 0}
-									<span class="text-sm text-bright">{percent(cell.winRate)}</span>
-									<span class="block text-[10px] text-muted">n={cell.matches}</span>
+									<span class="text-base text-bright">{percent(cell.winRate)}</span>
+									<span class="block text-[11px] text-muted">n={cell.matches}</span>
 								{:else}
 									<span class="text-xs text-edge">·</span>
 								{/if}

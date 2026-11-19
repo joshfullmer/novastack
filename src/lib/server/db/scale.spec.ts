@@ -33,6 +33,7 @@ function emit(text: string) {
 
 const base: DeckFilters = {
 	legend: null,
+	line: null,
 	ram: null,
 	cards: [],
 	player: null,

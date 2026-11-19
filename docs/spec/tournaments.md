@@ -585,6 +585,15 @@ read-only, dynamic and `noindex`:
   sidebar leads with Meta, with Tournaments second and Decks after it. `/meta` is the public-read prefix and the dynamic
   prefix in the hooks. **Not done on purpose:** the site header has no Meta link and the pages are still
   `noindex`; adding the link is the launch step (`docs/runbooks/tournaments-rollout.md`).
+- **Standings open decks like the decks list, and the matchup table links to decks** (2026-11-19). An event's
+  Standings tab is the same split as All Decks (`DeckPane`, `opensInPane` in `pane.ts`): on a screen 1536px
+  or wider a player's row opens their deck in the pane beside the standings (`?deck=`, only a deck of this
+  event), each side scrolling on its own; narrower, a row goes to the deck's own page. The inline expand is
+  gone, and a row shows the deck's RAM. The Podium/Bracket and Rounds tabs are unchanged. On Matchups,
+  every row and column header links to the decks behind it: `/meta/decks?ram=` in RAM mode, and
+  `/meta/decks?line=<a+b+c>` in Legends mode, a filter on the whole Legend line (the Legend menu can only
+  name one Legend), shown on the decks list as a chip that clears it. The table is centred and its cells
+  are bigger (96px by 72px).
 - **Layout** (2026-11-17): the statistics pages use the app's wide container (`max-w-[1800px]`) and fill it:
   the tier list flows into two columns and the card breakdown goes to eight or ten columns of art. Lists of
   rows stay one column: data you scan down is not split in two. The period, kind and field-size choices are dropdowns (`LinkSelect`).

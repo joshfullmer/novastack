@@ -7,10 +7,11 @@
 	import { goto } from '$app/navigation';
 	import { page } from '$app/state';
 	import { SvelteURLSearchParams } from 'svelte/reactivity';
-	import DeckDetail from '#lib/components/tournaments/DeckDetail.svelte';
+	import DeckPane from '#lib/components/tournaments/DeckPane.svelte';
 	import LegendArt from '#lib/components/tournaments/LegendArt.svelte';
 	import PeriodFields from '#lib/components/tournaments/PeriodFields.svelte';
 	import RamCode from '#lib/components/tournaments/RamCode.svelte';
+	import { opensInPane } from '#lib/tournaments/pane.js';
 	import { periodParams } from '#lib/tournaments/period.js';
 	import { formatDate, legendNames, RAM_PER_LEGEND } from '#lib/tournaments/present.js';
 	import { ramLabel, ramShorthand } from '#lib/tournaments/ram.js';
@@ -25,11 +26,8 @@
 
 	// On a wide screen a deck opens in the pane beside the list (`?deck=`, so a link keeps it); a plain
 	// click on a narrow one, or a modified click anywhere, still goes to the deck's own page.
-	const SPLIT = '(min-width: 1536px)';
 	function open(event: MouseEvent, guid: string) {
-		if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey)
-			return;
-		if (!window.matchMedia(SPLIT).matches) return;
+		if (!opensInPane(event)) return;
 		event.preventDefault();
 		void goto(withParams(page.url, { deck: guid }), { reset: false });
 	}
@@ -90,6 +88,19 @@
 		>
 			<PeriodFields period={data.period} />
 			{#if data.deck}<input type="hidden" name="deck" value={data.deck.guid} />{/if}
+			{#if filters.line}
+				<!-- A whole Legend line (from the matchup table): a chip rather than a menu, since the menu can
+				     only name one Legend. -->
+				<input type="hidden" name="line" value={filters.line} />
+				<a
+					href={withParams(page.url, { line: null, page: null })}
+					title="Show every Legend line"
+					class="inline-flex items-center gap-1.5 rounded-full border border-neon-dim bg-neon/10 px-2.5 py-1 text-bright"
+				>
+					{legendNames(filters.line.split('+'))}
+					<span aria-hidden="true" class="text-muted">✕</span>
+				</a>
+			{/if}
 			<select name="legend" class={CONTROL} aria-label="Legend" onchange={apply}>
 				<option value="">Any Legend</option>
 				{#each data.legendChoices as legend (legend.slug)}
@@ -130,7 +141,7 @@
 			</select>
 			<!-- Enter in a box submits the form; with no button, a form of several fields would not. -->
 			<button class="sr-only">Filter</button>
-			{#if filters.legend || filters.ram || filters.card || filters.player}
+			{#if filters.legend || filters.ram || filters.line || filters.card || filters.player}
 				<a href={href('/meta/decks', periodParams(data.period))} class="text-muted hover:text-body">
 					Clear
 				</a>
@@ -220,34 +231,13 @@
 			{/if}
 		</div>
 
-		<!-- The pane: the open deck on a wide screen. Narrower, a deck chosen from a shared link shows above
-	     the list, and with none chosen there is nothing to show. -->
-		<aside
-			aria-label="Deck"
-			class="min-w-0 2xl:flex 2xl:min-h-0 2xl:flex-col 2xl:border-l 2xl:border-edge 2xl:pl-6 {data.deck
-				? 'max-2xl:order-first'
-				: 'max-2xl:hidden'}"
-		>
-			{#if data.deck}
-				<div class="mb-3 flex shrink-0 items-center justify-between font-mono text-xs">
-					<a
-						href={href(`/meta/decks/${data.deck.guid}`, periodParams(data.period))}
-						class="text-muted hover:text-body">Open on its own page ↗</a
-					>
-					<a href={withParams(page.url, { deck: null })} class="text-muted hover:text-body"
-						>Close ✕</a
-					>
-				</div>
-				<DeckDetail
-					deck={data.deck}
-					view={data.deckView}
-					layout="pane"
-					hrefFor={(guid) => href(`/meta/decks/${guid}`, periodParams(data.period))}
-					onopen={open}
-				/>
-			{:else}
-				<p class="py-24 text-center text-sm text-muted">Choose a deck to read it here.</p>
-			{/if}
-		</aside>
+		<DeckPane
+			deck={data.deck}
+			view={data.deckView}
+			ownPage={data.deck ? href(`/meta/decks/${data.deck.guid}`, periodParams(data.period)) : ''}
+			close={withParams(page.url, { deck: null })}
+			hrefFor={(guid) => href(`/meta/decks/${guid}`, periodParams(data.period))}
+			onopen={open}
+		/>
 	</div>
 </div>

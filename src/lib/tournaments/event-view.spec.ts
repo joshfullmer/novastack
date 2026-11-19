@@ -110,6 +110,11 @@ describe('the event view', () => {
 		expect(event.standings.filter((s) => s.deck)).toHaveLength(event.deckCount);
 	});
 
+	it('carries the deck`s RAM, for the standings to show beside its Legends', () => {
+		const deck = event.standings[0].deck;
+		expect(deck?.ram).toMatch(/^[bgry]+$/);
+	});
+
 	it('reads the deck as three Legends and copy-sorted boards', () => {
 		const deck = event.standings[0].deck;
 		expect(deck?.legends).toHaveLength(3);

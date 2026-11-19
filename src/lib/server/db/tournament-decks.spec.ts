@@ -21,6 +21,7 @@ import { world as buildWorld } from './test-world.js';
 const world = () => buildWorld().db;
 const none: DeckFilters = {
 	legend: null,
+	line: null,
 	ram: null,
 	cards: [],
 	player: null,
@@ -64,6 +65,15 @@ describe('getDeckList', () => {
 		expect((await guids({ ram: 'rryyyy' })).sort()).toEqual(['D1', 'D2', 'D6']); // X
 		expect((await guids({ ram: 'rrrryy' })).sort()).toEqual(['D3', 'D5']); // Y: same colours, other RAM
 		expect(await guids({ ram: 'bbbb' })).toEqual([]);
+	});
+
+	it('filters by a whole Legend line, not just a Legend in it', async () => {
+		expect((await guids({ line: 'a+b+c' })).sort()).toEqual(['D1', 'D2', 'D6']);
+		expect((await guids({ line: 'a+b+d' })).sort()).toEqual(['D3', 'D5']);
+		// Legend `a` is in five decks; the line a+b is none, and a line is exact.
+		expect(await guids({ line: 'a+b' })).toEqual([]);
+		expect((await guids({ line: 'a+b+c', legend: 'a' })).length).toBe(3);
+		expect(await guids({ line: 'a+b+c', legend: 'd' })).toEqual([]);
 	});
 
 	it('filters by a card, main deck or sideboard, any of several', async () => {

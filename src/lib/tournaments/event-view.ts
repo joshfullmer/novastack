@@ -35,6 +35,8 @@ export type DeckView = {
 	name: string;
 	/** The deck's Legend slugs, sorted. Normally three. */
 	legends: string[];
+	/** What the Legends provide together, as a `legends:` value (`ram.ts`); null when unknown. */
+	ram: string | null;
 	main: CardCount[];
 	side: CardCount[];
 	/** Lines that named no single Card when the deck was read. */
@@ -119,6 +121,7 @@ export function buildEventView(rows: EventRows): EventView {
 			legends: board('legend')
 				.map((card) => card.slug)
 				.sort(),
+			ram: deck.ram ?? null,
 			main: board('main'),
 			side: board('side'),
 			unresolved: deck.unresolved
