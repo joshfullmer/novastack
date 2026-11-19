@@ -16,7 +16,7 @@
  * - `1` — `--check` only: it would change (a normal answer, not a failure)
  * - `2` — a Tournament was refused or failed an invariant, or something could not be reached
  */
-import { readFile } from 'node:fs/promises';
+import { readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import * as v from 'valibot';
 import { SnapshotSchema, type Card } from '../src/lib/cards/schema.ts';
@@ -41,10 +41,30 @@ import {
 } from '../src/lib/tournaments/sql.ts';
 import { confirmRemote, runFile, select, targetName, type Target } from './lib/d1.ts';
 import { paint } from './lib/ui.ts';
+import {
+	describePending,
+	forget,
+	idsOf,
+	parsePending,
+	remember,
+	serializePending,
+	type Pending
+} from '../src/lib/tournaments/pending.ts';
 
 const CARDS_PATH = path.join('src', 'lib', 'cards', 'cards.json');
 
 const say = (line = '') => console.log(line);
+
+/** Ids that weren't ready, remembered between runs so they are only ever looked up once. */
+const PENDING_PATH = process.env.MELEE_PENDING ?? path.join('scripts', 'melee-pending.json');
+
+async function loadPending(): Promise<Pending> {
+	const text = await readFile(PENDING_PATH, 'utf8').catch((error: NodeJS.ErrnoException) => {
+		if (error.code === 'ENOENT') return null;
+		throw error;
+	});
+	return parsePending(text);
+}
 
 async function loadCards(): Promise<readonly Card[]> {
 	return v.parse(SnapshotSchema, JSON.parse(await readFile(CARDS_PATH, 'utf8'))).cards;
@@ -190,8 +210,28 @@ function targetsFor(args: { remote: boolean; persistTo: string | undefined }): T
 async function main(): Promise<number> {
 	const args = parseCli(process.argv.slice(2));
 	if (args.promote) return promote(args);
+	if (args.list || args.forget) {
+		const waiting = await loadPending();
+		if (args.list) {
+			const lines = describePending(waiting, new Date());
+			say(lines.length === 0 ? 'Nothing is waiting.' : lines.join('\n'));
+			return 0;
+		}
+		const next = forget(waiting, args.ids);
+		await writeFile(PENDING_PATH, serializePending(next));
+		say(
+			`Forgot ${idsOf(waiting).length - idsOf(next).length} of ${args.ids.length}; ${idsOf(next).length} still waiting.`
+		);
+		return 0;
+	}
 	const targets = targetsFor(args);
 	const cards = await loadCards();
+	let waiting = await loadPending();
+	const ids = args.pending ? idsOf(waiting) : args.ids;
+	if (args.pending && ids.length === 0) {
+		say('Nothing is waiting.');
+		return 0;
+	}
 
 	if (args.reparse) {
 		let worst = 0;
@@ -221,17 +261,24 @@ async function main(): Promise<number> {
 				args.check || args.force
 					? []
 					: v
-							.parse(
-								v.array(v.object({ id: v.number() })),
-								select(target, storedIdsQuery(args.ids))
-							)
+							.parse(v.array(v.object({ id: v.number() })), select(target, storedIdsQuery(ids)))
 							.map((row) => row.id)
 			)
 		])
 	);
 
-	for (const id of args.ids) {
+	// Saved after every id, so an interrupted run keeps what it learned.
+	const settle = async (next: Pending) => {
+		if (serializePending(next) === serializePending(waiting)) return;
+		waiting = next;
+		await writeFile(PENDING_PATH, serializePending(waiting));
+	};
+
+	for (const id of ids) {
 		say(paint.bold(`\n${id}`));
+		// Whether this id is finished with: written everywhere it was wanted (or already there).
+		let done = !args.check;
+		let refusal: Refusal | undefined;
 		const wanting = targets.filter((target) => !stored.get(target)?.has(id));
 		for (const target of targets) {
 			if (!wanting.includes(target)) {
@@ -240,7 +287,10 @@ async function main(): Promise<number> {
 				);
 			}
 		}
-		if (wanting.length === 0) continue;
+		if (wanting.length === 0) {
+			await settle(forget(waiting, [id]));
+			continue;
+		}
 		try {
 			const { built, violations, findings } = await ingestTournament(client, id, {
 				cards,
@@ -292,6 +342,7 @@ async function main(): Promise<number> {
 							args.yes
 						))
 					) {
+						done = false;
 						raise(2);
 						continue;
 					}
@@ -307,17 +358,41 @@ async function main(): Promise<number> {
 							`  ✗ ${targetName(target)}: ${error instanceof Error ? error.message : String(error)}`
 						)
 					);
+					done = false;
 					raise(2);
 				}
 			}
 		} catch (error) {
-			if (error instanceof Refusal) say(paint.change(`  ○ ${error.message}`));
-			else say(paint.remove(`  ✗ ${error instanceof Error ? error.message : String(error)}`));
+			if (error instanceof Refusal) {
+				say(paint.change(`  ○ ${error.message}`));
+				refusal = error;
+			} else {
+				say(paint.remove(`  ✗ ${error instanceof Error ? error.message : String(error)}`));
+				done = false;
+			}
 			raise(2);
+		}
+
+		// Not ready is remembered, so the id is only ever looked up once; written is forgotten.
+		// `--check` writes nothing, and neither does it touch the list.
+		if (args.check) continue;
+		if (refusal) {
+			await settle(
+				remember(waiting, id, { name: refusal.eventName, reason: refusal.message }, new Date())
+			);
+		} else if (done) {
+			await settle(forget(waiting, [id]));
 		}
 	}
 
 	say(paint.dim(`\n${client.requests} requests to melee.gg`));
+	if (idsOf(waiting).length > 0) {
+		say(
+			paint.dim(
+				`${idsOf(waiting).length} waiting to be ready: pnpm melee --pending to try again, --list to see why.`
+			)
+		);
+	}
 	return exit;
 }
 

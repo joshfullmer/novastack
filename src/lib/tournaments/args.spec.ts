@@ -11,6 +11,9 @@ describe('pnpm melee arguments', () => {
 			force: false,
 			reparse: false,
 			promote: false,
+			pending: false,
+			list: false,
+			forget: false,
 			persistTo: undefined,
 			maxRequests: undefined
 		});
@@ -55,6 +58,22 @@ describe('pnpm melee arguments', () => {
 		]) {
 			expect(() => parseCli(['--promote', flag])).toThrow();
 		}
+	});
+
+	it('retries, lists and forgets what was not ready', () => {
+		expect(parseCli(['--pending'])).toMatchObject({ pending: true, ids: [] });
+		expect(parseCli(['--pending', '--remote', '--yes'])).toMatchObject({
+			pending: true,
+			remote: true
+		});
+		expect(parseCli(['--list'])).toMatchObject({ list: true });
+		expect(parseCli(['--forget', '5', '6'])).toMatchObject({ forget: true, ids: [5, 6] });
+		expect(() => parseCli(['--pending', '5'])).toThrow(/takes no ids/);
+		expect(() => parseCli(['--list', '5'])).toThrow(/takes no ids/);
+		expect(() => parseCli(['--forget'])).toThrow(/wants the ids/);
+		expect(() => parseCli(['--list', '--remote'])).toThrow(/take no other flags/);
+		expect(() => parseCli(['--pending', '--list'])).toThrow(/each their own run/);
+		expect(() => parseCli(['--forget', '1', '--promote'])).toThrow(/each their own run/);
 	});
 
 	it('wants an id, unless re-reading', () => {

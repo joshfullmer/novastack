@@ -1,0 +1,23 @@
+{
+	"479192": {
+		"name": "Night City SHOWDOWN Saturday",
+		"reason": "Finals has results but Melee has no standings for it, so the final ranking isn't known. Try again once the organizer publishes them.",
+		"firstTried": "2026-11-19T17:07:01.248Z",
+		"lastTried": "2026-11-19T17:07:27.861Z",
+		"attempts": 2
+	},
+	"485839": {
+		"name": "Night City Showdown",
+		"reason": "Finals has results but Melee has no standings for it, so the final ranking isn't known. Try again once the organizer publishes them.",
+		"firstTried": "2026-11-19T17:06:44.604Z",
+		"lastTried": "2026-11-19T17:07:25.365Z",
+		"attempts": 2
+	},
+	"486315": {
+		"name": "Guardian Games Aloha - Cyberpunk TCG Night City Showdown",
+		"reason": "Finals has results but Melee has no standings for it, so the final ranking isn't known. Try again once the organizer publishes them.",
+		"firstTried": "2026-11-19T17:06:42.100Z",
+		"lastTried": "2026-11-19T17:07:22.853Z",
+		"attempts": 3
+	}
+}

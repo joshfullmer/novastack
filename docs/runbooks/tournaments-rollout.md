@@ -70,6 +70,9 @@ pnpm exec wrangler d1 execute novastack-decks --remote --command \
 
 ## Later
 
+- An event that isn't ready (still running, results or lists not up) is refused and remembered in
+  `scripts/melee-pending.json`; `pnpm melee --pending --remote` later tries every one again, so its id
+  is only ever looked up once. `pnpm melee --list` shows what is waiting and why.
 - Adding an event: `pnpm melee <id> --remote` writes the local and the production database together,
   then `--check --remote` proves both. To push what the local database already holds (events you ingested
   or `--reparse`d locally) without asking Melee again: `pnpm melee --promote --check` to see the

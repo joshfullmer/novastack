@@ -26,9 +26,14 @@ import {
 
 /** Not an error in Melee or in us: the event isn't ready to be written. The message says what to do. */
 export class Refusal extends Error {
-	constructor(message: string) {
+	/** Melee's name for the event, once known, so a remembered refusal is readable. */
+	readonly eventName: string | null;
+
+	// No parameter property: `node` strips types but doesn't compile them (`scripts/melee.ts`).
+	constructor(message: string, eventName: string | null = null) {
 		super(message);
 		this.name = 'Refusal';
+		this.eventName = eventName;
 	}
 }
 
@@ -94,7 +99,10 @@ export async function ingestTournament(
 	if (details.ID !== id)
 		throw new Error(`Asked for tournament ${id}, Melee answered ${details.ID}.`);
 	if (details.Status !== 'Ended') {
-		throw new Refusal(`${id} is "${details.Status}", not Ended. Try again when it's over.`);
+		throw new Refusal(
+			`${id} is "${details.Status}", not Ended. Try again when it's over.`,
+			details.Name
+		);
 	}
 
 	const view = parseTournamentView(await client.text(`/Tournament/View/${id}`), id);
@@ -144,7 +152,8 @@ export async function ingestTournament(
 		if (last === -1) {
 			throw new Refusal(
 				`Melee has no standings for the last round (${rounds.at(-1)?.name ?? 'unknown'}): the ` +
-					`organizer hasn't published them, so there are no final results to read.`
+					`organizer hasn't published them, so there are no final results to read.`,
+				details.Name
 			);
 		}
 		const skipped = rounds.slice(last + 1);
@@ -152,7 +161,8 @@ export async function ingestTournament(
 			if ((await matchesOf(round)).some((match) => matchKind(match) !== null)) {
 				throw new Refusal(
 					`${round.name} has results but Melee has no standings for it, so the final ranking isn't ` +
-						`known. Try again once the organizer publishes them.`
+						`known. Try again once the organizer publishes them.`,
+					details.Name
 				);
 			}
 		}
@@ -200,7 +210,8 @@ export async function ingestTournament(
 	if (![...deckTexts.values()].some((text) => text.trim() !== '')) {
 		throw new Refusal(
 			`${id} has no decklists (none of its ${standings.length} players has one up), so it isn't ingested. ` +
-				`Lists can appear after an event ends; try again later.`
+				`Lists can appear after an event ends; try again later.`,
+			details.Name
 		);
 	}
 	log(`${deckTexts.size} decklists`);

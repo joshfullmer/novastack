@@ -19,6 +19,12 @@ export type Args = {
 	reparse: boolean;
 	/** Copy what the local database holds to production, with no trip to Melee. */
 	promote: boolean;
+	/** Retry every id remembered as not ready yet (`scripts/melee-pending.json`). */
+	pending: boolean;
+	/** Show the remembered ids and why each is waiting; touches no database and no network. */
+	list: boolean;
+	/** Stop remembering the ids given. */
+	forget: boolean;
 	/** A throwaway local database directory (`wrangler --persist-to`), for trying a run out. */
 	persistTo: string | undefined;
 	maxRequests: number | undefined;
@@ -27,6 +33,9 @@ export type Args = {
 export const USAGE = `usage: pnpm melee <id> [id …] [--force] [--check] [--remote [--yes]] [--max-requests N]
        pnpm melee --reparse [--remote]
        pnpm melee --promote [id …] [--check] [--yes]
+       pnpm melee --pending [--remote [--yes]]     try again every id that wasn't ready
+       pnpm melee --list                           which ids are waiting, and why
+       pnpm melee --forget <id> [id …]             stop waiting for those
   Writes the LOCAL database; --remote writes PRODUCTION as well. A database that already has an id
   skips it unless --force.`;
 
@@ -42,6 +51,9 @@ export function parseCli(argv: readonly string[]): Args {
 			force: { type: 'boolean', default: false },
 			reparse: { type: 'boolean', default: false },
 			promote: { type: 'boolean', default: false },
+			pending: { type: 'boolean', default: false },
+			list: { type: 'boolean', default: false },
+			forget: { type: 'boolean', default: false },
 			'persist-to': { type: 'string' },
 			'max-requests': { type: 'string' }
 		}
@@ -80,7 +92,18 @@ export function parseCli(argv: readonly string[]): Args {
 	if (promote && values['max-requests'] !== undefined) {
 		throw new Error('--promote makes no requests to Melee, so --max-requests means nothing.');
 	}
-	if (!reparse && !promote && ids.length === 0)
+	const { pending, list, forget } = values;
+	if ([reparse, promote, pending, list, forget].filter(Boolean).length > 1) {
+		throw new Error('--reparse, --promote, --pending, --list and --forget are each their own run.');
+	}
+	if ((list || forget) && (values.check || values.force || values.remote || values.yes)) {
+		throw new Error('--list and --forget take no other flags.');
+	}
+	if ((pending || list) && ids.length > 0) {
+		throw new Error(`--${pending ? 'pending' : 'list'} takes no ids; it uses the ones remembered.`);
+	}
+	if (forget && ids.length === 0) throw new Error('--forget wants the ids to forget.');
+	if (!reparse && !promote && !pending && !list && !forget && ids.length === 0)
 		throw new Error('Give at least one Melee tournament id.');
 	if (values.remote && values['persist-to'] !== undefined) {
 		throw new Error(
@@ -96,6 +119,9 @@ export function parseCli(argv: readonly string[]): Args {
 		force: values.force,
 		reparse,
 		promote,
+		pending,
+		list,
+		forget,
 		persistTo: values['persist-to'],
 		maxRequests
 	};
