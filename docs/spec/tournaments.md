@@ -283,6 +283,14 @@ not from our one measured event:
   path. Lists can appear after the status flips to Ended, so the refusal is "not yet": whoever ran the
   job runs it again later, and the rewrite fills the decks in. "No decklists" means no player has a
   readable one; a blank list counts as none. An event where only some players published decks (4 of 26 in 478979) is ingested, and its other players simply have no deck.
+- **Rounds an organizer created but never ran** (decision 2026-11-19): Melee ends the event with, say,
+  Rounds 4–6 listed and empty (492606: 3 played). When the last listed round has no standings, the final
+  standings are the last round that has them, provided every later round holds no played match; the
+  empty rounds are dropped (so the round count is what was played) and the run says so. This infers
+  nothing about who won: it only declines to read an unplayed round as the end. If a later round
+  _does_ have results but no standings, the ranking really is unknown and the event is refused
+  ("has results but Melee has no standings for it"). Computing a ranking from matches is not done: it
+  would need Melee's tiebreakers reproduced exactly.
 - **Final standings can show no decklist for a player who has one.** swubase falls back to
   `Player/GetPlayerDetails?id=` (`decklists[]`) and so do we, but only for those rows. In the measured
   event that was 1 of 14 players.

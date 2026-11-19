@@ -3,7 +3,8 @@
  *
  * ```
  * details ─ not Ended? refuse
- *   → View (rounds) → final standings → [GetPlayerDetails × standings with no list]
+ *   → View (rounds) → final standings (unpublished? the last round that has them, if nothing after it was played)
+ *   → [GetPlayerDetails × standings with no list]
  *   → matches × rounds → Decklist/View × decks ─ none readable? refuse → build → check
  * ```
  *
@@ -11,10 +12,10 @@
  */
 import type { Card } from '../cards/schema.ts';
 import { checkTournament, reviewDecks } from './assertions.ts';
-import { buildTournament, type BuiltTournament } from './build.ts';
+import { buildTournament, matchKind, type BuiltTournament } from './build.ts';
 import { dataTablesBody, type MeleeClient } from './client.ts';
 import { formatIdOf, pickDecklist } from './decks.ts';
-import { parseDecklistPage, parseTournamentView } from './html.ts';
+import { parseDecklistPage, parseTournamentView, type MeleeRound } from './html.ts';
 import {
 	MeleeDetailsSchema,
 	MeleeMatchesPageSchema,
@@ -99,21 +100,66 @@ export async function ingestTournament(
 	const view = parseTournamentView(await client.text(`/Tournament/View/${id}`), id);
 	log(`${view.rounds.length} rounds`);
 
-	const standings = await allRows(
-		async (start) =>
-			client.form(
-				'/Standing/GetRoundStandings',
-				dataTablesBody(STANDINGS_COLUMNS, start, PAGE, {
-					roundId: String(view.finalStandingsRoundId)
-				}),
-				MeleeStandingsPageSchema
-			),
-		'standings'
-	);
+	const standingsOf = (round: MeleeRound | number) =>
+		allRows(
+			async (start) =>
+				client.form(
+					'/Standing/GetRoundStandings',
+					dataTablesBody(STANDINGS_COLUMNS, start, PAGE, {
+						roundId: String(typeof round === 'number' ? round : round.meleeRoundId)
+					}),
+					MeleeStandingsPageSchema
+				),
+			'standings'
+		);
+	const matchesOf = (round: MeleeRound) =>
+		allRows(
+			async (start) =>
+				client.form(
+					`/Match/GetRoundMatches/${round.meleeRoundId}`,
+					dataTablesBody(MATCH_COLUMNS, start, PAGE),
+					MeleeMatchesPageSchema
+				),
+			`round ${round.number} matches`
+		);
+
+	let standings = await standingsOf(view.finalStandingsRoundId);
+	let rounds = view.rounds;
+	const extra: string[] = [];
 	if (standings.length === 0) {
-		throw new Refusal(
-			`Melee has no standings for the last round (${view.rounds.at(-1)?.name ?? 'unknown'}): the ` +
-				`organizer hasn't published them, so there are no final results to read.`
+		// Organizers often create more rounds than they run, leaving the rest empty. When nothing was
+		// played after the last round that has standings, those are the final results: no guess, just
+		// the last round that happened. If a later round *has* results, the ranking is genuinely unknown.
+		const unpublished = rounds.findIndex(
+			(round) => round.meleeRoundId === view.finalStandingsRoundId
+		);
+		let last = -1;
+		for (let i = unpublished - 1; i >= 0 && last === -1; i--) {
+			const found = await standingsOf(rounds[i]);
+			if (found.length > 0) {
+				standings = found;
+				last = i;
+			}
+		}
+		if (last === -1) {
+			throw new Refusal(
+				`Melee has no standings for the last round (${rounds.at(-1)?.name ?? 'unknown'}): the ` +
+					`organizer hasn't published them, so there are no final results to read.`
+			);
+		}
+		const skipped = rounds.slice(last + 1);
+		for (const round of skipped) {
+			if ((await matchesOf(round)).some((match) => matchKind(match) !== null)) {
+				throw new Refusal(
+					`${round.name} has results but Melee has no standings for it, so the final ranking isn't ` +
+						`known. Try again once the organizer publishes them.`
+				);
+			}
+		}
+		rounds = rounds.slice(0, last + 1);
+		extra.push(
+			`${skipped.map((round) => round.name).join(', ')} ${skipped.length === 1 ? 'has' : 'have'} no results on Melee, ` +
+				`so the final standings are those after ${rounds[last].name}.`
 		);
 	}
 	const formatId = formatIdOf(standings);
@@ -133,19 +179,7 @@ export async function ingestTournament(
 	}
 
 	const matches = [];
-	for (const round of view.rounds) {
-		matches.push(
-			...(await allRows(
-				async (start) =>
-					client.form(
-						`/Match/GetRoundMatches/${round.meleeRoundId}`,
-						dataTablesBody(MATCH_COLUMNS, start, PAGE),
-						MeleeMatchesPageSchema
-					),
-				`round ${round.number} matches`
-			))
-		);
-	}
+	for (const round of rounds) matches.push(...(await matchesOf(round)));
 	log(`${matches.length} matches`);
 
 	const deckTexts = new Map<string, string>();
@@ -174,7 +208,7 @@ export async function ingestTournament(
 	const built = buildTournament({
 		details,
 		info: view.info,
-		rounds: view.rounds,
+		rounds,
 		standings,
 		matches,
 		deckTexts,
@@ -186,6 +220,7 @@ export async function ingestTournament(
 		rawStandings: standings,
 		violations: checkTournament(built, standings),
 		findings: [
+			...extra,
 			...reviewDecks(built),
 			...built.notes.blankDecks.map(
 				(guid) => `${guid}: registered a blank list; treated as no deck.`

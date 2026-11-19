@@ -34,11 +34,19 @@ export const deckText = parseDecklistPage(read('decklist-view.html'), WINNER_DEC
 export type Fake = {
 	/** Replace a Tournament-details field, e.g. `{ Status: 'In Progress' }`. */
 	details?: Record<string, unknown>;
-	/** Rewrite the standings JSON before it is served. */
-	standings?: (page: { recordsTotal: number; data: unknown[] }) => {
+	/** Rewrite the standings JSON before it is served; `roundId` is the Melee round asked about. */
+	standings?: (
+		page: { recordsTotal: number; data: unknown[] },
+		roundId: number
+	) => {
 		recordsTotal: number;
 		data: unknown[];
 	};
+	/** Rewrite a round's matches JSON (rounds 1–4 of the capture) before it is served. */
+	matches?: (
+		page: { recordsTotal: number; data: unknown[] },
+		round: number
+	) => { recordsTotal: number; data: unknown[] };
 	/** Rewrite what `GetPlayerDetails` answers. */
 	player?: unknown;
 	/** Answer a path with a sign-in redirect instead. */
@@ -87,13 +95,14 @@ export function fakeMelee(fake: Fake = {}, log: string[] = []): typeof fetch {
 			const all = (json('standings-final.json') as { data: unknown[] }).data;
 			const start = Number(body.get('start'));
 			const page = { recordsTotal: all.length, data: all };
-			const shaped = fake.standings ? fake.standings(page) : page;
+			const shaped = fake.standings ? fake.standings(page, Number(body.get('roundId'))) : page;
 			return Response.json({ recordsTotal: shaped.recordsTotal, data: shaped.data.slice(start) });
 		}
 		const round = /^\/Match\/GetRoundMatches\/(\d+)$/.exec(path)?.[1];
 		if (round) {
 			const n = Number(round) - 1727270;
-			const page = json(`matches-round-${n}.json`) as { recordsTotal: number; data: unknown[] };
+			const captured = json(`matches-round-${n}.json`) as { recordsTotal: number; data: unknown[] };
+			const page = fake.matches ? fake.matches(captured, n) : captured;
 			return Response.json({ ...page, data: page.data.slice(Number(body.get('start'))) });
 		}
 		if (path.startsWith('/Decklist/View/')) {

@@ -94,6 +94,40 @@ describe('an event that is not ready', () => {
 		);
 	});
 
+	it('uses the last round that has standings when nothing after it was played', async () => {
+		// Melee lists Round 4 but never ran it: no standings, no matches.
+		const roundFourEmpty = {
+			standings: (page: { recordsTotal: number; data: unknown[] }, roundId: number) =>
+				roundId === 1727274 ? { recordsTotal: 0, data: [] } : page,
+			matches: (page: { recordsTotal: number; data: unknown[] }, round: number) =>
+				round === 4 ? { recordsTotal: 0, data: [] } : page
+		};
+		const { requests, ingested } = run(roundFourEmpty);
+		const { built, findings } = await ingested;
+		expect(built.rounds.map((round) => round.number)).toEqual([1, 2, 3]);
+		expect(built.matches.every((match) => match.round <= 3)).toBe(true);
+		expect(built.standings).toHaveLength(14);
+		expect(findings[0]).toBe(
+			'Round 4 has no results on Melee, so the final standings are those after Round 3.'
+		);
+		// Round 4's standings (empty), then Round 3's, and Round 4's matches checked once.
+		expect(requests.slice(2, 4)).toEqual([
+			'POST /Standing/GetRoundStandings',
+			'POST /Standing/GetRoundStandings'
+		]);
+		expect(requests.filter((line) => line.endsWith('/GetRoundMatches/1727274'))).toHaveLength(1);
+	});
+
+	it('will not guess a ranking when a round after the last standings has results', async () => {
+		const roundFourUnpublished = {
+			standings: (page: { recordsTotal: number; data: unknown[] }, roundId: number) =>
+				roundId === 1727274 ? { recordsTotal: 0, data: [] } : page
+		};
+		await expect(run(roundFourUnpublished).ingested).rejects.toThrow(
+			/Round 4 has results but Melee has no standings for it/
+		);
+	});
+
 	it('does not gate on format: any event with lists is ingested', async () => {
 		const { built } = await run({ details: { Format: 'Draft' } }).ingested;
 		expect(built.decks).toHaveLength(13);
