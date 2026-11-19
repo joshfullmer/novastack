@@ -5,8 +5,16 @@
 	// a meta. A link carries the scope with it (`periodParams`).
 	import { page } from '$app/state';
 	import { cn } from '#lib/cn.js';
+	import LinkMultiSelect from '#lib/components/tournaments/LinkMultiSelect.svelte';
 	import LinkSelect from '#lib/components/tournaments/LinkSelect.svelte';
-	import type { EventKind } from '#lib/tournaments/kind.js';
+	import {
+		EVENT_KINDS,
+		formatKinds,
+		kindsAtLeast,
+		kindsSummary,
+		toggleKind,
+		type EventKind
+	} from '#lib/tournaments/kind.js';
 	import { FIELD_FLOORS, periodParams, type Period } from '#lib/tournaments/period.js';
 	import { href, withParams } from '#lib/tournaments/url.js';
 
@@ -96,10 +104,19 @@
 			href: linkTo({ period: p.param })
 		}))
 	);
-	const kindOptions = $derived([
-		{ value: '', label: 'All kinds', href: linkTo({ kind: null }) },
-		...kinds.map((kind) => ({ value: kind, label: kind, href: linkTo({ kind }) }))
-	]);
+	// Every kind that exists, plus any chosen that no longer matches an event, so it can be unchosen.
+	const kindOptions = $derived(
+		EVENT_KINDS.filter((kind) => kinds.includes(kind) || period.kinds.includes(kind)).map(
+			(kind) => ({
+				value: kind,
+				label: kind,
+				selected: period.kinds.includes(kind),
+				href: linkTo({ kind: formatKinds(toggleKind(period.kinds, kind)) })
+			})
+		)
+	);
+	/** "Showdown and bigger": the usual reason to filter at all. */
+	const bigger = $derived(formatKinds(kindsAtLeast('Showdown')) === formatKinds(period.kinds));
 	const sizeOptions = $derived([
 		{ value: '', label: 'Any', href: linkTo({ min: null }) },
 		...FIELD_FLOORS.map((floor) => ({
@@ -193,8 +210,27 @@
 						options={periodOptions}
 					/>
 				{/if}
-				{#if kinds.length > 1 || period.kind !== null}
-					<LinkSelect stacked label="Kind" value={period.kind ?? ''} options={kindOptions} />
+				{#if kinds.length > 1 || period.kinds.length > 0}
+					<LinkMultiSelect
+						stacked
+						label="Kind"
+						summary={kindsSummary(period.kinds)}
+						options={kindOptions}
+						clear={{
+							label: 'All kinds',
+							href: linkTo({ kind: null }),
+							active: period.kinds.length === 0
+						}}
+						presets={kinds.includes('Showdown')
+							? [
+									{
+										label: 'Showdown and bigger',
+										href: linkTo({ kind: formatKinds(kindsAtLeast('Showdown')) }),
+										active: bigger
+									}
+								]
+							: []}
+					/>
 				{/if}
 				<LinkSelect
 					stacked

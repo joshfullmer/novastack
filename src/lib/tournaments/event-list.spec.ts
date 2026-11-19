@@ -120,7 +120,7 @@ describe('parseEventQuery', () => {
 	it('reads each filter', () => {
 		expect(parse('kind=Showdown&year=2026&q=%20night%20&page=3')).toEqual({
 			page: 3,
-			kind: 'Showdown',
+			kinds: ['Showdown'],
 			year: 2026,
 			q: 'night'
 		});
@@ -129,10 +129,11 @@ describe('parseEventQuery', () => {
 	it('treats anything it does not recognise as "any", not an error', () => {
 		expect(parse('kind=showdown&year=26&q=&page=-4')).toEqual(ANY_EVENT);
 		expect(parse('kind=Other&year=2026.5&page=x')).toMatchObject({
-			kind: 'Other',
+			kinds: ['Other'],
 			year: null,
 			page: 1
 		});
+		expect(parse('kind=Showdown,Regional').kinds).toEqual(['Regional', 'Showdown']);
 		expect(parse('year=1999').year).toBeNull();
 	});
 

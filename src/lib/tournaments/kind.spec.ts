@@ -1,5 +1,13 @@
 import { describe, expect, it } from 'vitest';
-import { EVENT_KINDS, eventKind } from './kind.ts';
+import {
+	EVENT_KINDS,
+	eventKind,
+	formatKinds,
+	kindsAtLeast,
+	kindsSummary,
+	parseKinds,
+	toggleKind
+} from './kind.ts';
 
 describe('eventKind', () => {
 	it.each([
@@ -52,5 +60,43 @@ describe('eventKind', () => {
 		for (const name of ['Showdown', 'Regional', 'Brawl', 'Prerelease', 'x']) {
 			expect(EVENT_KINDS).toContain(eventKind(name));
 		}
+	});
+});
+
+describe('choosing several kinds', () => {
+	it('reads a list once each, most significant first, dropping what it does not know', () => {
+		expect(parseKinds('Showdown,Regional')).toEqual(['Regional', 'Showdown']);
+		expect(parseKinds(['Brawl', 'Brawl,Other'])).toEqual(['Brawl', 'Other']);
+		expect(parseKinds('regional,,Nope')).toEqual([]);
+		expect(parseKinds(null)).toEqual([]);
+		expect(parseKinds([])).toEqual([]);
+	});
+
+	it('writes them back as the one URL for that choice, or nothing for "any"', () => {
+		expect(formatKinds(['Showdown', 'Regional'])).toBe('Regional,Showdown');
+		expect(formatKinds([])).toBeNull();
+		expect(parseKinds(formatKinds(['Other', 'Brawl']))).toEqual(['Brawl', 'Other']);
+	});
+
+	it('switches one kind at a time', () => {
+		expect(toggleKind([], 'Showdown')).toEqual(['Showdown']);
+		expect(toggleKind(['Showdown'], 'Regional')).toEqual(['Regional', 'Showdown']);
+		expect(toggleKind(['Regional', 'Showdown'], 'Regional')).toEqual(['Showdown']);
+		expect(toggleKind(['Showdown'], 'Showdown')).toEqual([]);
+	});
+
+	it('names "this one and bigger" for a quick choice', () => {
+		expect(kindsAtLeast('Showdown')).toEqual(['Regional', 'Showdown']);
+		expect(kindsAtLeast('Regional')).toEqual(['Regional']);
+		expect(kindsAtLeast('Other')).toEqual([...EVENT_KINDS]);
+	});
+});
+
+describe('kindsSummary', () => {
+	it('says what is chosen on the closed control', () => {
+		expect(kindsSummary([])).toBe('All kinds');
+		expect(kindsSummary(['Showdown'])).toBe('Showdown');
+		expect(kindsSummary(['Regional', 'Showdown'])).toBe('Regional, Showdown');
+		expect(kindsSummary(['Regional', 'Showdown', 'Brawl'])).toBe('3 kinds');
 	});
 });

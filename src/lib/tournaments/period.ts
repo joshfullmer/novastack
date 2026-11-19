@@ -6,27 +6,29 @@
  * so moving a meta's dates needs no edit to any event. The choice lives in `?period=<meta id>` so a link
  * carries it, and anything unrecognised means all time rather than an error.
  */
-import { EVENT_KINDS, type EventKind } from './kind.ts';
+import { formatKinds, parseKinds, type EventKind } from './kind.ts';
 
 /** The field sizes the stats pages offer as a floor ("only events with 16 or more players"). */
 export const FIELD_FLOORS = [8, 16, 32, 64] as const;
 
 /** What a statistic is narrowed to beyond its dates: which events count at all. */
 export type Narrowing = {
-	/** Only events of this kind; null for any. */
-	kind: EventKind | null;
+	/** Only events of these kinds; empty for any. */
+	kinds: readonly EventKind[];
 	/** Only events with at least this many players; null for any. */
 	minPlayers: number | null;
 };
 
-export const ANY_EVENTS: Narrowing = { kind: null, minPlayers: null };
+export const ANY_EVENTS: Narrowing = { kinds: [], minPlayers: null };
 
-/** `?kind=` and `?min=`, with anything unrecognised meaning "any" rather than an error. */
+/**
+ * `?kind=` (one or several, comma-separated) and `?min=`, with anything unrecognised meaning "any"
+ * rather than an error.
+ */
 export function parseNarrowing(params: URLSearchParams): Narrowing {
-	const kind = params.get('kind');
 	const min = Number(params.get('min'));
 	return {
-		kind: EVENT_KINDS.find((k) => k === kind) ?? null,
+		kinds: parseKinds(params.getAll('kind')),
 		minPlayers: FIELD_FLOORS.find((floor) => floor === min) ?? null
 	};
 }
@@ -60,7 +62,7 @@ export const ALL_TIME: Period = {
 /** The query that carries a period and its narrowing from one link to the next. */
 export const periodParams = (period: Period) => ({
 	period: period.param,
-	kind: period.kind,
+	kind: formatKinds(period.kinds),
 	min: period.minPlayers
 });
 

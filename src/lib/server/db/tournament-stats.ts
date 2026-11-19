@@ -35,14 +35,14 @@ import {
 } from './schema.js';
 
 /**
- * The scope as a condition on the Tournament: its start within the window, and, when set, its kind and
+ * The scope as a condition on the Tournament: its start within the window, and, when set, its kinds and
  * size. No condition for anything unbounded.
  */
 export const inPeriod = (period: Period): SQL | undefined =>
 	and(
 		period.from === null ? undefined : gte(tournaments.startsAt, new Date(period.from)),
 		period.to === null ? undefined : lt(tournaments.startsAt, new Date(period.to)),
-		period.kind === null ? undefined : eq(tournaments.kind, period.kind),
+		period.kinds.length === 0 ? undefined : inArray(tournaments.kind, [...period.kinds]),
 		period.minPlayers === null ? undefined : gte(tournaments.playerCount, period.minPlayers)
 	);
 

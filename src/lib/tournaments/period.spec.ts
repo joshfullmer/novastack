@@ -98,7 +98,14 @@ describe('narrowing', () => {
 	const parse = (query: string) => parseNarrowing(new URLSearchParams(query));
 
 	it('reads a kind and a field-size floor', () => {
-		expect(parse('kind=Regional&min=32')).toEqual({ kind: 'Regional', minPlayers: 32 });
+		expect(parse('kind=Regional&min=32')).toEqual({ kinds: ['Regional'], minPlayers: 32 });
+	});
+
+	it('reads several kinds, comma-separated or repeated, once each in the usual order', () => {
+		const both = { kinds: ['Regional', 'Showdown'], minPlayers: null };
+		expect(parse('kind=Showdown,Regional')).toEqual(both);
+		expect(parse('kind=Showdown&kind=Regional&kind=Showdown')).toEqual(both);
+		expect(parse('kind=Showdown,nonsense,')).toEqual({ kinds: ['Showdown'], minPlayers: null });
 	});
 
 	it.each([['kind=regional'], ['kind=&min='], ['min=10'], ['min=-8'], ['min=8.5'], ['min=abc']])(
@@ -109,18 +116,23 @@ describe('narrowing', () => {
 	);
 
 	it('rides along with whichever window was asked for', () => {
-		const period = at('2', { kind: 'Showdown', minPlayers: 16 });
-		expect(period).toMatchObject({ id: 2, name: 'Edgerunners', kind: 'Showdown', minPlayers: 16 });
-		expect(at('all', { kind: 'Showdown', minPlayers: null })).toMatchObject({
+		const period = at('2', { kinds: ['Showdown'], minPlayers: 16 });
+		expect(period).toMatchObject({
+			id: 2,
+			name: 'Edgerunners',
+			kinds: ['Showdown'],
+			minPlayers: 16
+		});
+		expect(at('all', { kinds: ['Showdown'], minPlayers: null })).toMatchObject({
 			id: null,
-			kind: 'Showdown'
+			kinds: ['Showdown']
 		});
 	});
 
 	it('is carried by every link through periodParams, and only what is set is a param', () => {
-		expect(periodParams(at('1', { kind: 'Brawl', minPlayers: 8 }))).toEqual({
+		expect(periodParams(at('1', { kinds: ['Brawl', 'Showdown'], minPlayers: 8 }))).toEqual({
 			period: '1',
-			kind: 'Brawl',
+			kind: 'Showdown,Brawl',
 			min: 8
 		});
 		expect(periodParams(ALL_TIME)).toEqual({ period: null, kind: null, min: null });

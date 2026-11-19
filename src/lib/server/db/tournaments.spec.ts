@@ -117,9 +117,11 @@ describe('getEventList', () => {
 		const ids = async (query: Parameters<typeof getEventList>[1]) =>
 			(await getEventList(await stocked(), query)).events.map((e) => e.id);
 
-		it('filters by kind', async () => {
-			expect(await ids({ kind: 'Showdown' })).toEqual([2, 1]);
-			expect(await ids({ kind: 'Brawl' })).toEqual([]);
+		it('filters by kind, one or several', async () => {
+			expect(await ids({ kinds: ['Showdown'] })).toEqual([2, 1]);
+			expect(await ids({ kinds: ['Brawl'] })).toEqual([]);
+			expect(await ids({ kinds: ['Regional', 'Showdown'] })).toEqual([3, 2, 1]);
+			expect(await ids({ kinds: ['Regional', 'Brawl'] })).toEqual([3]);
 		});
 
 		it('filters by calendar year, UTC, on its boundaries', async () => {
@@ -135,7 +137,7 @@ describe('getEventList', () => {
 		});
 
 		it('combines filters, and totals are of what matches', async () => {
-			const page = await getEventList(await stocked(), { kind: 'Showdown', year: 2026 });
+			const page = await getEventList(await stocked(), { kinds: ['Showdown'], year: 2026 });
 			expect(page.events.map((e) => e.id)).toEqual([2]);
 			expect([page.total, page.players]).toEqual([1, 20]);
 		});
@@ -148,7 +150,7 @@ describe('getEventList', () => {
 				{ kind: 'Other', count: 1 }
 			]);
 			// Choosing a year changes the counts but not the kind you are on, even at zero.
-			const y = await getEventList(await stocked(), { year: 2025, kind: 'Regional' });
+			const y = await getEventList(await stocked(), { year: 2025, kinds: ['Regional'] });
 			expect(y.kinds).toEqual([
 				{ kind: 'Regional', count: 0 },
 				{ kind: 'Showdown', count: 1 }
@@ -156,7 +158,7 @@ describe('getEventList', () => {
 		});
 
 		it('lists every year the events span, newest first, whatever is filtered', async () => {
-			expect((await getEventList(await stocked(), { kind: 'Regional' })).years).toEqual([
+			expect((await getEventList(await stocked(), { kinds: ['Regional'] })).years).toEqual([
 				2026, 2025
 			]);
 		});

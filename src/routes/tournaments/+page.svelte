@@ -8,7 +8,7 @@
 	import Meta from '#lib/components/Meta.svelte';
 	import { cookieState } from '#lib/cookie-state.svelte.js';
 	import ViewToggle from '#lib/components/deck/ViewToggle.svelte';
-	import LinkSelect from '#lib/components/tournaments/LinkSelect.svelte';
+	import LinkMultiSelect from '#lib/components/tournaments/LinkMultiSelect.svelte';
 	import LegendArt from '#lib/components/tournaments/LegendArt.svelte';
 	import {
 		fieldByColour,
@@ -17,6 +17,7 @@
 		ordinal,
 		wherePlayed
 	} from '#lib/tournaments/present.js';
+	import { formatKinds, kindsAtLeast, kindsSummary, toggleKind } from '#lib/tournaments/kind.js';
 	import { withParams } from '#lib/tournaments/url.js';
 
 	let { data } = $props();
@@ -42,7 +43,7 @@
 	const link = (patch: Record<string, string | number | null>) =>
 		withParams(page.url, patch, ['page']);
 	const query = $derived(data.query);
-	const filtered = $derived(query.kind !== null || query.year !== null || query.q !== null);
+	const filtered = $derived(query.kinds.length > 0 || query.year !== null || query.q !== null);
 
 	// Search as you type: the list follows the box a beat after the last keystroke, replacing the
 	// history entry so Back doesn't walk through every prefix. The form still submits on Enter, so it
@@ -107,7 +108,11 @@
 
 		<div class="mt-3 flex flex-wrap items-center gap-x-6 gap-y-2" role="group" aria-label="Filter">
 			<form method="get" action="/tournaments" role="search" onsubmit={() => clearTimeout(pending)}>
-				{#if query.kind}<input type="hidden" name="kind" value={query.kind} />{/if}
+				{#if query.kinds.length > 0}<input
+						type="hidden"
+						name="kind"
+						value={formatKinds(query.kinds)}
+					/>{/if}
 				{#if query.year}<input type="hidden" name="year" value={query.year} />{/if}
 				<input
 					bind:this={searchBox}
@@ -121,17 +126,30 @@
 					class="w-52 rounded border border-edge bg-shell px-2.5 py-1 font-mono text-xs text-body placeholder:text-muted"
 				/>
 			</form>
-			<LinkSelect
+			<LinkMultiSelect
 				label="Kind"
-				value={query.kind ?? ''}
-				options={[
-					{ value: '', label: 'All kinds', href: link({ kind: null }) },
-					...data.kinds.map(({ kind, count }) => ({
-						value: kind,
-						label: `${kind} (${count})`,
-						href: link({ kind })
-					}))
-				]}
+				summary={kindsSummary(query.kinds)}
+				options={data.kinds.map(({ kind, count }) => ({
+					value: kind,
+					label: kind,
+					hint: String(count),
+					selected: query.kinds.includes(kind),
+					href: link({ kind: formatKinds(toggleKind(query.kinds, kind)) })
+				}))}
+				clear={{
+					label: 'All kinds',
+					href: link({ kind: null }),
+					active: query.kinds.length === 0
+				}}
+				presets={data.kinds.some((entry) => entry.kind === 'Showdown')
+					? [
+							{
+								label: 'Showdown and bigger',
+								href: link({ kind: formatKinds(kindsAtLeast('Showdown')) }),
+								active: formatKinds(query.kinds) === formatKinds(kindsAtLeast('Showdown'))
+							}
+						]
+					: []}
 			/>
 			{#if data.years.length > 1}
 				<div class="flex flex-wrap gap-1.5" aria-label="Year">

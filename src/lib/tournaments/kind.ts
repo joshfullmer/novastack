@@ -31,3 +31,35 @@ const RULES: readonly { kind: Exclude<EventKind, 'Other'>; pattern: RegExp }[] =
 export function eventKind(name: string): EventKind {
 	return RULES.find((rule) => rule.pattern.test(name))?.kind ?? 'Other';
 }
+
+/**
+ * `?kind=Regional,Showdown` → those kinds, once each, in the usual order (most to least significant),
+ * so the same choice is always the same URL. Anything unrecognised is dropped; none left means "any".
+ */
+export function parseKinds(text: string | null | readonly string[]): EventKind[] {
+	const asked = new Set(
+		(typeof text === 'string' ? [text] : (text ?? [])).flatMap((t) => t.split(','))
+	);
+	return EVENT_KINDS.filter((kind) => asked.has(kind));
+}
+
+/** What `?kind=` must say for these kinds; null for "any", which is a link that says nothing. */
+export const formatKinds = (kinds: readonly EventKind[]): string | null =>
+	kinds.length === 0 ? null : EVENT_KINDS.filter((kind) => kinds.includes(kind)).join(',');
+
+/** The choice with one kind switched: the link behind each checkbox of a multiselect. */
+export const toggleKind = (kinds: readonly EventKind[], kind: EventKind): EventKind[] =>
+	EVENT_KINDS.filter((k) => (k === kind ? !kinds.includes(k) : kinds.includes(k)));
+
+/**
+ * The kinds from `kind` on up in significance ("Showdown and bigger"): `EVENT_KINDS` runs from the
+ * biggest events to the smallest, so these are the ones at or before it.
+ */
+export const kindsAtLeast = (kind: EventKind): EventKind[] =>
+	EVENT_KINDS.slice(0, EVENT_KINDS.indexOf(kind) + 1);
+
+/** What a closed selector says: "All kinds", the one chosen, a short list, or how many. */
+export function kindsSummary(kinds: readonly EventKind[]): string {
+	if (kinds.length === 0) return 'All kinds';
+	return kinds.length <= 2 ? kinds.join(', ') : `${kinds.length} kinds`;
+}

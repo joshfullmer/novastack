@@ -305,21 +305,32 @@ describe('narrowing which events count', () => {
 	});
 
 	it('keeps only events of a kind: event 1 is a Showdown, event 2 a Regional', async () => {
-		expect(await counts({ kind: 'Regional' })).toEqual({ 'a+b+c': 1, 'a+b+d': 1 });
-		expect(await counts({ kind: 'Brawl' })).toEqual({});
+		expect(await counts({ kinds: ['Regional'] })).toEqual({ 'a+b+c': 1, 'a+b+d': 1 });
+		expect(await counts({ kinds: ['Brawl'] })).toEqual({});
+	});
+
+	it('keeps events of any of several kinds, and all of them when none is chosen', async () => {
+		const both = await counts({ kinds: ['Regional', 'Showdown'] });
+		expect(both).toEqual(await counts({}));
+		expect(await counts({ kinds: ['Showdown', 'Brawl'] })).toEqual(
+			await counts({ kinds: ['Showdown'] })
+		);
+		expect(await counts({ kinds: ['Regional', 'Brawl'] })).toEqual(
+			await counts({ kinds: ['Regional'] })
+		);
 	});
 
 	it('combines with the window and with each other', async () => {
 		const nov16 = Date.parse('2026-11-16T00:00:00Z');
-		expect(await counts({ from: nov16, kind: 'Showdown' })).toEqual({});
-		expect(await counts({ from: nov16, kind: 'Regional', minPlayers: 3 })).toEqual({
+		expect(await counts({ from: nov16, kinds: ['Showdown'] })).toEqual({});
+		expect(await counts({ from: nov16, kinds: ['Regional'], minPlayers: 3 })).toEqual({
 			'a+b+c': 1,
 			'a+b+d': 1
 		});
 	});
 
 	it('reaches the Legend and card aggregates, not just the lines', async () => {
-		const meta = await getMeta(world(), { ...ALL_TIME, kind: 'Regional' });
+		const meta = await getMeta(world(), { ...ALL_TIME, kinds: ['Regional'] });
 		expect(meta.byLegend.map((g) => [g.key, g.decks])).toEqual([
 			['a', 2],
 			['b', 2],

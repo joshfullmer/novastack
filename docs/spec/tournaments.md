@@ -585,10 +585,13 @@ read-only, dynamic and `noindex`:
   newest that has started), so a link that names none shows it and the default adds no param to any link;
   all time is `?period=all`. Anything unrecognised means the default. With no meta started, a bare link is
   all time. Nothing is seeded in production; locally one row, WNC, is.
-- **Which events count** narrows them the same way: `?kind=<Regional|Showdown|…>` (offered once more than
-  one kind has been ingested) and `?min=<8|16|32|64>`, a floor on field size. Both are part of the `Period`,
-  so every aggregate honours them, and every link and GET form carries them. Anything unrecognised means
-  "any events".
+- **Which events count** narrows them the same way: `?kind=Regional,Showdown` (a **multiselect**, offered once more
+  than one kind has been ingested; a comma list in the usual order, repeated `kind=` params are read too,
+  and none means any) and `?min=<8|16|32|64>`, a floor on field size. Both are part of the `Period`, so
+  every aggregate honours them (`inPeriod`), and every link and GET form carries them. The event list
+  takes the same `?kind=`. The selector is a menu of checkbox links (`LinkMultiSelect`), so it works
+  without JavaScript and stays open between picks; "Showdown and bigger" is a shortcut, since
+  `EVENT_KINDS` runs from the biggest events down. Anything unrecognised means "any events".
 
 **How it was checked.** The queries are grouped SQL aggregates (`tournament-stats.ts`,
 `tournament-decks.ts`), and each is run in tests against a **real SQLite built from our own

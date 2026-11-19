@@ -6,7 +6,7 @@
  * do it. Cards are slugs; resolving them to art is the view's job.
  */
 import type { tournaments } from '../server/db/schema.ts';
-import { EVENT_KINDS, type EventKind } from './kind.ts';
+import { parseKinds, type EventKind } from './kind.ts';
 
 /** Events on one page of the list. */
 export const EVENTS_PER_PAGE = 24;
@@ -16,22 +16,22 @@ export const eventPageCount = (total: number) => Math.max(1, Math.ceil(total / E
 /** What the list is narrowed to. A null is "any". */
 export type EventQuery = {
 	page: number;
-	kind: EventKind | null;
+	/** Only events of these kinds; empty for any. */
+	kinds: readonly EventKind[];
 	/** A calendar year, UTC. */
 	year: number | null;
 	/** Text in the event's or its organizer's name. */
 	q: string | null;
 };
 
-export const ANY_EVENT: EventQuery = { page: 1, kind: null, year: null, q: null };
+export const ANY_EVENT: EventQuery = { page: 1, kinds: [], year: null, q: null };
 
 /** The URL's say, with anything unrecognised meaning "any" rather than an error. */
 export function parseEventQuery(params: URLSearchParams): EventQuery {
-	const kind = params.get('kind');
 	const year = Number(params.get('year'));
 	return {
 		page: Math.max(1, Math.floor(Number(params.get('page'))) || 1),
-		kind: EVENT_KINDS.find((k) => k === kind) ?? null,
+		kinds: parseKinds(params.getAll('kind')),
 		year: Number.isInteger(year) && year >= 2000 && year <= 2100 ? year : null,
 		q: params.get('q')?.trim().slice(0, 60) || null
 	};

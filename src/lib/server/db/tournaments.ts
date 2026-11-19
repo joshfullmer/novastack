@@ -88,7 +88,10 @@ export async function getEventList(
 			? undefined
 			: or(contains(tournaments.name, asked.q), contains(tournaments.organizerName, asked.q));
 	const others = and(inYear, matchesText);
-	const where = and(others, asked.kind === null ? undefined : eq(tournaments.kind, asked.kind));
+	const where = and(
+		others,
+		asked.kinds.length === 0 ? undefined : inArray(tournaments.kind, [...asked.kinds])
+	);
 
 	const [[totals], kindCounts, [span]] = await Promise.all([
 		db
@@ -110,7 +113,7 @@ export async function getEventList(
 
 	const kinds = EVENT_KINDS.flatMap((kind) => {
 		const n = kindCounts.find((row) => row.kind === kind)?.count ?? 0;
-		return n > 0 || kind === asked.kind ? [{ kind, count: n }] : [];
+		return n > 0 || asked.kinds.includes(kind) ? [{ kind, count: n }] : [];
 	});
 	const newest = span?.last ? new Date(span.last).getUTCFullYear() : null;
 	const oldest = span?.first ? new Date(span.first).getUTCFullYear() : null;
