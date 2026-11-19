@@ -13,7 +13,14 @@ import { dataset } from '../cards/index.ts';
 import { buildTournament } from './build.ts';
 import {
 	OWNED_TABLES,
+	batchPlayersQuery,
+	batchQueries,
 	diffAgainstStored,
+	diffEvents,
+	groupByEvent,
+	perTable,
+	promoteStatements,
+	type EventRows,
 	literal,
 	reindexStatements,
 	rekindStatements,
@@ -295,5 +302,89 @@ describe('--reparse: the kind of each event, again from its name', () => {
 		expect(rekindStatements([{ id: 1, name: 'Night City Showdown', kind: 'Showdown' }])).toEqual(
 			[]
 		);
+	});
+});
+
+describe('--promote: local rows copied to another database', () => {
+	type Row = Record<string, unknown>;
+	const read = (db: DatabaseSync, ids: number[]) => {
+		const queries = batchQueries(ids);
+		const events = groupByEvent(
+			ids,
+			perTable((table) => db.prepare(queries[table]).all())
+		);
+		const players = new Map<number, Row>(
+			db
+				.prepare(batchPlayersQuery(ids))
+				.all()
+				.map((row) => [Number(row.id), row])
+		);
+		return { events, players };
+	};
+	const rowsOf = (db: DatabaseSync): { event: EventRows; players: Map<number, Row> } => {
+		const { events, players } = read(db, [ID]);
+		const event = events.get(ID);
+		if (!event) throw new Error('event missing');
+		return { event, players };
+	};
+
+	it('reproduces the event exactly, players included, and then says nothing differs', () => {
+		const local = migrated();
+		write(local);
+		const production = migrated();
+		const from = rowsOf(local);
+		production.exec(toFile(promoteStatements(ID, from.event, from.players)));
+
+		for (const table of [...OWNED_TABLES, 'players']) {
+			expect(count(production, table)).toBe(count(local, table));
+		}
+		const to = rowsOf(production);
+		expect(diffEvents(from.event, to.event, from.players, to.players)).toEqual([]);
+	});
+
+	it('names what differs when production is behind, and promoting again repairs it', () => {
+		const local = migrated();
+		write(local);
+		const production = migrated();
+		const from = rowsOf(local);
+		production.exec(toFile(promoteStatements(ID, from.event, from.players)));
+		production.exec(`UPDATE tournament_decks SET ram = 'zzz'`);
+		production.exec(
+			`UPDATE players SET display_name = 'Renamed' WHERE id = (SELECT min(id) FROM players)`
+		);
+		production.exec(`DELETE FROM standings WHERE rank = 1`);
+
+		const behind = rowsOf(production);
+		const diff = diffEvents(from.event, behind.event, from.players, behind.players);
+		expect(diff.join('\n')).toMatch(/standings: 13 in production, 14 local/);
+		expect(diff.join('\n')).toMatch(/tournament_decks/);
+		expect(diff).toContain('players: names differ');
+
+		production.exec(toFile(promoteStatements(ID, from.event, from.players)));
+		const fixed = rowsOf(production);
+		expect(diffEvents(from.event, fixed.event, from.players, fixed.players)).toEqual([]);
+	});
+
+	it('leaves other events and players in the target alone', () => {
+		const local = migrated();
+		write(local);
+		const production = migrated();
+		production.exec(`INSERT INTO players (id, display_name) VALUES (999, 'Only in production')`);
+		const from = rowsOf(local);
+		production.exec(toFile(promoteStatements(ID, from.event, from.players)));
+		expect(production.prepare('SELECT display_name FROM players WHERE id = 999').get()).toEqual({
+			display_name: 'Only in production'
+		});
+	});
+
+	it('keeps an apostrophe and a newline in deck text intact', () => {
+		const local = migrated();
+		write(local, build({ deckTexts: new Map([[WINNER_DECK, `${deckText}\n`]]) }));
+		local.exec(`UPDATE tournament_decks SET text = text || char(10) || 'Don''t Call Me Simon'`);
+		const production = migrated();
+		const from = rowsOf(local);
+		production.exec(toFile(promoteStatements(ID, from.event, from.players)));
+		const copied = production.prepare('SELECT text FROM tournament_decks').get()?.text;
+		expect(String(copied)).toMatch(/Don't Call Me Simon$/);
 	});
 });

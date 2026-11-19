@@ -10,6 +10,7 @@ describe('pnpm melee arguments', () => {
 			check: false,
 			force: false,
 			reparse: false,
+			promote: false,
 			persistTo: undefined,
 			maxRequests: undefined
 		});
@@ -35,6 +36,25 @@ describe('pnpm melee arguments', () => {
 	it('skips what is stored unless --force', () => {
 		expect(parseCli(['1']).force).toBe(false);
 		expect(parseCli(['1', '--force']).force).toBe(true);
+	});
+
+	it('promotes local to production, for every event or the ones named, never with --remote', () => {
+		expect(parseCli(['--promote'])).toMatchObject({ promote: true, ids: [] });
+		expect(parseCli(['--promote', '5', '--check', '--yes'])).toMatchObject({
+			promote: true,
+			ids: [5],
+			check: true,
+			yes: true
+		});
+		for (const flag of [
+			'--remote',
+			'--force',
+			'--reparse',
+			'--persist-to=/tmp/x',
+			'--max-requests=3'
+		]) {
+			expect(() => parseCli(['--promote', flag])).toThrow();
+		}
 	});
 
 	it('wants an id, unless re-reading', () => {

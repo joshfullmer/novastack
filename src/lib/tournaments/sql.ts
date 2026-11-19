@@ -191,3 +191,127 @@ export function diffAgainstStored(
 	}
 	return differences;
 }
+
+// ---------------------------------------------------------------------------
+// `--promote`: copy what the local database holds to production, with no trip to Melee
+// ---------------------------------------------------------------------------
+
+/** One event's rows as a database returns them (snake_case columns), and the players they name. */
+export type EventRows = Record<OwnedTable, readonly Row[]>;
+
+const EVENT_COLUMN: Record<OwnedTable, string> = {
+	tournaments: 'id',
+	tournament_rounds: 'tournament_id',
+	tournament_decks: 'tournament_id',
+	tournament_deck_cards: 'tournament_id',
+	standings: 'tournament_id',
+	tournament_matches: 'tournament_id'
+};
+
+/** One value per owned table, built from a function of the table's name. */
+export const perTable = <T>(of: (table: OwnedTable) => T): Record<OwnedTable, T> => ({
+	tournaments: of('tournaments'),
+	tournament_rounds: of('tournament_rounds'),
+	tournament_decks: of('tournament_decks'),
+	tournament_deck_cards: of('tournament_deck_cards'),
+	standings: of('standings'),
+	tournament_matches: of('tournament_matches')
+});
+
+const idList = (ids: readonly number[]) => ids.map(literal).join(', ');
+
+/** Every owned table's rows for all of these events in one SELECT each, rather than one per event. */
+export function batchQueries(ids: readonly number[]): Record<OwnedTable, string> {
+	const list = idList(ids);
+	return perTable((table) => `SELECT * FROM ${table} WHERE ${EVENT_COLUMN[table]} IN (${list})`);
+}
+
+/** The players those events name, by any of the four places a player id appears. */
+export const batchPlayersQuery = (ids: readonly number[]): string => {
+	const list = idList(ids);
+	return `SELECT * FROM players WHERE id IN (
+		SELECT player_id FROM standings WHERE tournament_id IN (${list})
+		UNION SELECT player_id FROM tournament_decks WHERE tournament_id IN (${list})
+		UNION SELECT player_a FROM tournament_matches WHERE tournament_id IN (${list})
+		UNION SELECT player_b FROM tournament_matches WHERE tournament_id IN (${list}) AND player_b IS NOT NULL
+	) ORDER BY id`;
+};
+
+/** Splits one batch of rows per table into one `EventRows` per event id. */
+export function groupByEvent(
+	ids: readonly number[],
+	batch: Record<OwnedTable, readonly Row[]>
+): Map<number, EventRows> {
+	const grouped = new Map(ids.map((id) => [id, perTable((): Row[] => [])]));
+	for (const table of OWNED_TABLES) {
+		for (const row of batch[table])
+			grouped.get(Number(row[EVENT_COLUMN[table]]))?.[table].push(row);
+	}
+	return grouped;
+}
+
+const playersOf = (rows: EventRows, all: ReadonlyMap<number, Row>): Row[] => {
+	const wanted = new Set<number>();
+	for (const row of rows.standings) wanted.add(Number(row.player_id));
+	for (const row of rows.tournament_decks) wanted.add(Number(row.player_id));
+	for (const row of rows.tournament_matches) {
+		wanted.add(Number(row.player_a));
+		if (row.player_b !== null && row.player_b !== undefined) wanted.add(Number(row.player_b));
+	}
+	return [...wanted]
+		.sort((a, b) => a - b)
+		.flatMap((id) => {
+			const player = all.get(id);
+			return player ? [player] : [];
+		});
+};
+
+/** How production's copy of an event differs from the local one; empty when they match. */
+export function diffEvents(
+	local: EventRows,
+	production: EventRows,
+	localPlayers: ReadonlyMap<number, Row>,
+	productionPlayers: ReadonlyMap<number, Row>
+): string[] {
+	const differences: string[] = [];
+	for (const table of OWNED_TABLES) {
+		const next = canonical(table, local[table], false);
+		const prev = canonical(table, production[table], false);
+		if (JSON.stringify(next) === JSON.stringify(prev)) continue;
+		const changed = next.filter((row) => !prev.includes(row)).length;
+		differences.push(
+			`${table}: ${prev.length} in production, ${next.length} local, ${changed} differ`
+		);
+	}
+	const named = (rows: EventRows, all: ReadonlyMap<number, Row>) =>
+		JSON.stringify(playersOf(rows, all).map((row) => [row.id, row.display_name, row.username]));
+	if (named(local, localPlayers) !== named(production, productionPlayers)) {
+		differences.push('players: names differ');
+	}
+	return differences;
+}
+
+/**
+ * Writes an event from rows already in the database: its players, then `DELETE` and everything again
+ * in foreign-key order, exactly as `writeStatements` does for a fresh fetch. Columns the database fills
+ * in itself (`ingested_at`, a match's `id`) are left out so production assigns its own.
+ */
+export function promoteStatements(
+	id: number,
+	rows: EventRows,
+	localPlayers: ReadonlyMap<number, Row>
+): string[] {
+	const copy = (table: OwnedTable) =>
+		rows[table].map((row) => {
+			const omitted: readonly string[] = OWNED[table].omit;
+			return insert(
+				table,
+				Object.fromEntries(Object.entries(row).filter(([name]) => !omitted.includes(name)))
+			);
+		});
+	return [
+		...playersOf(rows, localPlayers).map(upsertPlayer),
+		`DELETE FROM tournaments WHERE id = ${literal(id)};`,
+		...OWNED_TABLES.flatMap(copy)
+	];
+}

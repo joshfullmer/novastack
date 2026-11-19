@@ -35,11 +35,16 @@ pnpm exec wrangler d1 migrations apply novastack-decks --remote
 pnpm exec wrangler d1 execute novastack-decks --remote \
   --command "INSERT INTO metas (name, starts_on, ends_on) VALUES ('WNC', 1793923200000, NULL)"
 
-# 3. The events. It asks before writing; --yes skips the question. About 114 requests to Melee.
-pnpm melee 485070 477190 495716 487802 478979 --remote
+# 3. The events: copy what the local database already holds. No requests to Melee. It shows what
+#    differs, then asks once; --yes skips the question.
+pnpm melee --promote
+#    (Or fetch them fresh into both databases, about 114 requests to Melee, instead:
+#     pnpm melee 485070 477190 495716 487802 478979 --remote)
 
-# 4. Prove it: exits 0 when production is what a fresh fetch would write. (Fetches Melee again.)
-pnpm melee 485070 477190 495716 487802 478979 --check --remote
+# 4. Prove it: exits 0 when production holds exactly what local does. Free.
+pnpm melee --promote --check
+#    Stricter, and fetches Melee again: exits 0 when both are what a fresh fetch would write.
+#     pnpm melee 485070 477190 495716 487802 478979 --check --remote
 ```
 
 Then spot-check the totals against local: 5 events, 32 decks (30 with a RAM), 71 standings, 174 matches.
@@ -65,7 +70,10 @@ pnpm exec wrangler d1 execute novastack-decks --remote --command \
 
 ## Later
 
-- Adding an event: `pnpm melee <id> --remote`, then `--check --remote`. Ids already in the database are
+- Adding an event: `pnpm melee <id> --remote` writes the local and the production database together,
+  then `--check --remote` proves both. To push what the local database already holds (events you ingested
+  or `--reparse`d locally) without asking Melee again: `pnpm melee --promote --check` to see the
+  difference, `pnpm melee --promote` to apply it. Ids already in the database are
   skipped, so a pasted batch is safe; add `--force` to fetch and rewrite one anyway (a repair, or decks
   that arrived late). The id is the number in
   `melee.gg/Tournament/View/<id>`; `/tournaments/add` hosts a bookmarklet that copies the command from

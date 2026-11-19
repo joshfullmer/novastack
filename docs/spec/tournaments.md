@@ -227,15 +227,20 @@ is applied.
 ```
 pnpm melee 485070 [id …]    ingest the given Melee tournament ids into the LOCAL D1; each is rewritten whole.
                             An id already stored is skipped (0 requests) unless --force
-pnpm melee --remote 485070  the same, against the PRODUCTION database, after a y/N question
-                            (--yes skips it; with no terminal and no --yes the answer is no)
+pnpm melee --remote 485070  the same into the local AND the PRODUCTION database, so they hold the same events:
+                            Melee is fetched once and each database writes only what it lacks. Production
+                            asks y/N first (--yes skips it; with no terminal and no --yes the answer is no)
+pnpm melee --promote [id …] copy what the LOCAL database holds to PRODUCTION, with no trip to Melee: every
+                            event, or the ones named. Rows are compared first and only differences are
+                            written, after one y/N. --check stops after the comparison (exit 1: would change).
+                            Local is the source; events only production has are left alone
 pnpm melee 485070 --persist-to DIR   a throwaway local database, to try a run out
 pnpm melee --check 485070   fetch and diff exactly as a real run; write nothing
                             exit 0 current · 1 would change · 2 invariant violated / unreachable
 pnpm melee --reparse        rebuild the derived deck columns and card index from stored text (no network)
 ```
 
-**Local by default; `--remote` is explicit.** Production is only ever written on purpose, after our
+**Local by default; `--remote` is explicit and adds production to local.** Production is only ever written on purpose, after our
 own confirmation (`scripts/lib/d1.ts`), which names the Tournament and the statement count.
 **Manually triggered, one id at a time**, the way swubase does it: a person supplies the id. Running
 an id again with `--force` rewrites it (also how a repair or a decks-arrived-late fill-in works); without
