@@ -2,7 +2,7 @@ import { describe, expect, it, vi } from 'vitest';
 import { BOOKMARKLET_SOURCE, bookmarklet } from './bookmarklet.ts';
 
 /** Runs the bookmarklet against a stand-in page and reports what it did. */
-async function click(url: string, { clipboard = true } = {}) {
+async function click(url: string, { clipboard = true, links = [] as string[] } = {}) {
 	const { hostname, pathname } = new URL(url);
 	const notes: string[] = [];
 	const written: string[] = [];
@@ -13,6 +13,7 @@ async function click(url: string, { clipboard = true } = {}) {
 			textContent: '',
 			remove: () => {}
 		}),
+		querySelectorAll: () => links.map((href) => ({ href })),
 		body: { append: (note: { textContent: string }) => notes.push(note.textContent) }
 	};
 	const navigator = {
@@ -22,7 +23,7 @@ async function click(url: string, { clipboard = true } = {}) {
 		}
 	};
 	new Function('location', 'document', 'navigator', 'prompt', 'setTimeout', BOOKMARKLET_SOURCE)(
-		{ hostname, pathname },
+		{ hostname, pathname, href: url },
 		document,
 		navigator,
 		prompt,
@@ -40,16 +41,36 @@ describe('bookmarklet', () => {
 		expect(notes).toEqual(['Copied: pnpm melee 485070']);
 	});
 
+	it('copies one command for every tournament a search page links to, once each', async () => {
+		const row = (id: number) => `https://melee.gg/Tournament/View/${id}`;
+		const { written, notes } = await click('https://melee.gg/Decklists', {
+			links: [
+				row(474967),
+				row(474967),
+				'/Tournament/View/467844',
+				'https://melee.gg/Organization/View/7050',
+				row(492606)
+			]
+		});
+		expect(written).toEqual(['pnpm melee 474967 467844 492606']);
+		expect(notes).toEqual(['Copied: 3 events']);
+	});
+
 	it('ignores what follows the id', async () => {
 		const { written } = await click('https://melee.gg/Tournament/View/477190#standings');
 		expect(written).toEqual(['pnpm melee 477190']);
 	});
 
-	it('says where to go from any other page, and copies nothing', async () => {
+	it('says so when a melee.gg page links to no tournaments, and copies nothing', async () => {
 		const { written, notes } = await click('https://melee.gg/Decklist/View/abc');
 		expect(written).toEqual([]);
-		expect(notes[0]).toMatch(/Open a melee\.gg tournament page/);
-		expect((await click('https://example.com/Tournament/View/1')).written).toEqual([]);
+		expect(notes).toEqual(['No tournaments found on this page.']);
+	});
+
+	it('stays out of other sites', async () => {
+		const { written, notes } = await click('https://example.com/Tournament/View/1');
+		expect(written).toEqual([]);
+		expect(notes).toEqual(['Open a melee.gg page first.']);
 	});
 
 	it('offers the command to copy by hand when the clipboard is refused', async () => {

@@ -328,8 +328,10 @@ entities.
 ### 4.3.1 Finding the id
 
 The command takes a bare Melee id, so `/tournaments/add` (unlisted, `noindex`) hosts a bookmarklet that,
-clicked on a `melee.gg/Tournament/View/<id>` page, copies `pnpm melee <id>`. It runs in the visitor's
-own browser, reads only the address, and sends nothing; ingest stays manual and one id at a time
+clicked on a `melee.gg/Tournament/View/<id>` page, copies `pnpm melee <id>`; clicked on any other
+melee.gg page, such as the signed-in `/Decklists` search (its rows link `td.TournamentName-column a`
+to `/Tournament/View/<id>`), it copies one command for every distinct event linked, in page order. It
+runs in the visitor's own browser, reads only the open page, and sends nothing; ingest stays manual and one id at a time
 (§1.3). Melee's CSP allows inline `javascript:` URLs (checked 2026-11-19).
 
 ### 4.4 Writing to D1

@@ -67,6 +67,7 @@ pnpm exec wrangler d1 execute novastack-decks --remote --command \
 
 - Adding an event: `pnpm melee <id> --remote`, then `--check --remote`. The id is the number in
   `melee.gg/Tournament/View/<id>`; `/tournaments/add` hosts a bookmarklet that copies the command from
-  that page (`src/lib/tournaments/bookmarklet.ts`). It only reads the address and writes the clipboard.
+  that page, or from a `/Decklists` search page, where it copies one command for every event listed
+  (`src/lib/tournaments/bookmarklet.ts`). It only reads the page and writes the clipboard.
 - A new meta is one `INSERT INTO metas` (name, start in ms UTC, end or NULL).
 - To show the pages to everyone: add the nav link and drop `noindex` (`Meta` component), when you are ready.

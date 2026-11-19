@@ -32,9 +32,13 @@
 				>
 			</li>
 			<li>
-				Open the event on <span class="font-mono">melee.gg</span> (a
-				<span class="font-mono">/Tournament/View/…</span> page) and click the bookmark. It copies
-				<span class="font-mono">pnpm melee &lt;id&gt;</span>.
+				On <span class="font-mono">melee.gg</span>, click the bookmark. On an event page (<span
+					class="font-mono">/Tournament/View/…</span
+				>) it copies
+				<span class="font-mono">pnpm melee &lt;id&gt;</span>. On a decklist search (<span
+					class="font-mono">/Decklists</span
+				>, filtered to what you want) it copies one command for every event in the rows on screen
+				(25 a page; filter by date or tournament type to narrow it).
 			</li>
 			<li>
 				Paste it in this repo's terminal. It writes your local database; add
