@@ -47,6 +47,8 @@ export type Fake = {
 		page: { recordsTotal: number; data: unknown[] },
 		round: number
 	) => { recordsTotal: number; data: unknown[] };
+	/** Rewrite the tournament page's HTML (to rename a round, say) before it is served. */
+	view?: (html: string) => string;
 	/** Rewrite what `GetPlayerDetails` answers. */
 	player?: unknown;
 	/** Answer a path with a sign-in redirect instead. */
@@ -89,7 +91,12 @@ export function fakeMelee(fake: Fake = {}, log: string[] = []): typeof fetch {
 			return Response.json({ ...(json('details.json') as object), ...fake.details });
 		}
 		if (path.startsWith('/Tournament/View/')) {
-			return new Response(read('view-rounds.html'), { headers: HTML_HEADERS });
+			return new Response(
+				fake.view ? fake.view(read('view-rounds.html')) : read('view-rounds.html'),
+				{
+					headers: HTML_HEADERS
+				}
+			);
 		}
 		if (path === '/Standing/GetRoundStandings') {
 			const all = (json('standings-final.json') as { data: unknown[] }).data;

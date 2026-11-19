@@ -289,10 +289,19 @@ not from our one measured event:
   Rounds 4–6 listed and empty (492606: 3 played). When the last listed round has no standings, the final
   standings are the last round that has them, provided every later round holds no played match; the
   empty rounds are dropped (so the round count is what was played) and the run says so. This infers
-  nothing about who won: it only declines to read an unplayed round as the end. If a later round
-  _does_ have results but no standings, the ranking really is unknown and the event is refused
-  ("has results but Melee has no standings for it"). Computing a ranking from matches is not done: it
-  would need Melee's tiebreakers reproduced exactly.
+  nothing about who won: it only declines to read an unplayed round as the end.
+- **A playoff that was played but never ranked** (decision 2026-11-19; 485839, 486315, 479192: standings
+  published through the Semifinals, none for the Finals). When the unpublished rounds are playoff rounds
+  with results, the ranking is read from the bracket (`infer.ts`): the players still in it take, between
+  them, the ranks they already held, in order of how far they got (champion, finalist, then each earlier
+  round's losers in the order they stood); everyone else keeps their row; each playoff match is added to
+  the match and game records and points are left alone. Checked on 2026-11-19 against 20 events whose
+  final standings _are_ published, starting from the last Swiss round and from each playoff round: 19
+  matched on every rank, record and points total; the 20th (a drawn Finals) is declined. It declines, and
+  the event is refused as "can't be read from them (…)", for anything that makes the ranking unknowable:
+  a drawn or forfeited match, a bye, a round not finished, a player who didn't win the round before, a
+  last round that isn't one final, or players in the bracket whose ranks aren't consecutive. Swiss
+  rounds without standings are never inferred (that needs Melee's tiebreakers).
 - **Final standings can show no decklist for a player who has one.** swubase falls back to
   `Player/GetPlayerDetails?id=` (`decklists[]`) and so do we, but only for those rows. In the measured
   event that was 1 of 14 players.

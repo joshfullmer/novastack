@@ -16,11 +16,14 @@ import { buildTournament, matchKind, type BuiltTournament } from './build.ts';
 import { dataTablesBody, type MeleeClient } from './client.ts';
 import { formatIdOf, pickDecklist } from './decks.ts';
 import { parseDecklistPage, parseTournamentView, type MeleeRound } from './html.ts';
+import { inferFinalStandings } from './infer.ts';
+import { isPlayoffRound } from './rounds.ts';
 import {
 	MeleeDetailsSchema,
 	MeleeMatchesPageSchema,
 	MeleePlayerDetailsSchema,
 	MeleeStandingsPageSchema,
+	type MeleeMatch,
 	type MeleeStanding
 } from './sources.ts';
 
@@ -120,8 +123,12 @@ export async function ingestTournament(
 				),
 			'standings'
 		);
-	const matchesOf = (round: MeleeRound) =>
-		allRows(
+	// Remembered by round: looking at a round to decide something must not cost a second request later.
+	const fetched = new Map<number, Promise<MeleeMatch[]>>();
+	const matchesOf = (round: MeleeRound) => {
+		const known = fetched.get(round.meleeRoundId);
+		if (known) return known;
+		const asked = allRows(
 			async (start) =>
 				client.form(
 					`/Match/GetRoundMatches/${round.meleeRoundId}`,
@@ -130,6 +137,9 @@ export async function ingestTournament(
 				),
 			`round ${round.number} matches`
 		);
+		fetched.set(round.meleeRoundId, asked);
+		return asked;
+	};
 
 	let standings = await standingsOf(view.finalStandingsRoundId);
 	let rounds = view.rounds;
@@ -157,20 +167,54 @@ export async function ingestTournament(
 			);
 		}
 		const skipped = rounds.slice(last + 1);
+		const hasResults: boolean[] = [];
 		for (const round of skipped) {
-			if ((await matchesOf(round)).some((match) => matchKind(match) !== null)) {
-				throw new Refusal(
-					`${round.name} has results but Melee has no standings for it, so the final ranking isn't ` +
-						`known. Try again once the organizer publishes them.`,
-					details.Name
+			hasResults.push((await matchesOf(round)).some((match) => matchKind(match) !== null));
+		}
+		const lastPlayed = hasResults.lastIndexOf(true);
+		const unreadable = (round: string, why: string) =>
+			new Refusal(
+				`${round} has results but Melee has no standings for it, and the final ranking can't be ` +
+					`read from them (${why}). Try again once the organizer publishes them.`,
+				details.Name
+			);
+		if (lastPlayed === -1) {
+			rounds = rounds.slice(0, last + 1);
+			extra.push(
+				`${skipped.map((round) => round.name).join(', ')} ${skipped.length === 1 ? 'has' : 'have'} no results on Melee, ` +
+					`so the final standings are those after ${rounds[last].name}.`
+			);
+		} else {
+			// A playoff that was played but never ranked: the bracket says who got how far, so the
+			// ranking follows (`infer.ts`), for a clean single-elimination bracket only.
+			const played = skipped.slice(0, lastPlayed + 1);
+			const first = played[0].name;
+			const gap = played.find((round, i) => !hasResults[i] || !isPlayoffRound(round.name));
+			if (gap) {
+				throw unreadable(
+					gap.name,
+					hasResults[played.indexOf(gap)]
+						? 'it is not a playoff round'
+						: 'it has no results but a later round does'
+				);
+			}
+			const inferred = inferFinalStandings(
+				standings,
+				await Promise.all(
+					played.map(async (round) => ({ name: round.name, matches: await matchesOf(round) }))
+				)
+			);
+			if (!inferred.ok) throw unreadable(first, inferred.reason);
+			standings = inferred.standings;
+			rounds = rounds.slice(0, last + 1 + played.length);
+			extra.push(inferred.summary);
+			const dropped = skipped.slice(played.length);
+			if (dropped.length > 0) {
+				extra.push(
+					`${dropped.map((round) => round.name).join(', ')} had no results and are left out.`
 				);
 			}
 		}
-		rounds = rounds.slice(0, last + 1);
-		extra.push(
-			`${skipped.map((round) => round.name).join(', ')} ${skipped.length === 1 ? 'has' : 'have'} no results on Melee, ` +
-				`so the final standings are those after ${rounds[last].name}.`
-		);
 	}
 	const formatId = formatIdOf(standings);
 	log(`${standings.length} standings`);

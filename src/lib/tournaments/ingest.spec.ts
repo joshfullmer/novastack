@@ -8,7 +8,7 @@ import { dataset } from '../cards/index.ts';
 import { MeleeClient } from './client.ts';
 import { MeleeSignInError } from './html.ts';
 import { Refusal, ingestTournament } from './ingest.ts';
-import { ID, fakeClock, fakeMelee, type Fake } from './testing.ts';
+import { ID, fakeClock, fakeMelee, standings, type Fake } from './testing.ts';
 
 function run(fake: Fake = {}) {
 	const requests: string[] = [];
@@ -126,6 +126,62 @@ describe('an event that is not ready', () => {
 		await expect(run(roundFourUnpublished).ingested).rejects.toThrow(
 			/Round 4 has results but Melee has no standings for it/
 		);
+	});
+
+	describe('a playoff that was played but never ranked', () => {
+		type Page = { recordsTotal: number; data: unknown[] };
+		// Round 4 becomes the Finals between the two best Swiss players, with nothing published for it.
+		// The two top-ranked players, in the shape of a Round 4 match.
+		const topTwoMeet = (page: Page) => {
+			const [match] = page.data as { Competitors: { Team: unknown }[] }[];
+			const top = [...standings].sort((a, b) => a.Rank - b.Rank).slice(0, 2);
+			return [
+				{ ...match, Competitors: match.Competitors.map((c, i) => ({ ...c, Team: top[i].Team })) }
+			];
+		};
+		const finalsUnranked = (round4: (page: Page) => unknown[] | null = topTwoMeet) => {
+			return {
+				view: (html: string) => html.replaceAll('Round 4', 'Finals'),
+				standings: (page: Page, roundId: number) =>
+					roundId === 1727274 ? { recordsTotal: 0, data: [] } : page,
+				matches: (page: Page, round: number) => {
+					if (round !== 4) return page;
+					const data = round4(page) ?? page.data;
+					return { recordsTotal: data.length, data };
+				}
+			};
+		};
+
+		it('is refused when the playoff is not a clean bracket, saying why', async () => {
+			// The captured Round 4 is seven matches, not one final.
+			await expect(run(finalsUnranked(() => null)).ingested).rejects.toThrow(
+				/Finals has results but Melee has no standings for it, and the final ranking can't be read from them \(the last round is not a single final\)/
+			);
+		});
+
+		it('reads the ranking from the bracket when it is clean', async () => {
+			const { built, findings } = await run(finalsUnranked()).ingested;
+			expect(built.rounds.map((round) => round.name)).toEqual([
+				'Round 1',
+				'Round 2',
+				'Round 3',
+				'Finals'
+			]);
+			expect(findings[0]).toMatch(
+				/^Finals was played but Melee never published standings for it, so the final ranking is read from the bracket \(2 players in it\)/
+			);
+			expect(built.standings.map((row) => row.rank).sort((a, b) => a - b)).toEqual(
+				Array.from({ length: 14 }, (_, i) => i + 1)
+			);
+			const finalMatch = built.matches.find((match) => match.round === 4);
+			expect(finalMatch).toBeDefined();
+			const champion = built.standings.find((row) => row.rank === 1);
+			expect(champion?.playerId).toBe(
+				finalMatch && finalMatch.gamesA > finalMatch.gamesB
+					? finalMatch.playerA
+					: finalMatch?.playerB
+			);
+		});
 	});
 
 	it('does not gate on format: any event with lists is ingested', async () => {
