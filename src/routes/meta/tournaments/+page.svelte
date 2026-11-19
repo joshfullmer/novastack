@@ -6,6 +6,7 @@
 	import { goto } from '$app/navigation';
 	import { page } from '$app/state';
 	import Meta from '#lib/components/Meta.svelte';
+	import { META_INDEXED } from '#lib/meta/launch.js';
 	import { cookieState } from '#lib/cookie-state.svelte.js';
 	import ViewToggle from '#lib/components/deck/ViewToggle.svelte';
 	import LinkMultiSelect from '#lib/components/tournaments/LinkMultiSelect.svelte';
@@ -71,13 +72,13 @@
 	$effect(() => () => clearTimeout(pending));
 </script>
 
-<!-- `noindex` until the tournament pages launch (production has no tournament tables yet, and nothing links here). -->
+<!-- `noindex` until Meta is public (`META_INDEXED`). -->
 <Meta
 	title="Tournaments — Meta — novastack"
 	description="Cyberpunk TCG tournament results and decklists."
 	origin={data.origin}
 	path="/meta/tournaments"
-	noindex
+	noindex={!META_INDEXED}
 />
 
 <!-- The extra plain wrapper matters: `<main>` (root layout) is a column flex container, and a

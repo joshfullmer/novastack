@@ -583,8 +583,9 @@ read-only, dynamic and `noindex`:
   `/meta/decks/lines`, `/meta/decks/[guid]`; and the event list at `/meta/tournaments` with each event at
   `/meta/tournaments/[id]` (`/podium`, `/rounds`) and the bookmarklet page at `/meta/tournaments/add`. The
   sidebar leads with Meta, with Tournaments second and Decks after it. `/meta` is the public-read prefix and the dynamic
-  prefix in the hooks. **Not done on purpose:** the site header has no Meta link and the pages are still
-  `noindex`; adding the link is the launch step (`docs/runbooks/tournaments-rollout.md`).
+  prefix in the hooks. The site header links to Meta since 2026-11-19 (`META_STAGE` is `linked`:
+  a link with a menu after Decks; the pages stay `noindex` and out of the sitemap until `public`;
+  `docs/runbooks/meta-launch.md`).
 - **Standings open decks like the decks list, and the matchup table links to decks** (2026-11-19). An event's
   Standings tab is the same split as All Decks (`DeckPane`, `opensInPane` in `pane.ts`): on a screen 1536px
   or wider a player's row opens their deck in the pane beside the standings (`?deck=`, only a deck of this

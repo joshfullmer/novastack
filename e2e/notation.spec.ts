@@ -164,11 +164,12 @@ test.describe('the Notation front door', () => {
 			'/notation'
 		);
 
-		// Notation sits before Rules, which is the last item in the row.
+		// Notation sits before Rules, which is the last item in the row; Meta follows Decks.
 		const labels = await page.locator('nav > ul > li > a').allInnerTexts();
 		expect(labels.map((label) => label.trim())).toEqual([
 			'Cards',
 			'Decks',
+			'Meta',
 			'Collection',
 			'Notation',
 			'Rules'

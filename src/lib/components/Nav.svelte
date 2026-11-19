@@ -33,6 +33,11 @@
 	 * own — it is for people who have not found the site yet as much as for ones who have, so it is not
 	 * tucked into the Rules dropdown.
 	 *
+	 * **Meta is a link with a hover dropdown** too, after Decks: the trigger goes to the tier list and the menu
+	 * has the rest of `/meta/…` (`META`). It shows once Meta is linked (`META_LINKED`, `#lib/meta/launch.ts`).
+	 * It is why the hamburger now starts below `md` rather than `sm`: with it the link row no longer fits at
+	 * 640px (the five links already filled it exactly).
+	 *
 	 * Where it does *not* appear is the point of it:
 	 *
 	 * - **`/cards`** already pins `FilterBar`'s query row directly below this header, against the
@@ -46,6 +51,7 @@
 	import { page } from '$app/state';
 	import { slide } from 'svelte/transition';
 	import { cardsSearchHref, PARAM } from '#lib/filters/state.js';
+	import { META_LINKED } from '#lib/meta/launch.js';
 	import { parse } from '#lib/query/parser.js';
 	import QueryEditor from './filters/QueryEditor.svelte';
 	import DiscordIcon from './DiscordIcon.svelte';
@@ -135,6 +141,17 @@
 		{ href: '/decks', label: 'My Decks' },
 		{ href: '/explore', label: 'Explore' }
 	];
+	/** Meta: what is winning in tournaments. `/meta` is the tier list, so it is current only on that exact
+	 * path; the rest are current on their own subtree. */
+	const META = [
+		{ href: '/meta', label: 'Tier list' },
+		{ href: '/meta/matchups', label: 'Matchups' },
+		{ href: '/meta/cards', label: 'Card breakdown' },
+		{ href: '/meta/decks', label: 'Decks' },
+		{ href: '/meta/tournaments', label: 'Tournaments' }
+	];
+	const isMetaItem = (href: string) =>
+		href === '/meta' ? page.url.pathname === '/meta' : isCurrent(href);
 	const RULES_URL = 'https://cyberpunktcg.com/comprehensive-rules';
 	const RULES = [
 		{ href: RULES_URL, label: 'Comprehensive Rules', external: true },
@@ -193,7 +210,7 @@
 		if (document.activeElement === input) event.preventDefault();
 	}
 
-	/** Below `sm` the full link row plus Discord/Account/Sign-out doesn't fit — it was overflowing
+	/** Below `md` the full link row plus Discord/Account/Sign-out doesn't fit — it was overflowing
 	 * the viewport outright (no wrapping, no shrinking anywhere) rather than degrading gracefully.
 	 * Collapsed into a hamburger there instead of trying to cram it in. Also folds the desktop
 	 * "Decks" and "Rules" items' hover dropdowns into flat links — hover has no touch equivalent,
@@ -222,7 +239,7 @@
 			<span class="hidden sm:inline">nova<span class="text-neon">stack</span></span>
 		</a>
 
-		<ul class="hidden flex-1 items-center gap-4 text-sm sm:flex">
+		<ul class="hidden flex-1 items-center gap-4 text-sm md:flex">
 			<li class="group relative" use:dropdown>
 				<a
 					href="/cards"
@@ -282,6 +299,38 @@
 					{/each}
 				</ul>
 			</li>
+
+			{#if META_LINKED}
+				<li class="group relative" use:dropdown>
+					<a
+						href="/meta"
+						class="transition-colors hover:text-bright"
+						class:text-bright={isCurrent('/meta')}
+						class:text-muted={!isCurrent('/meta')}
+						aria-current={page.url.pathname === '/meta' ? 'page' : undefined}
+					>
+						Meta
+					</a>
+					<ul
+						class="invisible absolute top-full left-0 z-30 w-44 rounded-md border border-edge
+							bg-shell p-1 text-sm opacity-0 shadow-lg transition-opacity group-focus-within:visible
+							group-focus-within:opacity-100 group-hover:visible group-hover:opacity-100
+							group-data-[closed]:invisible! group-data-[closed]:opacity-0!"
+					>
+						{#each META as item (item.href)}
+							<li>
+								<a
+									href={item.href}
+									class="block rounded px-2 py-1.5 hover:bg-raised"
+									class:text-bright={isMetaItem(item.href)}
+									class:text-muted={!isMetaItem(item.href)}
+									aria-current={isMetaItem(item.href) ? 'page' : undefined}>{item.label}</a
+								>
+							</li>
+						{/each}
+					</ul>
+				</li>
+			{/if}
 
 			<li>
 				<a
@@ -368,7 +417,7 @@
 			</form>
 		{/if}
 
-		<div class="hidden items-center gap-4 sm:flex">
+		<div class="hidden items-center gap-4 md:flex">
 			<a
 				href={DISCORD_URL}
 				target="_blank"
@@ -407,7 +456,7 @@
 			aria-controls="mobile-nav-menu"
 			onclick={() => (mobileMenuOpen = !mobileMenuOpen)}
 			class="ml-auto flex size-5 flex-col items-center justify-center gap-1 text-muted
-				transition-colors hover:text-bright sm:hidden"
+				transition-colors hover:text-bright md:hidden"
 		>
 			<span
 				class="block h-0.5 w-5 rounded-full bg-current transition-transform duration-200"
@@ -430,7 +479,7 @@
 		<div
 			id="mobile-nav-menu"
 			transition:slide={{ duration: 200 }}
-			class="border-t border-edge/60 bg-void px-4 py-3 sm:hidden"
+			class="border-t border-edge/60 bg-void px-4 py-3 md:hidden"
 		>
 			<ul class="flex flex-col gap-1 text-sm">
 				{#each CARDS as item, index (item.href)}
@@ -459,6 +508,22 @@
 						>
 					</li>
 				{/each}
+				{#if META_LINKED}
+					{#each META as item, index (item.href)}
+						<li>
+							<a
+								href={item.href}
+								onclick={closeMobileMenu}
+								class="block rounded-md px-2 py-2 transition-colors hover:bg-raised"
+								class:pl-6={index > 0}
+								class:text-bright={isMetaItem(item.href)}
+								class:text-muted={!isMetaItem(item.href)}
+								aria-current={isMetaItem(item.href) ? 'page' : undefined}
+								>{index === 0 ? 'Meta' : item.label}</a
+							>
+						</li>
+					{/each}
+				{/if}
 				<li>
 					<a
 						href="/collection"

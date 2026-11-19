@@ -12,6 +12,7 @@
  */
 import { ORIGIN } from '$app/env/private';
 import { snapshot } from '#lib/cards/index.js';
+import { META_INDEXED } from '#lib/meta/launch.js';
 import { NOTATION_LAUNCHED } from '#lib/notation/launch.js';
 
 export const prerender = true;
@@ -25,6 +26,10 @@ const STATIC_PATHS = [
 	// Deployed before it is launched — see `NOTATION_LAUNCHED`.
 	...(NOTATION_LAUNCHED
 		? ['/notation', '/notation/reference', '/notation/scoresheet', '/notation/check']
+		: []),
+	// Meta's stable pages only: events, decks and cards live in D1 and this is built at build time.
+	...(META_INDEXED
+		? ['/meta', '/meta/matchups', '/meta/cards', '/meta/decks', '/meta/tournaments']
 		: [])
 ];
 

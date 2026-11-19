@@ -1,7 +1,7 @@
 # Plan: Meta in the site header
 
-Status: **planned, not started** (2026-11-19). The pages live at `/meta/…` and are dark: not in the header,
-`noindex`, absent from the sitemap. Getting data onto production is `tournaments-rollout.md`; this is only
+Status: **built, at `linked`** (2026-11-19): the header links to Meta; the pages are still `noindex` and out of
+the sitemap. The pages live at `/meta/…`. Getting data onto production is `tournaments-rollout.md`; this is only
 the header entry and the switch that turns it on.
 
 ## The nav item
@@ -14,10 +14,10 @@ is merged or hidden: Notation is a top-level link on purpose (it is for people w
 yet), and Collection is a main owner-only page.
 
 - **Shape:** a link with a hover dropdown, like Cards and Decks. The trigger goes to `/meta`; the menu is
-  Tier list, Matchups, Card breakdown, Tournament decks, Tournaments. The same group in the hamburger menu.
-- **Position:** after Cards and Decks. (Open: first, in front of Cards, if Meta is to lead.)
-- **Naming:** the header already has **Decks** (My Decks, Explore). Under Meta, call the decks item
-  **Tournament decks**, in the header and the sidebar, so the two never read as the same thing.
+  Tier list, Matchups, Card breakdown, Decks, Tournaments. The same group in the hamburger menu.
+- **Position:** after Cards and Decks.
+- **Naming:** the item stays **Decks**, in the header menu and the sidebar: it is under Meta, which is context
+  enough (decided 2026-11-19; "Tournament decks" was tried and reverted).
 
 ## The switch
 
@@ -36,10 +36,11 @@ stays `noindex` and out of the sitemap at every stage. At `public` the sitemap g
 `/meta/matchups`, `/meta/cards`, `/meta/decks` and `/meta/tournaments` (not individual events or decks: they
 live in D1 and the sitemap is built at build time). Rollback is setting the stage back.
 
-## Order
+## Order (the stage is already `linked`, so do step 2 before pushing)
 
-1. Build the nav item and the switch dark, and push (nothing shows).
+1. Build the nav item and the switch (done, at `linked`). **Don't push yet:** the header now links to pages that
+   error until production has the tournament tables, so step 2 comes first. To push earlier, set `dark`.
 2. Do the data rollout (`tournaments-rollout.md`).
-3. Set `linked` and watch it for a while (Worker CPU, D1 `rows_read`; edge caching is the known gap in
+3. Watch it at `linked` for a while (Worker CPU, D1 `rows_read`; edge caching is the known gap in
    `scale-audit.md` if the numbers ask for it).
 4. Set `public`.
