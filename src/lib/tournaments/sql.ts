@@ -144,6 +144,10 @@ export function storedQueries(id: number): Record<OwnedTable, string> {
 	};
 }
 
+/** Which of these Melee ids are already stored: one SELECT, answered by `id` rows. */
+export const storedIdsQuery = (ids: readonly number[]): string =>
+	`SELECT id FROM tournaments WHERE id IN (${ids.map(literal).join(', ')}) ORDER BY id`;
+
 function canonical(table: OwnedTable, rows: readonly Row[], fromBuilt: boolean): string[] {
 	const { omit, key } = OWNED[table];
 	const omitted: readonly string[] = omit;

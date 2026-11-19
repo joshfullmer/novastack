@@ -65,7 +65,9 @@ pnpm exec wrangler d1 execute novastack-decks --remote --command \
 
 ## Later
 
-- Adding an event: `pnpm melee <id> --remote`, then `--check --remote`. The id is the number in
+- Adding an event: `pnpm melee <id> --remote`, then `--check --remote`. Ids already in the database are
+  skipped, so a pasted batch is safe; add `--force` to fetch and rewrite one anyway (a repair, or decks
+  that arrived late). The id is the number in
   `melee.gg/Tournament/View/<id>`; `/tournaments/add` hosts a bookmarklet that copies the command from
   that page, or from a `/Decklists` search page, where it copies one command for every event listed
   (`src/lib/tournaments/bookmarklet.ts`). It only reads the page and writes the clipboard.

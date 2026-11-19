@@ -17,6 +17,7 @@ import {
 	literal,
 	reindexStatements,
 	rekindStatements,
+	storedIdsQuery,
 	storedQueries,
 	toFile,
 	writeStatements,
@@ -189,6 +190,16 @@ describe('literal', () => {
 		expect(() => literal(Number.NaN)).toThrow();
 		expect(() => literal('a\0b')).toThrow(/NUL/);
 		expect(() => literal({})).toThrow();
+	});
+});
+
+describe('which ids are already stored', () => {
+	it('answers with just the stored ones, in id order', () => {
+		const db = migrated();
+		write(db);
+		const ask = (...ids: number[]) => db.prepare(storedIdsQuery(ids)).all();
+		expect(ask(ID, ID + 1)).toEqual([{ id: ID }]);
+		expect(ask(ID + 1)).toEqual([]);
 	});
 });
 

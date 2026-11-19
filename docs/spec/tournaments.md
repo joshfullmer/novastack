@@ -225,7 +225,8 @@ is applied.
 `scripts/melee.ts`, run as `pnpm melee`, with the conventions of `scripts/prices.ts`:
 
 ```
-pnpm melee 485070 [id …]    ingest the given Melee tournament ids into the LOCAL D1; each is rewritten whole
+pnpm melee 485070 [id …]    ingest the given Melee tournament ids into the LOCAL D1; each is rewritten whole.
+                            An id already stored is skipped (0 requests) unless --force
 pnpm melee --remote 485070  the same, against the PRODUCTION database, after a y/N question
                             (--yes skips it; with no terminal and no --yes the answer is no)
 pnpm melee 485070 --persist-to DIR   a throwaway local database, to try a run out
@@ -237,7 +238,8 @@ pnpm melee --reparse        rebuild the derived deck columns and card index from
 **Local by default; `--remote` is explicit.** Production is only ever written on purpose, after our
 own confirmation (`scripts/lib/d1.ts`), which names the Tournament and the statement count.
 **Manually triggered, one id at a time**, the way swubase does it: a person supplies the id. Running
-an id again rewrites it (also how a repair or a decks-arrived-late fill-in works). There is no scan, no
+an id again with `--force` rewrites it (also how a repair or a decks-arrived-late fill-in works); without
+it a stored id is skipped, which keeps a pasted batch of a whole search page cheap. `--check` always fetches. There is no scan, no
 schedule and no CI workflow in v1: writing production D1 from CI would need a Cloudflare API token, and
 a person at a terminal with `wrangler` already logged in needs none.
 

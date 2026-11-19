@@ -8,6 +8,7 @@ describe('pnpm melee arguments', () => {
 			remote: false,
 			yes: false,
 			check: false,
+			force: false,
 			reparse: false,
 			persistTo: undefined,
 			maxRequests: undefined
@@ -31,6 +32,11 @@ describe('pnpm melee arguments', () => {
 		});
 	});
 
+	it('skips what is stored unless --force', () => {
+		expect(parseCli(['1']).force).toBe(false);
+		expect(parseCli(['1', '--force']).force).toBe(true);
+	});
+
 	it('wants an id, unless re-reading', () => {
 		expect(() => parseCli([])).toThrow(/at least one/);
 	});
@@ -41,7 +47,9 @@ describe('pnpm melee arguments', () => {
 
 	it('refuses a repeated id, an unknown flag, and flags that make no sense together', () => {
 		expect(() => parseCli(['1', '1'])).toThrow(/twice/);
-		expect(() => parseCli(['1', '--force'])).toThrow();
+		expect(() => parseCli(['1', '--frobnicate'])).toThrow();
+		expect(() => parseCli(['1', '--force', '--check'])).toThrow(/--force only applies/);
+		expect(() => parseCli(['--reparse', '--force'])).toThrow(/--force only applies/);
 		expect(() => parseCli(['--reparse', '1'])).toThrow(/takes no ids/);
 		expect(() => parseCli(['--reparse', '--check'])).toThrow();
 		expect(() => parseCli(['1', '--remote', '--persist-to', '/tmp/x'])).toThrow(/local scratch/);

@@ -27,6 +27,7 @@ import {
 	diffAgainstStored,
 	reindexStatements,
 	rekindStatements,
+	storedIdsQuery,
 	storedQueries,
 	toFile,
 	writeStatements
@@ -98,8 +99,24 @@ async function main(): Promise<number> {
 		exit = Math.max(exit, code);
 	};
 
+	// A real run leaves what is already stored alone: re-fetching an event costs ~20 paced requests
+	// to Melee. `--force` is how a repair or a late deck gets in; `--check` always fetches.
+	const stored = new Set<number>(
+		args.check || args.force
+			? []
+			: v
+					.parse(v.array(v.object({ id: v.number() })), select(target, storedIdsQuery(args.ids)))
+					.map((row) => row.id)
+	);
+
 	for (const id of args.ids) {
 		say(paint.bold(`\n${id}`));
+		if (stored.has(id)) {
+			say(
+				paint.dim(`  ○ already in the ${targetName(target)} database (--force fetches it again)`)
+			);
+			continue;
+		}
 		try {
 			const { built, violations, findings } = await ingestTournament(client, id, {
 				cards,
