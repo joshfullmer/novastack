@@ -83,4 +83,4 @@ pnpm exec wrangler d1 execute novastack-decks --remote --command \
   that page, or from a `/Decklists` search page, where it copies one command for every event listed
   (`src/lib/tournaments/bookmarklet.ts`). It only reads the page and writes the clipboard.
 - A new meta is one `INSERT INTO metas` (name, start in ms UTC, end or NULL).
-- To show the pages to everyone: add a Meta link to the site header (they live under `/meta`) and drop `noindex` (`Meta` component), when you are ready.
+- To show the pages to everyone: `meta-launch.md` (the header link, `noindex`, the sitemap, in stages).
