@@ -51,11 +51,16 @@ live in D1 and the sitemap is built at build time). Rollback is setting the stag
    URL is new).
    - `robots.txt` (`src/routes/robots.txt/+server.ts`): `Disallow: /meta/*?` for everyone, `/meta/` for
      `meta-externalagent`. Advisory, and only once the crawler refetches it.
-   - A Cloudflare WAF rule, which runs before the Worker and costs no invocation or D1 read: block
-     `cf.verified_bot_category eq "AI Crawler"` (or the dashboard's "Block AI bots"). The real control.
+   - A Cloudflare WAF rule, which runs before the Worker and costs no invocation or D1 read:
+     `http.user_agent contains "meta-externalagent"` (any plan), or the dashboard's "Block AI bots". It only
+     sees hosts in this zone, not `workers.dev`, which is why that host is turned off (below). The better
+     control; the next item is the stand-in until it exists.
+   - `blocked-crawlers.ts`, called first in `hooks.server.ts`: a 403 for `meta-externalagent` on `/meta`, before
+     any database work. Still a Worker request, so it spares D1 but not the daily request count. A faked
+     user-agent walks past it, as it would past the WAF's user-agent rule.
    - `rel="nofollow"` on links that carry a query, and `noindex` on filtered views (`metaNoindex`), so a
      crawler that does honour them stops walking and listing the filters.
-   - `workers_dev: false` in `wrangler.jsonc`, if nothing needs the `workers.dev` host, so there is one host
-     to crawl.
+   - `workers_dev: false` in `wrangler.jsonc` (done): the `workers.dev` host is outside this zone, so no WAF
+     rule sees it, and it was a second copy of every page. One public host, `novastack.gg`.
    - Watch Worker requests and D1 `rows_read` for a day after each stage change.
 5. Set `public`.

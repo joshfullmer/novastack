@@ -1,6 +1,7 @@
 import type { Handle } from '@sveltejs/kit/hooks';
 import { building } from '$app/env';
 import { createAuth } from '#lib/server/auth.js';
+import { isBlockedCrawler } from '#lib/server/blocked-crawlers.js';
 import { getDb } from '#lib/server/db/index.js';
 import { isPublicRead } from '#lib/server/public-routes.js';
 import { createQueryCache } from '#lib/server/query-cache.js';
@@ -51,6 +52,10 @@ const DYNAMIC_PREFIXES = [
 const NEEDS_USERNAME_EXEMPT_PREFIXES = ['/api/auth', '/auth/choose-username', '/auth/logout'];
 
 const handleBetterAuth: Handle = async ({ event, resolve }) => {
+	// Before any database work: a crawler turned away here costs a request and nothing else.
+	if (isBlockedCrawler(event.request.headers.get('user-agent'), event.url.pathname))
+		return new Response('Forbidden', { status: 403, headers: { 'cache-control': 'no-store' } });
+
 	const isDynamicRoute = DYNAMIC_PREFIXES.some((prefix) => event.url.pathname.startsWith(prefix));
 	if (!isDynamicRoute) return resolve(event);
 

@@ -9,6 +9,12 @@
 	// unnecessary Worker invocations this project is shaped to avoid.
 	"main": ".svelte-kit/cloudflare/_worker.js",
 
+	// Off, so the site has one public host (`novastack.gg`). The default `<name>.<account>.workers.dev`
+	// address is outside this zone, which means no WAF or bot rule here can see it, and it is a second
+	// copy of every page for a crawler to walk: Meta's was hitting it for nearly every request. Nothing
+	// depends on it (`ORIGIN` is the custom domain). `preview_urls` is a separate setting, left alone.
+	"workers_dev": false,
+
 	// Committed here rather than left as a dashboard-only variable: Workers Builds treats this
 	// file as authoritative and syncs plain vars to match it exactly on every deploy, so a
 	// dashboard-set ORIGIN with no corresponding entry here gets silently wiped on the next
