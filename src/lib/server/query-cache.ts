@@ -10,6 +10,10 @@
  * bumps on every write: a new ingest makes every old entry unreachable everywhere at once, so nothing is
  * purged and nothing is ever stale. The TTL below only bounds how long an unreachable entry lingers.
  *
+ * An absence (`null`, a deck or event that doesn't exist) is not stored: it is one cheap lookup, and the ids
+ * that don't exist are as many as anyone cares to ask for, so storing them would only fill the cache with
+ * junk from whoever counts upwards.
+ *
  * The cache is an optimisation and never a dependency. A missing cache (tests, a dev server without
  * one), an unreadable version (the table is not migrated yet) or a failing `match`/`put` all fall through
  * to the query itself; only the query's own error ever reaches the caller.
@@ -86,7 +90,7 @@ export function createQueryCache(options: {
 		}
 
 		const value = await compute();
-		waitUntil(store(cache, key, value));
+		if (value !== null && value !== undefined) waitUntil(store(cache, key, value));
 		return value;
 	};
 }

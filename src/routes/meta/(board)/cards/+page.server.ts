@@ -1,5 +1,5 @@
 import { getCardStats, getLines, ramRows } from '#lib/server/db/tournament-stats.js';
-import { RAM_PER_LEGEND } from '#lib/tournaments/present.js';
+import { isPossibleLine, RAM_PER_LEGEND } from '#lib/tournaments/present.js';
 import { parseRam } from '#lib/tournaments/ram.js';
 import type { PageServerLoad } from './$types';
 
@@ -12,12 +12,17 @@ export const load: PageServerLoad = async ({ locals, parent, url }) => {
 	const line = asked !== null && LINE.test(asked) ? asked : null;
 	const ram = parseRam(url.searchParams.get('ram'), RAM_PER_LEGEND);
 
+	// A line nobody can have played has no decks; saying so costs no query.
+	const impossible = line !== null && !isPossibleLine(line);
+
 	const [lines, rams, stats] = await Promise.all([
 		locals.cached('getLines', period, () => getLines(locals.db, period)),
 		locals.cached('ramRows', period, () => ramRows(locals.db, period)),
-		locals.cached('getCardStats', [period, line, ram], () =>
-			getCardStats(locals.db, period, { line, ram })
-		)
+		impossible
+			? { decks: 0, cards: [] }
+			: locals.cached('getCardStats', [period, line, ram], () =>
+					getCardStats(locals.db, period, { line, ram })
+				)
 	]);
 	return {
 		lines: lines.slice(0, 8),

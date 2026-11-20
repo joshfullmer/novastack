@@ -10,6 +10,20 @@ const bySlug = new Map(dataset.cards.map((card) => [card.slug, card]));
 
 export const cardOf = (slug: string) => bySlug.get(slug);
 
+/** Whether the dataset has a Legend by this slug. */
+export const isLegend = (slug: string) => bySlug.get(slug)?.cardType === 'Legend';
+
+/**
+ * Whether a Legend line (`a+b+c`) could be one: every part a Legend the dataset knows, none repeated. A
+ * well-formed line that fails this is one nobody can have played, so no query needs to ask. The order of the
+ * parts is not checked: how a stored line is sorted is the writer's business, and a miss here only costs a
+ * query.
+ */
+export function isPossibleLine(line: string): boolean {
+	const slugs = line.split('+');
+	return new Set(slugs).size === slugs.length && slugs.every(isLegend);
+}
+
 /** What each Legend provides today: the RAM a letter of the `YYR` shorthand stands for. */
 export const RAM_PER_LEGEND = dataset.ramPerLegend;
 

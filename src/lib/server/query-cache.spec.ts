@@ -47,6 +47,14 @@ describe('createQueryCache', () => {
 		expect(again).toEqual({ at: new Date(1_700_000_000_000), n: [1, 2] });
 	});
 
+	it('does not store an absence', async () => {
+		const cache = fakeCache();
+		const query = createQueryCache({ cache, db, waitUntil });
+		expect(await query('q', 'missing', async () => null)).toBeNull();
+		await settle();
+		expect(cache.store.size).toBe(0);
+	});
+
 	it('keeps different names and arguments apart', async () => {
 		const cache = fakeCache();
 		const query = createQueryCache({ cache, db, waitUntil });

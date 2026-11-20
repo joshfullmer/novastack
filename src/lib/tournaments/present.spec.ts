@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { fieldByColour, ordinal, wherePlayed } from './present.ts';
+import { dataset } from '../cards/index.ts';
+import { fieldByColour, isPossibleLine, ordinal, wherePlayed } from './present.ts';
 
 describe('ordinal', () => {
 	it.each([
@@ -58,5 +59,21 @@ describe('wherePlayed', () => {
 		expect(wherePlayed('The_hungry_dragon', 'the hungry dragon')).toBe(
 			'The_hungry_dragon · the hungry dragon'
 		);
+	});
+});
+
+describe('isPossibleLine', () => {
+	const legends = dataset.cards.filter((card) => card.cardType === 'Legend').map((c) => c.slug);
+	const [a, b, c] = legends;
+
+	it('takes a line of Legends the dataset has', () => {
+		expect(isPossibleLine(`${a}+${b}+${c}`)).toBe(true);
+		expect(isPossibleLine(a)).toBe(true);
+	});
+
+	it('refuses a part that is not a Legend, or a repeat', () => {
+		expect(isPossibleLine(`${a}+${b}+reboot-optics`)).toBe(false);
+		expect(isPossibleLine(`${a}+${b}+nonsense-slug`)).toBe(false);
+		expect(isPossibleLine(`${a}+${a}+${b}`)).toBe(false);
 	});
 });

@@ -7,7 +7,8 @@ import {
 	LEGEND_LINE,
 	type DeckFilters
 } from '#lib/tournaments/deck-views.js';
-import { RAM_PER_LEGEND } from '#lib/tournaments/present.js';
+import { fetchPage } from '#lib/server/paging.js';
+import { isLegend, isPossibleLine, RAM_PER_LEGEND } from '#lib/tournaments/present.js';
 import { parseRam } from '#lib/tournaments/ram.js';
 import { DECK_VIEWS } from '#lib/decks/view.js';
 import { readViewPref } from '#lib/server/view-pref.js';
@@ -42,12 +43,19 @@ export const load: PageServerLoad = async ({ locals, parent, url, cookies }) => 
 	};
 
 	// A card name that matches no card means "no deck", not "no filter": showing every deck for a
-	// search that found nothing would be a lie.
-	const empty = cardText !== null && cards.length === 0;
+	// search that found nothing would be a lie. The same goes for a Legend, or a line of Legends, that is
+	// well formed but not one the dataset has: nobody can have played it, so there is nothing to ask the
+	// database, and anyone making such names up costs it nothing.
+	const empty =
+		(cardText !== null && cards.length === 0) ||
+		(filters.legend !== null && !isLegend(filters.legend)) ||
+		(filters.line !== null && !isPossibleLine(filters.line));
 	const result = empty
 		? { total: 0, page: 1, pages: 1, rows: [] }
-		: await locals.cached('getDeckList', [period, filters], () =>
-				getDeckList(locals.db, period, filters)
+		: await fetchPage(filters.page, (page) =>
+				locals.cached('getDeckList', [period, { ...filters, page }], () =>
+					getDeckList(locals.db, period, { ...filters, page })
+				)
 			);
 
 	// The deck open in the pane beside the list, if one is asked for and exists.

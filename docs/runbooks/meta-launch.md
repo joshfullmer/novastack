@@ -62,5 +62,10 @@ live in D1 and the sitemap is built at build time). Rollback is setting the stag
      crawler that does honour them stops walking and listing the filters.
    - `workers_dev: false` in `wrangler.jsonc` (done): the `workers.dev` host is outside this zone, so no WAF
      rule sees it, and it was a second copy of every page. One public host, `novastack.gg`.
+   - Bounded filters (done): a Legend or Legend line the dataset doesn't have is answered "none" without a
+     query (`isPossibleLine`), a `?page=` past the end is served as the last page (`fetchPage`, so counting
+     upwards is one key), and an absence (`null`) is never cached. Free text (`?player=`, `?q=`) can't be
+     bounded by checking it; that is what a rate limit is for. A rate limit on `/meta`, one per IP, is a cheap
+     backstop, and weak against a crawler that spreads across IPs.
    - Watch Worker requests and D1 `rows_read` for a day after each stage change.
 5. Set `public`.
