@@ -13,9 +13,11 @@ export const load: PageServerLoad = async ({ locals, parent, url }) => {
 	const ram = parseRam(url.searchParams.get('ram'), RAM_PER_LEGEND);
 
 	const [lines, rams, stats] = await Promise.all([
-		getLines(locals.db, period),
-		ramRows(locals.db, period),
-		getCardStats(locals.db, period, { line, ram })
+		locals.cached('getLines', period, () => getLines(locals.db, period)),
+		locals.cached('ramRows', period, () => ramRows(locals.db, period)),
+		locals.cached('getCardStats', [period, line, ram], () =>
+			getCardStats(locals.db, period, { line, ram })
+		)
 	]);
 	return {
 		lines: lines.slice(0, 8),

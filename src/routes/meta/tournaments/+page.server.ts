@@ -7,8 +7,9 @@ import type { PageServerLoad } from './$types';
 export const prerender = false;
 
 export const load: PageServerLoad = async ({ locals, url, cookies }) => {
+	const query = parseEventQuery(url.searchParams);
 	return {
-		...(await getEventList(locals.db, parseEventQuery(url.searchParams))),
+		...(await locals.cached('getEventList', query, () => getEventList(locals.db, query))),
 		// List or Gallery, remembered in a cookie like the app's other toggles of this kind.
 		view: readViewPref(cookies, 'tournaments-list-view', ['list', 'gallery'], 'list')
 	};

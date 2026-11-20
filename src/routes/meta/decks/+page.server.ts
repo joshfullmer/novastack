@@ -46,12 +46,16 @@ export const load: PageServerLoad = async ({ locals, parent, url, cookies }) => 
 	const empty = cardText !== null && cards.length === 0;
 	const result = empty
 		? { total: 0, page: 1, pages: 1, rows: [] }
-		: await getDeckList(locals.db, period, filters);
+		: await locals.cached('getDeckList', [period, filters], () =>
+				getDeckList(locals.db, period, filters)
+			);
 
 	// The deck open in the pane beside the list, if one is asked for and exists.
 	const asked = q.get('deck');
 	const deck =
-		asked !== null && DECK_GUID.test(asked) ? await getDeckDetail(locals.db, asked) : null;
+		asked !== null && DECK_GUID.test(asked)
+			? await locals.cached('getDeckDetail', asked, () => getDeckDetail(locals.db, asked))
+			: null;
 
 	return {
 		...result,
@@ -59,7 +63,7 @@ export const load: PageServerLoad = async ({ locals, parent, url, cookies }) => 
 		// Fits the screen on a wide one: the list and the deck each scroll, the window does not.
 		fullHeight: true,
 		deckView: readViewPref(cookies, 'deck-cards-view', DECK_VIEWS, 'gallery'),
-		rams: (await ramRows(locals.db, period))
+		rams: (await locals.cached('ramRows', period, () => ramRows(locals.db, period)))
 			.flatMap((row) => (row.line ? [{ ram: row.line, decks: row.decks }] : []))
 			.sort((a, b) => b.decks - a.decks || a.ram.localeCompare(b.ram))
 			.slice(0, 40),

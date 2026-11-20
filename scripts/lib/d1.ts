@@ -41,6 +41,14 @@ export async function confirmRemote(summary: string): Promise<boolean> {
 	return /^y(es)?$/i.test(answer.trim());
 }
 
+/**
+ * Appended to every write, so a changed database is a changed cache key (`query-cache.ts`). Inside the
+ * same file, so it commits or rolls back with the write it announces. Writes that bypass `runFile` (a
+ * hand-run `wrangler d1 execute`) must run this themselves.
+ */
+const BUMP_META_VERSION =
+	'INSERT INTO meta_version (id, version) VALUES (1, 1) ON CONFLICT (id) DO UPDATE SET version = version + 1;';
+
 const FileResultSchema = v.array(v.object({ success: v.boolean() }));
 
 /**
@@ -51,7 +59,7 @@ const FileResultSchema = v.array(v.object({ success: v.boolean() }));
 export async function runFile(target: Target, sql: string): Promise<number> {
 	const dir = await mkdtemp(path.join(tmpdir(), 'melee-'));
 	const file = path.join(dir, 'write.sql');
-	await writeFile(file, sql);
+	await writeFile(file, `${sql}\n${BUMP_META_VERSION}\n`);
 	const result = spawnSync('pnpm', [...base(target), '--yes', '--json', '--file', file], {
 		encoding: 'utf8',
 		maxBuffer: 256 * 1024 * 1024

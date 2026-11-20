@@ -3,6 +3,7 @@ import { building } from '$app/env';
 import { createAuth } from '#lib/server/auth.js';
 import { getDb } from '#lib/server/db/index.js';
 import { isPublicRead } from '#lib/server/public-routes.js';
+import { createQueryCache } from '#lib/server/query-cache.js';
 import { syncSignedInHint } from '#lib/server/signed-in-hint.js';
 import { svelteKitHandler } from 'better-auth/svelte-kit';
 
@@ -60,7 +61,15 @@ const handleBetterAuth: Handle = async ({ event, resolve }) => {
 	event.locals.db = getDb(event.platform.env.DB);
 
 	// Same for everyone, read-only: no auth to build and no session to look up (`public-routes.ts`).
-	if (isPublicRead(event.request.method, event.url.pathname)) return resolve(event);
+	if (isPublicRead(event.request.method, event.url.pathname)) {
+		// Only these may cache query results: what they read is the same for every visitor.
+		event.locals.cached = createQueryCache({
+			cache: event.platform.caches?.default,
+			db: event.locals.db,
+			waitUntil: (promise) => event.platform?.ctx?.waitUntil(promise)
+		});
+		return resolve(event);
+	}
 
 	event.locals.auth = createAuth(event.platform.env.DB);
 

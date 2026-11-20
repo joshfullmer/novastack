@@ -14,7 +14,8 @@ export const load: LayoutServerLoad = async ({ params, locals }) => {
 	// Melee ids are plain integers; anything else can't name an event, and shouldn't reach the database.
 	if (!/^\d{1,12}$/.test(params.id)) error(404, 'Tournament not found');
 
-	const event = await getEventView(locals.db, Number(params.id));
+	const id = Number(params.id);
+	const event = await locals.cached('getEventView', id, () => getEventView(locals.db, id));
 	if (!event) error(404, 'Tournament not found');
 	return { event };
 };

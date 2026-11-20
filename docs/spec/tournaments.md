@@ -475,8 +475,19 @@ Every list a page returns is bounded by a constant and says what it left out
 (`docs/research/scale-audit.md`, "Status"), and a period aggregate filters on
 `tournament_deck_cards.tournament_id`. These are the two things that keep filterable stats affordable.
 Caching the rendered pages is **not** built: a `Cache-Control: s-maxage` header alone does not cache a
-Worker's response, and the Cache API that does is per data center, so it is a staleness decision, not a
-header (audit, "Request path").
+Worker's response, the Cache API that does is per data center, and the pages read per-visitor cookies (the
+sidebar, the List/Gallery toggles), so a page cached by URL would hand one visitor's layout to the next.
+
+**Built: a query-result cache (2026-11-19).** What the `/meta` loaders read from D1 is cached, not what they
+render (`src/lib/server/query-cache.ts`, as `locals.cached`, set only on the public reads). Results go in
+the Workers Cache API, keyed by query name, arguments and `meta_version`, a one-row counter that `pnpm melee`
+appends a bump of to every write (`scripts/lib/d1.ts`), so an ingest orphans every entry in every data
+center at once and nothing is ever stale. A write made any other way must bump it too (the rollout
+runbook shows the statement). It is per data center, so each pays one miss per query before it warms, and
+it is best effort: no cache, an unmigrated `meta_version` or a failing `put` just runs the query. Verified
+under `wrangler dev` against the built Worker (`vite dev`'s platform proxy has a Cache API that stores
+nothing): a repeat of `/meta/matchups` drops from about 80 ms to 12 ms, byte-identical. Use
+`platform.ctx.waitUntil`, not its alias `platform.context`: through the alias a 32 KB `put` was cut off.
 
 **Escalation.** If a measured aggregate is still too slow or too row-hungry, precompute it into counter
 tables after each ingest, as swubase does (per meta and per Legend: `deck_count`, main/side counts,

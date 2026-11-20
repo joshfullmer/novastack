@@ -47,9 +47,8 @@ describe('the tournament migration', () => {
 	const after = before;
 	apply(after, files[target] ?? '');
 
-	it('is the first migration after the app’s own tables, and the last one so far', () => {
+	it('is the first migration after the app’s own tables', () => {
 		expect(target).toBeGreaterThan(0);
-		expect(files).toHaveLength(target + 1);
 	});
 
 	it('adds the tournament tables and leaves every existing table as it was', () => {

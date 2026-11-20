@@ -41,6 +41,7 @@ live in D1 and the sitemap is built at build time). Rollback is setting the stag
 1. Build the nav item and the switch (done, at `linked`). **Don't push yet:** the header now links to pages that
    error until production has the tournament tables, so step 2 comes first. To push earlier, set `dark`.
 2. Do the data rollout (`tournaments-rollout.md`).
-3. Watch it at `linked` for a while (Worker CPU, D1 `rows_read`; edge caching is the known gap in
-   `scale-audit.md` if the numbers ask for it).
+3. Watch it at `linked` for a while (Worker CPU, D1 `rows_read`). Query results are cached already
+   (`src/lib/server/query-cache.ts`, per data center, keyed by `meta_version`); caching whole pages is not
+   built, because the pages read per-visitor cookies.
 4. Set `public`.

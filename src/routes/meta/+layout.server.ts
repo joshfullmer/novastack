@@ -12,6 +12,6 @@ export const prerender = false;
  * has it.
  */
 export const load: LayoutServerLoad = async ({ locals, url, cookies }) => ({
-	...(await periodFor(locals.db, url)),
+	...(await periodFor(locals.cached, locals.db, url)),
 	navState: readViewPref(cookies, 'tournaments-nav', ['open', 'collapsed'], 'open')
 });

@@ -571,4 +571,16 @@ export const metas = sqliteTable('metas', {
 	endsOn: integer('ends_on', { mode: 'timestamp_ms' })
 });
 
+/**
+ * One row (`id` 1): a counter `pnpm melee` bumps after every write, which is what the meta pages' query
+ * cache is keyed by (`#lib/server/query-cache.ts`). A new value is a new key, so an ingest makes every
+ * cached result unreachable at once, in every data center, with nothing to purge. A write made any other
+ * way (a hand-inserted `metas` row) must bump it too, or the pages keep serving the old numbers until
+ * the entries expire.
+ */
+export const metaVersion = sqliteTable('meta_version', {
+	id: integer('id').primaryKey(),
+	version: integer('version').notNull().default(0)
+});
+
 export * from './auth.schema.js';

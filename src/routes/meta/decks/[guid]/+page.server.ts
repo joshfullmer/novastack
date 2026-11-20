@@ -7,7 +7,9 @@ import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ locals, params, cookies }) => {
 	if (!DECK_GUID.test(params.guid)) error(404, 'Deck not found');
-	const deck = await getDeckDetail(locals.db, params.guid);
+	const deck = await locals.cached('getDeckDetail', params.guid, () =>
+		getDeckDetail(locals.db, params.guid)
+	);
 	if (!deck) error(404, 'Deck not found');
 	return {
 		deck,

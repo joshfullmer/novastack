@@ -3,5 +3,5 @@ import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ locals, parent }) => {
 	const { period } = await parent();
-	return await getDecksByLine(locals.db, period);
+	return await locals.cached('getDecksByLine', period, () => getDecksByLine(locals.db, period));
 };

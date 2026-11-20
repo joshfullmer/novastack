@@ -1,5 +1,6 @@
 import { createAuth, auth } from '#lib/server/auth.js';
 import { getDb } from '#lib/server/db/index.js';
+import type { QueryCache } from '#lib/server/query-cache.js';
 
 /**
  * Plugin-aware session/user types — the plain `User`/`Session` exports from `better-auth` don't
@@ -18,6 +19,8 @@ declare global {
 			session?: Session['session'];
 			auth: ReturnType<typeof createAuth>;
 			db: ReturnType<typeof getDb>;
+			/** Only on the public reads (`public-routes.ts`); see `query-cache.ts`. */
+			cached: QueryCache;
 		}
 
 		// interface Error {}
@@ -34,6 +37,13 @@ declare global {
 				/** The deckbuilder's D1 database — accounts, decks, likes. */
 				DB: D1Database;
 			};
+			/** Absent when no cache is available (some dev setups). */
+			caches?: { default: Cache };
+			/**
+			 * Not `context`, its deprecated alias: a `waitUntil` through it let a 32 KB cache `put` be cut
+			 * off when the response ended (seen under `wrangler dev`).
+			 */
+			ctx?: { waitUntil(promise: Promise<unknown>): void };
 		}
 	}
 }

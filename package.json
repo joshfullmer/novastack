@@ -74,6 +74,7 @@
 	},
 	"dependencies": {
 		"clsx": "^2.1.1",
+		"devalue": "^6.0.3",
 		"markdown-it": "^15.0.3",
 		"qrcode": "^1.5.4",
 		"thumbhash": "^0.1.1",

@@ -13,7 +13,9 @@ export const load: PageServerLoad = async ({ locals, parent, url, cookies }) => 
 	const { event } = await parent();
 	const asked = url.searchParams.get('deck');
 	const found =
-		asked !== null && DECK_GUID.test(asked) ? await getDeckDetail(locals.db, asked) : null;
+		asked !== null && DECK_GUID.test(asked)
+			? await locals.cached('getDeckDetail', asked, () => getDeckDetail(locals.db, asked))
+			: null;
 	return {
 		deck: found && found.eventId === event.id ? found : null,
 		// Fits the screen on a wide one: the standings and the deck each scroll, the window does not.
