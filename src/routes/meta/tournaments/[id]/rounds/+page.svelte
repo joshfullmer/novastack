@@ -53,6 +53,7 @@
 <div class="flex flex-wrap gap-1.5" role="group" aria-label="Rounds">
 	{#each event.rounds as r (r.number)}
 		<a
+			rel="nofollow"
 			href="?round={r.number}"
 			aria-current={r.number === round ? 'true' : undefined}
 			class="rounded-full border px-3 py-1 font-mono text-xs {r.number === round

@@ -95,6 +95,9 @@
 	const to = (section: Section, path: string) =>
 		section.scoped ? href(path, periodParams(period)) : path;
 
+	/** A link that carries a query (the period or a filter) is a filtered view: not one to walk. */
+	const follow = (url: string) => (url.includes('?') ? 'nofollow' : undefined);
+
 	const linkTo = (patch: Record<string, string | number | null>) =>
 		withParams(page.url, patch, ['page']);
 
@@ -134,6 +137,7 @@
 	<nav class="flex flex-col items-center gap-1.5" aria-label="Tournaments">
 		{#each SECTIONS as section (section.path)}
 			<a
+				rel={follow(to(section, section.path))}
 				href={to(section, section.path)}
 				title={section.label}
 				aria-label={section.label}
@@ -170,6 +174,7 @@
 				{#each SECTIONS as section (section.path)}
 					<li>
 						<a
+							rel={follow(to(section, section.path))}
 							href={to(section, section.path)}
 							aria-current={section.items.length === 0 && section.on(here) ? 'page' : undefined}
 							class={cn(
@@ -183,6 +188,7 @@
 								{#each section.items as item (item.path)}
 									<li>
 										<a
+											rel={follow(to(section, item.path))}
 											href={to(section, item.path)}
 											aria-current={item.on(here) ? 'page' : undefined}
 											class={cn(

@@ -6,7 +6,7 @@
 	import { goto } from '$app/navigation';
 	import { page } from '$app/state';
 	import Meta from '#lib/components/Meta.svelte';
-	import { META_INDEXED } from '#lib/meta/launch.js';
+	import { metaNoindex } from '#lib/meta/launch.js';
 	import { cookieState } from '#lib/cookie-state.svelte.js';
 	import ViewToggle from '#lib/components/deck/ViewToggle.svelte';
 	import LinkMultiSelect from '#lib/components/tournaments/LinkMultiSelect.svelte';
@@ -72,13 +72,13 @@
 	$effect(() => () => clearTimeout(pending));
 </script>
 
-<!-- `noindex` until Meta is public (`META_INDEXED`). -->
+<!-- `noindex` until Meta is public, and on any filtered view (`metaNoindex`). -->
 <Meta
 	title="Tournaments — Meta — novastack"
 	description="Cyberpunk TCG tournament results and decklists."
 	origin={data.origin}
 	path="/meta/tournaments"
-	noindex={!META_INDEXED}
+	noindex={metaNoindex(page.url)}
 />
 
 <!-- The extra plain wrapper matters: `<main>` (root layout) is a column flex container, and a
@@ -310,6 +310,7 @@
 			<nav class="mt-6 flex items-center justify-between font-mono text-xs" aria-label="Pages">
 				{#if data.page > 1}
 					<a
+						rel="nofollow"
 						href={go(data.page - 1)}
 						class="rounded border border-edge px-3 py-1.5 hover:text-bright">← Newer</a
 					>
@@ -319,6 +320,7 @@
 				<span class="text-muted">Page {data.page} of {data.pages}</span>
 				{#if data.page < data.pages}
 					<a
+						rel="nofollow"
 						href={go(data.page + 1)}
 						class="rounded border border-edge px-3 py-1.5 hover:text-bright">Older →</a
 					>

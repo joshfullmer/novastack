@@ -65,6 +65,7 @@
 	>
 		{#each BY as [key, label] (key)}
 			<a
+				rel="nofollow"
 				href={href('/meta/matchups', { ...periodParams(data.period), by: key })}
 				aria-current={data.by === key ? 'true' : undefined}
 				class="rounded-full px-3 py-1 {data.by === key
@@ -91,6 +92,7 @@
 					{#each groups as group (group.key)}
 						<th class="w-24 align-bottom font-normal">
 							<a
+								rel="nofollow"
 								href={decksOf(group)}
 								title="{label(group)}: its decks"
 								class="block rounded-lg px-1 py-1.5 hover:bg-shell"
@@ -116,6 +118,7 @@
 					<tr>
 						<th class="rounded-lg bg-shell text-left font-normal hover:bg-surface">
 							<a
+								rel="nofollow"
 								href={decksOf(row)}
 								title="{label(row)}: its decks"
 								class="flex items-center gap-2 p-2.5"

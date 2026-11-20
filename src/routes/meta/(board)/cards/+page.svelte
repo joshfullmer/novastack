@@ -40,6 +40,7 @@
 		<h1 class="sr-only">Card breakdown</h1>
 
 		<a
+			rel="nofollow"
 			href={mine(null)}
 			aria-current={all ? 'true' : undefined}
 			class="block rounded-lg border px-3 py-1.5 text-sm {all
@@ -53,6 +54,7 @@
 		<div class="flex flex-wrap gap-1.5">
 			{#each data.rams as choice (choice.ram)}
 				<a
+					rel="nofollow"
 					href={mine(null, choice.ram)}
 					aria-current={data.ram === choice.ram ? 'true' : undefined}
 					title="{choice.decks} decks"
@@ -71,6 +73,7 @@
 			{#each data.lines as line (line.key)}
 				<li>
 					<a
+						rel="nofollow"
 						href={mine(line.key)}
 						aria-current={data.line === line.key ? 'true' : undefined}
 						title={legendNames(line.legends)}

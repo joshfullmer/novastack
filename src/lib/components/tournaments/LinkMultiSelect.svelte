@@ -71,6 +71,7 @@
 				<a
 					role="menuitemradio"
 					aria-checked={clear.active}
+					rel="nofollow"
 					href={clear.href}
 					class={cn(ROW, clear.active && 'text-bright')}
 				>
@@ -83,6 +84,7 @@
 					<a
 						role="menuitemradio"
 						aria-checked={preset.active}
+						rel="nofollow"
 						href={preset.href}
 						class={cn(ROW, preset.active && 'text-bright')}
 					>
@@ -97,6 +99,7 @@
 					<a
 						role="menuitemcheckbox"
 						aria-checked={option.selected}
+						rel="nofollow"
 						href={option.href}
 						class={cn(ROW, option.selected && 'text-bright')}
 					>

@@ -1,18 +1,18 @@
 <script lang="ts">
 	import { page } from '$app/state';
 	import Meta from '#lib/components/Meta.svelte';
-	import { META_INDEXED } from '#lib/meta/launch.js';
+	import { metaNoindex } from '#lib/meta/launch.js';
 
 	let { data, children } = $props();
 </script>
 
-<!-- `noindex` until Meta is public (`META_INDEXED`). -->
+<!-- `noindex` until Meta is public, and on any filtered view (`metaNoindex`). -->
 <Meta
 	title="Meta decks — novastack"
 	description="Decklists from Cyberpunk TCG tournaments."
 	origin={data.origin}
 	path={page.url.pathname}
-	noindex={!META_INDEXED}
+	noindex={metaNoindex(page.url)}
 />
 
 <div

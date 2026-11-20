@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { page } from '$app/state';
 	import Meta from '#lib/components/Meta.svelte';
-	import { META_INDEXED } from '#lib/meta/launch.js';
+	import { metaNoindex } from '#lib/meta/launch.js';
 	import { buildBracket } from '#lib/tournaments/bracket.js';
 	import { formatDate } from '#lib/tournaments/present.js';
 
@@ -34,13 +34,13 @@
 	);
 </script>
 
-<!-- `noindex` until Meta is public (`META_INDEXED`). -->
+<!-- `noindex` until Meta is public, and on any filtered view (`metaNoindex`). -->
 <Meta
 	title="{event.name} — novastack"
 	{description}
 	origin={data.origin}
 	path={page.url.pathname}
-	noindex={!META_INDEXED}
+	noindex={metaNoindex(page.url)}
 />
 
 <!-- The extra plain wrapper matters: `<main>` (root layout) is a column flex container, and a

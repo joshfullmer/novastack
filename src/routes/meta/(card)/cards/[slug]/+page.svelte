@@ -5,7 +5,7 @@
 	// MIN_DECKS decks is shown as a count only.
 	import { page } from '$app/state';
 	import Meta from '#lib/components/Meta.svelte';
-	import { META_INDEXED } from '#lib/meta/launch.js';
+	import { metaNoindex } from '#lib/meta/launch.js';
 	import LegendArt from '#lib/components/tournaments/LegendArt.svelte';
 	import RamCode from '#lib/components/tournaments/RamCode.svelte';
 	import { MIN_DECKS } from '#lib/tournaments/meta.js';
@@ -34,13 +34,13 @@
 	]);
 </script>
 
-<!-- `noindex` until Meta is public (`META_INDEXED`). -->
+<!-- `noindex` until Meta is public, and on any filtered view (`metaNoindex`). -->
 <Meta
 	title="{cardName(usage.slug)} in tournaments — novastack"
 	description="How {cardName(usage.slug)} has done in Cyberpunk TCG tournaments."
 	origin={data.origin}
 	path={page.url.pathname}
-	noindex={!META_INDEXED}
+	noindex={metaNoindex(page.url)}
 />
 
 {#snippet rate(share: number, ran: number, of: number)}

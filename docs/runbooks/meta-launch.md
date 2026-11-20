@@ -44,4 +44,18 @@ live in D1 and the sitemap is built at build time). Rollback is setting the stag
 3. Watch it at `linked` for a while (Worker CPU, D1 `rows_read`). Query results are cached already
    (`src/lib/server/query-cache.ts`, per data center, keyed by `meta_version`); caching whole pages is not
    built, because the pages read per-visitor cookies.
-4. Set `public`.
+4. Before `public` (and `linked` too, once the header link is live): put crawlers in front of it. Meta's pages
+   take a period and filters, so the set of URLs is unbounded and every one is a D1 read. Found the hard way on
+   2026-11-20: `meta-externalagent` (Meta's AI crawler) walked `?kind=`/`?ram=`/`?line=` combinations at about
+   one request every 2 s, mostly on the `workers.dev` host, and a query-result cache does nothing for it (each
+   URL is new).
+   - `robots.txt` (`src/routes/robots.txt/+server.ts`): `Disallow: /meta/*?` for everyone, `/meta/` for
+     `meta-externalagent`. Advisory, and only once the crawler refetches it.
+   - A Cloudflare WAF rule, which runs before the Worker and costs no invocation or D1 read: block
+     `cf.verified_bot_category eq "AI Crawler"` (or the dashboard's "Block AI bots"). The real control.
+   - `rel="nofollow"` on links that carry a query, and `noindex` on filtered views (`metaNoindex`), so a
+     crawler that does honour them stops walking and listing the filters.
+   - `workers_dev: false` in `wrangler.jsonc`, if nothing needs the `workers.dev` host, so there is one host
+     to crawl.
+   - Watch Worker requests and D1 `rows_read` for a day after each stage change.
+5. Set `public`.

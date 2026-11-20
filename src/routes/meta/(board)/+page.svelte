@@ -158,6 +158,7 @@
 								<span class="flex min-w-0 items-center gap-3">
 									{#if by === 'ram'}
 										<a
+											rel="nofollow"
 											href={href('/meta/decks', {
 												...periodParams(data.period),
 												ram: row.key

@@ -93,6 +93,7 @@
 				     only name one Legend. -->
 				<input type="hidden" name="line" value={filters.line} />
 				<a
+					rel="nofollow"
 					href={withParams(page.url, { line: null, page: null })}
 					title="Show every Legend line"
 					class="inline-flex items-center gap-1.5 rounded-full border border-neon-dim bg-neon/10 px-2.5 py-1 text-bright"
@@ -212,6 +213,7 @@
 				>
 					{#if data.page > 1}
 						<a
+							rel="nofollow"
 							href={go(data.page - 1)}
 							class="rounded border border-edge px-3 py-1.5 hover:text-bright">← Previous</a
 						>
@@ -221,6 +223,7 @@
 					<span class="text-muted">{data.page} / {data.pages}</span>
 					{#if data.page < data.pages}
 						<a
+							rel="nofollow"
 							href={go(data.page + 1)}
 							class="rounded border border-edge px-3 py-1.5 hover:text-bright">Next →</a
 						>

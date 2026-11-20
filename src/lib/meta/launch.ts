@@ -23,3 +23,10 @@ export const META_LINKED = META_STAGE === 'linked' || META_STAGE === 'public';
 
 /** Whether search engines are asked to list it. */
 export const META_INDEXED = META_STAGE === 'public';
+
+/**
+ * Whether a Meta page asks to be kept out of search results: until it is public, and, once it is, when
+ * a filter narrows it (`?kind=`, `?ram=`, `?line=`, …). A filtered view is one of thousands of near-copies of
+ * the page without it, which is what the canonical link already says; this stops a crawler listing them.
+ */
+export const metaNoindex = (url: { search: string }) => !META_INDEXED || url.search !== '';
