@@ -15,10 +15,35 @@ prefer over the pages themselves.
   can be requested with no cookie, no anti-forgery token and no login. This is what swubase.com does
   (`the-medo/swu-collection`, `server/lib/imports/tournamentImportLib.ts`), with Melee's knowledge,
   per its author.
-- **Discovery is the unsolved part.** `/Decklists?q=…` (the listing filtered to Cyberpunk TCG)
-  redirects to `/Account/SignIn`. Everything below starts from a known tournament ID. swubase curates
-  IDs by hand.
+- **Discovery works through Find Events' search.** `/Decklists?q=…` redirects to `/Account/SignIn`, and
+  an organizer's own listing (`POST /Hub/SearchOrganizationTournaments/{id}`, anonymous) needs an
+  organizer id, of which there are thousands, so neither does the job. melee.gg's Find Events page
+  (`/Search`) searches every organizer through an ASP.NET SignalR hub, anonymously (measured 2026-11-21,
+  see "Discovery" below); `pnpm melee --discover` uses it.
 - **TopDeck.gg is not a substitute**: it only covers events run on TopDeck. Ruled out.
+
+## Discovery: the Find Events search (measured 2026-11-21)
+
+`/Search` runs `searchHub.Search(antiForgeryToken, searchId, context, page, game, search, location,
+filters, timeZone, onlyFollowedOrganizers)` over a SignalR 2.1 websocket (`/signalr/negotiate`,
+`/signalr/connect?transport=webSockets`, `/signalr/start`, hub `searchhub`; its proxy is `/signalr/hubs`).
+No login. The token is the page's `__RequestVerificationToken` field and the same-named cookie it sets;
+both go with the handshake. `context` 2 is tournaments, `game` is `CyberpunkTCG`, `filters` `["Past"]`.
+
+- **Answers are pushed**, as `receiveResponse` calls echoing `RequestId` (the `searchId` we sent):
+  `searchStarted`, then `tournamentSearchResults` (`Data.Json` is an array; `Data.Code` is `null` on
+  success and `404` when the pages run out), then `searchCompleted`. Eight events a page, newest first.
+- **A row** has about forty fields. Those we read: `ID`, `Name`, `StartDate`, `StatusDescription`
+  (`Registration`, `In Progress`, `Ended`; `Status` is the same as a number, 1, 2, 4), `Players` (null on
+  some events) and `OrganizationName`.
+- **An empty `search` lists every Cyberpunk TCG event**, including 4-player casual nights and events
+  still `In Progress`. Whether an organizer published decklists cannot be told from a row; ingest asks.
+- Not measured: how deep the pages go, and whether `filters` can narrow by date or status.
+- `pnpm melee --discover` (`src/lib/tournaments/discover.ts`) walks pages through `MeleeClient`, so every
+  page is a paced request on the same ceiling as the rest. It lists ended events the local database
+  lacks and the `pnpm melee <ids…>` that ingests them; it writes nothing unless `--ingest` is given. Results
+  are newest first but not strictly by date (an event's `StartDate` is its scheduled start), so it stops
+  at the first page with nothing new that shows an event already held, not at the first one.
 
 ## Etiquette, as observed
 

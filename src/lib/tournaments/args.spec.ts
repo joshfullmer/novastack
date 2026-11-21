@@ -14,6 +14,12 @@ describe('pnpm melee arguments', () => {
 			pending: false,
 			list: false,
 			forget: false,
+			discover: false,
+			search: '',
+			pages: 10,
+			minPlayers: 0,
+			since: null,
+			ingest: false,
 			persistTo: undefined,
 			maxRequests: undefined
 		});
@@ -93,5 +99,46 @@ describe('pnpm melee arguments', () => {
 		expect(() => parseCli(['--reparse', '--check'])).toThrow();
 		expect(() => parseCli(['1', '--remote', '--persist-to', '/tmp/x'])).toThrow(/local scratch/);
 		expect(() => parseCli(['1', '--max-requests', '0'])).toThrow(/positive/);
+	});
+
+	it('discovers on its own, with a search, a page count and a player floor', () => {
+		expect(parseCli(['--discover'])).toMatchObject({
+			discover: true,
+			ids: [],
+			search: '',
+			pages: 10,
+			minPlayers: 0
+		});
+		expect(
+			parseCli(['--discover', '--search', ' showdown ', '--pages', '3', '--min-players', '8'])
+		).toMatchObject({ discover: true, search: 'showdown', pages: 3, minPlayers: 8 });
+		expect(parseCli(['--discover', '--max-requests', '30'])).toMatchObject({ maxRequests: 30 });
+	});
+
+	it('ingests what it finds, with the flags of a normal run but not --force', () => {
+		expect(parseCli(['--discover', '--ingest', '--since', '2026-11-01'])).toMatchObject({
+			discover: true,
+			ingest: true,
+			since: '2026-11-01'
+		});
+		expect(parseCli(['--discover', '--ingest', '--remote', '--yes', '--check'])).toMatchObject({
+			remote: true,
+			yes: true,
+			check: true
+		});
+		expect(() => parseCli(['--discover', '--ingest', '--force'])).toThrow(/no --force/);
+		expect(() => parseCli(['--discover', '--ingest', '5'])).toThrow(/no ids/);
+		expect(() => parseCli(['--ingest'])).toThrow(/only go with --discover/);
+		expect(() => parseCli(['--discover', '--since', 'last week'])).toThrow(/--since wants/);
+	});
+
+	it('refuses --discover with anything that writes, and its flags without it', () => {
+		expect(() => parseCli(['--discover', '5'])).toThrow(/takes no ids/);
+		expect(() => parseCli(['--discover', '--remote'])).toThrow(/takes no ids/);
+		expect(() => parseCli(['--discover', '--check'])).toThrow(/takes no ids/);
+		expect(() => parseCli(['--discover', '--pending'])).toThrow(/each their own run/);
+		expect(() => parseCli(['5', '--search', 'x'])).toThrow(/only go with --discover/);
+		expect(() => parseCli(['--discover', '--pages', '0'])).toThrow(/--pages wants/);
+		expect(() => parseCli(['--discover', '--min-players', 'many'])).toThrow(/--min-players wants/);
 	});
 });

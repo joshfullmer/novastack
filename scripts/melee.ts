@@ -9,6 +9,7 @@
  * §4): there is no scan and no schedule. Writes the LOCAL database, and PRODUCTION as well with
  * `--remote`. An id a database already holds is skipped; `--force` rewrites it whole, which is also
  * how a repair works. `--promote` copies what is local to production without asking Melee again.
+ * `--discover` lists the events Melee has that the local database lacks, and writes nothing.
  *
  * Exit codes are the interface, as for `pnpm prices:check`:
  *
@@ -22,6 +23,15 @@ import * as v from 'valibot';
 import { SnapshotSchema, type Card } from '../src/lib/cards/schema.ts';
 import { parseCli, USAGE } from '../src/lib/tournaments/args.ts';
 import { MeleeClient } from '../src/lib/tournaments/client.ts';
+import {
+	commandFor,
+	eventLines,
+	openSearch,
+	settled,
+	sift,
+	walk,
+	type Found
+} from '../src/lib/tournaments/discover.ts';
 import { Refusal, ingestTournament } from '../src/lib/tournaments/ingest.ts';
 import {
 	OWNED_TABLES,
@@ -198,6 +208,74 @@ async function promote(args: { ids: number[]; check: boolean; yes: boolean }): P
 }
 
 /**
+ * `--discover`: the tournaments Melee lists (the Find Events search) that the databases being written
+ * lack, newest first, until it reaches events already held. Reads Melee and the databases; writes
+ * nothing. `--ingest` then ingests what it found, through the ordinary run.
+ */
+async function discoverNew(
+	client: MeleeClient,
+	args: { search: string; pages: number; minPlayers: number; since: string | null },
+	targets: readonly Target[],
+	waiting: Pending
+): Promise<Found[]> {
+	// Known means every database being written holds it: one that lacks it still wants the event.
+	const heldByAll = (ids: readonly number[]) => {
+		if (ids.length === 0) return new Set<number>();
+		const held = targets.map(
+			(target) =>
+				new Set(
+					v
+						.parse(v.array(v.object({ id: v.number() })), select(target, storedIdsQuery(ids)))
+						.map((row) => row.id)
+				)
+		);
+		return new Set(ids.filter((id) => held.every((set) => set.has(id))));
+	};
+
+	const stored = new Set<number>();
+	const filters = { stored, waiting: new Set(idsOf(waiting)), ...args };
+	let stoppedAt: number | null = null;
+	const search = await openSearch(client, { search: args.search });
+	const found = await walk(search, args.pages, (number, page) => {
+		for (const id of heldByAll(page.found.map((event) => event.id))) stored.add(id);
+		say(paint.dim(`  page ${number}: ${page.found.length} events`));
+		if (settled(page.found, filters)) stoppedAt = number;
+		return stoppedAt !== null;
+	}).finally(() => search.close());
+
+	const { candidates, known, notEnded, waiting: waits, older, small } = sift(found, filters);
+	const into = targets.map(targetName).join(' and ');
+	say();
+	say(
+		paint.dim(
+			stoppedAt === null
+				? `Read ${args.pages} pages without reaching an event already held (--pages reads more).`
+				: `Stopped at page ${stoppedAt}: events from there on are already held, or older than --since.`
+		)
+	);
+	say(
+		paint.dim(
+			`${found.length} events read · ${known} already in ${into} · ${notEnded.length} not ended · ${waits} waiting · ${older} before --since · ${small} under ${args.minPlayers} players`
+		)
+	);
+	if (notEnded.length > 0) {
+		say(
+			paint.dim(
+				`Not ended (Melee refuses these until they are): ${notEnded.map((event) => event.id).join(' ')}`
+			)
+		);
+	}
+	say(paint.dim(`${client.requests} requests to melee.gg so far`));
+	say();
+	if (candidates.length === 0) say(paint.ok(`Nothing new for the ${into} database.`));
+	else {
+		say(paint.bold(`${candidates.length} not in the ${into} database yet:`));
+		for (const line of eventLines(candidates)) say(line);
+	}
+	return candidates;
+}
+
+/**
  * Where a run writes. Local always; `--remote` adds production, so the two hold the same events. Local
  * comes first: it is the cheap one to get wrong.
  */
@@ -227,10 +305,25 @@ async function main(): Promise<number> {
 	const targets = targetsFor(args);
 	const cards = await loadCards();
 	let waiting = await loadPending();
-	const ids = args.pending ? idsOf(waiting) : args.ids;
+	const client = new MeleeClient({
+		delayMs: process.env.MELEE_DELAY_MS ? Number(process.env.MELEE_DELAY_MS) : undefined,
+		cookie: process.env.MELEE_COOKIE,
+		maxRequests: args.maxRequests
+	});
+	let ids = args.pending ? idsOf(waiting) : args.ids;
 	if (args.pending && ids.length === 0) {
 		say('Nothing is waiting.');
 		return 0;
+	}
+	if (args.discover) {
+		const candidates = await discoverNew(client, args, targets, waiting);
+		if (!args.ingest) {
+			if (candidates.length > 0) say(`\n${commandFor(candidates)}`);
+			return 0;
+		}
+		if (candidates.length === 0) return 0;
+		ids = candidates.map((event) => event.id);
+		say(paint.dim('\nIngesting them:'));
 	}
 
 	if (args.reparse) {
@@ -238,12 +331,6 @@ async function main(): Promise<number> {
 		for (const target of targets) worst = Math.max(worst, await reparse(target, cards, args.yes));
 		return worst;
 	}
-
-	const client = new MeleeClient({
-		delayMs: process.env.MELEE_DELAY_MS ? Number(process.env.MELEE_DELAY_MS) : undefined,
-		cookie: process.env.MELEE_COOKIE,
-		maxRequests: args.maxRequests
-	});
 
 	let exit = 0;
 	const raise = (code: number) => {

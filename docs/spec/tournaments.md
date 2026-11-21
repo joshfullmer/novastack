@@ -240,6 +240,22 @@ pnpm melee --check 485070   fetch and diff exactly as a real run; write nothing
 pnpm melee --reparse        rebuild the derived deck columns and card index from stored text (no network)
 pnpm melee --pending        try again every id that was refused as not ready (§4.5); same flags as a normal run
 pnpm melee --list           which ids are waiting and why; --forget <id …> stops waiting for some
+pnpm melee --discover       list Melee's ended Cyberpunk events the LOCAL database lacks, newest first, until it
+                            reaches events it already holds (or --since YYYY-MM-DD, or --pages N of eight, default
+                            10); prints the `pnpm melee <ids…>` that ingests them: read-only. --search words
+                            (tournament names), --min-players N, --max-requests N
+pnpm melee --discover --ingest   the same, then ingests what it found as a normal run would; takes --check,
+                            --remote [--yes] and --persist-to, and counts an event as known only when every
+                            database being written holds it. No --force
+pnpm melee 485070 --persist-to DIR   a throwaway local database, to try a run out
+pnpm melee --check 485070   fetch and diff exactly as a real run; write nothing
+                            exit 0 current · 1 would change · 2 invariant violated / unreachable
+pnpm melee --reparse        rebuild the derived deck columns and card index from stored text (no network)
+pnpm melee --pending        try again every id that was refused as not ready (§4.5); same flags as a normal run
+pnpm melee --list           which ids are waiting and why; --forget <id …> stops waiting for some
+pnpm melee --discover       list Melee's ended Cyberpunk events the LOCAL database lacks, newest first, with the
+                            `pnpm melee <ids…>` to ingest them: read-only. --search words (tournament names),
+                            --pages N (of eight; default 10), --min-players N, --max-requests N
 ```
 
 **Local by default; `--remote` is explicit and adds production to local.** Production is only ever written on purpose, after our
@@ -680,10 +696,14 @@ a shared-cache header, a site-nav link, and production (the tournament migration
    table, hand-seeded, or a constant in code (a meta changes a few times a year, needs a deploy anyway, and
    a constant needs no seeding on prod). Not decided; to settle in the schema review. Locally the one row
    is seeded by hand, replacing the two demo rows.
-3. **Finding ids.** Where does a new Cyberpunk tournament id come from? From the person running the job,
-   who has it from the Decklists page, Discord, or an organizer. If that gets tedious, swubase reads a
-   player's public history from `POST /Profile/GetResults/{username}` (tournament id, game, rank,
-   record, decklist), which could list a known player's events. Not tested by us.
+3. **Finding ids.** Solved 2026-11-21: `pnpm melee --discover` runs the search melee.gg's Find Events page
+   runs (a SignalR hub, anonymous; `docs/research/melee-ingest.md`, "Discovery"), so no organizer id is
+   needed. Results run newest first, so it stops at the first page with nothing new that shows an event
+   already held (or one before `--since`): in-progress and tiny events alone do not stop it. By default it
+   lists and writes nothing; `--ingest` hands what it found to the ordinary run. An id is only known to
+   have decklists once `pnpm melee <id>` fetches it, and those without are remembered as waiting (§4.5),
+   not retried. Not measured: how deep its pages go. The bookmarklet on a `/Search` or `/Decklists` page
+   remains the way to do it from a browser.
 4. **Elimination rounds** and **format.** The one event measured was 4-round Swiss and `Constructed`.
    §4.1 specifies the top-cut numbering and the format gate from swubase's experience; neither has been
    seen on a Cyberpunk event.

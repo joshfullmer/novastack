@@ -25,6 +25,18 @@ export type Args = {
 	list: boolean;
 	/** Stop remembering the ids given. */
 	forget: boolean;
+	/** List tournaments Melee has that the local database doesn't: read-only, ingests nothing. */
+	discover: boolean;
+	/** `--discover`: words to search tournament names for; empty lists every Cyberpunk TCG event. */
+	search: string;
+	/** `--discover`: how many pages of eight to read. */
+	pages: number;
+	/** `--discover`: skip events with fewer players. */
+	minPlayers: number;
+	/** `--discover`: skip events that started before this date (`YYYY-MM-DD`). */
+	since: string | null;
+	/** `--discover`: ingest what it finds, as `pnpm melee <ids>` would, instead of listing it. */
+	ingest: boolean;
 	/** A throwaway local database directory (`wrangler --persist-to`), for trying a run out. */
 	persistTo: string | undefined;
 	maxRequests: number | undefined;
@@ -34,6 +46,9 @@ export const USAGE = `usage: pnpm melee <id> [id …] [--force] [--check] [--rem
        pnpm melee --reparse [--remote]
        pnpm melee --promote [id …] [--check] [--yes]
        pnpm melee --pending [--remote [--yes]]     try again every id that wasn't ready
+       pnpm melee --discover [--search words] [--pages N] [--min-players N] [--since YYYY-MM-DD]
+                  [--ingest [--check] [--remote [--yes]]]
+                                                   list tournaments Melee has that we don't, or ingest them
        pnpm melee --list                           which ids are waiting, and why
        pnpm melee --forget <id> [id …]             stop waiting for those
   Writes the LOCAL database; --remote writes PRODUCTION as well. A database that already has an id
@@ -54,6 +69,12 @@ export function parseCli(argv: readonly string[]): Args {
 			pending: { type: 'boolean', default: false },
 			list: { type: 'boolean', default: false },
 			forget: { type: 'boolean', default: false },
+			discover: { type: 'boolean', default: false },
+			search: { type: 'string' },
+			pages: { type: 'string' },
+			'min-players': { type: 'string' },
+			since: { type: 'string' },
+			ingest: { type: 'boolean', default: false },
 			'persist-to': { type: 'string' },
 			'max-requests': { type: 'string' }
 		}
@@ -76,6 +97,34 @@ export function parseCli(argv: readonly string[]): Args {
 		}
 	}
 
+	const whole = (flag: string, text: string | undefined, fallback: number, least: number) => {
+		if (text === undefined) return fallback;
+		const number = Number(text);
+		if (!/^\d+$/.test(text) || !Number.isSafeInteger(number) || number < least) {
+			throw new Error(`--${flag} wants a whole number, ${least} or more.`);
+		}
+		return number;
+	};
+	const pages = whole('pages', values.pages, 10, 1);
+	const minPlayers = whole('min-players', values['min-players'], 0, 0);
+	const discover = values.discover;
+	if (
+		!discover &&
+		(values.search !== undefined ||
+			values.pages ||
+			values['min-players'] ||
+			values.since ||
+			values.ingest)
+	) {
+		throw new Error(
+			'--search, --pages, --min-players, --since and --ingest only go with --discover.'
+		);
+	}
+	const since = values.since ?? null;
+	if (since !== null && !/^\d{4}-\d{2}-\d{2}$/.test(since)) {
+		throw new Error('--since wants a date like 2026-11-01.');
+	}
+
 	const reparse = values.reparse;
 	if (reparse && (ids.length > 0 || values.check)) {
 		throw new Error('--reparse takes no ids and no --check.');
@@ -93,8 +142,26 @@ export function parseCli(argv: readonly string[]): Args {
 		throw new Error('--promote makes no requests to Melee, so --max-requests means nothing.');
 	}
 	const { pending, list, forget } = values;
-	if ([reparse, promote, pending, list, forget].filter(Boolean).length > 1) {
-		throw new Error('--reparse, --promote, --pending, --list and --forget are each their own run.');
+	if ([reparse, promote, pending, list, forget, discover].filter(Boolean).length > 1) {
+		throw new Error(
+			'--reparse, --promote, --pending, --list, --forget and --discover are each their own run.'
+		);
+	}
+	// Listing is read-only; ingesting takes the flags a normal run does, except --force (what is stored
+	// is what tells it to stop).
+	const writes = discover && values.ingest;
+	if (
+		discover &&
+		(ids.length > 0 ||
+			values.force ||
+			(!writes &&
+				(values.check || values.remote || values.yes || values['persist-to'] !== undefined)))
+	) {
+		throw new Error(
+			writes
+				? '--discover --ingest takes no ids and no --force.'
+				: '--discover takes no ids, and --check, --remote, --yes and --persist-to only with --ingest.'
+		);
 	}
 	if ((list || forget) && (values.check || values.force || values.remote || values.yes)) {
 		throw new Error('--list and --forget take no other flags.');
@@ -103,7 +170,7 @@ export function parseCli(argv: readonly string[]): Args {
 		throw new Error(`--${pending ? 'pending' : 'list'} takes no ids; it uses the ones remembered.`);
 	}
 	if (forget && ids.length === 0) throw new Error('--forget wants the ids to forget.');
-	if (!reparse && !promote && !pending && !list && !forget && ids.length === 0)
+	if (!reparse && !promote && !pending && !list && !forget && !discover && ids.length === 0)
 		throw new Error('Give at least one Melee tournament id.');
 	if (values.remote && values['persist-to'] !== undefined) {
 		throw new Error(
@@ -122,6 +189,12 @@ export function parseCli(argv: readonly string[]): Args {
 		pending,
 		list,
 		forget,
+		discover,
+		search: values.search?.trim() ?? '',
+		pages,
+		minPlayers,
+		since,
+		ingest: values.ingest,
 		persistTo: values['persist-to'],
 		maxRequests
 	};
