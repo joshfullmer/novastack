@@ -54,5 +54,12 @@
 		"firstTried": "2026-11-19T17:06:42.100Z",
 		"lastTried": "2026-11-19T17:07:22.853Z",
 		"attempts": 3
+	},
+	"493513": {
+		"name": "Goblin King's Night City Showdown",
+		"reason": "493513 is \"In Progress\", not Ended. Try again when it's over.",
+		"firstTried": "2026-11-20T23:41:00.108Z",
+		"lastTried": "2026-11-20T23:41:00.108Z",
+		"attempts": 1
 	}
 }
