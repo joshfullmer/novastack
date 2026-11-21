@@ -92,23 +92,32 @@ export class MeleeClient {
 		this.#onRequest = options.onRequest ?? (() => {});
 	}
 
-	async #send(path: string, init: { method: 'GET' | 'POST'; body?: URLSearchParams }) {
+	/**
+	 * One gap, kept between every pair of requests whatever they are for, and one count against the
+	 * ceiling. Public so a request that is not a `fetch` (a message down the search websocket) obeys both.
+	 */
+	async pace(line: string): Promise<void> {
+		if (this.requests >= this.#max) {
+			throw new Error(
+				`Stopped after ${this.requests} requests (--max-requests); ${line} not sent.`
+			);
+		}
+		if (this.#lastAt !== null) {
+			const wait = this.#delayMs - (this.#now() - this.#lastAt);
+			if (wait > 0) await this.#sleep(wait);
+		}
+		this.#lastAt = this.#now();
+		this.requests += 1;
+		this.#onRequest(line);
+	}
+
+	async #send(
+		path: string,
+		init: { method: 'GET' | 'POST'; body?: URLSearchParams; cookie?: string }
+	) {
 		let failure = '';
 		for (let attempt = 1; attempt <= RETRIES; attempt += 1) {
-			if (this.requests >= this.#max) {
-				throw new Error(
-					`Stopped after ${this.requests} requests (--max-requests); ${path} not fetched.`
-				);
-			}
-
-			// One gap, kept between every pair of requests whatever they are for.
-			if (this.#lastAt !== null) {
-				const wait = this.#delayMs - (this.#now() - this.#lastAt);
-				if (wait > 0) await this.#sleep(wait);
-			}
-			this.#lastAt = this.#now();
-			this.requests += 1;
-			this.#onRequest(`${init.method} ${path}`);
+			await this.pace(`${init.method} ${path}`);
 
 			const response = await this.#fetch(`${MELEE_ORIGIN}${path}`, {
 				method: init.method,
@@ -119,7 +128,9 @@ export class MeleeClient {
 					...(init.body
 						? { 'content-type': 'application/x-www-form-urlencoded; charset=UTF-8' }
 						: {}),
-					...(this.#cookie ? { cookie: this.#cookie } : {})
+					...(this.#cookie || init.cookie
+						? { cookie: [this.#cookie, init.cookie].filter(Boolean).join('; ') }
+						: {})
 				}
 			});
 
@@ -139,6 +150,14 @@ export class MeleeClient {
 			return response;
 		}
 		throw new Error(`${path}: gave up after ${RETRIES} attempts (${failure}).`);
+	}
+
+	/**
+	 * A GET whose response is handed back whole, for what a page says in its headers (a cookie).
+	 * `cookie` is added to any `MELEE_COOKIE`.
+	 */
+	async response(path: string, options: { cookie?: string } = {}): Promise<Response> {
+		return this.#send(path, { method: 'GET', cookie: options.cookie });
 	}
 
 	async text(path: string): Promise<string> {
