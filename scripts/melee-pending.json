@@ -54,5 +54,12 @@
 		"firstTried": "2026-11-19T17:06:42.100Z",
 		"lastTried": "2026-11-19T17:07:22.853Z",
 		"attempts": 3
+	},
+	"499336": {
+		"name": "Lofi - Night City Showdown",
+		"reason": "499336 is \"In Progress\", not Ended. Try again when it's over.",
+		"firstTried": "2026-11-21T13:43:43.174Z",
+		"lastTried": "2026-11-21T13:46:18.219Z",
+		"attempts": 2
 	}
 }
