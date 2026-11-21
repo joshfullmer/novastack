@@ -144,7 +144,7 @@
 	/** Meta: what is winning in tournaments. `/meta` is the tier list, so it is current only on that exact
 	 * path; the rest are current on their own subtree. */
 	const META = [
-		{ href: '/meta', label: 'Tier list' },
+		{ href: '/meta', label: 'Top decks' },
 		{ href: '/meta/matchups', label: 'Matchups' },
 		{ href: '/meta/cards', label: 'Card breakdown' },
 		{ href: '/meta/decks', label: 'Decks' },

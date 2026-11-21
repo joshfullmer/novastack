@@ -13,29 +13,42 @@ export const MIN_DECKS = 5;
 
 /**
  * **Tiers** rank decks by how they perform, not by how many play them (that is the share column beside
- * them). A deck's *power* is its match win rate (a draw counts half), pulled toward 50% as if it had also
- * played `TIER_PRIOR` even matches, so a hot streak over a few matches cannot out-rank a long record.
- * Tiers are fixed bands of power, not a curve, so a thin meta honestly has empty tiers; a group of fewer
- * than `MIN_DECKS` decks has no power and no tier.
+ * them). A deck's *power* is the lower bound of a confidence interval on its match win rate (a draw counts
+ * half): the rate we are `TIER_Z` standard errors sure it beats, so a deck earns a high tier by proving it
+ * over many matches, never by a hot streak over a few. A group needs `MIN_DECKS` decks and `MIN_MATCHES`
+ * matches to be ranked at all; below that it has no power and no tier. Tiers are fixed bands of power, not
+ * a curve, so a thin meta honestly has empty tiers.
  */
 export const TIERS = ['S', 'A', 'B', 'C', 'D'] as const;
 export type Tier = (typeof TIERS)[number];
-export const TIER_PRIOR = 10;
+/** The matches a group needs before it is ranked. */
+export const MIN_MATCHES = 100;
+/** Standard errors below the observed rate: 1.28 is the bound we are 90% sure the true rate clears. */
+export const TIER_Z = 1.28;
 /** The least power each tier takes; D is everything below C. */
 export const TIER_FLOORS: Record<Exclude<Tier, 'D'>, number> = {
-	S: 0.57,
-	A: 0.53,
-	B: 0.48,
-	C: 0.44
+	S: 0.54,
+	A: 0.5,
+	B: 0.46,
+	C: 0.42
 };
 
-/** Win rate shrunk toward 50% by `TIER_PRIOR` matches; null when nothing was played. */
-export const power = (winRate: number | null, matches: number): number | null =>
-	winRate === null ? null : (winRate * matches + 0.5 * TIER_PRIOR) / (matches + TIER_PRIOR);
+/** Wilson lower bound of the win rate over `matches`; null when nothing was played. */
+export function power(winRate: number | null, matches: number): number | null {
+	if (winRate === null || matches === 0) return null;
+	const z2 = TIER_Z ** 2;
+	const centre = winRate + z2 / (2 * matches);
+	const spread = TIER_Z * Math.sqrt((winRate * (1 - winRate)) / matches + z2 / (4 * matches ** 2));
+	return (centre - spread) / (1 + z2 / matches);
+}
 
-/** A group's tier, or null when it has too few decks (or no matches) to be ranked. */
+/** Whether a group has enough decks and matches for a power, and so a tier. */
+export const rankable = (decks: number, matches: number): boolean =>
+	decks >= MIN_DECKS && matches >= MIN_MATCHES;
+
+/** A group's tier, or null when it has too little to be ranked. */
 export function tierOf(decks: number, winRate: number | null, matches: number): Tier | null {
-	const p = decks < MIN_DECKS ? null : power(winRate, matches);
+	const p = rankable(decks, matches) ? power(winRate, matches) : null;
 	if (p === null) return null;
 	if (p >= TIER_FLOORS.S) return 'S';
 	if (p >= TIER_FLOORS.A) return 'A';
@@ -80,9 +93,9 @@ export type GroupStat = {
 	matches: number;
 	top8: number;
 	wins: number;
-	/** Win rate pulled toward 50% for small samples (`TIER_PRIOR`); null below `MIN_DECKS` decks. */
+	/** Lower confidence bound of the win rate (`TIER_Z`); null when the group is too small to rank. */
 	power: number | null;
-	/** From `power`; null when the group has too few decks to rank. */
+	/** From `power`; null when the group has too few decks or matches to rank. */
 	tier: Tier | null;
 };
 
@@ -122,7 +135,7 @@ const toStat = (row: LineRow, key: string, legends: string[], total: number): Gr
 		matches: played,
 		top8: row.top8,
 		wins: row.wins,
-		power: row.decks < MIN_DECKS ? null : power(winRate, played),
+		power: rankable(row.decks, played) ? power(winRate, played) : null,
 		tier: tierOf(row.decks, winRate, played)
 	};
 };

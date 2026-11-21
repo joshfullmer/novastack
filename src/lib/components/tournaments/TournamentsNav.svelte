@@ -46,7 +46,7 @@
 			// A card's own page is reached from the card breakdown, so it sits here.
 			on: (p) => p === '/meta' || p.startsWith('/meta/matchups') || p.startsWith('/meta/cards'),
 			items: [
-				{ label: 'Tier list', path: '/meta', on: (p) => p === '/meta' },
+				{ label: 'Top decks', path: '/meta', on: (p) => p === '/meta' },
 				{
 					label: 'Matchups',
 					path: '/meta/matchups',

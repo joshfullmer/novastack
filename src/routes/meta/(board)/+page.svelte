@@ -1,15 +1,14 @@
 <script lang="ts">
-	// Tier list: decks ranked by how they perform, S down to D, and within a tier by how much of the field
+	// Top decks: decks ranked by how they perform, S down to D, and within a tier by how much of the field
 	// played them. Group by RAM (how players name a deck: YYR), the three Legends together, or each Legend
-	// on its own; count every deck, only the top 8, or only the winners. A tier needs MIN_DECKS decks:
-	// fewer is noise, so those are listed apart, unranked.
+	// on its own; count every deck, only the top 8, or only the winners. A tier needs MIN_DECKS decks and
+	// MIN_MATCHES matches: less is noise, so those are listed apart, unranked.
 	import { cn } from '#lib/cn.js';
 	import LegendArt from '#lib/components/tournaments/LegendArt.svelte';
 	import RamCode from '#lib/components/tournaments/RamCode.svelte';
 	import {
 		MIN_DECKS,
-		TIER_FLOORS,
-		TIER_PRIOR,
+		MIN_MATCHES,
 		TIERS,
 		type GroupStat,
 		type Tier
@@ -43,13 +42,16 @@
 		C: cn('bg-neon/25 text-bright'),
 		D: cn('bg-neon/10 text-body')
 	};
-	const BAND: Record<Tier, string> = {
-		S: `${Math.round(TIER_FLOORS.S * 100)}%+`,
-		A: `${Math.round(TIER_FLOORS.A * 100)}–${Math.round(TIER_FLOORS.S * 100)}%`,
-		B: `${Math.round(TIER_FLOORS.B * 100)}–${Math.round(TIER_FLOORS.A * 100)}%`,
-		C: `${Math.round(TIER_FLOORS.C * 100)}–${Math.round(TIER_FLOORS.B * 100)}%`,
-		D: `under ${Math.round(TIER_FLOORS.C * 100)}%`
+	/** What each tier says in words, relative to the other decks, so no number has to be decoded. */
+	const SAYS: Record<Tier, string> = {
+		S: 'Top performers',
+		A: 'Strong',
+		B: 'Middle of the pack',
+		C: 'Weak',
+		D: 'Struggling'
 	};
+
+	const UNRANKED = `Not enough results yet (under ${MIN_DECKS} decks or ${MIN_MATCHES} matches)`;
 
 	const base = $derived.by((): GroupStat[] => {
 		if (by === 'line') return meta.byLine;
@@ -90,7 +92,7 @@
 
 <header class="flex flex-wrap items-end justify-between gap-3 border-b border-edge pb-4">
 	<div>
-		<h1 class="sr-only">Tier list</h1>
+		<h1 class="sr-only">Top decks</h1>
 		<p class="font-mono text-xs text-muted">{meta.decks} decks with a readable set of Legends</p>
 	</div>
 	<div class="flex flex-wrap gap-2 font-mono text-xs">
@@ -133,7 +135,7 @@
 					class="grid w-14 shrink-0 place-items-center text-3xl font-semibold {tier
 						? BADGE[tier]
 						: 'bg-edge/40 text-muted'}"
-					title={tier ? `Win rate ${BAND[tier]}` : `Fewer than ${MIN_DECKS} decks`}
+					title={tier ? SAYS[tier] : UNRANKED}
 				>
 					{tier ?? '?'}
 				</div>
@@ -141,9 +143,7 @@
 					<div
 						class="grid items-center gap-x-3 border-b border-edge/60 px-3 py-1.5 font-mono text-[11px] tracking-wide text-muted uppercase {COLUMNS}"
 					>
-						<span class="tracking-normal normal-case"
-							>{tier ? `win rate ${BAND[tier]}` : `fewer than ${MIN_DECKS} decks: unranked`}</span
-						>
+						<span class="tracking-normal normal-case">{tier ? SAYS[tier] : UNRANKED}</span>
 						<span
 							>Share of {part === 'decks' ? 'field' : part === 'top8' ? 'top 8' : 'winners'}</span
 						>
@@ -193,7 +193,7 @@
 								{#if row.decks >= MIN_DECKS}
 									<span
 										class="text-right font-mono text-sm {tone(row.winRate)}"
-										title="{row.matches} matches; tiered on {percent(row.power)}"
+										title="{row.matches} matches"
 									>
 										{percent(row.winRate)}
 									</span>
@@ -225,9 +225,10 @@
 {/if}
 
 <p class="mt-2 text-xs text-muted">
-	Tiers rank how a deck <em>performs</em>, from its match win rate (a draw counts half) pulled
-	toward 50% as if it had also played {TIER_PRIOR} even matches, so a few lucky matches can't beat a long
-	record. The share bar is how much of the field plays it.
+	Tiers show how decks have done in tournament results, not what the community thinks of them. A
+	deck moves up only once its record is long enough to trust: a 61% win rate over 50 matches could
+	be luck, so it ranks below 57% over 600. A deck needs {MIN_DECKS} decks and {MIN_MATCHES} matches to
+	be ranked at all. The share bar is how much of the field plays it.
 	{#if by === 'ram'}
 		A RAM names a deck by the Legends it runs: <RamCode ram="rryyyy" /> is a Yellow, a Yellow and a Red
 		Legend, {RAM_PER_LEGEND} RAM each. Decks whose Legends aren't in the card data yet aren't counted.

@@ -14,7 +14,7 @@ is merged or hidden: Notation is a top-level link on purpose (it is for people w
 yet), and Collection is a main owner-only page.
 
 - **Shape:** a link with a hover dropdown, like Cards and Decks. The trigger goes to `/meta`; the menu is
-  Tier list, Matchups, Card breakdown, Decks, Tournaments. The same group in the hamburger menu.
+  Top decks, Matchups, Card breakdown, Decks, Tournaments. The same group in the hamburger menu.
 - **Position:** after Cards and Decks.
 - **Naming:** the item stays **Decks**, in the header menu and the sidebar: it is under Meta, which is context
   enough (decided 2026-11-19; "Tournament decks" was tried and reverted).

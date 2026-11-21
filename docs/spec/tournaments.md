@@ -540,13 +540,19 @@ read-only, dynamic and `noindex`:
   Finalist, Top 4, Top 8, Top 16, as far as the cut went), each with their Legends, record and a deck link,
   and follows the same highlight. A player's slot in the bracket and their tile in the rail are links to their deck (`/meta/decks/[guid]`); one with no registered deck says "no deck" and only follows. A match card shows the winner's check and game score, the table and any
   draws; a "Top N" chip names the cut. Not done: opening a deck in place, seeds on the card, a live bracket.
-- **Tiers** (2026-11-17). The tier list ranks how a deck _performs_, S down to D, and within a tier by how
-  much of the field plays it (the share bar stays beside it). A group's _power_ is its match win rate (a
-  draw counts half) pulled toward 50% as if it had also played 10 even matches (`TIER_PRIOR`), so a few
-  lucky matches cannot out-rank a long record; tiers are fixed bands of power (S 57%+, A 53–57, B 48–53,
-  C 44–48, D below), not a curve, so a thin meta has empty tiers. A group of fewer than `MIN_DECKS` (5)
-  decks has no power and is listed apart as unranked. The bands and the prior are constants in `meta.ts` to
-  tune against more data.
+- **Tiers** (2026-11-17, reworked 2026-11-21). The page (now "Top decks") ranks how a deck has
+  _performed_, S down to D, and within a tier by how much of the field plays it (the share bar stays beside
+  it). A group's _power_ is the Wilson lower bound of its match win rate (a draw counts half) at 90%
+  confidence (`TIER_Z`): the rate its record proves, so a deck reaches a high tier only over many matches.
+  The first version pulled the rate toward 50% as if 10 more even matches had been played, which let a
+  50-match, 61% group reach S, which the community does not rate that way. Tiers are fixed bands of power
+  (S 54%+, A 50–54, B 46–50, C 42–46, D below), not a curve, so a thin meta has empty tiers. A group needs
+  `MIN_DECKS` (5) decks and `MIN_MATCHES` (100) matches to be ranked, or it is listed apart as unranked. The
+  page says plainly that these are tournament results, not a community consensus. Tier headers say it in
+  words (Top performers, Strong, Middle of the pack, Weak, Struggling) and the proven rate is not shown:
+  two win-rate numbers per row read as a contradiction to most people. The bands are constants in
+  `meta.ts` to tune against more data. Not done: showing each row's interval or a sample-size cue; weighting
+  matchups against the field instead of raw win rate.
 - **Names in the interface** (2026-11-17): "Legends" is what the interface calls a deck's three Legends
   together (code and this spec still say "Legend line"); the tier list's single-Legend grouping is "By
   Legend". The page of cards is the **card breakdown** (the top-level Cards tab is a different thing: one
@@ -580,7 +586,7 @@ read-only, dynamic and `noindex`:
   view is the place to start) and URL state for a card dialog.
 - **Navigation is a sidebar** (2026-11-17): the section's tabs, the meta and deck sub-tabs and the
   period / kind / field-size row used to take about 300px off the top of every page. They are now one
-  collapsible left sidebar (`TournamentsNav`, in `/meta/+layout.svelte`): Meta (Tier list, Matchups,
+  collapsible left sidebar (`TournamentsNav`, in `/meta/+layout.svelte`): Meta (Top decks, Matchups,
   Card breakdown), Tournaments, Decks (All decks, By Legends), and, on the statistics pages only, the
   scope (Period, Kind, Players) as stacked dropdowns. Collapsed, it is a rail of initials (and the period);
   the choice is the `tournaments-nav` cookie. Below `lg` it is a menu above the page. There is no Cards
