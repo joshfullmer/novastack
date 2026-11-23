@@ -5,7 +5,10 @@ import {
 	idsOf,
 	parsePending,
 	remember,
-	serializePending
+	serializePending,
+	dueFirst,
+	lapsed,
+	nextTry
 } from './pending.ts';
 
 const day = (n: number) => new Date(Date.UTC(2026, 10, n));
@@ -61,10 +64,36 @@ describe('the list of events that were not ready', () => {
 	it('describes each one with its reason, tries and age', () => {
 		const list = remember(remember({}, 7, refusal, day(15)), 7, refusal, day(16));
 		expect(describePending(list, day(18))).toEqual([
-			`7  Night City Showdown\n      ${refusal.reason}\n      2 tries, first 3d ago`
+			`7  Night City Showdown\n      ${refusal.reason}\n      2 tries, first 3d ago, due now, gives up 2026-11-22`
 		]);
 		expect(describePending(remember({}, 7, { name: null, reason: 'x' }, day(18)), day(18))[0]).toBe(
-			'7  (name unknown)\n      x\n      1 try, first today'
+			'7  (name unknown)\n      x\n      1 try, first today, next 2026-11-18T06:00Z, gives up 2026-11-25'
 		);
+	});
+
+	it('is next worth trying 6h after the last try', () => {
+		let list = remember({}, 1, refusal, day(1));
+		list = remember(list, 1, refusal, day(2));
+		expect(nextTry(list['1']).toISOString()).toBe('2026-11-02T06:00:00.000Z');
+	});
+
+	it('skips what was tried in the last 6h and offers the rest least recently tried first', () => {
+		let list = remember({}, 1, refusal, day(3));
+		list = remember(list, 2, refusal, day(1));
+		list = remember(list, 3, refusal, day(1));
+		list = remember(list, 4, refusal, day(5));
+		expect(dueFirst(list, day(5))).toEqual([2, 3, 1]);
+		expect(dueFirst(list, new Date(day(5).getTime() + 6 * 3_600_000))).toEqual([2, 3, 1, 4]);
+	});
+
+	it('stops retrying what is still not ready 7 days after it was first tried, however recently checked', () => {
+		let list = remember({}, 1, refusal, day(1));
+		list = remember(list, 1, refusal, day(8));
+		list = remember(list, 2, refusal, day(5));
+		expect(lapsed(list, day(8))).toEqual([1]);
+		expect(lapsed(list, day(7))).toEqual([]);
+		expect(dueFirst(list, day(9))).toEqual([2]);
+		expect(idsOf(list)).toEqual([1, 2]);
+		expect(describePending(list, day(9))[0]).toContain('gave up 2026-11-08');
 	});
 });

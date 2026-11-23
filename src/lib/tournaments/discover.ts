@@ -322,13 +322,13 @@ export function sift(found: readonly Found[], filters: Filters): Discovery {
 
 /**
  * Whether a page of results is where new events end. Results run newest first, so the first page with
- * nothing to ingest that shows ground already covered (an event we hold, or one before `since`) means
- * every later page is older still. A page of in-progress or tiny events is not such a sign: it
+ * nothing to ingest that shows ground already covered (an event we hold, one already waiting in the
+ * pending list, or one before `since`) means every later page is older still. A page of in-progress or tiny events is not such a sign: it
  * has no candidates but proves nothing, so the walk goes on past it.
  */
 export function settled(page: readonly Found[], filters: Filters): boolean {
-	const { candidates, known, older } = sift(page, filters);
-	return candidates.length === 0 && (known > 0 || older > 0);
+	const { candidates, known, waiting, older } = sift(page, filters);
+	return candidates.length === 0 && (known > 0 || waiting > 0 || older > 0);
 }
 
 /**

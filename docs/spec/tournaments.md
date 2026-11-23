@@ -238,7 +238,7 @@ pnpm melee 485070 --persist-to DIR   a throwaway local database, to try a run ou
 pnpm melee --check 485070   fetch and diff exactly as a real run; write nothing
                             exit 0 current · 1 would change · 2 invariant violated / unreachable
 pnpm melee --reparse        rebuild the derived deck columns and card index from stored text (no network)
-pnpm melee --pending        try again every id that was refused as not ready (§4.5); same flags as a normal run
+pnpm melee --pending        try again the ids refused as not ready that are due (§4.5); same flags as a normal run
 pnpm melee --list           which ids are waiting and why; --forget <id …> stops waiting for some
 pnpm melee --discover       list Melee's ended Cyberpunk events the LOCAL database lacks, newest first, until it
                             reaches events it already holds (or --since YYYY-MM-DD, or --pages N of eight, default
@@ -251,7 +251,7 @@ pnpm melee 485070 --persist-to DIR   a throwaway local database, to try a run ou
 pnpm melee --check 485070   fetch and diff exactly as a real run; write nothing
                             exit 0 current · 1 would change · 2 invariant violated / unreachable
 pnpm melee --reparse        rebuild the derived deck columns and card index from stored text (no network)
-pnpm melee --pending        try again every id that was refused as not ready (§4.5); same flags as a normal run
+pnpm melee --pending        try again the ids refused as not ready that are due (§4.5); same flags as a normal run
 pnpm melee --list           which ids are waiting and why; --forget <id …> stops waiting for some
 pnpm melee --discover       list Melee's ended Cyberpunk events the LOCAL database lacks, newest first, with the
                             `pnpm melee <ids…>` to ingest them: read-only. --search words (tournament names),
@@ -385,8 +385,8 @@ runs in the visitor's own browser, reads only the open page, and sends nothing; 
 Finding a Melee id is the manual part, so an id is only ever looked up once. When an event is refused as
 **not ready** (not Ended; no standings published; a round with results but no standings; no decklists
 yet: every `Refusal`) it is written to `scripts/melee-pending.json`, keyed by id, with Melee's name, the
-reason, when it was first and last tried and how many times. `pnpm melee --pending` retries them all
-with whatever flags a normal run takes (`--remote`, `--yes`, `--check`); one that gets written, or is
+reason, when it was first and last tried and how many times. `pnpm melee --pending` retries the ones that are
+due, least recently tried first: an id tried in the last 6h is skipped, and one still not ready 7 days after it was first tried is assumed never to be and is no longer retried (most never get lists, and would otherwise spend the whole request budget). It stays in the file, so `--discover` doesn't offer the event again; `--forget <id>` clears it. `pnpm melee <id>` tries one regardless; `--list` shows when each is due and when it gives up. With whatever flags a normal run takes (`--remote`, `--yes`, `--check`); one that gets written, or is
 found already stored, is removed; one still not ready has its reason and count updated. The file is saved
 after every id, so an interrupted run keeps what it learned. Not recorded: a failed invariant or an
 unreachable Melee (not "wait", a bug or an outage), and anything under `--check`, which never changes
@@ -699,7 +699,7 @@ a shared-cache header, a site-nav link, and production (the tournament migration
 3. **Finding ids.** Solved 2026-11-21: `pnpm melee --discover` runs the search melee.gg's Find Events page
    runs (a SignalR hub, anonymous; `docs/research/melee-ingest.md`, "Discovery"), so no organizer id is
    needed. Results run newest first, so it stops at the first page with nothing new that shows an event
-   already held (or one before `--since`): in-progress and tiny events alone do not stop it. By default it
+   already held or waiting (or one before `--since`): in-progress and tiny events alone do not stop it. By default it
    lists and writes nothing; `--ingest` hands what it found to the ordinary run. An id is only known to
    have decklists once `pnpm melee <id>` fetches it, and those without are remembered as waiting (§4.5),
    not retried. Not measured: how deep its pages go. The bookmarklet on a `/Search` or `/Decklists` page

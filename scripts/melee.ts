@@ -22,7 +22,7 @@ import path from 'node:path';
 import * as v from 'valibot';
 import { SnapshotSchema, type Card } from '../src/lib/cards/schema.ts';
 import { parseCli, USAGE } from '../src/lib/tournaments/args.ts';
-import { MeleeClient } from '../src/lib/tournaments/client.ts';
+import { MeleeClient, RequestLimitError } from '../src/lib/tournaments/client.ts';
 import {
 	commandFor,
 	eventLines,
@@ -53,9 +53,12 @@ import { confirmRemote, runFile, select, targetName, type Target } from './lib/d
 import { paint } from './lib/ui.ts';
 import {
 	describePending,
+	dueFirst,
 	forget,
 	idsOf,
+	lapsed,
 	parsePending,
+	RECHECK_HOURS,
 	remember,
 	serializePending,
 	type Pending
@@ -250,7 +253,7 @@ async function discoverNew(
 		paint.dim(
 			stoppedAt === null
 				? `Read ${args.pages} pages without reaching an event already held (--pages reads more).`
-				: `Stopped at page ${stoppedAt}: events from there on are already held, or older than --since.`
+				: `Stopped at page ${stoppedAt}: events from there on are already held or waiting, or older than --since.`
 		)
 	);
 	say(
@@ -310,9 +313,16 @@ async function main(): Promise<number> {
 		cookie: process.env.MELEE_COOKIE,
 		maxRequests: args.maxRequests
 	});
-	let ids = args.pending ? idsOf(waiting) : args.ids;
+	const now = new Date();
+	let ids = args.pending ? dueFirst(waiting, now) : args.ids;
 	if (args.pending && ids.length === 0) {
-		say('Nothing is waiting.');
+		const total = idsOf(waiting).length;
+		const gaveUp = lapsed(waiting, now).length;
+		say(
+			total === 0
+				? 'Nothing is waiting.'
+				: `Nothing is due: ${total} waiting, ${gaveUp} given up on, the rest tried within ${RECHECK_HOURS}h (--list says when; \`pnpm melee <id>\` tries one now).`
+		);
 		return 0;
 	}
 	if (args.discover) {
@@ -450,6 +460,11 @@ async function main(): Promise<number> {
 				}
 			}
 		} catch (error) {
+			if (error instanceof RequestLimitError) {
+				say(paint.remove(`  ✗ ${error.message}`));
+				say(paint.dim(`\nRun again to carry on: --pending tries the longest-waiting ids first.`));
+				return 2;
+			}
 			if (error instanceof Refusal) {
 				say(paint.change(`  ○ ${error.message}`));
 				refusal = error;

@@ -4,7 +4,7 @@
  */
 import * as v from 'valibot';
 import { describe, expect, it } from 'vitest';
-import { MeleeClient, USER_AGENT, dataTablesBody } from './client.ts';
+import { MeleeClient, RequestLimitError, USER_AGENT, dataTablesBody } from './client.ts';
 import { MeleeSignInError } from './html.ts';
 import { fakeClock, fakeMelee } from './testing.ts';
 
@@ -137,6 +137,7 @@ describe('when Melee misbehaves', () => {
 		await expect(client.text('/Tournament/View/485070')).rejects.toThrow(
 			/Stopped after 2 requests/
 		);
+		await expect(client.text('/Tournament/View/485070')).rejects.toThrow(RequestLimitError);
 	});
 
 	it('names the sign-in page when a request is bounced to it', async () => {

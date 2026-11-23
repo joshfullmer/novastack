@@ -28,6 +28,37 @@ export const idsOf = (pending: Pending): number[] =>
 		.map(Number)
 		.sort((a, b) => a - b);
 
+const HOUR = 3_600_000;
+/** No id is looked at again sooner than this: most refusals are events that will never have lists. */
+export const RECHECK_HOURS = 6;
+/**
+ * An id still not ready this long after it was first tried is assumed never to be: it is no longer
+ * retried. It stays in the file, or `--discover` would offer the event again and start the wait over.
+ */
+export const GIVE_UP_DAYS = 7;
+
+export const nextTry = (entry: PendingEntry): Date =>
+	new Date(new Date(entry.lastTried).getTime() + RECHECK_HOURS * HOUR);
+
+export const giveUpAt = (entry: PendingEntry): Date =>
+	new Date(new Date(entry.firstTried).getTime() + GIVE_UP_DAYS * 24 * HOUR);
+
+/** Ids that have waited out `GIVE_UP_DAYS`: kept, not retried. */
+export const lapsed = (pending: Pending, now: Date): number[] =>
+	idsOf(pending).filter((id) => giveUpAt(pending[String(id)]) <= now);
+
+/**
+ * The ids to try at `now`, least recently tried first: not looked at in the last `RECHECK_HOURS`, not
+ * `lapsed`. A run is capped in requests, so a long list never finishes in one; numeric order would
+ * retry the same low ids every time and never reach the rest.
+ */
+export const dueFirst = (pending: Pending, now: Date): number[] =>
+	idsOf(pending)
+		.filter((id) => nextTry(pending[String(id)]) <= now && giveUpAt(pending[String(id)]) > now)
+		.sort(
+			(a, b) => pending[String(a)].lastTried.localeCompare(pending[String(b)].lastTried) || a - b
+		);
+
 /** The file's text → what it holds. Empty or absent text is an empty list; anything else must be valid. */
 export function parsePending(text: string | null): Pending {
 	if (text === null || text.trim() === '') return {};
@@ -81,7 +112,13 @@ export function describePending(pending: Pending, now: Date): string[] {
 			`${id}  ${entry.name ?? '(name unknown)'}\n` +
 			`      ${entry.reason}\n` +
 			`      ${entry.attempts} ${entry.attempts === 1 ? 'try' : 'tries'}, ` +
-			`first ${waiting === 0 ? 'today' : `${waiting}d ago`}`
+			`first ${waiting === 0 ? 'today' : `${waiting}d ago`}, ` +
+			(giveUpAt(entry) <= now
+				? `gave up ${giveUpAt(entry).toISOString().slice(0, 10)}`
+				: (nextTry(entry) <= now
+						? 'due now'
+						: `next ${nextTry(entry).toISOString().slice(0, 16)}Z`) +
+					`, gives up ${giveUpAt(entry).toISOString().slice(0, 10)}`)
 		);
 	});
 }

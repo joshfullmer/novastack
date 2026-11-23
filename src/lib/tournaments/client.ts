@@ -71,6 +71,14 @@ export function dataTablesBody(
 	return body;
 }
 
+/** The request ceiling was reached; nothing past it will be sent, so a caller should stop, not move on. */
+export class RequestLimitError extends Error {
+	constructor(requests: number, line: string) {
+		super(`Stopped after ${requests} requests (--max-requests); ${line} not sent.`);
+		this.name = 'RequestLimitError';
+	}
+}
+
 export class MeleeClient {
 	requests = 0;
 	readonly #delayMs: number;
@@ -98,9 +106,7 @@ export class MeleeClient {
 	 */
 	async pace(line: string): Promise<void> {
 		if (this.requests >= this.#max) {
-			throw new Error(
-				`Stopped after ${this.requests} requests (--max-requests); ${line} not sent.`
-			);
+			throw new RequestLimitError(this.requests, line);
 		}
 		if (this.#lastAt !== null) {
 			const wait = this.#delayMs - (this.#now() - this.#lastAt);

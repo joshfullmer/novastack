@@ -171,6 +171,11 @@ describe('where new events end', () => {
 		expect(settled([event(3), event(2, 'Ended', 1)], { ...held, minPlayers: 5 })).toBe(true);
 	});
 
+	it('is a page that reaches an event already waiting in the pending list', () => {
+		expect(settled([event(5), event(4)], { ...none, waiting: new Set([4, 5]) })).toBe(true);
+		expect(settled([event(6), event(5)], { ...none, waiting: new Set([5]) })).toBe(false);
+	});
+
 	it('is not a page of events in progress or too small, which proves nothing', () => {
 		expect(
 			settled([event(9, 'In Progress'), event(8, 'Ended', 1)], { ...none, minPlayers: 5 })
