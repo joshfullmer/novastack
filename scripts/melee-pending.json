@@ -1126,6 +1126,13 @@
 		"lastTried": "2026-11-23T14:55:47.955Z",
 		"attempts": 2
 	},
+	"512421": {
+		"name": "Night City Brawl von Allerlei Spielerei",
+		"reason": "512421 has no decklists (none of its 8 players has one up), so it isn't ingested. Lists can appear after an event ends; try again later.",
+		"firstTried": "2026-11-23T22:36:51.579Z",
+		"lastTried": "2026-11-23T22:36:51.579Z",
+		"attempts": 1
+	},
 	"512460": {
 		"name": "Night City Brawl - Cyberpunk TCG - Monday November 23rd",
 		"reason": "512460 has no decklists (none of its 6 players has one up), so it isn't ingested. Lists can appear after an event ends; try again later.",
@@ -1152,6 +1159,97 @@
 		"reason": "Round 3 has results but Melee has no standings for it, and the final ranking can't be read from them (it is not a playoff round). Try again once the organizer publishes them.",
 		"firstTried": "2026-11-23T14:58:28.952Z",
 		"lastTried": "2026-11-23T14:58:28.952Z",
+		"attempts": 1
+	},
+	"512520": {
+		"name": "lyktan brawl",
+		"reason": "512520 has no decklists (none of its 6 players has one up), so it isn't ingested. Lists can appear after an event ends; try again later.",
+		"firstTried": "2026-11-23T19:39:07.058Z",
+		"lastTried": "2026-11-23T19:39:07.058Z",
+		"attempts": 1
+	},
+	"512552": {
+		"name": "Tactics PH Night City Brawl",
+		"reason": "512552 has no decklists (none of its 6 players has one up), so it isn't ingested. Lists can appear after an event ends; try again later.",
+		"firstTried": "2026-11-23T22:36:43.568Z",
+		"lastTried": "2026-11-23T22:36:43.568Z",
+		"attempts": 1
+	},
+	"512640": {
+		"name": "BM NIGHTS Wednesay",
+		"reason": "512640 has no decklists (none of its 9 players has one up), so it isn't ingested. Lists can appear after an event ends; try again later.",
+		"firstTried": "2026-11-23T19:39:00.050Z",
+		"lastTried": "2026-11-23T19:39:00.050Z",
+		"attempts": 1
+	},
+	"512646": {
+		"name": "Cyberpunk weekly",
+		"reason": "512646 has no decklists (none of its 6 players has one up), so it isn't ingested. Lists can appear after an event ends; try again later.",
+		"firstTried": "2026-11-23T22:36:37.565Z",
+		"lastTried": "2026-11-23T22:36:37.565Z",
+		"attempts": 1
+	},
+	"512674": {
+		"name": "Stajnia Gier Night City Brawl",
+		"reason": "512674 has no decklists (none of its 23 players has one up), so it isn't ingested. Lists can appear after an event ends; try again later.",
+		"firstTried": "2026-11-23T19:38:52.049Z",
+		"lastTried": "2026-11-23T19:38:52.049Z",
+		"attempts": 1
+	},
+	"512698": {
+		"name": "Nicht City Brawl",
+		"reason": "512698 has no decklists (none of its 4 players has one up), so it isn't ingested. Lists can appear after an event ends; try again later.",
+		"firstTried": "2026-11-23T22:36:30.532Z",
+		"lastTried": "2026-11-23T22:36:30.532Z",
+		"attempts": 1
+	},
+	"512733": {
+		"name": "Night City Brawl",
+		"reason": "512733 has no decklists (none of its 6 players has one up), so it isn't ingested. Lists can appear after an event ends; try again later.",
+		"firstTried": "2026-11-23T19:38:36.489Z",
+		"lastTried": "2026-11-23T19:38:36.489Z",
+		"attempts": 1
+	},
+	"512755": {
+		"name": "Spieleburg Kassel Cyberpunk Night City Brawl",
+		"reason": "512755 has no decklists (none of its 3 players has one up), so it isn't ingested. Lists can appear after an event ends; try again later.",
+		"firstTried": "2026-11-23T19:38:29.980Z",
+		"lastTried": "2026-11-23T19:38:29.980Z",
+		"attempts": 1
+	},
+	"512758": {
+		"name": "Brawl Cyberpunk TTG",
+		"reason": "512758 has no decklists (none of its 3 players has one up), so it isn't ingested. Lists can appear after an event ends; try again later.",
+		"firstTried": "2026-11-23T22:36:25.531Z",
+		"lastTried": "2026-11-23T22:36:25.531Z",
+		"attempts": 1
+	},
+	"512759": {
+		"name": "LOCAL CYBERPUNK",
+		"reason": "512759 has no decklists (none of its 5 players has one up), so it isn't ingested. Lists can appear after an event ends; try again later.",
+		"firstTried": "2026-11-23T19:38:24.978Z",
+		"lastTried": "2026-11-23T19:38:24.978Z",
+		"attempts": 1
+	},
+	"512770": {
+		"name": "Night City Brawl Event Husum",
+		"reason": "512770 has no decklists (none of its 4 players has one up), so it isn't ingested. Lists can appear after an event ends; try again later.",
+		"firstTried": "2026-11-23T19:38:18.475Z",
+		"lastTried": "2026-11-23T19:38:18.475Z",
+		"attempts": 1
+	},
+	"512795": {
+		"name": "CyberNoob Brawler",
+		"reason": "512795 has no decklists (none of its 10 players has one up), so it isn't ingested. Lists can appear after an event ends; try again later.",
+		"firstTried": "2026-11-23T22:36:21.028Z",
+		"lastTried": "2026-11-23T22:36:21.028Z",
+		"attempts": 1
+	},
+	"512913": {
+		"name": "Night City Brawl - Cyberpunk TCG #3,7",
+		"reason": "512913 has no decklists (none of its 9 players has one up), so it isn't ingested. Lists can appear after an event ends; try again later.",
+		"firstTried": "2026-11-23T22:36:13.019Z",
+		"lastTried": "2026-11-23T22:36:13.019Z",
 		"attempts": 1
 	}
 }
