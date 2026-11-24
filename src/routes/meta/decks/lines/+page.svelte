@@ -28,7 +28,9 @@
 							class="flex-1"
 						/>{/each}
 				</div>
-				<div class="min-w-0 flex-1">
+				<!-- `basis-48`: a wrapping row only wraps an item whose basis doesn't fit, and `min-w-0 flex-1` alone has none, so
+				     it shrank to a sliver beside the art instead of dropping beneath it. -->
+				<div class="min-w-0 flex-1 basis-48">
 					<h2 class="text-sm font-semibold text-bright">{legendNames(shelf.legends)}</h2>
 					<p class="font-mono text-[11px] text-muted">
 						{shelf.deckCount} deck{shelf.deckCount === 1 ? '' : 's'} · best finish {shelf.bestRank}

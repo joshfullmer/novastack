@@ -178,8 +178,10 @@
 				{filtered ? 'No events match those filters.' : 'No tournaments have been added yet.'}
 			</p>
 		{:else if view.value === 'list'}
+			<!-- Five fixed columns need ~580px, so below `md` each event is a stacked row instead and these
+			     labels have nothing to label. -->
 			<div
-				class="mt-3 grid grid-cols-[6.5rem_1fr_3rem_3rem_16rem] gap-x-4 px-2 font-mono text-[11px] tracking-wide text-muted uppercase"
+				class="mt-3 hidden grid-cols-[6.5rem_1fr_3rem_3rem_16rem] gap-x-4 px-2 font-mono text-[11px] tracking-wide text-muted uppercase md:grid"
 				aria-hidden="true"
 			>
 				<span>Date</span><span>Event</span><span class="text-right">Players</span><span
@@ -193,21 +195,34 @@
 					<li>
 						<a
 							href="/meta/tournaments/{event.id}"
-							class="grid grid-cols-[6.5rem_1fr_3rem_3rem_16rem] items-center gap-x-4 rounded px-2 py-2.5 hover:bg-surface"
+							class="grid items-center gap-x-4 gap-y-1 rounded px-2 py-3 hover:bg-surface md:grid-cols-[6.5rem_1fr_3rem_3rem_16rem] md:py-2.5"
 						>
-							<span class="font-mono text-xs text-muted">{formatDate(event.startsAt)}</span>
+							<!-- Date and counts share a line on a phone; from `md` the wrapper steps aside and the date is
+							     the first column. -->
+							<span class="flex items-baseline justify-between gap-3 md:contents">
+								<span class="font-mono text-xs text-muted">{formatDate(event.startsAt)}</span>
+								<span class="font-mono text-[11px] text-muted md:hidden">
+									{event.playerCount} players · {event.deckCount
+										? `${event.deckCount} decks`
+										: 'no decks'}
+								</span>
+							</span>
 							<span class="min-w-0">
-								<span class="block truncate text-bright">{event.name}</span>
+								<span class="line-clamp-2 text-bright md:line-clamp-1">{event.name}</span>
 								<span class="block truncate text-xs text-muted">
 									{#if event.kind !== 'Other'}<span class="text-neon">{event.kind}</span> ·
 									{/if}{wherePlayed(event.organizer, event.venue)} · {event.roundCount} rounds
 								</span>
 							</span>
-							<span class="text-right font-mono text-sm">{event.playerCount}</span>
-							<span class="text-right font-mono text-sm {event.deckCount ? '' : 'text-muted'}">
+							<span class="hidden text-right font-mono text-sm md:block">{event.playerCount}</span>
+							<span
+								class="hidden text-right font-mono text-sm md:block {event.deckCount
+									? ''
+									: 'text-muted'}"
+							>
 								{event.deckCount || '—'}
 							</span>
-							<span class="flex items-center gap-2">
+							<span class="mt-1 flex items-center gap-2 md:mt-0">
 								{#if event.showcase}
 									<span class="flex -space-x-2">
 										{#each event.showcase.legends as slug (slug)}

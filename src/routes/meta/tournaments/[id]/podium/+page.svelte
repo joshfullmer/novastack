@@ -293,7 +293,7 @@
 							<LegendArt {slug} sizes="180px" class="flex-1 shadow-lg" />
 						{/each}
 					{:else}
-						<div class="flex h-40 flex-1 items-center justify-center text-xs text-muted">
+						<div class="flex h-16 flex-1 items-center justify-center text-xs text-muted md:h-40">
 							no deck registered
 						</div>
 					{/if}

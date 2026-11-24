@@ -28,7 +28,11 @@
 	{@const side = who === 'a' ? match.a : match.b}
 	{#if side}
 		{@const legends = legendsOf.get(side.playerId) ?? []}
-		<div class="flex min-w-0 items-center gap-2 {who === 'b' ? 'flex-row-reverse text-right' : ''}">
+		<div
+			class="flex min-w-0 items-center gap-2 {who === 'b'
+				? 'md:flex-row-reverse md:text-right'
+				: ''}"
+		>
 			<span class="flex shrink-0 -space-x-2">
 				{#each legends as slug (slug)}
 					<LegendArt {slug} sizes="40px" class="w-6 ring-1 ring-void" />
@@ -68,11 +72,16 @@
 <div class="mt-5 grid gap-6 lg:grid-cols-[1fr_20rem]">
 	<ul class="space-y-2">
 		{#each matches as match, i (i)}
+			<!-- A phone stacks the two players with their own game score beside each; from `md` they sit either side of
+			     the score. -->
 			<li
-				class="grid grid-cols-[1fr_5rem_1fr] items-center gap-3 rounded-lg border border-edge bg-shell px-4 py-3"
+				class="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-3 gap-y-2 rounded-lg border border-edge bg-shell px-3 py-3 md:grid-cols-[1fr_5rem_1fr] md:px-4"
 			>
 				{@render player(match, 'a')}
-				<span class="text-center font-mono">
+				<span class="font-mono text-lg text-bright md:hidden"
+					>{match.kind === 'bye' ? 'BYE' : match.gamesA}</span
+				>
+				<span class="hidden text-center font-mono md:block">
 					{#if match.kind === 'bye'}
 						<span class="text-xs text-muted">BYE</span>
 					{:else}
@@ -86,6 +95,19 @@
 					{#if match.table}<span class="block text-[10px] text-muted">T{match.table}</span>{/if}
 				</span>
 				{@render player(match, 'b')}
+				<span class="font-mono text-lg text-bright md:hidden"
+					>{match.kind === 'bye' ? '' : match.gamesB}</span
+				>
+				{#if match.table || match.kind === 'draw' || match.draws > 0}
+					<span class="col-span-2 font-mono text-[10px] text-muted md:hidden">
+						{[
+							match.table ? `Table ${match.table}` : '',
+							match.kind === 'draw' ? 'draw' : match.draws > 0 ? `${match.draws} drawn` : ''
+						]
+							.filter(Boolean)
+							.join(' · ')}
+					</span>
+				{/if}
 			</li>
 		{:else}
 			<li class="p-6 text-center text-sm text-muted">No matches recorded for this round.</li>

@@ -35,7 +35,9 @@
 	] as const;
 </script>
 
-<div class="grid gap-6 lg:grid-cols-[16rem_1fr]">
+<!-- `minmax(0, 1fr)`: a bare `grid` on a phone is one auto-sized column, which grows to its widest child (the
+     Legends list) and takes the whole page past the screen with it. -->
+<div class="grid grid-cols-[minmax(0,1fr)] gap-6 lg:grid-cols-[16rem_minmax(0,1fr)]">
 	<aside class="lg:sticky lg:top-20 lg:self-start">
 		<h1 class="sr-only">Card breakdown</h1>
 

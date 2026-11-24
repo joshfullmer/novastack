@@ -40,7 +40,7 @@
 		</aside>
 		<div class="min-w-0 flex-1 {full ? '2xl:flex 2xl:min-h-0 2xl:flex-col' : ''}">
 			<details class="pt-4 lg:hidden">
-				<summary class="cursor-pointer font-mono text-sm text-muted">Meta ▾</summary>
+				<summary class="cursor-pointer font-mono text-sm text-muted">Meta</summary>
 				<div class="mt-3 rounded-lg border border-edge bg-shell p-3">
 					<TournamentsNav period={data.period} periods={data.periods} kinds={data.kinds} />
 				</div>

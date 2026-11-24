@@ -89,10 +89,16 @@
      it. On a page of its own the path sits beside the header, not under it: a row of the path is short. -->
 <div class={compact ? '2xl:flex 2xl:min-h-0 2xl:flex-1 2xl:flex-col' : ''}>
 	<div
-		class={layout === 'page' ? 'grid gap-8 lg:grid-cols-[minmax(0,1fr)_28rem] lg:items-start' : ''}
+		class={layout === 'page'
+			? 'grid grid-cols-[minmax(0,1fr)] gap-8 lg:grid-cols-[minmax(0,1fr)_28rem] lg:items-start'
+			: ''}
 	>
-		<header class="flex items-center gap-4 border-b border-edge pb-4">
-			<div class="flex {compact ? 'w-32' : 'w-64'} shrink-0 gap-1">
+		<!-- The art sits above the name on a phone: beside it, 256px of art leaves the name ~80px and the
+		     whole page is pushed wider than the screen. -->
+		<header
+			class="flex min-w-0 flex-col items-start gap-3 border-b border-edge pb-4 sm:flex-row sm:items-center sm:gap-4"
+		>
+			<div class="flex {compact ? 'w-32' : 'w-56 sm:w-64'} shrink-0 gap-1">
 				{#each deck.legends as slug (slug)}
 					<span
 						class="flex-1"
@@ -105,7 +111,11 @@
 				{/each}
 			</div>
 			<div class="min-w-0">
-				<h1 class="truncate {compact ? 'text-xl' : 'text-2xl'} font-semibold text-bright">
+				<h1
+					class="break-words {compact
+						? 'text-xl'
+						: 'text-2xl'} font-semibold text-bright sm:truncate"
+				>
 					{deck.player}
 				</h1>
 				<p class="text-sm text-muted">
