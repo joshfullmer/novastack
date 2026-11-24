@@ -152,6 +152,18 @@
 	];
 	const isMetaItem = (href: string) =>
 		href === '/meta' ? page.url.pathname === '/meta' : isCurrent(href);
+	/** Collection: its panes, which the rail carries from `lg` up. Below `md` the hamburger lists them under
+	 * "Collection"; between `md` and `lg` there is only the plain link. `/collection` is current only on that
+	 * exact path, as `/meta` is. */
+	const COLLECTION = [
+		{ href: '/collection', label: 'Collection' },
+		{ href: '/collection/add', label: 'Add cards' },
+		{ href: '/collection/binders', label: 'Binders' },
+		{ href: '/collection/wantlists', label: 'Wantlists' },
+		{ href: '/collection/goal', label: 'Collecting goal' }
+	];
+	const isCollectionItem = (href: string) =>
+		href === '/collection' ? page.url.pathname === '/collection' : isCurrent(href);
 	const RULES_URL = 'https://cyberpunktcg.com/comprehensive-rules';
 	const RULES = [
 		{ href: RULES_URL, label: 'Comprehensive Rules', external: true },
@@ -479,8 +491,10 @@
 		<div
 			id="mobile-nav-menu"
 			transition:slide={{ duration: 200 }}
-			class="border-t border-edge/60 bg-void px-4 py-3 md:hidden"
+			class="max-h-[calc(100dvh-3.5rem)] overflow-y-auto overscroll-contain border-t border-edge/60 bg-void px-4 py-3 md:hidden"
 		>
+			<!-- Capped at what is left under the bar, and scrolls inside: the header is sticky, so a menu taller
+			     than a short screen (a phone on its side) would otherwise leave its last items out of reach. -->
 			<ul class="flex flex-col gap-1 text-sm">
 				{#each CARDS as item, index (item.href)}
 					<li>
@@ -524,16 +538,19 @@
 						</li>
 					{/each}
 				{/if}
-				<li>
-					<a
-						href="/collection"
-						onclick={closeMobileMenu}
-						class="block rounded-md px-2 py-2 transition-colors hover:bg-raised"
-						class:text-bright={isCurrent('/collection')}
-						class:text-muted={!isCurrent('/collection')}
-						aria-current={isCurrent('/collection') ? 'page' : undefined}>Collection</a
-					>
-				</li>
+				{#each COLLECTION as item, index (item.href)}
+					<li>
+						<a
+							href={item.href}
+							onclick={closeMobileMenu}
+							class="block rounded-md px-2 py-2 transition-colors hover:bg-raised"
+							class:pl-6={index > 0}
+							class:text-bright={isCollectionItem(item.href)}
+							class:text-muted={!isCollectionItem(item.href)}
+							aria-current={isCollectionItem(item.href) ? 'page' : undefined}>{item.label}</a
+						>
+					</li>
+				{/each}
 
 				<li>
 					<a
