@@ -119,7 +119,7 @@ export type DeckDetail = DeckListRow & {
 
 /** How many Legend lines the shelf view draws, and how many decks of each. */
 export const SHELF_LINES = 12;
-export const SHELF_DECKS = 12;
+export const SHELF_DECKS = 5;
 
 /** A shelf of decks sharing a Legend line: a sample of them, and the line's record over all of them. */
 export type LineShelf = {
@@ -131,6 +131,9 @@ export type LineShelf = {
 	deckCount: number;
 	/** The best finish any of its decks had (1 is a win). */
 	bestRank: number;
+	/** Of every deck, how many finished in the top eight, and how many won their event. */
+	top8: number;
+	wins: number;
 	/** Match win rate with a draw as half; null below `MIN_DECKS` decks or when nothing was played. */
 	winRate: number | null;
 };
@@ -149,6 +152,8 @@ export function buildShelf(
 		),
 		deckCount: row.decks,
 		bestRank: row.best,
+		top8: row.top8,
+		wins: row.wins,
 		winRate: row.decks >= MIN_DECKS && played ? (row.matchWins + row.matchDraws / 2) / played : null
 	};
 }

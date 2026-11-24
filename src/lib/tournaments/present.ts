@@ -87,3 +87,13 @@ export function wherePlayed(organizer: string, venue: string | null): string {
 	if (o.includes(v)) return organizer;
 	return `${organizer} · ${venue}`;
 }
+
+/** How a win rate reads at a glance: green from 55%, red up to 45%, plain between, muted when there is none. */
+export const winTone = (rate: number | null) =>
+	rate === null
+		? 'text-muted'
+		: rate >= 0.55
+			? 'text-card-green'
+			: rate <= 0.45
+				? 'text-card-red'
+				: 'text-body';

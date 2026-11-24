@@ -14,7 +14,7 @@
 		type Tier
 	} from '#lib/tournaments/meta.js';
 	import { periodParams } from '#lib/tournaments/period.js';
-	import { legendNames, RAM_PER_LEGEND } from '#lib/tournaments/present.js';
+	import { legendNames, RAM_PER_LEGEND, winTone } from '#lib/tournaments/present.js';
 	import { href } from '#lib/tournaments/url.js';
 
 	let { data } = $props();
@@ -77,16 +77,6 @@
 	);
 
 	const percent = (n: number | null) => (n === null ? '—' : `${Math.round(n * 100)}%`);
-	const tone = (rate: number | null) =>
-		cn(
-			rate === null
-				? 'text-muted'
-				: rate >= 0.55
-					? 'text-card-green'
-					: rate <= 0.45
-						? 'text-card-red'
-						: 'text-body'
-		);
 	/**
 	 * Six fixed columns need ~25rem beside the tier's rail, which a phone doesn't have. Below `md` a row
 	 * is two lines instead: who and their win rate, then the share bar, then the counts as one line.
@@ -203,7 +193,7 @@
 								</span>
 								{#if row.decks >= MIN_DECKS}
 									<span
-										class="col-start-2 row-start-1 text-right font-mono text-base md:col-auto md:row-auto md:text-sm {tone(
+										class="col-start-2 row-start-1 text-right font-mono text-base md:col-auto md:row-auto md:text-sm {winTone(
 											row.winRate
 										)}"
 										title="{row.matches} matches"

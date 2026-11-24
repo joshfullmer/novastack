@@ -287,6 +287,10 @@ describe('buildShelf', () => {
 		expect(buildShelf(line(4), []).winRate).toBeNull();
 	});
 
+	it("carries the line's top 8 and win counts over every deck", () => {
+		expect(buildShelf({ ...line(40), top8: 11, wins: 4 }, [])).toMatchObject({ top8: 11, wins: 4 });
+	});
+
 	it('reports the line, not the sample, for its size and best finish', () => {
 		expect(buildShelf(line(40), [])).toMatchObject({ deckCount: 40, bestRank: 3, decks: [] });
 	});
