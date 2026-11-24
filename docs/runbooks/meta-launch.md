@@ -32,7 +32,7 @@ because linking and indexing are different risks:
 | `public` | yes         | no        | yes        |
 
 The seven `/meta` pages currently hard-code `noindex`; they read the switch instead. `/meta/tournaments/add`
-stays `noindex` and out of the sitemap at every stage. At `public` the sitemap gains `/meta`,
+is served by `vite dev` only (a 404 on the deployed site, whatever the stage), so it is never indexed or in the sitemap. At `public` the sitemap gains `/meta`,
 `/meta/matchups`, `/meta/cards`, `/meta/decks` and `/meta/tournaments` (not individual events or decks: they
 live in D1 and the sitemap is built at build time). Rollback is setting the stage back.
 

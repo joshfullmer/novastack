@@ -10,7 +10,8 @@
  * | `linked` | yes         | yes       | no             |
  * | `public` | yes         | no        | yes            |
  *
- * `/meta/tournaments/add` (the bookmarklet page) is `noindex` at every stage and never in the sitemap.
+ * `/meta/tournaments/add` (the bookmarklet page) is outside the stages: only `vite dev` serves it, and it is a 404
+ * on the deployed site.
  * Pulling it back is setting this back.
  */
 export type MetaStage = 'dark' | 'linked' | 'public';

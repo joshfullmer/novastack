@@ -380,7 +380,7 @@ entities.
 
 ### 4.3.1 Finding the id
 
-The command takes a bare Melee id, so `/meta/tournaments/add` (unlisted, `noindex`) hosts a bookmarklet that,
+The command takes a bare Melee id, so `/meta/tournaments/add` (served by `vite dev` only; a 404 on the deployed site) hosts a bookmarklet that,
 clicked on a `melee.gg/Tournament/View/<id>` page, copies `pnpm melee <id>`; clicked on any other
 melee.gg page, such as the signed-in `/Decklists` search (its rows link `td.TournamentName-column a`
 to `/Tournament/View/<id>`), it copies one command for every distinct event linked, in page order. It
@@ -627,7 +627,7 @@ read-only, dynamic and `noindex`:
   to `/meta/…`, with no redirects, because no page was public or linked yet. `/meta` is the tier list;
   `/meta/matchups`, `/meta/cards` (the card breakdown) and `/meta/cards/[slug]`; `/meta/decks`,
   `/meta/decks/lines`, `/meta/decks/[guid]`; and the event list at `/meta/tournaments` with each event at
-  `/meta/tournaments/[id]` (`/podium`, `/rounds`) and the bookmarklet page at `/meta/tournaments/add`. The
+  `/meta/tournaments/[id]` (`/podium`, `/rounds`) and the bookmarklet page at `/meta/tournaments/add` (dev server only). The
   sidebar leads with Meta, with Tournaments second and Decks after it. `/meta` is the public-read prefix and the dynamic
   prefix in the hooks. The site header links to Meta since 2026-11-19 (`META_STAGE` is `linked`:
   a link with a menu after Decks; the pages stay `noindex` and out of the sitemap until `public`;

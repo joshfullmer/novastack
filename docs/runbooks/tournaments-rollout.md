@@ -83,7 +83,7 @@ pnpm exec wrangler d1 execute novastack-decks --remote --command \
   difference, `pnpm melee --promote` to apply it. Ids already in the database are
   skipped, so a pasted batch is safe; add `--force` to fetch and rewrite one anyway (a repair, or decks
   that arrived late). The id is the number in
-  `melee.gg/Tournament/View/<id>`; `/meta/tournaments/add` hosts a bookmarklet that copies the command from
+  `melee.gg/Tournament/View/<id>`; `/meta/tournaments/add` (local dev server only) hosts a bookmarklet that copies the command from
   that page, or from a `/Decklists` search page, where it copies one command for every event listed
   (`src/lib/tournaments/bookmarklet.ts`). It only reads the page and writes the clipboard.
   Or let the job find them: `pnpm melee --discover [--search words] [--pages N] [--min-players N]
