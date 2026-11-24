@@ -27,12 +27,13 @@ import {
 	commandFor,
 	eventLines,
 	openSearch,
+	PAGE_SIZE,
 	settled,
 	sift,
 	walk,
 	type Found
 } from '../src/lib/tournaments/discover.ts';
-import { Refusal, ingestTournament } from '../src/lib/tournaments/ingest.ts';
+import { Refusal, SkipEvent, ingestTournament } from '../src/lib/tournaments/ingest.ts';
 import {
 	OWNED_TABLES,
 	batchPlayersQuery,
@@ -63,6 +64,14 @@ import {
 	serializePending,
 	type Pending
 } from '../src/lib/tournaments/pending.ts';
+import {
+	parseSkipped,
+	serializeSkipped,
+	skip,
+	skippedIds,
+	unskip,
+	type Skipped
+} from '../src/lib/tournaments/skipped.ts';
 
 const CARDS_PATH = path.join('src', 'lib', 'cards', 'cards.json');
 
@@ -77,6 +86,17 @@ async function loadPending(): Promise<Pending> {
 		throw error;
 	});
 	return parsePending(text);
+}
+
+/** Events skipped for what they are (Sealed has no decklists), so no run looks at them twice. */
+const SKIPPED_PATH = process.env.MELEE_SKIPPED ?? path.join('scripts', 'melee-skipped.json');
+
+async function loadSkipped(): Promise<Skipped> {
+	const text = await readFile(SKIPPED_PATH, 'utf8').catch((error: NodeJS.ErrnoException) => {
+		if (error.code === 'ENOENT') return null;
+		throw error;
+	});
+	return parseSkipped(text);
 }
 
 async function loadCards(): Promise<readonly Card[]> {
@@ -217,9 +237,16 @@ async function promote(args: { ids: number[]; check: boolean; yes: boolean }): P
  */
 async function discoverNew(
 	client: MeleeClient,
-	args: { search: string; pages: number; minPlayers: number; since: string | null },
+	args: {
+		search: string;
+		pages: number;
+		deep: boolean;
+		minPlayers: number;
+		since: string | null;
+	},
 	targets: readonly Target[],
-	waiting: Pending
+	waiting: Pending,
+	skipped: Skipped
 ): Promise<Found[]> {
 	// Known means every database being written holds it: one that lacks it still wants the event.
 	const heldByAll = (ids: readonly number[]) => {
@@ -236,29 +263,44 @@ async function discoverNew(
 	};
 
 	const stored = new Set<number>();
-	const filters = { stored, waiting: new Set(idsOf(waiting)), ...args };
+	const filters = {
+		stored,
+		waiting: new Set(idsOf(waiting)),
+		skipped: new Set(skippedIds(skipped)),
+		...args
+	};
 	let stoppedAt: number | null = null;
 	const search = await openSearch(client, { search: args.search });
 	const found = await walk(search, args.pages, (number, page) => {
 		for (const id of heldByAll(page.found.map((event) => event.id))) stored.add(id);
 		say(paint.dim(`  page ${number}: ${page.found.length} events`));
-		if (settled(page.found, filters)) stoppedAt = number;
+		if (!args.deep && settled(page.found, filters)) stoppedAt = number;
 		return stoppedAt !== null;
 	}).finally(() => search.close());
 
-	const { candidates, known, notEnded, waiting: waits, older, small } = sift(found, filters);
+	const {
+		candidates,
+		known,
+		notEnded,
+		waiting: waits,
+		skipped: skips,
+		older,
+		small
+	} = sift(found, filters);
 	const into = targets.map(targetName).join(' and ');
 	say();
 	say(
 		paint.dim(
-			stoppedAt === null
-				? `Read ${args.pages} pages without reaching an event already held (--pages reads more).`
-				: `Stopped at page ${stoppedAt}: events from there on are already held or waiting, or older than --since.`
+			args.deep
+				? `Read every page (${Math.ceil(found.length / PAGE_SIZE)}).`
+				: stoppedAt === null
+					? `Read ${args.pages} pages without reaching an event already held (--pages reads more, --deep reads all).`
+					: `Stopped at page ${stoppedAt}: events from there on are already held, waiting or skipped, or older than --since.`
 		)
 	);
 	say(
 		paint.dim(
-			`${found.length} events read · ${known} already in ${into} · ${notEnded.length} not ended · ${waits} waiting · ${older} before --since · ${small} under ${args.minPlayers} players`
+			`${found.length} events read · ${known} already in ${into} · ${notEnded.length} not ended · ${waits} waiting · ${skips} skipped · ${older} before --since · ${small} under ${args.minPlayers} players`
 		)
 	);
 	if (notEnded.length > 0) {
@@ -293,21 +335,30 @@ async function main(): Promise<number> {
 	if (args.promote) return promote(args);
 	if (args.list || args.forget) {
 		const waiting = await loadPending();
+		const skipped = await loadSkipped();
 		if (args.list) {
 			const lines = describePending(waiting, new Date());
 			say(lines.length === 0 ? 'Nothing is waiting.' : lines.join('\n'));
+			if (skippedIds(skipped).length > 0) {
+				say(paint.dim(`\n${skippedIds(skipped).length} skipped for good (${SKIPPED_PATH}).`));
+			}
 			return 0;
 		}
 		const next = forget(waiting, args.ids);
+		const unskipped = unskip(skipped, args.ids);
 		await writeFile(PENDING_PATH, serializePending(next));
+		await writeFile(SKIPPED_PATH, serializeSkipped(unskipped));
+		const gone = idsOf(waiting).length - idsOf(next).length;
+		const freed = skippedIds(skipped).length - skippedIds(unskipped).length;
 		say(
-			`Forgot ${idsOf(waiting).length - idsOf(next).length} of ${args.ids.length}; ${idsOf(next).length} still waiting.`
+			`Forgot ${gone} waiting and ${freed} skipped of ${args.ids.length}; ${idsOf(next).length} still waiting.`
 		);
 		return 0;
 	}
 	const targets = targetsFor(args);
 	const cards = await loadCards();
 	let waiting = await loadPending();
+	let skipped = await loadSkipped();
 	const client = new MeleeClient({
 		delayMs: process.env.MELEE_DELAY_MS ? Number(process.env.MELEE_DELAY_MS) : undefined,
 		cookie: process.env.MELEE_COOKIE,
@@ -326,7 +377,7 @@ async function main(): Promise<number> {
 		return 0;
 	}
 	if (args.discover) {
-		const candidates = await discoverNew(client, args, targets, waiting);
+		const candidates = await discoverNew(client, args, targets, waiting, skipped);
 		if (!args.ingest) {
 			if (candidates.length > 0) say(`\n${commandFor(candidates)}`);
 			return 0;
@@ -376,6 +427,7 @@ async function main(): Promise<number> {
 		// Whether this id is finished with: written everywhere it was wanted (or already there).
 		let done = !args.check;
 		let refusal: Refusal | undefined;
+		let skipping: SkipEvent | undefined;
 		const wanting = targets.filter((target) => !stored.get(target)?.has(id));
 		for (const target of targets) {
 			if (!wanting.includes(target)) {
@@ -465,20 +517,36 @@ async function main(): Promise<number> {
 				say(paint.dim(`\nRun again to carry on: --pending tries the longest-waiting ids first.`));
 				return 2;
 			}
-			if (error instanceof Refusal) {
-				say(paint.change(`  ○ ${error.message}`));
-				refusal = error;
+			if (error instanceof SkipEvent) {
+				// An answer, not a failure: the event is what it is, so no exit code is raised.
+				say(paint.dim(`  ○ ${error.message}`));
+				skipping = error;
 			} else {
-				say(paint.remove(`  ✗ ${error instanceof Error ? error.message : String(error)}`));
-				done = false;
+				if (error instanceof Refusal) {
+					say(paint.change(`  ○ ${error.message}`));
+					refusal = error;
+				} else {
+					say(paint.remove(`  ✗ ${error instanceof Error ? error.message : String(error)}`));
+					done = false;
+				}
+				raise(2);
 			}
-			raise(2);
 		}
 
 		// Not ready is remembered, so the id is only ever looked up once; written is forgotten.
 		// `--check` writes nothing, and neither does it touch the list.
 		if (args.check) continue;
-		if (refusal) {
+		if (skipping) {
+			// Skipped for good: kept apart from the waiting list, which is only for "not yet".
+			skipped = skip(
+				skipped,
+				id,
+				{ name: skipping.eventName, format: skipping.format },
+				new Date()
+			);
+			await writeFile(SKIPPED_PATH, serializeSkipped(skipped));
+			await settle(forget(waiting, [id]));
+		} else if (refusal) {
 			await settle(
 				remember(waiting, id, { name: refusal.eventName, reason: refusal.message }, new Date())
 			);
@@ -502,6 +570,7 @@ try {
 	process.exitCode = await main();
 } catch (error) {
 	console.error(error instanceof Error ? error.message : error);
-	console.error(USAGE);
+	// The usage is for a mistyped command; a run that hit its own request ceiling isn't one.
+	if (!(error instanceof RequestLimitError)) console.error(USAGE);
 	process.exitCode = 2;
 }

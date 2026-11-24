@@ -31,6 +31,8 @@ export type Args = {
 	search: string;
 	/** `--discover`: how many pages of eight to read. */
 	pages: number;
+	/** `--discover`: read every page rather than stopping where new events seem to end. */
+	deep: boolean;
 	/** `--discover`: skip events with fewer players. */
 	minPlayers: number;
 	/** `--discover`: skip events that started before this date (`YYYY-MM-DD`). */
@@ -46,11 +48,11 @@ export const USAGE = `usage: pnpm melee <id> [id …] [--force] [--check] [--rem
        pnpm melee --reparse [--remote]
        pnpm melee --promote [id …] [--check] [--yes]
        pnpm melee --pending [--remote [--yes]]     try again every id that wasn't ready
-       pnpm melee --discover [--search words] [--pages N] [--min-players N] [--since YYYY-MM-DD]
+       pnpm melee --discover [--search words] [--pages N | --deep] [--min-players N] [--since YYYY-MM-DD]
                   [--ingest [--check] [--remote [--yes]]]
                                                    list tournaments Melee has that we don't, or ingest them
        pnpm melee --list                           which ids are waiting, and why
-       pnpm melee --forget <id> [id …]             stop waiting for those
+       pnpm melee --forget <id> [id …]             stop waiting for those, or skipping them
   Writes the LOCAL database; --remote writes PRODUCTION as well. A database that already has an id
   skips it unless --force.`;
 
@@ -72,6 +74,7 @@ export function parseCli(argv: readonly string[]): Args {
 			discover: { type: 'boolean', default: false },
 			search: { type: 'string' },
 			pages: { type: 'string' },
+			deep: { type: 'boolean', default: false },
 			'min-players': { type: 'string' },
 			since: { type: 'string' },
 			ingest: { type: 'boolean', default: false },
@@ -105,19 +108,23 @@ export function parseCli(argv: readonly string[]): Args {
 		}
 		return number;
 	};
-	const pages = whole('pages', values.pages, 10, 1);
+	if (values.deep && values.pages !== undefined) {
+		throw new Error('--deep reads every page; it takes no --pages.');
+	}
+	const pages = values.deep ? Infinity : whole('pages', values.pages, 10, 1);
 	const minPlayers = whole('min-players', values['min-players'], 0, 0);
 	const discover = values.discover;
 	if (
 		!discover &&
 		(values.search !== undefined ||
 			values.pages ||
+			values.deep ||
 			values['min-players'] ||
 			values.since ||
 			values.ingest)
 	) {
 		throw new Error(
-			'--search, --pages, --min-players, --since and --ingest only go with --discover.'
+			'--search, --pages, --deep, --min-players, --since and --ingest only go with --discover.'
 		);
 	}
 	const since = values.since ?? null;
@@ -192,6 +199,7 @@ export function parseCli(argv: readonly string[]): Args {
 		discover,
 		search: values.search?.trim() ?? '',
 		pages,
+		deep: values.deep,
 		minPlayers,
 		since,
 		ingest: values.ingest,

@@ -40,6 +40,27 @@ export class Refusal extends Error {
 	}
 }
 
+/**
+ * An event Melee's own format says has no constructed lists to read, so nothing else is fetched for it.
+ * Measured: none of 24 Sealed events had a single list on its standings. Other formats still ingest
+ * whenever they have lists; only this one is turned away on the format alone.
+ */
+const FORMATS_WITHOUT_LISTS: ReadonlySet<string> = new Set(['Sealed']);
+
+export class SkipEvent extends Error {
+	/** Melee's name for the event and its format, so what was skipped is readable. */
+	readonly eventName: string | null;
+	readonly format: string;
+
+	// No parameter property: `node` strips types but doesn't compile them (`scripts/melee.ts`).
+	constructor(message: string, eventName: string | null, format: string) {
+		super(message);
+		this.name = 'SkipEvent';
+		this.eventName = eventName;
+		this.format = format;
+	}
+}
+
 const PAGE = 500;
 const STANDINGS_COLUMNS = [
 	'Rank',
@@ -101,6 +122,14 @@ export async function ingestTournament(
 	);
 	if (details.ID !== id)
 		throw new Error(`Asked for tournament ${id}, Melee answered ${details.ID}.`);
+	// Before anything else is fetched: for these events this one request is all the run costs.
+	if (FORMATS_WITHOUT_LISTS.has(details.Format)) {
+		throw new SkipEvent(
+			`${id} is a ${details.Format} event, which has no decklists to read, so it is skipped for good.`,
+			details.Name,
+			details.Format
+		);
+	}
 	if (details.Status !== 'Ended') {
 		throw new Refusal(
 			`${id} is "${details.Status}", not Ended. Try again when it's over.`,

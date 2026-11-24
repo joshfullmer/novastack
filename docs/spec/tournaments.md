@@ -255,7 +255,8 @@ pnpm melee --pending        try again the ids refused as not ready that are due 
 pnpm melee --list           which ids are waiting and why; --forget <id …> stops waiting for some
 pnpm melee --discover       list Melee's ended Cyberpunk events the LOCAL database lacks, newest first, with the
                             `pnpm melee <ids…>` to ingest them: read-only. --search words (tournament names),
-                            --pages N (of eight; default 10), --min-players N, --max-requests N
+                            --pages N (of eight; default 10) or --deep (every page, no early stop: the one-off
+                            backfill; ~1 request a page, so give it a big --max-requests), --min-players N, --max-requests N
 ```
 
 **Local by default; `--remote` is explicit and adds production to local.** Production is only ever written on purpose, after our
@@ -321,9 +322,12 @@ not from our one measured event:
 - **Final standings can show no decklist for a player who has one.** swubase falls back to
   `Player/GetPlayerDetails?id=` (`decklists[]`) and so do we, but only for those rows. In the measured
   event that was 1 of 14 players.
-- **No format gate.** swubase only expects lists for constructed formats; we don't ask. Any event
-  that has lists is ingested, whatever Melee calls its format, and `format` is recorded so pages can
-  filter (§7).
+- **Almost no format gate.** swubase only expects lists for constructed formats; we mostly don't ask.
+  Any event that has lists is ingested, whatever Melee calls its format, and `format` is recorded so
+  pages can filter (§7). The one exception is **Sealed**: none of 24 Sealed beta events measured had a
+  single list on its standings, and refusing them after the details request (1 request, instead of the
+  standings, a request per player, and every round) is what makes a backfill affordable. Such an event
+  is skipped for good (§4.5), not waited on.
 - **Top cut.** Rounds named `Quarterfinals`, `Semifinals`, `Finals` follow the numbered Swiss rounds and
   are **numbered by the order of the round buttons**, not by their names. Round ids and round numbers
   are different things; matches are fetched by id, stored by number.
@@ -392,6 +396,12 @@ after every id, so an interrupted run keeps what it learned. Not recorded: a fai
 unreachable Melee (not "wait", a bug or an outage), and anything under `--check`, which never changes
 state. The file is plain JSON in git, so it follows you between machines; `MELEE_PENDING` points a run at
 another file.
+
+**Skipped for good.** A refusal is "not yet". An event refused for what it is (Sealed) goes to
+`scripts/melee-skipped.json` instead, keyed by id, with its name, format and when it was skipped
+(`MELEE_SKIPPED` points a run at another file). Nothing retries it; `--discover` leaves it out and counts
+it as ground already covered, so no event is looked at twice. A run on an id that was waiting moves it
+here. `pnpm melee <id>` still tries one regardless, and `--forget <id>` clears it from both files.
 
 ### 4.4 Writing to D1
 

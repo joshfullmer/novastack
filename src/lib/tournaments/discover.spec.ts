@@ -117,7 +117,13 @@ const event = (id: number, status = 'Ended', players = 12): Found => ({
 	organizer: null
 });
 
-const none = { stored: new Set<number>(), waiting: new Set<number>(), minPlayers: 0, since: null };
+const none = {
+	stored: new Set<number>(),
+	waiting: new Set<number>(),
+	skipped: new Set<number>(),
+	minPlayers: 0,
+	since: null
+};
 
 describe('which events are candidates', () => {
 	it('keeps ended, new, big-enough events, in the order found', () => {
@@ -133,6 +139,7 @@ describe('which events are candidates', () => {
 			known: 1,
 			notEnded: [event(4, 'In Progress'), event(1, 'Registration')],
 			waiting: 0,
+			skipped: 0,
 			older: 0,
 			small: 1
 		});
@@ -174,6 +181,14 @@ describe('where new events end', () => {
 	it('is a page that reaches an event already waiting in the pending list', () => {
 		expect(settled([event(5), event(4)], { ...none, waiting: new Set([4, 5]) })).toBe(true);
 		expect(settled([event(6), event(5)], { ...none, waiting: new Set([5]) })).toBe(false);
+	});
+
+	it('is a page that reaches an event skipped for good', () => {
+		expect(settled([event(5), event(4)], { ...none, skipped: new Set([4, 5]) })).toBe(true);
+		expect(sift([event(5)], { ...none, skipped: new Set([5]) })).toMatchObject({
+			skipped: 1,
+			candidates: []
+		});
 	});
 
 	it('is not a page of events in progress or too small, which proves nothing', () => {

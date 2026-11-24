@@ -7,7 +7,7 @@ import { describe, expect, it } from 'vitest';
 import { dataset } from '../cards/index.ts';
 import { MeleeClient } from './client.ts';
 import { MeleeSignInError } from './html.ts';
-import { Refusal, ingestTournament } from './ingest.ts';
+import { Refusal, SkipEvent, ingestTournament } from './ingest.ts';
 import { ID, fakeClock, fakeMelee, standings, type Fake } from './testing.ts';
 
 function run(fake: Fake = {}) {
@@ -184,9 +184,15 @@ describe('an event that is not ready', () => {
 		});
 	});
 
-	it('does not gate on format: any event with lists is ingested', async () => {
+	it('does not gate on most formats: any event with lists is ingested', async () => {
 		const { built } = await run({ details: { Format: 'Draft' } }).ingested;
 		expect(built.decks).toHaveLength(13);
+	});
+
+	it('skips a Sealed event after one request, before it reads anything else', async () => {
+		const attempt = run({ details: { Format: 'Sealed' } });
+		await expect(attempt.ingested).rejects.toThrow(SkipEvent);
+		expect(attempt.client.requests).toBe(1);
 	});
 
 	it('does not ingest an event whose only lists are blank', async () => {

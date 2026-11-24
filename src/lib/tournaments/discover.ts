@@ -276,6 +276,8 @@ export type Filters = {
 	stored: ReadonlySet<number>;
 	/** Ids remembered as not ready (`--pending` retries those), which are not candidates either. */
 	waiting: ReadonlySet<number>;
+	/** Ids skipped for good (`skipped.ts`), which are not candidates and count as ground covered. */
+	skipped: ReadonlySet<number>;
 	/** Fewest players an event may have. */
 	minPlayers: number;
 	/** `YYYY-MM-DD`: events that started earlier are left alone; null for no limit. */
@@ -291,6 +293,8 @@ export type Discovery = {
 	notEnded: Found[];
 	/** Ended, not stored, but already remembered as waiting. */
 	waiting: number;
+	/** Ended, not stored, but already skipped for good. */
+	skipped: number;
 	/** Ended but started before `since`. */
 	older: number;
 	/** Ended but under the player floor. */
@@ -303,6 +307,7 @@ export function sift(found: readonly Found[], filters: Filters): Discovery {
 		known: 0,
 		notEnded: [],
 		waiting: 0,
+		skipped: 0,
 		older: 0,
 		small: 0
 	};
@@ -313,6 +318,7 @@ export function sift(found: readonly Found[], filters: Filters): Discovery {
 		if (event.status !== 'Ended') result.notEnded.push(event);
 		else if (filters.stored.has(event.id)) result.known += 1;
 		else if (filters.waiting.has(event.id)) result.waiting += 1;
+		else if (filters.skipped.has(event.id)) result.skipped += 1;
 		else if (filters.since !== null && event.date < filters.since) result.older += 1;
 		else if (event.players < filters.minPlayers) result.small += 1;
 		else result.candidates.push(event);
@@ -323,12 +329,12 @@ export function sift(found: readonly Found[], filters: Filters): Discovery {
 /**
  * Whether a page of results is where new events end. Results run newest first, so the first page with
  * nothing to ingest that shows ground already covered (an event we hold, one already waiting in the
- * pending list, or one before `since`) means every later page is older still. A page of in-progress or tiny events is not such a sign: it
+ * pending list or skipped for good, or one before `since`) means every later page is older still. A page of in-progress or tiny events is not such a sign: it
  * has no candidates but proves nothing, so the walk goes on past it.
  */
 export function settled(page: readonly Found[], filters: Filters): boolean {
-	const { candidates, known, waiting, older } = sift(page, filters);
-	return candidates.length === 0 && (known > 0 || waiting > 0 || older > 0);
+	const { candidates, known, waiting, skipped, older } = sift(page, filters);
+	return candidates.length === 0 && (known > 0 || waiting > 0 || skipped > 0 || older > 0);
 }
 
 /**

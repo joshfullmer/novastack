@@ -17,6 +17,7 @@ describe('pnpm melee arguments', () => {
 			discover: false,
 			search: '',
 			pages: 10,
+			deep: false,
 			minPlayers: 0,
 			since: null,
 			ingest: false,
@@ -101,6 +102,10 @@ describe('pnpm melee arguments', () => {
 		expect(() => parseCli(['1', '--max-requests', '0'])).toThrow(/positive/);
 	});
 
+	it('reads every page with --deep', () => {
+		expect(parseCli(['--discover', '--deep'])).toMatchObject({ deep: true, pages: Infinity });
+	});
+
 	it('discovers on its own, with a search, a page count and a player floor', () => {
 		expect(parseCli(['--discover'])).toMatchObject({
 			discover: true,
@@ -139,6 +144,8 @@ describe('pnpm melee arguments', () => {
 		expect(() => parseCli(['--discover', '--pending'])).toThrow(/each their own run/);
 		expect(() => parseCli(['5', '--search', 'x'])).toThrow(/only go with --discover/);
 		expect(() => parseCli(['--discover', '--pages', '0'])).toThrow(/--pages wants/);
+		expect(() => parseCli(['--discover', '--deep', '--pages', '5'])).toThrow(/takes no --pages/);
+		expect(() => parseCli(['5', '--deep'])).toThrow(/only go with --discover/);
 		expect(() => parseCli(['--discover', '--min-players', 'many'])).toThrow(/--min-players wants/);
 	});
 });
