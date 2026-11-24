@@ -84,11 +84,33 @@ const ResultSchema = v.pipe(
 );
 
 /** One SELECT, as rows. */
+/**
+ * Local D1 (miniflare) now and then answers a query with "internal error", or finds the file busy,
+ * when another `wrangler` or a dev server has it open. It clears on its own, so a read is tried a few
+ * times before it is called a failure; a missing table never clears, so that one is not retried.
+ */
+const TRANSIENT = /internal error|SQLITE_BUSY|database is locked/i;
+const SELECT_ATTEMPTS = 4;
+const pause = (ms: number) => Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, ms);
+
 export function select(target: Target, sql: string): Record<string, unknown>[] {
-	const result = spawnSync('pnpm', [...base(target), '--json', '--command', sql], {
+	let result = spawnSync('pnpm', [...base(target), '--json', '--command', sql], {
 		encoding: 'utf8',
 		maxBuffer: 64 * 1024 * 1024
 	});
+	for (
+		let attempt = 1;
+		result.status !== 0 &&
+		attempt < SELECT_ATTEMPTS &&
+		TRANSIENT.test(`${result.stdout}${result.stderr}`);
+		attempt += 1
+	) {
+		pause(1000 * attempt);
+		result = spawnSync('pnpm', [...base(target), '--json', '--command', sql], {
+			encoding: 'utf8',
+			maxBuffer: 64 * 1024 * 1024
+		});
+	}
 	if (result.status !== 0) {
 		const hint = /no such table/i.test(`${result.stdout}${result.stderr}`)
 			? ` The ${targetName(target)} database has no tournament tables: apply migrations first (pnpm exec wrangler d1 migrations apply DB ${target.remote ? '--remote' : '--local'}).`

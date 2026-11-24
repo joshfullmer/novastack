@@ -279,11 +279,14 @@ async function discoverNew(
 	let stoppedAt: number | null = null;
 	const search = await reconnecting(() => openSearch(client, { search: args.search }));
 	const found = await walk(search, args.pages, (number, page) => {
-		for (const id of heldByAll(page.found.map((event) => event.id))) stored.add(id);
+		// A deep walk never stops early, so it has no use for asking per page (a subprocess each, ~1,700
+		// of them); it asks once, in batches, when the walk is done.
+		if (!args.deep) for (const id of heldByAll(page.found.map((event) => event.id))) stored.add(id);
 		say(paint.dim(`  page ${number}: ${page.found.length} events`));
 		if (!args.deep && settled(page.found, filters)) stoppedAt = number;
 		return stoppedAt !== null;
 	}).finally(() => search.close());
+	if (args.deep) for (const id of heldByAll(found.map((event) => event.id))) stored.add(id);
 
 	const {
 		candidates,
