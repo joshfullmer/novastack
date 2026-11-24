@@ -88,6 +88,15 @@ describe('an event that is not ready', () => {
 		expect(requests.some((line) => line.includes('GetRoundMatches'))).toBe(false);
 	});
 
+	it('refuses, rather than fails, an event page with no rounds at all', async () => {
+		const noRounds = (html: string) =>
+			html.replace(
+				/<(div|ul)[^>]*(standings|pairings)-round-selector-container[^>]*>[\s\S]*?<\/\1>/g,
+				''
+			);
+		await expect(run({ view: noRounds }).ingested).rejects.toThrow(/has no rounds on Melee/);
+	});
+
 	it('refuses an event whose last round has no published standings, saying why', async () => {
 		const unpublished = () => ({ recordsTotal: 0, data: [] });
 		await expect(run({ standings: unpublished }).ingested).rejects.toThrow(

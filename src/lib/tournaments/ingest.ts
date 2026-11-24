@@ -15,7 +15,7 @@ import { checkTournament, reviewDecks } from './assertions.ts';
 import { buildTournament, matchKind, type BuiltTournament } from './build.ts';
 import { dataTablesBody, type MeleeClient } from './client.ts';
 import { formatIdOf, pickDecklist } from './decks.ts';
-import { parseDecklistPage, parseTournamentView, type MeleeRound } from './html.ts';
+import { NoRoundsError, parseDecklistPage, parseTournamentView, type MeleeRound } from './html.ts';
 import { inferFinalStandings } from './infer.ts';
 import { isPlayoffRound } from './rounds.ts';
 import {
@@ -145,7 +145,21 @@ export async function ingestTournament(
 		);
 	}
 
-	const view = parseTournamentView(await client.text(`/Tournament/View/${id}`), id);
+	const page = await client.text(`/Tournament/View/${id}`);
+	let view;
+	try {
+		view = parseTournamentView(page, id);
+	} catch (error) {
+		// Ended, but no round was ever created: nothing to read yet, and nothing a rerun now would change.
+		if (error instanceof NoRoundsError) {
+			throw new Refusal(
+				`${id} has no rounds on Melee (nothing was played or published), so there is nothing to ingest. ` +
+					`Try again once the organizer adds them.`,
+				details.Name
+			);
+		}
+		throw error;
+	}
 	log(`${view.rounds.length} rounds`);
 
 	const standingsOf = (round: MeleeRound | number) =>

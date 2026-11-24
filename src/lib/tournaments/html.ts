@@ -21,6 +21,17 @@ export class MeleeSignInError extends Error {
 	}
 }
 
+/**
+ * An event page with no round buttons at all: it ended with nothing played or published. Its own error,
+ * so a run can say that and wait, rather than call it a failure and look again on every run.
+ */
+export class NoRoundsError extends Error {
+	constructor(where: string) {
+		super(`${where}: no rounds listed.`);
+		this.name = 'NoRoundsError';
+	}
+}
+
 /** A round of a Tournament, in the order the page's buttons list them. */
 export type MeleeRound = {
 	/** 1-based position among the buttons, top cut included — NOT parsed from the name. */
@@ -144,7 +155,7 @@ export function parseTournamentView(html: string, expectedId: number): Tournamen
 	}
 
 	const finalStandingsRoundId = (standings.at(-1) ?? pairings.at(-1))?.meleeRoundId;
-	if (finalStandingsRoundId === undefined) throw new Error(`${where}: no rounds listed.`);
+	if (finalStandingsRoundId === undefined) throw new NoRoundsError(where);
 	return { rounds, finalStandingsRoundId, info: parseTournamentInfo(root) };
 }
 
