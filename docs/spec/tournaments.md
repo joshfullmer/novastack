@@ -321,7 +321,10 @@ not from our one measured event:
   rounds without standings are never inferred (that needs Melee's tiebreakers).
 - **Final standings can show no decklist for a player who has one.** swubase falls back to
   `Player/GetPlayerDetails?id=` (`decklists[]`) and so do we, but only for those rows. In the measured
-  event that was 1 of 14 players.
+  event that was 1 of 14 players. When **no** standing shows a list, only the first 7 players are asked
+  about: if none of them has one either, the event is refused as "no decklists" there and then, without
+  asking about the rest or reading any round (a no-list event otherwise costs a request per player plus
+  every round). A list found along the way, or shown on any standing, goes back to asking about everyone.
 - **Almost no format gate.** swubase only expects lists for constructed formats; we mostly don't ask.
   Any event that has lists is ingested, whatever Melee calls its format, and `format` is recorded so
   pages can filter (§7). The one exception is **Sealed**: none of 24 Sealed beta events measured had a

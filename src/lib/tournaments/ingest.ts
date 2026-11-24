@@ -61,6 +61,14 @@ export class SkipEvent extends Error {
 	}
 }
 
+/**
+ * When no standing shows a list, how many players are asked about (`GetPlayerDetails`) before the event
+ * is turned away without reading its rounds. swubase found a list missing from the standings for 1
+ * player in 14; 7 is the compromise, so an event with nothing is refused for ~7 requests, not one per
+ * player. Any list found along the way, or any shown on the standings, goes back to asking about all.
+ */
+const PLAYERS_ASKED_BEFORE_GIVING_UP = 7;
+
 const PAGE = 500;
 const STANDINGS_COLUMNS = [
 	'Rank',
@@ -251,14 +259,26 @@ export async function ingestTournament(
 	// swubase's fallback: a final standing can show no list for a player who has one, so ask Melee
 	// about that player directly. In the event measured the one such player genuinely had none.
 	const fallbackDecklists = new Map<number, string[]>();
+	const hasOwnList = (standing: MeleeStanding) =>
+		standing.Decklists.some((list) => list.FormatId === formatId);
+	const anyShown = standings.some(hasOwnList);
+	let asked = 0;
 	for (const standing of standings) {
-		if (standing.Decklists.some((list) => list.FormatId === formatId)) continue;
+		if (hasOwnList(standing)) continue;
 		const player = standing.Team.Players[0];
 		const found = await client.json(
 			`/Player/GetPlayerDetails?id=${player.ID}`,
 			MeleePlayerDetailsSchema
 		);
 		if (found.decklists.length > 0) fallbackDecklists.set(player.ID, found.decklists);
+		asked += 1;
+		if (!anyShown && fallbackDecklists.size === 0 && asked >= PLAYERS_ASKED_BEFORE_GIVING_UP) {
+			throw new Refusal(
+				`${id} has no decklists (none of the first ${asked} of its ${standings.length} players has one up), ` +
+					`so it isn't ingested. Lists can appear after an event ends; try again later.`,
+				details.Name
+			);
+		}
 	}
 
 	const matches = [];

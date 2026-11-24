@@ -77,14 +77,15 @@ describe('an event that is not ready', () => {
 		expect(requests).toHaveLength(1);
 	});
 
-	it('does not ingest an event that has no decklists, and says why', async () => {
+	it('does not ingest an event that has no decklists, asking about only 7 players and reading no round', async () => {
 		const noLists = (page: { recordsTotal: number; data: unknown[] }) => ({
 			...page,
 			data: page.data.map((row) => ({ ...(row as object), Decklists: [] }))
 		});
-		await expect(run({ standings: noLists }).ingested).rejects.toThrow(
-			/no decklists \(none of its 14 players has one up\)/
-		);
+		const { requests, ingested } = run({ standings: noLists });
+		await expect(ingested).rejects.toThrow(/no decklists \(none of the first 7 of its 14 players/);
+		expect(requests.filter((line) => line.includes('GetPlayerDetails'))).toHaveLength(7);
+		expect(requests.some((line) => line.includes('GetRoundMatches'))).toBe(false);
 	});
 
 	it('refuses an event whose last round has no published standings, saying why', async () => {
@@ -193,6 +194,19 @@ describe('an event that is not ready', () => {
 		const attempt = run({ details: { Format: 'Sealed' } });
 		await expect(attempt.ingested).rejects.toThrow(SkipEvent);
 		expect(attempt.client.requests).toBe(1);
+	});
+
+	it('keeps asking about everyone once a player turns out to have a list', async () => {
+		const none = (page: { recordsTotal: number; data: unknown[] }) => ({
+			...page,
+			data: page.data.map((row) => ({ ...(row as object), Decklists: [] }))
+		});
+		const { requests, ingested } = run({
+			standings: none,
+			player: { decklists: [{ id: 'fallback-guid' }] }
+		});
+		await ingested;
+		expect(requests.filter((line) => line.includes('GetPlayerDetails'))).toHaveLength(14);
 	});
 
 	it('does not ingest an event whose only lists are blank', async () => {
