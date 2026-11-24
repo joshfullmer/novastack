@@ -100,6 +100,19 @@ async function loadSkipped(): Promise<Skipped> {
 	return parseSkipped(text);
 }
 
+/** SQLite refuses one statement past a size (`SQLITE_TOOBIG`); a backfill asks about thousands of ids. */
+const ID_BATCH = 500;
+
+/** Which of `ids` this database already holds, asked a batch at a time. */
+function heldIn(target: Target, ids: readonly number[]): Set<number> {
+	const held = new Set<number>();
+	for (let from = 0; from < ids.length; from += ID_BATCH) {
+		const rows = select(target, storedIdsQuery(ids.slice(from, from + ID_BATCH)));
+		for (const row of v.parse(v.array(v.object({ id: v.number() })), rows)) held.add(row.id);
+	}
+	return held;
+}
+
 async function loadCards(): Promise<readonly Card[]> {
 	return v.parse(SnapshotSchema, JSON.parse(await readFile(CARDS_PATH, 'utf8'))).cards;
 }
@@ -252,14 +265,7 @@ async function discoverNew(
 	// Known means every database being written holds it: one that lacks it still wants the event.
 	const heldByAll = (ids: readonly number[]) => {
 		if (ids.length === 0) return new Set<number>();
-		const held = targets.map(
-			(target) =>
-				new Set(
-					v
-						.parse(v.array(v.object({ id: v.number() })), select(target, storedIdsQuery(ids)))
-						.map((row) => row.id)
-				)
-		);
+		const held = targets.map((target) => heldIn(target, ids));
 		return new Set(ids.filter((id) => held.every((set) => set.has(id))));
 	};
 
@@ -406,13 +412,7 @@ async function main(): Promise<number> {
 	const stored = new Map<Target, Set<number>>(
 		targets.map((target) => [
 			target,
-			new Set(
-				args.check || args.force
-					? []
-					: v
-							.parse(v.array(v.object({ id: v.number() })), select(target, storedIdsQuery(ids)))
-							.map((row) => row.id)
-			)
+			args.check || args.force ? new Set<number>() : heldIn(target, ids)
 		])
 	);
 
