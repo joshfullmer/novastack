@@ -4,11 +4,12 @@
  * them on 2026-11-21 (about forty fields; only the ones we read are kept here).
  */
 import { describe, expect, it } from 'vitest';
-import { MeleeClient } from './client.ts';
+import { MeleeClient, RequestLimitError } from './client.ts';
 import {
 	antiForgeryToken,
 	listing,
 	openSearch,
+	reconnecting,
 	PAGE_SIZE,
 	parseFrame,
 	searchFrame,
@@ -223,6 +224,51 @@ describe('walking pages', () => {
 		});
 		expect(seen).toEqual([1, 2, 3, 4]);
 		expect(found.map((e) => e.id)).toEqual([1, 2, 3, 4]);
+	});
+});
+
+describe('a search that reopens itself', () => {
+	/** Each opened search fails its first `failures[n]` page requests with a stall. */
+	function flaky(failures: number[]) {
+		let opened = 0;
+		const closed: number[] = [];
+		const open = async () => {
+			const mine = opened++;
+			let left = failures[mine] ?? 0;
+			return {
+				async page(number: number) {
+					if (left-- > 0) throw new Error(`page ${number}: Melee said nothing for 20s.`);
+					return { found: [event(number)], last: false };
+				},
+				close: () => closed.push(mine)
+			};
+		};
+		return { open, opened: () => opened, closed };
+	}
+
+	it('asks again on a fresh connection when a page stalls, and carries on', async () => {
+		const world = flaky([1]);
+		const search = await reconnecting(world.open);
+		expect((await search.page(5)).found[0].id).toBe(5);
+		expect(world.opened()).toBe(2);
+		expect(world.closed).toEqual([0]);
+	});
+
+	it('gives up after its attempts, with the last stall', async () => {
+		const world = flaky([9, 9, 9]);
+		const search = await reconnecting(world.open, 3);
+		await expect(search.page(7)).rejects.toThrow(/said nothing/);
+		expect(world.opened()).toBe(3);
+	});
+
+	it('does not retry the request ceiling', async () => {
+		const search = await reconnecting(async () => ({
+			async page() {
+				throw new RequestLimitError(600, 'SEARCH page 2');
+			},
+			close: () => {}
+		}));
+		await expect(search.page(2)).rejects.toThrow(RequestLimitError);
 	});
 });
 

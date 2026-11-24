@@ -15,7 +15,7 @@
  * `MeleeClient`, as every other request to Melee does.
  */
 import * as v from 'valibot';
-import { MELEE_ORIGIN, USER_AGENT, type MeleeClient } from './client.ts';
+import { MELEE_ORIGIN, RequestLimitError, USER_AGENT, type MeleeClient } from './client.ts';
 
 /** The tournaments Melee lists under this name. */
 export const GAME = 'CyberpunkTCG';
@@ -267,6 +267,30 @@ export async function openSearch(
 			return results;
 		},
 		close: () => socket.close()
+	};
+}
+
+/**
+ * A search that reopens itself when Melee goes quiet or drops the connection, then asks for the same
+ * page again. A long walk (`--deep` is ~1,700 pages) will meet a stall sooner or later, and losing the
+ * pages already read to one is the expensive way to find out. The request ceiling is not a stall: it
+ * ends the walk.
+ */
+export async function reconnecting(open: () => Promise<Search>, attempts = 3): Promise<Search> {
+	let current = await open();
+	return {
+		async page(number) {
+			for (let attempt = 1; ; attempt += 1) {
+				try {
+					return await current.page(number);
+				} catch (error) {
+					if (error instanceof RequestLimitError || attempt >= attempts) throw error;
+					current.close();
+					current = await open();
+				}
+			}
+		},
+		close: () => current.close()
 	};
 }
 
