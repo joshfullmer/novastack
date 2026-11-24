@@ -87,7 +87,11 @@
 						? 'text-card-red'
 						: 'text-body'
 		);
-	const COLUMNS = 'grid-cols-[minmax(0,1fr)_9rem_3.5rem_4.5rem_4.5rem_3rem]';
+	/**
+	 * Six fixed columns need ~25rem beside the tier's rail, which a phone doesn't have. Below `md` a row
+	 * is two lines instead: who and their win rate, then the share bar, then the counts as one line.
+	 */
+	const COLUMNS = 'md:grid-cols-[minmax(0,1fr)_9rem_3.5rem_4.5rem_4.5rem_3rem]';
 </script>
 
 <header class="flex flex-wrap items-end justify-between gap-3 border-b border-edge pb-4">
@@ -130,18 +134,21 @@
 	<div class="mt-4 gap-x-8 xl:columns-2">
 		{#each tiers as { tier, rows: group } (tier ?? 'unranked')}
 			<!-- A tier is one bracket: a rail with its letter on the left, its decks to the right. -->
-			<section class="mb-4 flex break-inside-avoid overflow-hidden rounded-xl border border-edge">
+			<section
+				class="mb-4 flex break-inside-avoid flex-col overflow-hidden rounded-xl border border-edge md:flex-row"
+			>
 				<div
-					class="grid w-14 shrink-0 place-items-center text-3xl font-semibold {tier
+					class="flex items-center gap-3 px-3 py-2 text-xl font-semibold md:w-14 md:shrink-0 md:justify-center md:p-0 md:text-3xl {tier
 						? BADGE[tier]
 						: 'bg-edge/40 text-muted'}"
 					title={tier ? SAYS[tier] : UNRANKED}
 				>
 					{tier ?? '?'}
+					<span class="text-xs font-normal md:hidden">{tier ? SAYS[tier] : UNRANKED}</span>
 				</div>
 				<div class="min-w-0 flex-1">
 					<div
-						class="grid items-center gap-x-3 border-b border-edge/60 px-3 py-1.5 font-mono text-[11px] tracking-wide text-muted uppercase {COLUMNS}"
+						class="hidden items-center gap-x-3 border-b border-edge/60 px-3 py-1.5 font-mono text-[11px] tracking-wide text-muted uppercase md:grid {COLUMNS}"
 					>
 						<span class="tracking-normal normal-case">{tier ? SAYS[tier] : UNRANKED}</span>
 						<span
@@ -154,7 +161,9 @@
 					</div>
 					<ol>
 						{#each group as row (row.key)}
-							<li class="grid items-center gap-x-3 rounded-lg px-3 py-2 odd:bg-shell/60 {COLUMNS}">
+							<li
+								class="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-3 gap-y-1.5 rounded-lg px-3 py-2.5 odd:bg-shell/60 md:py-2 {COLUMNS}"
+							>
 								<span class="flex min-w-0 items-center gap-3">
 									{#if by === 'ram'}
 										<a
@@ -181,7 +190,9 @@
 										<span class="min-w-0 truncate text-bright">{legendNames(row.legends)}</span>
 									{/if}
 								</span>
-								<span class="flex items-center gap-2">
+								<span
+									class="col-span-2 row-start-2 flex items-center gap-2 md:col-span-1 md:row-auto"
+								>
 									<span class="h-2 flex-1 rounded-full bg-edge/50">
 										<span
 											class="block h-2 rounded-full bg-neon"
@@ -192,29 +203,45 @@
 								</span>
 								{#if row.decks >= MIN_DECKS}
 									<span
-										class="text-right font-mono text-sm {tone(row.winRate)}"
+										class="col-start-2 row-start-1 text-right font-mono text-base md:col-auto md:row-auto md:text-sm {tone(
+											row.winRate
+										)}"
 										title="{row.matches} matches"
 									>
-										{percent(row.winRate)}
+										<span class="mr-1 text-[10px] text-muted md:hidden">win</span>{percent(
+											row.winRate
+										)}
 									</span>
 								{:else}
 									<span
-										class="text-right font-mono text-xs text-muted"
+										class="col-start-2 row-start-1 text-right font-mono text-xs text-muted md:col-auto md:row-auto"
 										title="Fewer than {MIN_DECKS} decks: not enough to quote a rate"
 										>n&lt;{MIN_DECKS}</span
 									>
 								{/if}
-								<span class="text-right font-mono text-sm">
+								<!-- The same three figures as the columns beside it, as one line for a phone. -->
+								<span
+									class="col-span-2 row-start-3 font-mono text-[11px] text-muted tabular-nums md:hidden"
+								>
+									{row.decks}
+									{row.decks === 1 ? 'deck' : 'decks'} · {row.top8} top 8 ({percent(
+										row.top8 / row.decks
+									)}) · {row.wins}
+									won ({percent(row.wins / row.decks)})
+								</span>
+								<span class="hidden text-right font-mono text-sm md:block">
 									{row.top8}<span class="ml-1 text-[10px] text-muted"
 										>{percent(row.top8 / row.decks)}</span
 									>
 								</span>
-								<span class="text-right font-mono text-sm">
+								<span class="hidden text-right font-mono text-sm md:block">
 									{row.wins}<span class="ml-1 text-[10px] text-muted"
 										>{percent(row.wins / row.decks)}</span
 									>
 								</span>
-								<span class="text-right font-mono text-sm text-muted">{row.decks}</span>
+								<span class="hidden text-right font-mono text-sm text-muted md:block"
+									>{row.decks}</span
+								>
 							</li>
 						{/each}
 					</ol>
