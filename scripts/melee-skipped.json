@@ -1,4 +1,1754 @@
 {
+	"461946": {
+		"name": "Cyberpunk TCG Welcome to Night City Beta Event",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:33:31.055Z"
+	},
+	"461997": {
+		"name": "Cyberpunk TCG Pre-Pre-Release",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:33:30.731Z"
+	},
+	"461999": {
+		"name": "Cyberpunk TCG Beta Event",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:33:30.425Z"
+	},
+	"462046": {
+		"name": "Cyberpunk TCG Beta Launch Event - Lubbock",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:33:30.129Z"
+	},
+	"462090": {
+		"name": "Cyberpunk Beta Preview Event",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:33:29.827Z"
+	},
+	"462118": {
+		"name": "Cyberpunk TCG: Beta Event at Legends of the Hidden Table",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:33:29.519Z"
+	},
+	"462156": {
+		"name": "Legacy Comics Cards Cyberpunk Beta Release",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:33:29.222Z"
+	},
+	"462236": {
+		"name": "ALG Cyberpunk TCG Beta Event",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:33:28.922Z"
+	},
+	"462246": {
+		"name": "Beta Event - Cyberpunk TCG",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:33:28.614Z"
+	},
+	"462305": {
+		"name": "Welcome to Night City Beta (Hof, 11.09.26)",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:33:28.314Z"
+	},
+	"462307": {
+		"name": "PRE BETA JUEVES",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:33:28.023Z"
+	},
+	"462325": {
+		"name": "The Venue Plymouth Beta Event",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:33:24.709Z"
+	},
+	"462376": {
+		"name": "Cyberpunk Beta Prerelease Event",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:33:24.410Z"
+	},
+	"462422": {
+		"name": "Zombie CyberPunk Beta Event ",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:33:24.111Z"
+	},
+	"462459": {
+		"name": "BETA Cyberpunk",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:33:23.806Z"
+	},
+	"462461": {
+		"name": "Easton Grand Opening - Cyberpunk Beta Event",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:33:23.507Z"
+	},
+	"462534": {
+		"name": "CyberPunk TCG",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:33:19.594Z"
+	},
+	"462547": {
+		"name": "Beta Event",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:33:14.772Z"
+	},
+	"462558": {
+		"name": "Cyberpunk TCG Beta Event",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:33:14.479Z"
+	},
+	"462559": {
+		"name": "Cyberpunk Beta Event #2",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:33:14.181Z"
+	},
+	"462565": {
+		"name": "Cyberpunk Beta Event @NRG!",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:33:13.878Z"
+	},
+	"462600": {
+		"name": "Rooted Games Flagship Cyber Beta Event",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:33:13.575Z"
+	},
+	"462603": {
+		"name": "Prerrelease Beta ",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:33:13.274Z"
+	},
+	"462653": {
+		"name": "CYBERPUNK PRE-RELEASE EVENT",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:33:12.968Z"
+	},
+	"462664": {
+		"name": "Cyberpunk TCG Beta Event",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:33:12.665Z"
+	},
+	"462668": {
+		"name": "Cyberpunk Beta Event",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:33:12.363Z"
+	},
+	"462672": {
+		"name": "Québec | Cyberpunk TCG Prerelease 1 Novembre",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:33:12.070Z"
+	},
+	"462722": {
+		"name": "Cyberpunk Beta Event at Cuppow Collectibles",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:33:11.769Z"
+	},
+	"462723": {
+		"name": "Cyberpunk Beta Event at Cuppow Collectibles",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:33:11.463Z"
+	},
+	"462724": {
+		"name": "Cyberpunk TCG Beta Event",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:33:11.162Z"
+	},
+	"462819": {
+		"name": "Cyberpunk Beta Event",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:33:10.875Z"
+	},
+	"462877": {
+		"name": "Cyberpunk TCG: Welcome to Night City Beta Event",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:33:10.563Z"
+	},
+	"462880": {
+		"name": "Curio Cavern Presents: Cyberpunk TCG Beta Event",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:33:10.270Z"
+	},
+	"462897": {
+		"name": "Hamiltons Hand - Cyberpunk TCG Beta Event",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:33:09.960Z"
+	},
+	"462903": {
+		"name": "Cyberpunk TCG Beta Event",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:33:09.666Z"
+	},
+	"462930": {
+		"name": "Cyberpunk Beta Event!",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:33:09.356Z"
+	},
+	"463099": {
+		"name": " Cyberpunk Beta Event",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:33:09.075Z"
+	},
+	"463206": {
+		"name": "Cyberpunk Beta Event",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:33:08.753Z"
+	},
+	"463213": {
+		"name": "Cyberpunk TCG Beta Event",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:33:08.454Z"
+	},
+	"463287": {
+		"name": "Beta Pre-release!",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:33:08.159Z"
+	},
+	"463365": {
+		"name": "Cyberpunk TCG Beta Release (Tuesday)",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:33:07.852Z"
+	},
+	"463390": {
+		"name": "Cyberpunk Beta Sealed Tournament",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:33:07.557Z"
+	},
+	"463481": {
+		"name": "Cyberpunk TCG Beta Pre-Release Event",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:33:04.251Z"
+	},
+	"463511": {
+		"name": "Metropolis Center Beta Event Cyberpunk TCG",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:32:59.435Z"
+	},
+	"463519": {
+		"name": "Pandemonium Cyberpunk Beta Prerelease event",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:32:59.139Z"
+	},
+	"463522": {
+		"name": "Cyberpunk TCG",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:32:58.829Z"
+	},
+	"463525": {
+		"name": "Cyberpunk TCG Beta Event",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:32:58.527Z"
+	},
+	"463680": {
+		"name": "Cyberpunk Beta Event",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:32:58.256Z"
+	},
+	"463694": {
+		"name": "Cyberpunk Beta Release Event",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:32:57.923Z"
+	},
+	"463711": {
+		"name": "Cyberpunk TCG Beta Event @ Box Hill Good Games",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:32:57.631Z"
+	},
+	"463712": {
+		"name": "Cyberpunk Beta Weekend Event",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:32:57.331Z"
+	},
+	"463720": {
+		"name": "Cyberpunk Beta Event",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:32:57.029Z"
+	},
+	"463726": {
+		"name": "Games For Meeple - Cyberpunk TCG Beta Event",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:32:56.724Z"
+	},
+	"463733": {
+		"name": "Dice Heart BETA EVENTS",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:32:56.425Z"
+	},
+	"463788": {
+		"name": "Cyberpunk TCG Beta Event at Azgard Collectibles",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:32:56.127Z"
+	},
+	"463804": {
+		"name": "Cyberpunk TCG Beta Pre-Release",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:32:55.828Z"
+	},
+	"463943": {
+		"name": "Born 2 Game Beta Release Event",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:32:55.527Z"
+	},
+	"464010": {
+		"name": "Cyberpunk TCG Beta Event",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:32:55.220Z"
+	},
+	"464031": {
+		"name": "Comic Book World Beta Event",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:32:54.923Z"
+	},
+	"464060": {
+		"name": "Legends Eastridge Cyberpunk TCG Beta Event",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:32:54.621Z"
+	},
+	"464092": {
+		"name": "Cyberpunk Beta Release Event",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:32:54.319Z"
+	},
+	"464099": {
+		"name": "RNG Therapy Beta Event",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:32:54.021Z"
+	},
+	"464143": {
+		"name": "Cyberpunk TCG Beta Event",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:32:53.727Z"
+	},
+	"464144": {
+		"name": "Cyberpunk TCG: Welcome to Night City Pre-Release",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:32:53.412Z"
+	},
+	"464199": {
+		"name": "TM Cyberpunk Beta Event",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:32:53.120Z"
+	},
+	"464215": {
+		"name": "Cyberpunk BETA Prerelease Event #2",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:32:52.812Z"
+	},
+	"464277": {
+		"name": "Firestorm Games Gloucester Cyber Punk Beta",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:32:52.510Z"
+	},
+	"464279": {
+		"name": "Cyberpunk TCG Beta Event",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:32:52.210Z"
+	},
+	"464392": {
+		"name": "Max Rarity Demo Cyberpunk Beta Pre-Release",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:32:51.908Z"
+	},
+	"464412": {
+		"name": "Cyberpunk TCG Welcome to Night City Beta Event @ Taps Games",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:32:51.623Z"
+	},
+	"464441": {
+		"name": "Lost Levels Presents: Welcome to Night City Beta Event",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:32:51.308Z"
+	},
+	"464445": {
+		"name": "Cyber Punk Beta Event",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:32:51.015Z"
+	},
+	"464448": {
+		"name": "Cyber Punk Beta Event",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:32:50.707Z"
+	},
+	"464463": {
+		"name": "Just Press Play's Cyberpunk",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:32:50.413Z"
+	},
+	"464468": {
+		"name": "Imps Gaming - Welcome To Night City Prerelease",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:32:50.113Z"
+	},
+	"464473": {
+		"name": "CYBERPUNK BETA EVENT @ GXGAMERS",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:32:49.810Z"
+	},
+	"464530": {
+		"name": "Gaming Universe Beta Event",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:32:49.504Z"
+	},
+	"464537": {
+		"name": "Beta Event w Przyczółku ",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:32:49.202Z"
+	},
+	"464545": {
+		"name": "CSSC Beta Prerelease",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:32:48.905Z"
+	},
+	"464554": {
+		"name": "Cyberpunk TCG Beta Event",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:32:48.601Z"
+	},
+	"464568": {
+		"name": "09/20 Sunday Cyberpunk TCG BETA Pre-Release Event @ Greg's Games",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:32:48.298Z"
+	},
+	"464570": {
+		"name": "Cyberpunk TCG Beta Event",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:32:48.000Z"
+	},
+	"464632": {
+		"name": "Hobby Badger Games",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:32:47.706Z"
+	},
+	"464670": {
+		"name": "Beta Pre-Release ",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:32:47.403Z"
+	},
+	"464690": {
+		"name": "HeroFreaks - Welcome to Night City",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:32:47.104Z"
+	},
+	"464718": {
+		"name": "Night City PreRelease",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:32:46.805Z"
+	},
+	"464723": {
+		"name": "Cyberpunk TCG: Welcome to Night City Prerelease ",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:32:46.502Z"
+	},
+	"464814": {
+		"name": "Cyberpunk Beta Event",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:32:35.069Z"
+	},
+	"464820": {
+		"name": "Cyberpunk TCG Beta Event",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:32:34.777Z"
+	},
+	"464823": {
+		"name": "Card Dojo BETA prerelease",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:32:34.467Z"
+	},
+	"464842": {
+		"name": "Cyber Punk Beta Event",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:32:34.160Z"
+	},
+	"464858": {
+		"name": "PokeFit CyberPunk TCC Beta",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:32:33.865Z"
+	},
+	"464859": {
+		"name": "Cyberpunk TCG Beta Event",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:32:33.560Z"
+	},
+	"464892": {
+		"name": "Beta Sealed (No Kits, Just Sealed) @ Harlequins Preston",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:32:33.257Z"
+	},
+	"464902": {
+		"name": "Level One Cyberpunk Beta Release",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:32:32.965Z"
+	},
+	"464914": {
+		"name": "Kangaroo Tales Beta Release Event",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:32:32.662Z"
+	},
+	"464957": {
+		"name": "BETA EVENT - CYBERPUNK 18/09",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:32:32.355Z"
+	},
+	"464958": {
+		"name": "GK Fremont Beta Event II",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:32:32.055Z"
+	},
+	"464969": {
+		"name": "IRL Cards Cyberpunk Beta Event",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:32:31.758Z"
+	},
+	"464994": {
+		"name": "Cyberpunk TCG Beta Event",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:32:31.450Z"
+	},
+	"465000": {
+		"name": "Cyberpunk TCG Beta Event",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:32:31.154Z"
+	},
+	"465010": {
+		"name": "Untouchables Cyber Punk Beta Event",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:32:30.860Z"
+	},
+	"465036": {
+		"name": "Beta ",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:32:30.555Z"
+	},
+	"465064": {
+		"name": "BETA EVENT AT TITO RICK'S GARAGE",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:32:30.254Z"
+	},
+	"465080": {
+		"name": "Cyberpunk TCG Beta Event",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:32:26.939Z"
+	},
+	"465096": {
+		"name": "Cyberpunk TCG Beta Event",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:32:26.642Z"
+	},
+	"465164": {
+		"name": "Flagship Games Cyberpunk Beta Event",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:32:23.329Z"
+	},
+	"465165": {
+		"name": "Cyberpunk TCG Beta Event",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:32:23.049Z"
+	},
+	"465255": {
+		"name": "Avant-premier beta event Atmos arena 17/09",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:32:22.734Z"
+	},
+	"465257": {
+		"name": "Cyberpunk TCG Beta Event @ PP",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:32:22.434Z"
+	},
+	"465261": {
+		"name": "Pre-release Beta",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:32:22.126Z"
+	},
+	"465319": {
+		"name": "Beta Event Cyberpunk TCG Philibert",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:32:21.836Z"
+	},
+	"465326": {
+		"name": "Beta Event Tuesday Night #1",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:32:21.525Z"
+	},
+	"465373": {
+		"name": "Beta Release",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:32:21.235Z"
+	},
+	"465397": {
+		"name": "Beta release event",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:32:20.925Z"
+	},
+	"465411": {
+		"name": "Cyberpunk TCG Prerelease Event",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:32:20.632Z"
+	},
+	"465435": {
+		"name": "M&M Tampa Cyberpunk TCG Beta Event",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:32:20.324Z"
+	},
+	"465515": {
+		"name": "Cyberpunk TCG Beta Event- Vanaheim",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:32:20.033Z"
+	},
+	"465614": {
+		"name": "CyberPunk Beta Event Final Cut TCG",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:32:19.721Z"
+	},
+	"465722": {
+		"name": "Cyberpunk Prerelease",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:32:16.416Z"
+	},
+	"465923": {
+		"name": "Welcome To Night City Pre-Release",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:32:16.112Z"
+	},
+	"465960": {
+		"name": "Derpy Cards September Thursday Beta Night",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:32:15.832Z"
+	},
+	"465992": {
+		"name": "Cyberpunk Beta Event",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:32:15.512Z"
+	},
+	"466023": {
+		"name": "Cards Central Cyberpunk TCG Beta Event",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:32:15.211Z"
+	},
+	"466333": {
+		"name": "Welcome to Night City Prerelease - @Delta 1 Esports Café",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:32:14.316Z"
+	},
+	"466361": {
+		"name": "Gamersaurus Rex Cyberpunk TCG Beta Event",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:32:14.012Z"
+	},
+	"466554": {
+		"name": "Rok Beta Event",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:32:13.717Z"
+	},
+	"466578": {
+		"name": "Cyberpunk Sealed Beta",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:32:13.406Z"
+	},
+	"467124": {
+		"name": "Card Cosmos Beta Event",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:32:08.603Z"
+	},
+	"467459": {
+		"name": "CyberPunk Beta Event - Rio Rancho ",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:32:07.701Z"
+	},
+	"467532": {
+		"name": "⚡️CTCG Béta Pre-release (Cyberpunk TCG) Amersfoort",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:31:55.660Z"
+	},
+	"467558": {
+		"name": "Welcome To Night City in Toronto (Prerelease)",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:31:55.369Z"
+	},
+	"467636": {
+		"name": "Cyberpunk TCG: Pre-Release",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:31:55.061Z"
+	},
+	"467708": {
+		"name": "Cyberpunk Prerelease @ The Bearded Dragon",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:31:47.251Z"
+	},
+	"467768": {
+		"name": "Cyberpunk TCG Beta Event @ Liberlen",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:31:46.941Z"
+	},
+	"468080": {
+		"name": "Cyberpunk TCG Beta Release",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:31:23.440Z"
+	},
+	"468104": {
+		"name": "Dane's Games West Chicago Cyberpunk Welcome to Night City Beta Prerelease",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:31:23.125Z"
+	},
+	"468112": {
+		"name": "Cyberpunk TCG Welcome to Night City Prerelease",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:31:22.836Z"
+	},
+	"468205": {
+		"name": "Evento Presentacion Cyberpunk TCG",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:31:22.530Z"
+	},
+	"468208": {
+		"name": "Evento Presentacion Cyberpunk TCG",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:31:22.221Z"
+	},
+	"468510": {
+		"name": "Oct 31 - Cyberpunk Welcome to Night City Prerelease Event",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:31:11.994Z"
+	},
+	"468835": {
+		"name": "Cyberpunk Beta Event ",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:31:07.474Z"
+	},
+	"468913": {
+		"name": "Cyberpunk Prerelease",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:31:07.184Z"
+	},
+	"469546": {
+		"name": "Cyberpunk pre-release",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:30:40.686Z"
+	},
+	"469564": {
+		"name": "CYP Pre-Release 31/10/26",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:30:40.386Z"
+	},
+	"469594": {
+		"name": "NG Manila Bay Cyber Punk Pre Release",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:30:40.087Z"
+	},
+	"469613": {
+		"name": "Beta Event w Sunshiny",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:30:39.779Z"
+	},
+	"469630": {
+		"name": "Avant Première Cyberpunk VF",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:30:39.487Z"
+	},
+	"469900": {
+		"name": "Release Event at Hidden Treasure Games!",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:30:37.677Z"
+	},
+	"469958": {
+		"name": "Cyberpunk Prerelease",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:30:37.371Z"
+	},
+	"470196": {
+		"name": "CyberPunk Pre Release Event @AngleGamingLounge",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:30:28.947Z"
+	},
+	"470306": {
+		"name": "Cyberpunk TCG Welcome to Night City Pre-Release",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:30:08.227Z"
+	},
+	"470702": {
+		"name": "I Civettoni - Cyberpunk Beta event",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:29:49.263Z"
+	},
+	"470997": {
+		"name": "Atlas x Cyberpunk Beta Event",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:29:31.202Z"
+	},
+	"471022": {
+		"name": "Illusive Comics' Welcome to Night City Prerelease 10-31",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:29:29.413Z"
+	},
+	"471219": {
+		"name": "Game Corner Cyberpunk TCG Prerelease",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:29:29.107Z"
+	},
+	"471235": {
+		"name": "Chooms Beta Trade Night (Please Read)",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:29:28.812Z"
+	},
+	"471376": {
+		"name": "Beta Release Event",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:29:25.184Z"
+	},
+	"471515": {
+		"name": "TGA Cyberpunk October ",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:29:21.874Z"
+	},
+	"471564": {
+		"name": "RTB Presents: Welcome to Night City Pre-Release",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:29:21.566Z"
+	},
+	"471766": {
+		"name": "Avant-Première Cyberpunk",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:29:20.660Z"
+	},
+	"472018": {
+		"name": "Huzzah Hobbies Pre-release Event - Cyberpunk TCG",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:29:20.358Z"
+	},
+	"472166": {
+		"name": "Welcome to Night City Pre-release",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:29:20.070Z"
+	},
+	"472172": {
+		"name": "Welcome to Night City Prerelease!",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:29:19.758Z"
+	},
+	"472210": {
+		"name": "Presentación de Cyberpunk",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:29:19.460Z"
+	},
+	"472285": {
+		"name": "cyberpunk prerelease",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:29:19.153Z"
+	},
+	"472346": {
+		"name": "Cyber Punk Pre Release at TFB",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:29:15.838Z"
+	},
+	"472410": {
+		"name": "Beta Event",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:29:15.548Z"
+	},
+	"472477": {
+		"name": "Cyberpunk TCG Pre-release at Cards & Comics",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:29:15.237Z"
+	},
+	"472565": {
+		"name": "Cyberpunk Pre-Release Event",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:29:14.943Z"
+	},
+	"472588": {
+		"name": "CyberPunk TCG Prerelease",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:29:14.636Z"
+	},
+	"472604": {
+		"name": "Welcome to Night City Pre-release",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:29:14.341Z"
+	},
+	"472610": {
+		"name": "Cyberpunk Pre Release Event",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:29:14.039Z"
+	},
+	"472617": {
+		"name": "Cyberpunk TCG Pre-Release @ Tabletop Village",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:29:13.739Z"
+	},
+	"472672": {
+		"name": "Prerrelease TopDeck - Welcome to Night City",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:29:13.435Z"
+	},
+	"472734": {
+		"name": "Beta Event",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:29:13.141Z"
+	},
+	"472771": {
+		"name": "Cyberpunk TCG Beta Event",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:29:12.842Z"
+	},
+	"472797": {
+		"name": "Topspot Welcome to Night City Prerelease",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:29:12.531Z"
+	},
+	"472847": {
+		"name": "Presentacion Cyber Punk Cañon Cosmo",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:29:02.008Z"
+	},
+	"472954": {
+		"name": "DiablesTCG: Cyberpunk TCG Pre-release Event",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:29:01.717Z"
+	},
+	"472977": {
+		"name": "Night City Pre-release",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:29:01.417Z"
+	},
+	"473051": {
+		"name": "TATC Cyberpunk Beta Event",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:29:01.116Z"
+	},
+	"473213": {
+		"name": "Welcome to Night City Prerelease Retail - Vanaheim 30.10",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:28:57.803Z"
+	},
+	"473253": {
+		"name": "Avant Première Ludotrotter",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:28:54.501Z"
+	},
+	"473287": {
+		"name": "Card Dojo Welcome to Legiocity Pre-release",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:28:52.686Z"
+	},
+	"473359": {
+		"name": "Griffins Gaming Pre release 2",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:28:49.377Z"
+	},
+	"473400": {
+		"name": "Cyberpunk TCG Pre-Release II",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:28:46.067Z"
+	},
+	"473448": {
+		"name": "Welcome to Night City Prerelease @SFG Semiahmoo",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:28:45.759Z"
+	},
+	"473572": {
+		"name": "Gnu Books Cyberpunk 2077 Prerelease",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:28:39.443Z"
+	},
+	"473575": {
+		"name": "Cyberpunk beta",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:28:39.137Z"
+	},
+	"473596": {
+		"name": "Cyberpunk Pre-Release",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:28:38.842Z"
+	},
+	"473645": {
+		"name": "[Pre-Release] Cyberpunk TCG Welcome To Night City: Pre-release Event",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:28:38.532Z"
+	},
+	"473673": {
+		"name": "SG - Welcome To Night City - Prerelease #1",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:28:38.244Z"
+	},
+	"473674": {
+		"name": "SG - Welcome To Night City - Prerelease #2",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:28:37.939Z"
+	},
+	"473675": {
+		"name": "SG - Welcome To Night City - Prerelease #3",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:28:37.637Z"
+	},
+	"473685": {
+		"name": "KROLM Cyberpunk TCG Pre-release Event",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:28:37.330Z"
+	},
+	"473695": {
+		"name": "Cyberpunk TCG Pre-Release Event",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:28:37.033Z"
+	},
+	"473713": {
+		"name": "Cyberpunk TCG: Prerelease Welcome to Night City - 18:00",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:28:36.728Z"
+	},
+	"473714": {
+		"name": "Cyberpunk TCG: Prerelease Welcome to Night City - 10:00",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:28:36.423Z"
+	},
+	"473715": {
+		"name": "Cyberpunk TCG: Prerelease Welcome to Night City - 14:00",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:28:36.133Z"
+	},
+	"473716": {
+		"name": "Cyberpunk TCG: Prerelease Welcome to Night City - 18:00",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:28:35.825Z"
+	},
+	"473727": {
+		"name": "Cyberpunk TCG: Prerelease Welcome to Night City - 18:00",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:28:35.527Z"
+	},
+	"473729": {
+		"name": "Cyberpunk TCG: Prerelease Welcome to Night City - 18:00",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:28:35.228Z"
+	},
+	"473772": {
+		"name": "4HM Cyberpunk TCG: Welcome to Night City Pre-Release",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:28:28.908Z"
+	},
+	"473857": {
+		"name": "Cyberpunk Welcome to Night City Prerelease",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:28:28.612Z"
+	},
+	"473983": {
+		"name": "Cyber Punk Pre-Release",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:28:28.308Z"
+	},
+	"474010": {
+		"name": "Dragons HQ Cyberpunk Welcome to Night City Pre-Release",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:28:28.005Z"
+	},
+	"474078": {
+		"name": "Pre-Release @ Mulligan",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:28:27.708Z"
+	},
+	"474130": {
+		"name": "Cyberpunk TCG: Welcome to Night City Prerelease",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:28:25.905Z"
+	},
+	"474133": {
+		"name": "Cyberpunk TCG: Prerelease",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:28:25.598Z"
+	},
+	"474293": {
+		"name": "Sunday Cyberpunk Prerelease!",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:28:25.322Z"
+	},
+	"474396": {
+		"name": "Cyberpunk TCG Prerelease Event",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:28:13.203Z"
+	},
+	"474418": {
+		"name": "Cyberpunk TCG: Pre-release",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:28:12.896Z"
+	},
+	"474467": {
+		"name": "Cyberpunk Prerelease",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:28:12.604Z"
+	},
+	"474539": {
+		"name": "Cyberpunk TCG - Sealed - Welcome to Night City Beta Event",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:28:12.293Z"
+	},
+	"474581": {
+		"name": "Pre-release Cyberpunk [31/10/26] ",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:28:11.997Z"
+	},
+	"474696": {
+		"name": "Time4Magic Cyberpunk TCG - Welcome to Night City Pre-release",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:28:06.281Z"
+	},
+	"474697": {
+		"name": "Layton Gaming Cyberpunk Pre-Release",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:28:05.981Z"
+	},
+	"474787": {
+		"name": "Środowy Prerelease",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:28:05.688Z"
+	},
+	"474789": {
+		"name": "Czwartkowy Prerealese",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:28:05.382Z"
+	},
+	"474920": {
+		"name": "Welcome to Night City Sealed Prerelease!",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:27:59.066Z"
+	},
+	"474951": {
+		"name": "Shippin Texas Cyberpunk TCG Beta Event",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:27:58.765Z"
+	},
+	"475034": {
+		"name": "Cyberpunk TCG Prerelease",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:27:58.468Z"
+	},
+	"475037": {
+		"name": "Cyberpunk TCG Prerelease",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:27:58.159Z"
+	},
+	"475082": {
+		"name": "Cyberpunk Welcome to Night City Pre-Release Event [Sealed] @ Taps Games",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:27:57.873Z"
+	},
+	"475085": {
+		"name": "Cyberpunk Welcome to Night City Pre-Release Event [Sealed] @ Taps Games",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:27:57.568Z"
+	},
+	"475095": {
+		"name": "401 Games Vaughan - Cyberpunk TCG - Prerelease Event",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:27:57.257Z"
+	},
+	"475170": {
+		"name": "10/31 Welcome to Night City Pre-Release: 11 AM",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:27:56.966Z"
+	},
+	"475173": {
+		"name": "10/31 Welcome to Night City Pre-Release: 3 PM",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:27:56.664Z"
+	},
+	"475174": {
+		"name": "Welcome to Night City Prerelease",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:27:56.359Z"
+	},
+	"475177": {
+		"name": "11/01 Welcome to Night City Pre-Release: 3 PM",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:27:56.053Z"
+	},
+	"475196": {
+		"name": "CyberpunkTCG Prerelease!!",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:27:55.751Z"
+	},
+	"475209": {
+		"name": "Cyberpunk Welcome to Night City [Sealed] @ Taps Games",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:27:55.453Z"
+	},
+	"475239": {
+		"name": "Lost Levels Presents: Welcome to Night City Prerelease Event",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:27:55.153Z"
+	},
+	"475286": {
+		"name": "Cyber Punk Beta Event!",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:27:54.854Z"
+	},
+	"475296": {
+		"name": "Good Games Morley's CyberpunkTCG Welcome to Night City Pre-Release Event!!",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:27:54.553Z"
+	},
+	"475384": {
+		"name": "Cyberpunk TCG Welcome to Night City Pre-Release @ Gap Games",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:27:54.250Z"
+	},
+	"475450": {
+		"name": "cyberpunk prerelease ",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:27:53.948Z"
+	},
+	"475461": {
+		"name": "30.10 Welcome To Night City Prerelease",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:27:53.645Z"
+	},
+	"475465": {
+		"name": "Pan Mysza Welcome to Night City PreRelease",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:27:53.352Z"
+	},
+	"475468": {
+		"name": "Cyberpunk TCG - Avant-Première FR - Pigalle / Samedi 31 octobre 2026 - 12h",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:27:53.040Z"
+	},
+	"475481": {
+		"name": "Cyberpunk TCG - Welcome to Night City - Prerelease Event Vol. 1",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:27:52.736Z"
+	},
+	"475483": {
+		"name": "Cyberpunk TCG - Welcome to Night City - Prerelease Event Vol. 2",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:27:52.434Z"
+	},
+	"475602": {
+		"name": "Welcome To Night CIty Pre-release",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:27:52.144Z"
+	},
+	"475651": {
+		"name": "Fan Boy Three - Cyberpunk TCG Welcome to Night City Pre Release",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:27:51.833Z"
+	},
+	"475728": {
+		"name": "Cyberpunk TCG Fire&Dice League",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:27:23.139Z"
+	},
+	"475850": {
+		"name": "Cyberpunk TCG Welcome to Night City Prerelease",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:27:22.845Z"
+	},
+	"475899": {
+		"name": "Welcome to Night City Prerelease",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:27:19.520Z"
+	},
+	"475900": {
+		"name": "Welcome to Night City Prerelease",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:27:19.222Z"
+	},
+	"475911": {
+		"name": "Cyberpunk TCG Official PRERELEASE @ Space Coast games",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:27:17.416Z"
+	},
+	"475947": {
+		"name": "Cyberpunk Night City Pre-release ",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:27:17.121Z"
+	},
+	"475998": {
+		"name": "CGG Cyberpunk WNC 12PM Pre-Release Event",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:27:16.817Z"
+	},
+	"476075": {
+		"name": "Warpact Cyberpunk Retail Prerelease",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:27:16.516Z"
+	},
+	"476085": {
+		"name": "Night City Pre-release",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:27:16.211Z"
+	},
+	"476180": {
+		"name": "BastionTCG 02.11 Pre-release Event Cyberpunk",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:27:15.918Z"
+	},
+	"476185": {
+		"name": "GGA Cyberpunk TCG Beta Event",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:27:15.611Z"
+	},
+	"476194": {
+		"name": "Cyberpunk pre release",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:27:15.312Z"
+	},
+	"476198": {
+		"name": "Hightide - Welcome to Night City, Cyberpunk TCG Prelease – Tuesday November 3rd 2026",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:27:15.013Z"
+	},
+	"476253": {
+		"name": "Cyberpunk Prerelease - Atomic",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:27:09.587Z"
+	},
+	"476259": {
+		"name": "Cyberpunk TCG Welcome to Night City Prerelease ",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:27:06.281Z"
+	},
+	"476282": {
+		"name": "Cyberpunk TCG: Welcome to Night City - Prerelease AACHEN",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:27:02.977Z"
+	},
+	"476288": {
+		"name": "Cyberpunk TCG: Welcome to Night City - Prerelease ESSEN",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:27:02.676Z"
+	},
+	"476295": {
+		"name": "Prerelease Arcane Area",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:27:02.377Z"
+	},
+	"476413": {
+		"name": "[GameStation Uden] Welcome to Night City Perelease",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:26:59.067Z"
+	},
+	"476596": {
+		"name": "Welcome to Night City Pre Release ",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:26:58.763Z"
+	},
+	"476658": {
+		"name": "Cyberpunk TCG Welcome to Night City Pre-release Event ",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:26:58.457Z"
+	},
+	"476714": {
+		"name": "Cyberpunk Pre-release",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:26:58.163Z"
+	},
+	"476847": {
+		"name": "Cyberpunk Prerelease at Legacy Comics",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:26:54.856Z"
+	},
+	"477109": {
+		"name": "Clockwork Games Prerelease",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:26:48.542Z"
+	},
+	"477220": {
+		"name": "Sully's Abode Welcome to Night City Pre-Release Event",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:26:20.095Z"
+	},
+	"477543": {
+		"name": "Cyberpunk TCG: Welcome to Night City - Belconnen Prerelease ",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:26:16.779Z"
+	},
+	"477633": {
+		"name": "ACARD TCG_4/10 3pm Cyberpunk TCG Beta Event",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:26:13.472Z"
+	},
+	"477727": {
+		"name": "Welcome to Night City Pre-release @ WGW",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:26:10.162Z"
+	},
+	"478066": {
+		"name": "CyberpunkTCG Pre-release",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:26:08.355Z"
+	},
+	"478135": {
+		"name": "Vagabond's Cyberpunk TCG Pre Release Event",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:26:08.045Z"
+	},
+	"478155": {
+		"name": "Cyberpunk Night City Prerelease",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:26:07.751Z"
+	},
+	"478239": {
+		"name": "Pre-release",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:26:03.839Z"
+	},
+	"478316": {
+		"name": "AnGer Hobbystore presents Cyberpunk Pre-Release",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:26:03.532Z"
+	},
+	"478382": {
+		"name": "Presentación Welcome to Night City ",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:26:03.238Z"
+	},
+	"478392": {
+		"name": "Brotherhood Games Cyberpunk TCG Welcome to Night City Pre-Release Event",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:26:02.934Z"
+	},
+	"478407": {
+		"name": "Cyberpunk TCG // Avant-Première Welcome to Night City",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:26:02.640Z"
+	},
+	"478468": {
+		"name": "Welcome to Night City Prerelese",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:26:02.337Z"
+	},
+	"478746": {
+		"name": "Cyberpunk TCG Beta Event",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:26:02.031Z"
+	},
+	"478780": {
+		"name": "Prerelease Cyberpunk TCG Welcome to Night City w Norze!",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:26:01.728Z"
+	},
+	"478821": {
+		"name": " Night City Pre-release",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:26:01.437Z"
+	},
+	"478885": {
+		"name": "Cyberpunk TCG Pre-release Event",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:25:58.125Z"
+	},
+	"478890": {
+		"name": "Welcome to Night City Prerelease w Merfolku",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:25:57.816Z"
+	},
+	"478981": {
+		"name": "Cyberpunk Prerelease",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:25:45.478Z"
+	},
+	"479007": {
+		"name": "Cyberpunk TCG: Welcome to Night City Pre-Release",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:25:45.180Z"
+	},
+	"479269": {
+		"name": "Cyberpunk Pre-Release",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:25:06.135Z"
+	},
+	"479427": {
+		"name": "Cyberpunk TCG: Welcome to Night City Prerelease at Alternate Universes Blue Bell!",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:24:41.473Z"
+	},
+	"479429": {
+		"name": "Cyberpunk TCG: Welcome to Night City Prerelease at Alternate Universes Wilmington",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:24:41.174Z"
+	},
+	"479431": {
+		"name": "Cyberpunk TCG: Welcome to Night City Prerelease at Alternate Universes Ridley",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:24:40.879Z"
+	},
+	"479501": {
+		"name": "GGA Cyberpunk TCG Pre Release",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:24:39.374Z"
+	},
+	"479502": {
+		"name": "GGM CyberPunk TCG Beta Event",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:24:39.072Z"
+	},
+	"479505": {
+		"name": "GGM CyberPunk TCG Pre Release",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:24:37.263Z"
+	},
+	"479517": {
+		"name": "Stajnia Gier Cyberpunk Prerelease #1",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:24:17.293Z"
+	},
+	"479521": {
+		"name": "Stajnia Gier Cyberpunk Prerelease #2",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:24:16.995Z"
+	},
+	"479560": {
+		"name": "Spielewelt's Cyberpunk Prerelease",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:24:11.889Z"
+	},
+	"479561": {
+		"name": "Spielewelt's Cyberpunk Prerelease II.",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:24:11.583Z"
+	},
+	"479601": {
+		"name": "Prerelease Cyberpunk Set 1",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:24:11.291Z"
+	},
+	"479637": {
+		"name": "Cyberpunk Pre-Release ",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:24:07.976Z"
+	},
+	"479658": {
+		"name": "Cyberpunk Prerelease Event",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:24:06.171Z"
+	},
+	"479800": {
+		"name": "CSG Welcome to Night City Prerelease ",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:24:02.861Z"
+	},
+	"479852": {
+		"name": "Eastridge: Cyberpunk Alpha Pre-Release Tournament",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:24:02.554Z"
+	},
+	"479900": {
+		"name": "Gildyjny Cyberpunk - (Pre)-Release Event",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:23:59.254Z"
+	},
+	"479905": {
+		"name": "The Outpost: Welcome to Night City Pre-release One 30.10.2026",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:23:58.944Z"
+	},
+	"479906": {
+		"name": "The Outpost: Welcome to Night City Pre-release Two 05.11.2026",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:23:58.654Z"
+	},
+	"480275": {
+		"name": "Centrum MTG Cyberpunk TCG Welcome to Night City Prerelease 30.10",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:23:44.513Z"
+	},
+	"480276": {
+		"name": "Centrum MTG Cyberpunk TCG Welcome to Night City Prerelease 31.10",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:23:44.214Z"
+	},
+	"480280": {
+		"name": "Centrum MTG Cyberpunk TCG Welcome to Night City Prerelease 02.11",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:23:43.918Z"
+	},
+	"480284": {
+		"name": "Centrum MTG Cyberpunk TCG Welcome to Night City Prerelease 03.11",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:23:43.611Z"
+	},
+	"480289": {
+		"name": "Centrum MTG Cyberpunk TCG Welcome to Night City Prerelease 04.11",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:23:43.318Z"
+	},
+	"480311": {
+		"name": "Cyberpunk Prerelease Welcome to NIght City",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:23:43.005Z"
+	},
+	"480473": {
+		"name": "All4play Cyberpunk avant première Français",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:23:39.103Z"
+	},
+	"480478": {
+		"name": "Cyberpunk TCG Welcome to Night City Pre-release @ CM Games Lexington Super",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:23:38.795Z"
+	},
+	"480556": {
+		"name": "Hey Wanna Play -  CyberPunk TCG: Pre-Release!",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:23:38.501Z"
+	},
+	"480588": {
+		"name": "GuuBuu Hobby: CyberPunk TCG: Welcome to Night City Pre Release",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:23:38.200Z"
+	},
+	"480637": {
+		"name": "Spellbound Pre-release",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:23:30.364Z"
+	},
+	"480838": {
+		"name": "Just Press Play's Welcome to Night City Prerelease!",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:23:19.538Z"
+	},
+	"480969": {
+		"name": "The Side Deck - Cyberpunk TCG - Welcome to Night City Prerelease",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:23:13.218Z"
+	},
+	"481042": {
+		"name": "Roselle - Cyberpunk TCG Prerelease",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:23:09.914Z"
+	},
+	"481046": {
+		"name": "Night City Pre-Release",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:23:09.614Z"
+	},
+	"481090": {
+		"name": "CYBERPUNK TCG FULL PRE-RELEASE | Grail & Grade",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:23:09.306Z"
+	},
+	"481092": {
+		"name": "RCG Welcome to Night City Prerelease",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:23:09.006Z"
+	},
+	"481105": {
+		"name": "Cyberpunk TCG: Welcome to Night City Prerelease - EAST",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:23:08.711Z"
+	},
+	"481142": {
+		"name": "TITO RICKS PRERELEASE",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:23:08.403Z"
+	},
+	"481197": {
+		"name": "Cyberpunk TCG Retail Prerelease",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:23:02.083Z"
+	},
+	"481198": {
+		"name": "Cyberpunk TCG Retail Prerelease 2.0",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:23:01.780Z"
+	},
+	"481294": {
+		"name": "Pre Release",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:23:01.479Z"
+	},
+	"481300": {
+		"name": "Cyberpunk Prerelease",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:23:01.189Z"
+	},
+	"481314": {
+		"name": "TwoMoons Cyberpunk TCG Welcome to Night City Prerelease",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:22:57.876Z"
+	},
+	"481364": {
+		"name": "Avant-Première Cyberpunk à Troll2Jeux le 3 Novembre 2026",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:22:44.806Z"
+	},
+	"481374": {
+		"name": "Oficjalny Turniej Prerelease - FrostMagic",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:22:44.511Z"
+	},
+	"481417": {
+		"name": "Cyberpunk Pre Release",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:22:38.198Z"
+	},
+	"481419": {
+		"name": "Cyberpunk Welcome to Night City Prerelease",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:22:37.889Z"
+	},
+	"481420": {
+		"name": "Only Gamez Cyber Punk Pre-Release Event ",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:22:37.596Z"
+	},
+	"481496": {
+		"name": "Cyberpunk Pre-release ",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:22:23.456Z"
+	},
+	"481506": {
+		"name": "Cyberpunk TCG Beta Event",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:22:23.157Z"
+	},
+	"481519": {
+		"name": "⚡️CTCG Pre-release (Cyberpunk TCG) Amersfoort",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:22:22.853Z"
+	},
+	"481597": {
+		"name": "Beta Sealed",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:22:19.540Z"
+	},
+	"481624": {
+		"name": "Cyberpunk Welcome to Night City Prerelease",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:22:16.229Z"
+	},
+	"481636": {
+		"name": "Cyberpunk TCG Prerelease Sealed Event",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:22:02.708Z"
+	},
+	"481665": {
+		"name": "The Uncommons' Cyberpunk TCG Welcome To Night City Prerelease",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:22:02.409Z"
+	},
+	"481668": {
+		"name": "TATC Welcome to Night City Prerelease",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:22:02.109Z"
+	},
+	"481679": {
+		"name": "Cyberpunk - Welcome to Night City Prerelease",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:22:01.814Z"
+	},
+	"481719": {
+		"name": "ZenithTCG Cyberpunk Prerelease ",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:22:01.511Z"
+	},
+	"481747": {
+		"name": "The Forge Cyberpunk TCG Pre-Release",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:22:01.212Z"
+	},
+	"481803": {
+		"name": "Cyberpunk Welcome to Night City Release Event",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:22:00.903Z"
+	},
+	"481866": {
+		"name": "Cyberpunk Pre Release Event",
+		"format": "Sealed",
+		"skippedAt": "2026-11-25T12:22:00.611Z"
+	},
 	"481937": {
 		"name": "Guf Geelong Cyberpunk TCG Prerelease Event",
 		"format": "Sealed",
