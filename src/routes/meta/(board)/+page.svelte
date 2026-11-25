@@ -3,31 +3,30 @@
 	// played them. Group by RAM (how players name a deck: YYR), the three Legends together, or each Legend
 	// on its own; count every deck, only the top 8, or only the winners. A tier needs MIN_DECKS decks and
 	// MIN_MATCHES matches: less is noise, so those are listed apart, unranked.
+	import { page } from '$app/state';
 	import { cn } from '#lib/cn.js';
 	import LegendArt from '#lib/components/tournaments/LegendArt.svelte';
+	import Pills from '#lib/components/tournaments/Pills.svelte';
 	import RamCode from '#lib/components/tournaments/RamCode.svelte';
 	import {
 		MIN_DECKS,
 		MIN_MATCHES,
+		PARTS,
 		TIERS,
 		type GroupStat,
 		type Tier
 	} from '#lib/tournaments/meta.js';
 	import { periodParams } from '#lib/tournaments/period.js';
 	import { legendNames, RAM_PER_LEGEND, winTone } from '#lib/tournaments/present.js';
-	import { href } from '#lib/tournaments/url.js';
+	import { href, withParams } from '#lib/tournaments/url.js';
 
 	let { data } = $props();
 	const meta = $derived(data.meta);
 
-	let by = $state<'ram' | 'line' | 'legend'>('ram');
-	let part = $state<'decks' | 'top8' | 'wins'>('decks');
+	// What is counted and how it is grouped come from the address (`?count=`, `?by=`).
+	const part = $derived(data.part);
+	const by = $derived(data.by);
 
-	const PARTS = [
-		['decks', 'All decks'],
-		['top8', 'Top 8'],
-		['wins', 'Winners']
-	] as const;
 	const GROUPS = [
 		['ram', 'RAM'],
 		['line', 'Legends'],
@@ -89,29 +88,19 @@
 		<h1 class="sr-only">Top decks</h1>
 		<p class="font-mono text-xs text-muted">{meta.decks} decks with a readable set of Legends</p>
 	</div>
-	<div class="flex flex-wrap gap-2 font-mono text-xs">
-		<div class="flex rounded-full border border-edge p-0.5" role="group" aria-label="Count">
-			{#each PARTS as [key, label] (key)}
-				<button
-					class="rounded-full px-3 py-1 {part === key
-						? 'bg-neon text-void'
-						: 'text-muted hover:text-body'}"
-					aria-pressed={part === key}
-					onclick={() => (part = key)}>{label}</button
-				>
-			{/each}
-		</div>
-		<div class="flex rounded-full border border-edge p-0.5" role="group" aria-label="Group by">
-			{#each GROUPS as [key, label] (key)}
-				<button
-					class="rounded-full px-3 py-1 {by === key
-						? 'bg-neon text-void'
-						: 'text-muted hover:text-body'}"
-					aria-pressed={by === key}
-					onclick={() => (by = key)}>{label}</button
-				>
-			{/each}
-		</div>
+	<div class="flex flex-wrap gap-2">
+		<Pills
+			label="Count"
+			options={PARTS}
+			value={part}
+			href={(key) => withParams(page.url, { count: key === 'decks' ? null : key })}
+		/>
+		<Pills
+			label="Group by"
+			options={GROUPS}
+			value={by}
+			href={(key) => withParams(page.url, { by: key === 'ram' ? null : key })}
+		/>
 	</div>
 </header>
 

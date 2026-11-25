@@ -2,16 +2,18 @@
 	// Card breakdown: the Cards, not the archetypes. Pick a RAM or a set of Legends (or all decks) and see
 	// the Cards people ran, as art: the share of decks that ran each, bottom right, and the copies in a
 	// deck that does, bottom left. Each tile opens that Card's usage.
+	import { page } from '$app/state';
 	import LegendArt from '#lib/components/tournaments/LegendArt.svelte';
+	import Pills from '#lib/components/tournaments/Pills.svelte';
 	import RamCode from '#lib/components/tournaments/RamCode.svelte';
 	import { periodParams } from '#lib/tournaments/period.js';
 	import { cardName, legendNames } from '#lib/tournaments/present.js';
-	import { href } from '#lib/tournaments/url.js';
+	import { href, withParams } from '#lib/tournaments/url.js';
 
 	let { data } = $props();
 
-	/** What the grid is ordered by: the share of decks that ran a card, or how many copies it gets. */
-	let sort = $state<'percentage' | 'count'>('percentage');
+	/** What the grid is ordered by (`?sort=`): the share of decks that ran a card, or how many copies it gets. */
+	const sort = $derived(data.sort);
 	const SHOWN = 60;
 
 	const cards = $derived(
@@ -26,7 +28,12 @@
 	);
 	const percent = (n: number) => `${Math.round(n * 100)}%`;
 	const mine = (line: string | null, ram: string | null = null) =>
-		href('/meta/cards', { ...periodParams(data.period), line, ram });
+		href('/meta/cards', {
+			...periodParams(data.period),
+			line,
+			ram,
+			sort: sort === 'count' ? sort : null
+		});
 	const all = $derived(data.line === null && data.ram === null);
 
 	const OPTIONS = [
@@ -107,21 +114,12 @@
 	<section>
 		<div class="mb-4 flex items-center justify-between">
 			<p class="font-mono text-xs text-muted">{data.decks} decks · top {cards.length} cards</p>
-			<div
-				class="flex rounded-full border border-edge p-0.5 font-mono text-xs"
-				role="group"
-				aria-label="Order by"
-			>
-				{#each OPTIONS as [key, label] (key)}
-					<button
-						class="rounded-full px-3 py-1 {sort === key
-							? 'bg-neon text-void'
-							: 'text-muted hover:text-body'}"
-						aria-pressed={sort === key}
-						onclick={() => (sort = key)}>{label}</button
-					>
-				{/each}
-			</div>
+			<Pills
+				label="Order by"
+				options={OPTIONS}
+				value={sort}
+				href={(key) => withParams(page.url, { sort: key === 'percentage' ? null : key })}
+			/>
 		</div>
 
 		<ul

@@ -542,8 +542,11 @@ their list empty (2 of the 5 events ingested so far); the page says which rank's
 read-only, dynamic and `noindex`:
 
 - **`/meta`** (tier list: group by RAM, Legends or By Legend; count all decks, top 8 or
-  winners; conversion columns), **`/meta/matchups`** (the matrix, for the eight most-played RAMs or lines) and
-  **`/meta/cards`** ("card breakdown", optionally within one RAM or set of Legends).
+  winners; conversion columns), **`/meta/matchups`** (the matrix, for the eight most-played RAMs or lines;
+  counting every deck, or only the matches of top 8 decks or of event winners, against anyone) and
+  **`/meta/cards`** ("card breakdown", optionally within one RAM or set of Legends). Their pill toggles
+  live in the address (`?by=`, `?count=top8|wins`, `?sort=count`; the default is no param), so a view can be
+  linked to; a value that is none of the options means the default.
 - **`/meta/decks`** (filter by Legend, RAM, a card the deck runs, or player; paged on the server),
   **`/decks/lines`** (shelves per Legend line) and **`/decks/[guid]`** (a deck's path through its event, and
   its list).

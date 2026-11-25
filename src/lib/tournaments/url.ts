@@ -33,3 +33,12 @@ export function withParams(
 	const text = query.toString();
 	return text ? `${location.pathname}?${text}` : location.pathname;
 }
+
+/** A param that must be one of `allowed`; anything else, or none, is `fallback`, the choice a bare URL means. */
+export function choose<T extends string>(
+	value: string | null,
+	allowed: readonly T[],
+	fallback: T
+): T {
+	return allowed.find((option) => option === value) ?? fallback;
+}

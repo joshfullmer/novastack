@@ -1,6 +1,7 @@
 import { getCardStats, getLines, ramRows } from '#lib/server/db/tournament-stats.js';
 import { isPossibleLine, RAM_PER_LEGEND } from '#lib/tournaments/present.js';
 import { parseRam } from '#lib/tournaments/ram.js';
+import { choose } from '#lib/tournaments/url.js';
 import type { PageServerLoad } from './$types';
 
 /** A Legend line's key: three card slugs joined by `+`. Anything else is not a line. */
@@ -25,6 +26,7 @@ export const load: PageServerLoad = async ({ locals, parent, url }) => {
 				)
 	]);
 	return {
+		sort: choose(url.searchParams.get('sort'), ['percentage', 'count'], 'percentage'),
 		lines: lines.slice(0, 8),
 		rams: rams
 			.flatMap((row) => (row.line ? [{ ram: row.line, decks: row.decks }] : []))
