@@ -19,6 +19,9 @@
 	const legendsOf = $derived(
 		new Map(event.standings.map((s) => [s.playerId, s.deck?.legends ?? []]))
 	);
+	/** Alone in a match, a player was given a bye, or forfeited it: the one says BYE, the other FORFEIT. */
+	const alone = (match: MatchView) =>
+		match.kind === 'bye' ? 'BYE' : match.kind === 'forfeit' && !match.b ? 'FORFEIT' : null;
 	const won = (match: MatchView, side: 'a' | 'b') =>
 		match.kind === 'played' &&
 		(side === 'a' ? match.gamesA > match.gamesB : match.gamesB > match.gamesA);
@@ -50,7 +53,7 @@
 			</span>
 		</div>
 	{:else}
-		<span class="text-sm text-muted">bye</span>
+		<span class="text-sm text-muted">{match.kind === 'forfeit' ? '' : 'bye'}</span>
 	{/if}
 {/snippet}
 
@@ -78,12 +81,10 @@
 				class="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-3 gap-y-2 rounded-lg border border-edge bg-shell px-3 py-3 md:grid-cols-[1fr_5rem_1fr] md:px-4"
 			>
 				{@render player(match, 'a')}
-				<span class="font-mono text-lg text-bright md:hidden"
-					>{match.kind === 'bye' ? 'BYE' : match.gamesA}</span
-				>
+				<span class="font-mono text-lg text-bright md:hidden">{alone(match) ?? match.gamesA}</span>
 				<span class="hidden text-center font-mono md:block">
-					{#if match.kind === 'bye'}
-						<span class="text-xs text-muted">BYE</span>
+					{#if alone(match)}
+						<span class="text-xs text-muted">{alone(match)}</span>
 					{:else}
 						<span class="text-bright">{match.gamesA}–{match.gamesB}</span>
 						{#if match.kind === 'draw'}
@@ -96,7 +97,7 @@
 				</span>
 				{@render player(match, 'b')}
 				<span class="font-mono text-lg text-bright md:hidden"
-					>{match.kind === 'bye' ? '' : match.gamesB}</span
+					>{alone(match) ? '' : match.gamesB}</span
 				>
 				{#if match.table || match.kind === 'draw' || match.draws > 0}
 					<span class="col-span-2 font-mono text-[10px] text-muted md:hidden">

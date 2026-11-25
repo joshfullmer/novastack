@@ -53,7 +53,8 @@ export const MeleeDetailsSchema = v.object({
 	Status: nonEmpty,
 	OrganizationId: int,
 	OrganizationName: nonEmpty,
-	Format: nonEmpty,
+	/** Empty for an event never set up (no format, no players): refused as not ended before it matters. */
+	Format: v.string(),
 	ParticipatorCount: v.pipe(int, v.minValue(0))
 });
 export type MeleeDetails = v.InferOutput<typeof MeleeDetailsSchema>;
@@ -119,16 +120,22 @@ export const MeleeMatchesPageSchema = v.object({
  * accepted; anything else fails.
  */
 export const MeleePlayerDetailsSchema = v.object({
-	decklists: v.array(
-		v.union([
-			v.pipe(
-				v.looseObject({ id: nonEmpty }),
-				v.transform((item) => item.id)
-			),
-			v.pipe(
-				v.looseObject({ DecklistId: nonEmpty }),
-				v.transform((item) => item.DecklistId)
+	/** `null` for a player Melee has no lists for at all (479485), the same as `[]`. */
+	decklists: v.pipe(
+		v.nullable(
+			v.array(
+				v.union([
+					v.pipe(
+						v.looseObject({ id: nonEmpty }),
+						v.transform((item) => item.id)
+					),
+					v.pipe(
+						v.looseObject({ DecklistId: nonEmpty }),
+						v.transform((item) => item.DecklistId)
+					)
+				])
 			)
-		])
+		),
+		v.transform((lists) => lists ?? [])
 	)
 });

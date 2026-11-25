@@ -89,21 +89,25 @@ export function buildPath(
 			const opponentId = isA ? m.playerB : m.playerA;
 			const [mine, theirs] = isA ? [m.gamesA, m.gamesB] : [m.gamesB, m.gamesA];
 			const opponent = opponentId === null ? undefined : opponents.get(opponentId);
+			// Alone in a forfeited match, the player forfeited: a loss with no score to show.
+			const forfeited = m.kind === 'forfeit' && opponentId === null;
 			const result: PathRow['result'] =
 				m.kind === 'bye'
 					? 'BYE'
-					: m.kind === 'draw' || mine === theirs
-						? 'D'
-						: mine > theirs
-							? 'W'
-							: 'L';
+					: forfeited
+						? 'L'
+						: m.kind === 'draw' || mine === theirs
+							? 'D'
+							: mine > theirs
+								? 'W'
+								: 'L';
 			return {
 				round: m.round,
 				opponent: opponentId === null ? null : (opponent?.name ?? `Player ${opponentId}`),
 				oppLegends: opponent?.legends ?? [],
 				oppDeck: opponent?.deck ?? null,
 				result,
-				score: m.kind === 'bye' ? '' : `${mine}–${theirs}`
+				score: m.kind === 'bye' || forfeited ? '' : `${mine}–${theirs}`
 			};
 		});
 }

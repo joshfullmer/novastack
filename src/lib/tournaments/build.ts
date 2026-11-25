@@ -58,6 +58,8 @@ export type BuiltTournament = {
 	notes: {
 		/** Players Melee ranks but who played nothing (`0-0-0`); dropped from `standings`, ranks kept. */
 		zeroRecordPlayers: number[];
+		/** What Melee says the event's player count is, which the standings may differ from by one. */
+		reportedPlayers: number;
 		/** Matches without a result yet; not written. */
 		unplayedMatches: number;
 		/** Lists a player registered but left empty; treated as no deck. */
@@ -82,9 +84,14 @@ const FORFEIT = /forfeited/;
  */
 export function matchKind(match: MeleeMatch): 'played' | 'draw' | 'bye' | 'forfeit' | null {
 	const result = match.ResultString ?? '';
+	// One player alone either was handed a bye (a win) or forfeited (a loss, with no opponent to win).
+	if (match.Competitors.length === 1 && FORFEIT.test(result)) return 'forfeit';
 	if (match.Competitors.length === 1 || BYE.test(result)) return 'bye';
-	if (match.Competitors.length === 0 || !match.HasResult) return null;
+	if (match.Competitors.length === 0) return null;
+	// A draw the players agreed to has no games to enter ("0-0-3 Draw", `HasResult` false), yet the standings
+	// count it, so a match record that left it out would not add up.
 	if (DRAW.test(result)) return 'draw';
+	if (!match.HasResult) return null;
 	if (FORFEIT.test(result)) return 'forfeit';
 	return 'played';
 }
@@ -203,7 +210,9 @@ export function buildTournament(input: BuildInput): BuiltTournament {
 			organizerName: details.OrganizationName,
 			format: details.Format,
 			formatId,
-			playerCount: details.ParticipatorCount,
+			// What the standings hold. Melee's own count is sometimes one off (a late drop, an entry it
+			// withdrew), and the pages say "3rd of 14" about the 14 whose results they show.
+			playerCount: input.standings.length,
 			venue: input.info.venue,
 			tournamentType: input.info.tournamentType,
 			entryFee: input.info.entryFee,
@@ -221,6 +230,12 @@ export function buildTournament(input: BuildInput): BuiltTournament {
 		deckCards,
 		standings: standingRows,
 		matches: matchRows,
-		notes: { zeroRecordPlayers, unplayedMatches, deckReadings, blankDecks }
+		notes: {
+			zeroRecordPlayers,
+			reportedPlayers: details.ParticipatorCount,
+			unplayedMatches,
+			deckReadings,
+			blankDecks
+		}
 	};
 }

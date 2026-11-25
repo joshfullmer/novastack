@@ -11,7 +11,7 @@
  * Reads and decides; never writes. The CLI writes what this returns.
  */
 import type { Card } from '../cards/schema.ts';
-import { checkTournament, reviewDecks } from './assertions.ts';
+import { checkTournament, reviewCounts, reviewDecks } from './assertions.ts';
 import { buildTournament, matchKind, type BuiltTournament } from './build.ts';
 import { dataTablesBody, type MeleeClient } from './client.ts';
 import { formatIdOf, pickDecklist } from './decks.ts';
@@ -339,6 +339,7 @@ export async function ingestTournament(
 		violations: checkTournament(built, standings),
 		findings: [
 			...extra,
+			...reviewCounts(built),
 			...reviewDecks(built),
 			...built.notes.blankDecks.map(
 				(guid) => `${guid}: registered a blank list; treated as no deck.`

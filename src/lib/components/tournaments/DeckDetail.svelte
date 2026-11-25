@@ -53,7 +53,9 @@
 			{/each}
 		</span>
 	{/if}
-	<span class="min-w-0 flex-1 truncate">{step.opponent ?? 'bye'}</span>
+	<span class="min-w-0 flex-1 truncate"
+		>{step.opponent ?? (step.result === 'BYE' ? 'bye' : 'forfeit')}</span
+	>
 	<span class="font-mono text-xs text-muted">{step.score}</span>
 {/snippet}
 

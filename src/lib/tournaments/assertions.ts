@@ -9,14 +9,17 @@ import type { BuiltTournament } from './build.ts';
 import { isPlayoffRound } from './rounds.ts';
 import type { MeleeStanding } from './sources.ts';
 
+/** How far Melee's player count may be from the standings it lists before something is taken to be missing. */
+const PLAYER_COUNT_SLACK = 1;
+
 const MAIN_DECK = { min: 40, max: 50 } as const;
 
 type Tally = { wins: number; losses: number; draws: number };
 
 /**
  * Each player's match record as the match rows tell it, to compare against the standings row. A
- * player who has a forfeit is left out: who forfeited isn't recorded in anything we keep, so their
- * record can't be recomputed and must not be guessed.
+ * player in a forfeit against someone is left out: who forfeited isn't recorded in anything we keep, so
+ * their record can't be recomputed and must not be guessed.
  */
 export function recordsFromMatches(
 	matches: BuiltTournament['matches'],
@@ -37,8 +40,13 @@ export function recordsFromMatches(
 		const { playerA: a } = match;
 		const b = match.playerB ?? null;
 		if (match.kind === 'forfeit') {
-			skip.add(a);
-			if (b !== null) skip.add(b);
+			// Alone in the match, it was theirs: a forfeit with nobody to win it is a loss. Against someone,
+			// who forfeited isn't kept, so neither record can be known.
+			if (b === null) of(a).losses += 1;
+			else {
+				skip.add(a);
+				skip.add(b);
+			}
 		} else if (match.kind === 'bye') {
 			of(a).wins += 1;
 		} else if (b !== null) {
@@ -73,10 +81,12 @@ export function checkTournament(
 	const violations: string[] = [];
 	const add = (message: string) => violations.push(message);
 
-	// A count Melee gave and a count we hold must agree, or something was dropped or doubled.
-	const expected = built.tournament.playerCount;
+	// A count Melee gave and a count we hold must agree, or something was dropped or doubled. One off is
+	// Melee disagreeing with itself (every such event's matches and standings do agree), which
+	// `reviewCounts` reports; the rows themselves are checked to be all there where they are fetched.
+	const expected = built.notes.reportedPlayers;
 	const held = built.standings.length + built.notes.zeroRecordPlayers.length;
-	if (held !== expected)
+	if (Math.abs(held - expected) > PLAYER_COUNT_SLACK)
 		add(
 			`${held} players in the standings (counting ${built.notes.zeroRecordPlayers.length} who played nothing), but Melee says ${expected}.`
 		);
@@ -161,6 +171,15 @@ export function checkTournament(
 	}
 
 	return violations;
+}
+
+/** Worth saying, never blocking: Melee's player count and its standings disagree by a player. */
+export function reviewCounts(built: BuiltTournament): string[] {
+	const held = built.standings.length + built.notes.zeroRecordPlayers.length;
+	const { reportedPlayers } = built.notes;
+	return held === reportedPlayers
+		? []
+		: [`Melee says ${reportedPlayers} players but lists ${held} in the standings; using ${held}.`];
 }
 
 /**

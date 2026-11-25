@@ -10,7 +10,7 @@ import { parse } from 'node-html-parser';
 import * as v from 'valibot';
 import { describe, expect, it } from 'vitest';
 import { dataset } from '../cards/index.ts';
-import { checkTournament, recordsFromMatches, reviewDecks } from './assertions.ts';
+import { checkTournament, recordsFromMatches, reviewCounts, reviewDecks } from './assertions.ts';
 import { buildTournament, matchKind, type BuildInput } from './build.ts';
 import {
 	MeleeSignInError,
@@ -217,6 +217,16 @@ describe('the boundary schemas', () => {
 		);
 	});
 
+	it('synthetic: a player Melee has no lists for at all has null, the same as none', () => {
+		expect(v.parse(MeleePlayerDetailsSchema, { decklists: null }).decklists).toEqual([]);
+	});
+
+	it('synthetic: an event never set up has no format, and is refused later as not ended', () => {
+		expect(
+			v.parse(MeleeDetailsSchema, { ...details, Format: '', Status: 'In Progress' }).Format
+		).toBe('');
+	});
+
 	it('synthetic: read a decklist from either of the shapes swubase accepts', () => {
 		expect(
 			v.parse(MeleePlayerDetailsSchema, { decklists: [{ id: 'g1' }, { DecklistId: 'g2' }] })
@@ -244,6 +254,33 @@ describe('how a match ended', () => {
 	it('synthetic: a forfeit, and a match without a result yet', () => {
 		expect(matchKind(match({ ResultString: 'B forfeited the match' }))).toBe('forfeit');
 		expect(matchKind(match({ HasResult: false, ResultString: null }))).toBeNull();
+	});
+
+	it('synthetic: one player alone who forfeited lost; one alone who was given a bye won', () => {
+		const alone = [match({}).Competitors[0]];
+		expect(matchKind(match({ Competitors: alone, ResultString: 'A forfeited the match' }))).toBe(
+			'forfeit'
+		);
+		expect(matchKind(match({ Competitors: alone, ResultString: 'A was assigned a bye' }))).toBe(
+			'bye'
+		);
+		const row = (kind: 'forfeit' | 'bye') => ({
+			tournamentId: 1,
+			round: 1,
+			tableNumber: null,
+			playerA: 1,
+			playerB: null,
+			gamesA: 0,
+			gamesB: 0,
+			draws: 0,
+			kind
+		});
+		expect(recordsFromMatches([row('forfeit')]).get(1)).toEqual({ wins: 0, losses: 1, draws: 0 });
+		expect(recordsFromMatches([row('bye')]).get(1)).toEqual({ wins: 1, losses: 0, draws: 0 });
+	});
+
+	it('synthetic: a draw the players agreed to has no result entered but is still a draw', () => {
+		expect(matchKind(match({ HasResult: false, ResultString: '0-0-3 Draw' }))).toBe('draw');
 	});
 
 	it('does not look for a winner in the prose: a player may be named "Dude won the Potato"', () => {
@@ -455,6 +492,14 @@ describe('synthetic: what Melee ranks but the results shouldn`t', () => {
 
 describe('the invariants catch what a bad run would produce', () => {
 	const good = () => buildTournament(input());
+
+	it('a player count one off from the standings is Melee disagreeing with itself, not a missing row', () => {
+		const off = buildTournament(input({ details: { ...details, ParticipatorCount: 15 } }));
+		expect(checkTournament(off, onlyWinnerHasADeck)).toEqual([]);
+		expect(reviewCounts(off).join('\n')).toMatch(/Melee says 15 players but lists 14/);
+		expect(off.tournament.playerCount).toBe(14);
+		expect(reviewCounts(good())).toEqual([]);
+	});
 
 	it('a player count that disagrees with the standings', () => {
 		const built = buildTournament(input({ details: { ...details, ParticipatorCount: 20 } }));
