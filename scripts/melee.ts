@@ -78,6 +78,9 @@ const CARDS_PATH = path.join('src', 'lib', 'cards', 'cards.json');
 
 const say = (line = '') => console.log(line);
 
+/** How `ingestTournament` words the refusal of an event that isn't over (`ingest.ts`). */
+const NOT_ENDED = /, not Ended\./;
+
 /** Ids that weren't ready, remembered between runs so they are only ever looked up once. */
 const PENDING_PATH = process.env.MELEE_PENDING ?? path.join('scripts', 'melee-pending.json');
 
@@ -262,7 +265,7 @@ async function discoverNew(
 	targets: readonly Target[],
 	waiting: Pending,
 	skipped: Skipped
-): Promise<Found[]> {
+): Promise<{ candidates: Found[]; later: Found[] }> {
 	// Known means every database being written holds it: one that lacks it still wants the event.
 	const heldByAll = (ids: readonly number[]) => {
 		if (ids.length === 0) return new Set<number>();
@@ -306,7 +309,7 @@ async function discoverNew(
 			args.deep
 				? `Read every page (${Math.ceil(found.length / PAGE_SIZE)}).`
 				: stoppedAt === null
-					? `Read ${args.pages} pages without reaching an event already held (--pages reads more, --deep reads all).`
+					? `Read ${Math.ceil(found.length / PAGE_SIZE)} pages${Number.isFinite(args.pages) ? ` (--pages ${args.pages})` : ''} without reaching an event already held (--deep reads all).`
 					: `Stopped at page ${stoppedAt}: events from there on are already held, waiting or skipped, or older than --since.`
 		)
 	);
@@ -329,7 +332,12 @@ async function discoverNew(
 		say(paint.bold(`${candidates.length} not in the ${into} database yet:`));
 		for (const line of eventLines(candidates)) say(line);
 	}
-	return candidates;
+	// Events not over yet are not candidates, but a later run may never read this far back again (the walk
+	// stops at the newest events it holds), so `--ingest` hands them to `--pending`, which does.
+	const later = notEnded.filter(
+		(event) => !filters.waiting.has(event.id) && !filters.skipped.has(event.id)
+	);
+	return { candidates, later };
 }
 
 /**
@@ -389,13 +397,18 @@ async function main(): Promise<number> {
 		return 0;
 	}
 	if (args.discover) {
-		const candidates = await discoverNew(client, args, targets, waiting, skipped);
+		const { candidates, later } = await discoverNew(client, args, targets, waiting, skipped);
 		if (!args.ingest) {
 			if (candidates.length > 0) say(`\n${commandFor(candidates)}`);
 			return 0;
 		}
-		if (candidates.length === 0) return 0;
-		ids = candidates.map((event) => event.id);
+		// Besides what is new: events that were not over when last seen and may be now. Only those, not
+		// every id waiting: most of the rest are events that will never have lists, a trip each to learn.
+		const retry = dueFirst(waiting, now).filter((id) => NOT_ENDED.test(waiting[String(id)].reason));
+		ids = [
+			...new Set([...retry, ...candidates.map((event) => event.id), ...later.map((e) => e.id)])
+		];
+		if (ids.length === 0) return 0;
 		say(paint.dim('\nIngesting them:'));
 	}
 

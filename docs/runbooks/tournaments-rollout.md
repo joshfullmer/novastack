@@ -86,10 +86,12 @@ pnpm exec wrangler d1 execute novastack-decks --remote --command \
   `melee.gg/Tournament/View/<id>`; `/meta/tournaments/add` (local dev server only) hosts a bookmarklet that copies the command from
   that page, or from a `/Decklists` search page, where it copies one command for every event listed
   (`src/lib/tournaments/bookmarklet.ts`). It only reads the page and writes the clipboard.
-  Or let the job find them: `pnpm melee --discover [--search words] [--pages N] [--min-players N]
-[--since YYYY-MM-DD]` lists ended events the local database lacks, newest first, until it reaches ones it
-  already holds, and prints the command that ingests them; it writes nothing. Add `--ingest` (with
-  `--check`, or `--remote`) to ingest them in the same run.
+  Or let the job find them: `pnpm melee --discover [--search words] [--name word …] [--pages N]
+[--min-players N] [--since YYYY-MM-DD]` lists ended events with 8 or more players that the local database
+  lacks, newest first, until it reaches ones it already holds (however many pages that is), and prints the
+  command that ingests them; it writes nothing. Add `--ingest` (with `--check`, or `--remote`) to ingest them
+  in the same run: that is the one command to run to catch up, and it also picks up events that were still
+  running last time. `--min-players 0` includes the small ones; `--deep` is the one-off backfill of everything.
 - A new meta is one `INSERT INTO metas` (name, start in ms UTC, end or NULL), plus the `$BUMP` from step 2 in the
   same command: the pages cache query results by `meta_version` (`src/lib/server/query-cache.ts`), so a write
   that skips it is not seen until the entries expire (a day). `pnpm melee` does this itself.

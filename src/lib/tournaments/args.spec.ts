@@ -17,9 +17,9 @@ describe('pnpm melee arguments', () => {
 			discover: false,
 			search: '',
 			names: [],
-			pages: 10,
+			pages: Infinity,
 			deep: false,
-			minPlayers: 0,
+			minPlayers: 8,
 			since: null,
 			ingest: false,
 			persistTo: undefined,
@@ -119,8 +119,8 @@ describe('pnpm melee arguments', () => {
 			discover: true,
 			ids: [],
 			search: '',
-			pages: 10,
-			minPlayers: 0
+			pages: Infinity,
+			minPlayers: 8
 		});
 		expect(
 			parseCli(['--discover', '--search', ' showdown ', '--pages', '3', '--min-players', '8'])

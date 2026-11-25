@@ -241,10 +241,13 @@ pnpm melee --reparse        rebuild the derived deck columns and card index from
 pnpm melee --pending        try again the ids refused as not ready that are due (§4.5); same flags as a normal run
 pnpm melee --list           which ids are waiting and why; --forget <id …> stops waiting for some
 pnpm melee --discover       list Melee's ended Cyberpunk events the LOCAL database lacks, newest first, until it
-                            reaches events it already holds (or --since YYYY-MM-DD, or --pages N of eight, default
-                            10); prints the `pnpm melee <ids…>` that ingests them: read-only. --search words
-                            (tournament names), --min-players N, --max-requests N
-pnpm melee --discover --ingest   the same, then ingests what it found as a normal run would; takes --check,
+                            reaches events it already holds, however many pages that is (or --since YYYY-MM-DD, or
+                            --pages N of eight); prints the `pnpm melee <ids…>` that ingests them: read-only.
+                            --search words, --name word (any of the event's name; repeatable), --min-players N
+                            (default 8), --max-requests N
+pnpm melee --discover --ingest   the same, then ingests what it found as a normal run would, plus events that were not
+                            over when last seen (`--pending`'s "not Ended" ones, due again) and those still not over
+                            now, so they aren't lost behind the walk's stopping point; takes --check,
                             --remote [--yes] and --persist-to, and counts an event as known only when every
                             database being written holds it. No --force
 pnpm melee 485070 --persist-to DIR   a throwaway local database, to try a run out
@@ -255,7 +258,7 @@ pnpm melee --pending        try again the ids refused as not ready that are due 
 pnpm melee --list           which ids are waiting and why; --forget <id …> stops waiting for some
 pnpm melee --discover       list Melee's ended Cyberpunk events the LOCAL database lacks, newest first, with the
                             `pnpm melee <ids…>` to ingest them: read-only. --search words (tournament names),
-                            --pages N (of eight; default 10) or --deep (every page, no early stop: the one-off
+                            --pages N (of eight; default: until it reaches events held) or --deep (every page, no early stop: the one-off
                             backfill; ~1 request a page, so give it a big --max-requests), --min-players N, --max-requests N
 ```
 

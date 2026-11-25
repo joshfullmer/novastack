@@ -29,7 +29,7 @@ export type Args = {
 	discover: boolean;
 	/** `--discover`: words to search tournament names for; empty lists every Cyberpunk TCG event. */
 	search: string;
-	/** `--discover`: how many pages of eight to read. */
+	/** `--discover`: the most pages of eight to read; by default as many as it takes to reach events already held. */
 	pages: number;
 	/** `--discover`: read every page rather than stopping where new events seem to end. */
 	deep: boolean;
@@ -45,6 +45,9 @@ export type Args = {
 	persistTo: string | undefined;
 	maxRequests: number | undefined;
 };
+
+/** Events smaller than this are left alone by `--discover`: few players, and seldom a decklist. */
+export const MIN_PLAYERS = 8;
 
 export const USAGE = `usage: pnpm melee <id> [id …] [--force] [--check] [--remote [--yes]] [--max-requests N]
        pnpm melee --reparse [--remote]
@@ -114,8 +117,10 @@ export function parseCli(argv: readonly string[]): Args {
 	if (values.deep && values.pages !== undefined) {
 		throw new Error('--deep reads every page; it takes no --pages.');
 	}
-	const pages = values.deep ? Infinity : whole('pages', values.pages, 10, 1);
-	const minPlayers = whole('min-players', values['min-players'], 0, 0);
+	// A plain `--discover` reads until it reaches ground already covered, however far that is: a cap would leave
+	// a gap behind it that the next run, stopping at its first page, never reads.
+	const pages = values.deep ? Infinity : whole('pages', values.pages, Infinity, 1);
+	const minPlayers = whole('min-players', values['min-players'], MIN_PLAYERS, 0);
 	const discover = values.discover;
 	if (
 		!discover &&
