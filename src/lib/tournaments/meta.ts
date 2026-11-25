@@ -176,12 +176,6 @@ export function buildMeta(input: {
 	matrixBy?: 'line' | 'ram';
 	/** All matches between decks of different groups; defaults to the matrix's own count. */
 	crossMatchesTotal?: number;
-	/**
-	 * Each row is already one side's view (`a` is whose results they are), so there is nothing to mirror:
-	 * a match between two decks that both qualify is two rows, one for each. Rows from a count of every
-	 * deck are one per match, and are mirrored.
-	 */
-	directed?: boolean;
 }): MetaView {
 	const total = input.lines.reduce((n, row) => n + row.decks, 0);
 
@@ -202,7 +196,7 @@ export function buildMeta(input: {
 	const matrixLines = (matrixBy === 'ram' ? byRam : byLine).slice(0, MATRIX_SIZE).map((g) => g.key);
 
 	// Each stored row is one direction (a's Legends played b's); the matrix wants both, so credit
-	// the other side with what is left of each match (unless the rows are `directed` already).
+	// the other side with what is left of each match.
 	const cells = new Map<string, { n: number; won: number }>();
 	const add = (a: string, b: string, n: number, won: number) => {
 		const cell = cells.get(`${a}|${b}`) ?? { n: 0, won: 0 };
@@ -214,7 +208,7 @@ export function buildMeta(input: {
 	for (const row of input.matchups) {
 		if (!row.a || !row.b) continue;
 		add(row.a, row.b, row.matches, row.score);
-		if (!input.directed) add(row.b, row.a, row.matches, row.matches - row.score);
+		add(row.b, row.a, row.matches, row.matches - row.score);
 		crossMatches += row.matches;
 	}
 

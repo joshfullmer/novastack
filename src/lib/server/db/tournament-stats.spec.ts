@@ -72,26 +72,6 @@ describe('getMeta, all time', () => {
 		expect(cell('a+b+d', 'e+f+g')).toMatchObject({ matches: 1, winRate: 1 });
 	});
 
-	it('draws the matrix from the matches of the top 8, or of the winners, against anyone', async () => {
-		const scope = { legends: false, rams: false, matchups: 'line' } as const;
-		const cell = (meta: Awaited<ReturnType<typeof getMeta>>, a: string, b: string) =>
-			meta.matrix.find((c) => c.a === a && c.b === b);
-		const [all, top8, wins] = await Promise.all([
-			getMeta(world(), ALL_TIME, scope),
-			getMeta(world(), ALL_TIME, { ...scope, part: 'top8' }),
-			getMeta(world(), ALL_TIME, { ...scope, part: 'wins' })
-		]);
-		// Everyone here finished in the top 8, so every cell is what it was; each match is counted by both sides
-		expect(top8.matrix).toEqual(all.matrix);
-		expect(top8.crossMatches).toBe(all.crossMatches * 2);
-		expect(top8.crossMatchesTotal).toBe(all.crossMatchesTotal * 2);
-		// The winners are D1 (X) and D5 (Y). X's only winner played Y once and won; Y's beat X once
-		expect(cell(wins, 'a+b+c', 'a+b+d')).toMatchObject({ matches: 1, winRate: 1 });
-		expect(cell(wins, 'a+b+d', 'a+b+c')).toMatchObject({ matches: 1, winRate: 1 });
-		expect(cell(wins, 'e+f+g', 'a+b+c')).toMatchObject({ matches: 0, winRate: null });
-		expect(wins.crossMatches).toBeLessThanOrEqual(wins.crossMatchesTotal);
-	});
-
 	it('leaves mirrors, byes and matches with a deck-less player out of the matrix', async () => {
 		const meta = await getMeta(world(), ALL_TIME);
 		// 6 cross-deck matches; not the X mirror, the no-deck player's match, or the bye

@@ -6,12 +6,9 @@ export const load: PageServerLoad = async ({ locals, parent, url }) => {
 	const { period } = await parent();
 	// Decks are talked about by what their Legends provide, so that is the matrix unless asked otherwise.
 	const by = choose(url.searchParams.get('by'), ['ram', 'line'], 'ram');
-	// Whose matches are counted: every deck, or only those that made the top 8 or won their event.
-	const part = choose(url.searchParams.get('count'), ['decks', 'top8', 'wins'], 'decks');
-	const scope = { legends: false, rams: by === 'ram', matchups: by, part } as const;
+	const scope = { legends: false, rams: by === 'ram', matchups: by } as const;
 	return {
 		by,
-		part,
 		meta: await locals.cached('getMeta', [period, scope], () => getMeta(locals.db, period, scope))
 	};
 };

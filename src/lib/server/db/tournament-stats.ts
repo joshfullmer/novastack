@@ -6,20 +6,7 @@
  * what keep that down, and `rows_read` is measured on the real thing, not here.) Every query takes a
  * `Period`: a Tournament counts when its start falls in the window.
  */
-import {
-	and,
-	count,
-	eq,
-	gte,
-	inArray,
-	isNotNull,
-	lt,
-	lte,
-	min,
-	ne,
-	sql,
-	type SQL
-} from 'drizzle-orm';
+import { and, count, eq, gte, inArray, isNotNull, lt, min, ne, sql, type SQL } from 'drizzle-orm';
 import { alias, type SQLiteColumn } from 'drizzle-orm/sqlite-core';
 import {
 	buildCardStats,
@@ -33,8 +20,7 @@ import {
 	MATRIX_SIZE,
 	type GroupStat,
 	type LineRow,
-	type MetaView,
-	type Part
+	type MetaView
 } from '#lib/tournaments/meta.js';
 import { EVENT_KINDS, type EventKind } from '#lib/tournaments/kind.js';
 import type { MetaRow, Period } from '#lib/tournaments/period.js';
@@ -126,19 +112,12 @@ export async function getMeta(
 	db: Db,
 	period: Period,
 	/** Which expensive parts to compute; a view that doesn't draw one shouldn't pay for it. */
-	parts: {
-		legends: boolean;
-		rams: boolean;
-		matchups: Grouping | false;
-		/** Whose matches the matrix counts: of every deck unless said (`getMatchups`). */
-		part?: Part;
-	} = {
+	parts: { legends: boolean; rams: boolean; matchups: Grouping | false } = {
 		legends: true,
 		rams: true,
 		matchups: 'line'
 	}
 ): Promise<MetaView> {
-	const part = parts.part ?? 'decks';
 	const [lines, rams, legends] = await Promise.all([
 		lineRows(db, period),
 		parts.rams || parts.matchups === 'ram' ? ramRows(db, period) : Promise.resolve([]),
@@ -172,8 +151,8 @@ export async function getMeta(
 
 	const [matchups, crossMatchesTotal] = parts.matchups
 		? await Promise.all([
-				getMatchups(db, period, parts.matchups, top, part),
-				countCrossMatches(db, period, parts.matchups, part)
+				getMatchups(db, period, parts.matchups, top),
+				countCrossMatches(db, period, parts.matchups)
 			])
 		: [[], undefined];
 	return buildMeta({
@@ -182,66 +161,43 @@ export async function getMeta(
 		legends,
 		matchups,
 		matrixBy: parts.matchups || 'line',
-		crossMatchesTotal,
-		directed: part !== 'decks'
+		crossMatchesTotal
 	});
 }
 
-/** A deck's standing is in `part`: every deck, the top 8, or the winner. No condition for every deck. */
-const inPart = (part: Part, rank: SQLiteColumn): SQL | undefined =>
-	part === 'top8' ? lte(rank, 8) : part === 'wins' ? eq(rank, 1) : undefined;
-
-/**
- * Every match between two decks of different groups, whichever: the matrix's context. Of the top 8 or the
- * winners, a match counts once for each side that qualifies, as the matrix draws it.
- */
-async function countCrossMatches(
-	db: Db,
-	period: Period,
-	by: Grouping,
-	part: Part = 'decks'
-): Promise<number> {
+/** Every match between two decks of different groups, whichever: the matrix's context. */
+async function countCrossMatches(db: Db, period: Period, by: Grouping): Promise<number> {
 	const sa = alias(standings, 'sa');
 	const sb = alias(standings, 'sb');
 	const da = alias(tournamentDecks, 'da');
 	const db2 = alias(tournamentDecks, 'db2');
 	const m = tournamentMatches;
-	const counts = await Promise.all(
-		(part === 'decks' ? [sa.rank] : [sa.rank, sb.rank]).map(async (rank) => {
-			const [row] = await db
-				.select({ n: count() })
-				.from(m)
-				.innerJoin(tournaments, eq(tournaments.id, m.tournamentId))
-				.innerJoin(sa, and(eq(sa.tournamentId, m.tournamentId), eq(sa.playerId, m.playerA)))
-				.innerJoin(sb, and(eq(sb.tournamentId, m.tournamentId), eq(sb.playerId, m.playerB)))
-				.innerJoin(da, eq(da.guid, sa.deckGuid))
-				.innerJoin(db2, eq(db2.guid, sb.deckGuid))
-				.where(
-					and(
-						inPeriod(period),
-						inArray(m.kind, ['played', 'draw']),
-						isNotNull(groupColumn(by, da)),
-						isNotNull(groupColumn(by, db2)),
-						ne(groupColumn(by, da), groupColumn(by, db2)),
-						inPart(part, rank)
-					)
-				);
-			return row?.n ?? 0;
-		})
-	);
-	return counts.reduce((n, c) => n + c, 0);
+	const [row] = await db
+		.select({ n: count() })
+		.from(m)
+		.innerJoin(tournaments, eq(tournaments.id, m.tournamentId))
+		.innerJoin(sa, and(eq(sa.tournamentId, m.tournamentId), eq(sa.playerId, m.playerA)))
+		.innerJoin(sb, and(eq(sb.tournamentId, m.tournamentId), eq(sb.playerId, m.playerB)))
+		.innerJoin(da, eq(da.guid, sa.deckGuid))
+		.innerJoin(db2, eq(db2.guid, sb.deckGuid))
+		.where(
+			and(
+				inPeriod(period),
+				inArray(m.kind, ['played', 'draw']),
+				isNotNull(groupColumn(by, da)),
+				isNotNull(groupColumn(by, db2)),
+				ne(groupColumn(by, da), groupColumn(by, db2))
+			)
+		);
+	return row?.n ?? 0;
 }
 
 /**
  * Matches between two decks of different groups (Legend lines, or RAMs), both among `keys`, grouped by the
  * pair as they were drawn. `score` is the first side's: a win is 1, a draw (or equal games) 0.5, a loss 0.
  * Byes and forfeits, mirrors, and players with no deck are left out.
- *
- * Of the top 8 or the winners, only the matches of decks in `part` are counted, whoever they played: a row
- * for each side whose deck qualifies, `a` being that side. So a winner's record is against every deck, not
- * only against other winners, who never meet.
  */
-async function getMatchups(db: Db, period: Period, by: Grouping, keys: string[], part: Part) {
+async function getMatchups(db: Db, period: Period, by: Grouping, keys: string[]) {
 	if (keys.length < 2) return [];
 	const sa = alias(standings, 'sa');
 	const sb = alias(standings, 'sb');
@@ -249,45 +205,31 @@ async function getMatchups(db: Db, period: Period, by: Grouping, keys: string[],
 	const db2 = alias(tournamentDecks, 'db2');
 	const m = tournamentMatches;
 
-	/** The matches seen from one side: `rank` is that player's, `mine` and `theirs` the decks. */
-	type Deck = { ram: SQLiteColumn; legendLine: SQLiteColumn };
-	const from = (
-		rank: SQLiteColumn,
-		mine: Deck,
-		theirs: Deck,
-		gamesMe: SQLiteColumn,
-		gamesThem: SQLiteColumn
-	) =>
-		db
-			.select({
-				a: groupColumn(by, mine),
-				b: groupColumn(by, theirs),
-				matches: count(),
-				score: total(
-					sql`case when ${m.kind} = 'draw' or ${gamesMe} = ${gamesThem} then 0.5 when ${gamesMe} > ${gamesThem} then 1 else 0 end`
-				)
-			})
-			.from(m)
-			.innerJoin(tournaments, eq(tournaments.id, m.tournamentId))
-			.innerJoin(sa, and(eq(sa.tournamentId, m.tournamentId), eq(sa.playerId, m.playerA)))
-			.innerJoin(sb, and(eq(sb.tournamentId, m.tournamentId), eq(sb.playerId, m.playerB)))
-			.innerJoin(da, eq(da.guid, sa.deckGuid))
-			.innerJoin(db2, eq(db2.guid, sb.deckGuid))
-			.where(
-				and(
-					inPeriod(period),
-					inArray(m.kind, ['played', 'draw']),
-					inArray(groupColumn(by, da), keys),
-					inArray(groupColumn(by, db2), keys),
-					ne(groupColumn(by, da), groupColumn(by, db2)),
-					inPart(part, rank)
-				)
+	return db
+		.select({
+			a: groupColumn(by, da),
+			b: groupColumn(by, db2),
+			matches: count(),
+			score: total(
+				sql`case when ${m.kind} = 'draw' or ${m.gamesA} = ${m.gamesB} then 0.5 when ${m.gamesA} > ${m.gamesB} then 1 else 0 end`
 			)
-			.groupBy(groupColumn(by, mine), groupColumn(by, theirs));
-
-	const asDrawn = from(sa.rank, da, db2, m.gamesA, m.gamesB);
-	if (part === 'decks') return asDrawn;
-	return (await Promise.all([asDrawn, from(sb.rank, db2, da, m.gamesB, m.gamesA)])).flat();
+		})
+		.from(m)
+		.innerJoin(tournaments, eq(tournaments.id, m.tournamentId))
+		.innerJoin(sa, and(eq(sa.tournamentId, m.tournamentId), eq(sa.playerId, m.playerA)))
+		.innerJoin(sb, and(eq(sb.tournamentId, m.tournamentId), eq(sb.playerId, m.playerB)))
+		.innerJoin(da, eq(da.guid, sa.deckGuid))
+		.innerJoin(db2, eq(db2.guid, sb.deckGuid))
+		.where(
+			and(
+				inPeriod(period),
+				inArray(m.kind, ['played', 'draw']),
+				inArray(groupColumn(by, da), keys),
+				inArray(groupColumn(by, db2), keys),
+				ne(groupColumn(by, da), groupColumn(by, db2))
+			)
+		)
+		.groupBy(groupColumn(by, da), groupColumn(by, db2));
 }
 
 // ---------------------------------------------------------------------------
