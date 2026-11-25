@@ -7916,6 +7916,13 @@
 		"lastTried": "2026-11-25T19:03:24.476Z",
 		"attempts": 1
 	},
+	"479485": {
+		"name": "Cardhub Hackham Cyberpunk TCG Night City Showdown",
+		"reason": "479485 has no decklists (none of the first 7 of its 22 players has one up), so it isn't ingested. Lists can appear after an event ends; try again later.",
+		"firstTried": "2026-11-25T22:16:50.836Z",
+		"lastTried": "2026-11-25T22:16:50.836Z",
+		"attempts": 1
+	},
 	"479497": {
 		"name": "Night City Showdown",
 		"reason": "479497 has no decklists (none of the first 7 of its 14 players has one up), so it isn't ingested. Lists can appear after an event ends; try again later.",
@@ -10147,6 +10154,13 @@
 		"reason": "Round 3 has results but Melee has no standings for it, and the final ranking can't be read from them (it is not a playoff round). Try again once the organizer publishes them.",
 		"firstTried": "2026-11-25T18:49:53.809Z",
 		"lastTried": "2026-11-25T18:49:53.809Z",
+		"attempts": 1
+	},
+	"484321": {
+		"name": "Presentación Lanzamiento Ciberpunk Tcg",
+		"reason": "484321 is \"In Progress\", not Ended. Try again when it's over.",
+		"firstTried": "2026-11-25T22:17:39.778Z",
+		"lastTried": "2026-11-25T22:17:39.778Z",
 		"attempts": 1
 	},
 	"484323": {
