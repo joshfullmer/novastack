@@ -72,6 +72,28 @@ describe('getMeta, all time', () => {
 		expect(cell('a+b+d', 'e+f+g')).toMatchObject({ matches: 1, winRate: 1 });
 	});
 
+	it('counts the Swiss rounds, or only the playoff, in the matrix', async () => {
+		const { db, sqlite } = buildWorld();
+		// Event 1's last round is its playoff: "Round 3" becomes "Finals". It holds X v Z (X won) and X v Y (Y won).
+		sqlite.exec(
+			"UPDATE tournament_rounds SET name = 'Finals' WHERE tournament_id = 1 AND number = 3"
+		);
+		const scope = { legends: false, rams: false, matchups: 'line' } as const;
+		const [all, swiss, cut] = await Promise.all(
+			(['all', 'swiss', 'cut'] as const).map((phase) => getMeta(db, ALL_TIME, { ...scope, phase }))
+		);
+		const cell = (meta: typeof all, a: string, b: string) =>
+			meta.matrix.find((c) => c.a === a && c.b === b);
+		expect(cell(cut, 'a+b+c', 'e+f+g')).toMatchObject({ matches: 1, winRate: 1 });
+		expect(cell(cut, 'a+b+c', 'a+b+d')).toMatchObject({ matches: 1, winRate: 0 });
+		expect(cut.crossMatches).toBe(2);
+		expect(cell(cut, 'e+f+g', 'a+b+d')).toMatchObject({ matches: 0, winRate: null });
+		// Every match is in one phase or the other
+		expect(swiss.crossMatches + cut.crossMatches).toBe(all.crossMatches);
+		expect(swiss.crossMatchesTotal + cut.crossMatchesTotal).toBe(all.crossMatchesTotal);
+		expect(cell(swiss, 'a+b+c', 'e+f+g')).toMatchObject({ matches: 1 });
+	});
+
 	it('leaves mirrors, byes and matches with a deck-less player out of the matrix', async () => {
 		const meta = await getMeta(world(), ALL_TIME);
 		// 6 cross-deck matches; not the X mirror, the no-deck player's match, or the bye

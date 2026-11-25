@@ -2,13 +2,14 @@
 	// Matchup matrix: the page is one heat-map. A row's win rate against a column is cyan above 50% and
 	// red below; fainter means fewer matches behind it. Only the most-played decks are drawn (by RAM, as
 	// players name them, or by their Legends), and only matches between two decks of different groups count
-	// (no mirrors, byes, forfeits or deck-less players). On a phone the same grid is compressed to fit the
+	// (no mirrors, byes, forfeits or deck-less players), in every round or only the Swiss rounds or the top cut. On a phone the same grid is compressed to fit the
 	// width (a short row header, a win rate per cell), and tapping a cell says how many matches are behind it.
 	import { page } from '$app/state';
 	import { MediaQuery } from 'svelte/reactivity';
 	import LegendArt from '#lib/components/tournaments/LegendArt.svelte';
 	import Pills from '#lib/components/tournaments/Pills.svelte';
 	import RamCode from '#lib/components/tournaments/RamCode.svelte';
+	import { PHASES } from '#lib/tournaments/meta.js';
 	import { periodParams } from '#lib/tournaments/period.js';
 	import { ramLabel, ramShorthand } from '#lib/tournaments/ram.js';
 	import { legendNames, RAM_PER_LEGEND } from '#lib/tournaments/present.js';
@@ -63,20 +64,28 @@
 	<div>
 		<h1 class="sr-only">Matchups</h1>
 		<p class="font-mono text-xs text-muted">
-			The row's win rate against the column · {meta.crossMatches} matches between these {meta.matrixBy ===
-			'ram'
-				? 'RAMs'
-				: 'sets of Legends'}{meta.crossMatchesTotal > meta.crossMatches
+			The row's win rate against the column · {meta.crossMatches}
+			{data.phase === 'cut' ? 'top cut ' : data.phase === 'swiss' ? 'Swiss ' : ''}matches between
+			these {meta.matrixBy === 'ram' ? 'RAMs' : 'sets of Legends'}{meta.crossMatchesTotal >
+			meta.crossMatches
 				? ` (of ${meta.crossMatchesTotal} between decks of different ${meta.matrixBy === 'ram' ? 'RAMs' : 'sets of Legends'})`
 				: ''} · a draw counts half
 		</p>
 	</div>
-	<Pills
-		label="Group by"
-		options={BY}
-		value={data.by}
-		href={(key) => withParams(page.url, { by: key === 'ram' ? null : key })}
-	/>
+	<div class="flex flex-wrap gap-2">
+		<Pills
+			label="Rounds"
+			options={PHASES}
+			value={data.phase}
+			href={(key) => withParams(page.url, { rounds: key === 'all' ? null : key })}
+		/>
+		<Pills
+			label="Group by"
+			options={BY}
+			value={data.by}
+			href={(key) => withParams(page.url, { by: key === 'ram' ? null : key })}
+		/>
+	</div>
 </header>
 
 {#if groups.length < 2}

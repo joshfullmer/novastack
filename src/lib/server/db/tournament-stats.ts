@@ -20,7 +20,8 @@ import {
 	MATRIX_SIZE,
 	type GroupStat,
 	type LineRow,
-	type MetaView
+	type MetaView,
+	type Phase
 } from '#lib/tournaments/meta.js';
 import { EVENT_KINDS, type EventKind } from '#lib/tournaments/kind.js';
 import type { MetaRow, Period } from '#lib/tournaments/period.js';
@@ -31,6 +32,7 @@ import {
 	tournamentDeckCards,
 	tournamentDecks,
 	tournamentMatches,
+	tournamentRounds,
 	tournaments
 } from './schema.js';
 
@@ -112,12 +114,19 @@ export async function getMeta(
 	db: Db,
 	period: Period,
 	/** Which expensive parts to compute; a view that doesn't draw one shouldn't pay for it. */
-	parts: { legends: boolean; rams: boolean; matchups: Grouping | false } = {
+	parts: {
+		legends: boolean;
+		rams: boolean;
+		matchups: Grouping | false;
+		/** Which rounds the matrix counts: all of them unless said. */
+		phase?: Phase;
+	} = {
 		legends: true,
 		rams: true,
 		matchups: 'line'
 	}
 ): Promise<MetaView> {
+	const phase = parts.phase ?? 'all';
 	const [lines, rams, legends] = await Promise.all([
 		lineRows(db, period),
 		parts.rams || parts.matchups === 'ram' ? ramRows(db, period) : Promise.resolve([]),
@@ -151,8 +160,8 @@ export async function getMeta(
 
 	const [matchups, crossMatchesTotal] = parts.matchups
 		? await Promise.all([
-				getMatchups(db, period, parts.matchups, top),
-				countCrossMatches(db, period, parts.matchups)
+				getMatchups(db, period, parts.matchups, top, phase),
+				countCrossMatches(db, period, parts.matchups, phase)
 			])
 		: [[], undefined];
 	return buildMeta({
@@ -165,8 +174,23 @@ export async function getMeta(
 	});
 }
 
+/**
+ * A round is in `phase`: any, a Swiss round, or the playoff. A Swiss round is named "Round 4" and anything
+ * else is the playoff (`isPlayoffRound`, which a regex says and SQLite can't: this is its glob).
+ */
+const inPhase = (phase: Phase): SQL | undefined => {
+	const name = sql`lower(trim(${tournamentRounds.name}))`;
+	const swiss = sql`${name} glob 'round [0-9]*' and ${name} not glob 'round *[^0-9 ]*'`;
+	return phase === 'swiss' ? swiss : phase === 'cut' ? sql`not (${swiss})` : undefined;
+};
+
 /** Every match between two decks of different groups, whichever: the matrix's context. */
-async function countCrossMatches(db: Db, period: Period, by: Grouping): Promise<number> {
+async function countCrossMatches(
+	db: Db,
+	period: Period,
+	by: Grouping,
+	phase: Phase = 'all'
+): Promise<number> {
 	const sa = alias(standings, 'sa');
 	const sb = alias(standings, 'sb');
 	const da = alias(tournamentDecks, 'da');
@@ -176,6 +200,10 @@ async function countCrossMatches(db: Db, period: Period, by: Grouping): Promise<
 		.select({ n: count() })
 		.from(m)
 		.innerJoin(tournaments, eq(tournaments.id, m.tournamentId))
+		.leftJoin(
+			tournamentRounds,
+			and(eq(tournamentRounds.tournamentId, m.tournamentId), eq(tournamentRounds.number, m.round))
+		)
 		.innerJoin(sa, and(eq(sa.tournamentId, m.tournamentId), eq(sa.playerId, m.playerA)))
 		.innerJoin(sb, and(eq(sb.tournamentId, m.tournamentId), eq(sb.playerId, m.playerB)))
 		.innerJoin(da, eq(da.guid, sa.deckGuid))
@@ -186,7 +214,8 @@ async function countCrossMatches(db: Db, period: Period, by: Grouping): Promise<
 				inArray(m.kind, ['played', 'draw']),
 				isNotNull(groupColumn(by, da)),
 				isNotNull(groupColumn(by, db2)),
-				ne(groupColumn(by, da), groupColumn(by, db2))
+				ne(groupColumn(by, da), groupColumn(by, db2)),
+				inPhase(phase)
 			)
 		);
 	return row?.n ?? 0;
@@ -197,7 +226,13 @@ async function countCrossMatches(db: Db, period: Period, by: Grouping): Promise<
  * pair as they were drawn. `score` is the first side's: a win is 1, a draw (or equal games) 0.5, a loss 0.
  * Byes and forfeits, mirrors, and players with no deck are left out.
  */
-async function getMatchups(db: Db, period: Period, by: Grouping, keys: string[]) {
+async function getMatchups(
+	db: Db,
+	period: Period,
+	by: Grouping,
+	keys: string[],
+	phase: Phase = 'all'
+) {
 	if (keys.length < 2) return [];
 	const sa = alias(standings, 'sa');
 	const sb = alias(standings, 'sb');
@@ -216,6 +251,10 @@ async function getMatchups(db: Db, period: Period, by: Grouping, keys: string[])
 		})
 		.from(m)
 		.innerJoin(tournaments, eq(tournaments.id, m.tournamentId))
+		.leftJoin(
+			tournamentRounds,
+			and(eq(tournamentRounds.tournamentId, m.tournamentId), eq(tournamentRounds.number, m.round))
+		)
 		.innerJoin(sa, and(eq(sa.tournamentId, m.tournamentId), eq(sa.playerId, m.playerA)))
 		.innerJoin(sb, and(eq(sb.tournamentId, m.tournamentId), eq(sb.playerId, m.playerB)))
 		.innerJoin(da, eq(da.guid, sa.deckGuid))
@@ -226,7 +265,8 @@ async function getMatchups(db: Db, period: Period, by: Grouping, keys: string[])
 				inArray(m.kind, ['played', 'draw']),
 				inArray(groupColumn(by, da), keys),
 				inArray(groupColumn(by, db2), keys),
-				ne(groupColumn(by, da), groupColumn(by, db2))
+				ne(groupColumn(by, da), groupColumn(by, db2)),
+				inPhase(phase)
 			)
 		)
 		.groupBy(groupColumn(by, da), groupColumn(by, db2));

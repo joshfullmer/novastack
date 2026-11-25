@@ -87,6 +87,14 @@ export const PARTS: readonly (readonly [Part, string])[] = [
 	['wins', 'Winners']
 ];
 
+/** Which rounds the matchup matrix counts: all, the Swiss rounds, or only the playoff (the top cut). */
+export type Phase = 'all' | 'swiss' | 'cut';
+export const PHASES: readonly (readonly [Phase, string])[] = [
+	['all', 'All rounds'],
+	['swiss', 'Swiss'],
+	['cut', 'Top cut']
+];
+
 export type MatchupRow = { a: string | null; b: string | null; matches: number; score: number };
 
 export type GroupStat = {
