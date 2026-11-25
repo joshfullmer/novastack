@@ -306,7 +306,15 @@ export type Filters = {
 	minPlayers: number;
 	/** `YYYY-MM-DD`: events that started earlier are left alone; null for no limit. */
 	since: string | null;
+	/** Words an event's name must contain, any one of them (spaces and case ignored); empty for any name. */
+	names: readonly string[];
 };
+
+const squash = (text: string) => text.toLowerCase().replace(/\s+/g, '');
+
+/** Whether `name` holds one of `names`, ignoring case and spaces, so "Show Down" is "showdown". */
+export const named = (name: string, names: readonly string[]): boolean =>
+	names.length === 0 || names.some((word) => squash(name).includes(squash(word)));
 
 export type Discovery = {
 	/** Ended, big enough, recent enough, and not stored yet, in the order found (newest first). */
@@ -323,6 +331,8 @@ export type Discovery = {
 	older: number;
 	/** Ended but under the player floor. */
 	small: number;
+	/** Ended but its name holds none of the `names` asked for. */
+	unnamed: number;
 };
 
 export function sift(found: readonly Found[], filters: Filters): Discovery {
@@ -333,7 +343,8 @@ export function sift(found: readonly Found[], filters: Filters): Discovery {
 		waiting: 0,
 		skipped: 0,
 		older: 0,
-		small: 0
+		small: 0,
+		unnamed: 0
 	};
 	const seen = new Set<number>();
 	for (const event of found) {
@@ -344,6 +355,7 @@ export function sift(found: readonly Found[], filters: Filters): Discovery {
 		else if (filters.waiting.has(event.id)) result.waiting += 1;
 		else if (filters.skipped.has(event.id)) result.skipped += 1;
 		else if (filters.since !== null && event.date < filters.since) result.older += 1;
+		else if (!named(event.name, filters.names)) result.unnamed += 1;
 		else if (event.players < filters.minPlayers) result.small += 1;
 		else result.candidates.push(event);
 	}

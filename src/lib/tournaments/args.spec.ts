@@ -16,6 +16,7 @@ describe('pnpm melee arguments', () => {
 			forget: false,
 			discover: false,
 			search: '',
+			names: [],
 			pages: 10,
 			deep: false,
 			minPlayers: 0,
@@ -104,6 +105,13 @@ describe('pnpm melee arguments', () => {
 
 	it('reads every page with --deep', () => {
 		expect(parseCli(['--discover', '--deep'])).toMatchObject({ deep: true, pages: Infinity });
+	});
+
+	it('takes any number of --name words, to match event names', () => {
+		expect(
+			parseCli(['--discover', '--name', ' Showdown ', '--name', 'Show Down', '--name', 'Brawl'])
+		).toMatchObject({ names: ['Showdown', 'Show Down', 'Brawl'] });
+		expect(() => parseCli(['5', '--name', 'x'])).toThrow(/only go with --discover/);
 	});
 
 	it('discovers on its own, with a search, a page count and a player floor', () => {

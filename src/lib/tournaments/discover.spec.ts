@@ -123,7 +123,8 @@ const none = {
 	waiting: new Set<number>(),
 	skipped: new Set<number>(),
 	minPlayers: 0,
-	since: null
+	since: null,
+	names: []
 };
 
 describe('which events are candidates', () => {
@@ -142,7 +143,8 @@ describe('which events are candidates', () => {
 			waiting: 0,
 			skipped: 0,
 			older: 0,
-			small: 1
+			small: 1,
+			unnamed: 0
 		});
 	});
 
@@ -155,6 +157,16 @@ describe('which events are candidates', () => {
 			waiting: 1,
 			older: 1
 		});
+	});
+
+	it('keeps only events named for one of the words, whatever the case or spacing', () => {
+		const show = { ...event(3), name: 'Night City SHOW DOWN' };
+		const brawl = { ...event(2), name: 'Weekly Brawl' };
+		expect(sift([show, brawl, event(1)], { ...none, names: ['showdown', 'brawl'] })).toMatchObject({
+			candidates: [show, brawl],
+			unnamed: 1
+		});
+		expect(sift([event(1)], none).candidates).toHaveLength(1);
 	});
 
 	it('counts an id once when the pages shift and it shows up twice', () => {

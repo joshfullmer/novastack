@@ -253,6 +253,7 @@ async function discoverNew(
 	client: MeleeClient,
 	args: {
 		search: string;
+		names: string[];
 		pages: number;
 		deep: boolean;
 		minPlayers: number;
@@ -295,7 +296,8 @@ async function discoverNew(
 		waiting: waits,
 		skipped: skips,
 		older,
-		small
+		small,
+		unnamed
 	} = sift(found, filters);
 	const into = targets.map(targetName).join(' and ');
 	say();
@@ -310,7 +312,7 @@ async function discoverNew(
 	);
 	say(
 		paint.dim(
-			`${found.length} events read · ${known} already in ${into} · ${notEnded.length} not ended · ${waits} waiting · ${skips} skipped · ${older} before --since · ${small} under ${args.minPlayers} players`
+			`${found.length} events read · ${known} already in ${into} · ${notEnded.length} not ended · ${waits} waiting · ${skips} skipped · ${older} before --since · ${unnamed} named otherwise · ${small} under ${args.minPlayers} players`
 		)
 	);
 	if (notEnded.length > 0) {

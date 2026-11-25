@@ -33,6 +33,8 @@ export type Args = {
 	pages: number;
 	/** `--discover`: read every page rather than stopping where new events seem to end. */
 	deep: boolean;
+	/** `--discover`: only events whose name holds one of these (any case, spaces ignored); empty for all. */
+	names: string[];
 	/** `--discover`: skip events with fewer players. */
 	minPlayers: number;
 	/** `--discover`: skip events that started before this date (`YYYY-MM-DD`). */
@@ -48,7 +50,7 @@ export const USAGE = `usage: pnpm melee <id> [id …] [--force] [--check] [--rem
        pnpm melee --reparse [--remote]
        pnpm melee --promote [id …] [--check] [--yes]
        pnpm melee --pending [--remote [--yes]]     try again every id that wasn't ready
-       pnpm melee --discover [--search words] [--pages N | --deep] [--min-players N] [--since YYYY-MM-DD]
+       pnpm melee --discover [--search words] [--name word …] [--pages N | --deep] [--min-players N] [--since YYYY-MM-DD]
                   [--ingest [--check] [--remote [--yes]]]
                                                    list tournaments Melee has that we don't, or ingest them
        pnpm melee --list                           which ids are waiting, and why
@@ -73,6 +75,7 @@ export function parseCli(argv: readonly string[]): Args {
 			forget: { type: 'boolean', default: false },
 			discover: { type: 'boolean', default: false },
 			search: { type: 'string' },
+			name: { type: 'string', multiple: true },
 			pages: { type: 'string' },
 			deep: { type: 'boolean', default: false },
 			'min-players': { type: 'string' },
@@ -117,6 +120,7 @@ export function parseCli(argv: readonly string[]): Args {
 	if (
 		!discover &&
 		(values.search !== undefined ||
+			values.name !== undefined ||
 			values.pages ||
 			values.deep ||
 			values['min-players'] ||
@@ -124,7 +128,7 @@ export function parseCli(argv: readonly string[]): Args {
 			values.ingest)
 	) {
 		throw new Error(
-			'--search, --pages, --deep, --min-players, --since and --ingest only go with --discover.'
+			'--search, --name, --pages, --deep, --min-players, --since and --ingest only go with --discover.'
 		);
 	}
 	const since = values.since ?? null;
@@ -199,6 +203,7 @@ export function parseCli(argv: readonly string[]): Args {
 		discover,
 		search: values.search?.trim() ?? '',
 		pages,
+		names: (values.name ?? []).map((word) => word.trim()).filter(Boolean),
 		deep: values.deep,
 		minPlayers,
 		since,
