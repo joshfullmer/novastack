@@ -5733,6 +5733,39 @@
 			"tournamentLegal": true
 		},
 		{
+			"cardType": "Gear",
+			"classifications": [],
+			"color": "Red",
+			"cost": 2,
+			"eddiable": true,
+			"faqs": [],
+			"flavorText": null,
+			"keywords": [],
+			"name": "Guts: Rebecca's Carnage",
+			"power": 2,
+			"printings": [
+				{
+					"artist": "Divebound Studio",
+					"collectorNumber": "055",
+					"id": "61455e31-431b-4da8-b974-03ce9c8f9d25",
+					"key": "EOR01-WNC-055",
+					"locale": "en",
+					"rarity": "Nova Rare",
+					"revealedAt": "2026-11-26",
+					"setId": "EOR01-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/61455e31-431b-4da8-b974-03ce9c8f9d25/render-a7e16b37-8a28-4853-bbfc-84082ab43811.webp",
+					"thumbhash": "XAeGJAQPBGWYWodhVan1cXSPgYGICBiIAA=="
+				}
+			],
+			"ramProvided": null,
+			"ramRequired": null,
+			"rawRulesText": null,
+			"rulesText": [],
+			"slug": "guts-rebecca-s-carnage",
+			"subtitle": "Rebecca's Carnage",
+			"tournamentLegal": true
+		},
+		{
 			"cardType": "Unit",
 			"classifications": [
 				"AI",
@@ -8504,6 +8537,18 @@
 					"setId": "PRM01",
 					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/0cf807a8-4131-426a-a67d-4d03e372b05e/render-msyiijlo.webp",
 					"thumbhash": "nUiGFAYPKvhX5nWpkTMHOoWAgYGICBiIAA=="
+				},
+				{
+					"artist": "KAINONAUT",
+					"collectorNumber": "028",
+					"id": "b019beca-f6fb-4b00-9c11-82b885993069",
+					"key": "EOR01-WNC-028",
+					"locale": "en",
+					"rarity": "Nova Rare",
+					"revealedAt": "2026-11-26",
+					"setId": "EOR01-WNC",
+					"sourceImageUrl": "https://dstcynss47vun.cloudfront.net/prod/cyberpunk/portal/b019beca-f6fb-4b00-9c11-82b885993069/render-4d1cf9f5-0ee8-4d43-923b-a43d6b30bcfe.webp",
+					"thumbhash": "1weKFAAPB1iJh6aFhW32DnuDgYGICBiIAA=="
 				}
 			],
 			"ramProvided": 2,
@@ -19234,7 +19279,7 @@
 			"sortOrder": 2500
 		}
 	],
-	"generatedAt": "2026-11-09T17:08:29.521Z",
+	"generatedAt": "2026-11-26T21:33:52.303Z",
 	"ramPerLegend": 2,
 	"sets": [
 		{
@@ -19365,7 +19410,7 @@
 		},
 		{
 			"announcement": null,
-			"cardCount": 33,
+			"cardCount": 35,
 			"category": "EOR01",
 			"cycle": null,
 			"id": "EOR01-WNC",
@@ -19373,7 +19418,7 @@
 			"name": "Edgerunner Open Season 1",
 			"parentId": "MS01-WNC",
 			"printed": "EOR01 - WNC",
-			"printingCount": 53,
+			"printingCount": 55,
 			"releaseWindow": null,
 			"setCode": "WNC"
 		},
@@ -19435,8 +19480,8 @@
 		}
 	],
 	"stats": {
-		"cards": 152,
-		"printings": 862,
+		"cards": 153,
+		"printings": 864,
 		"sets": 1
 	}
 }
