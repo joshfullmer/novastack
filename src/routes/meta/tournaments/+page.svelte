@@ -11,6 +11,7 @@
 	import ViewToggle from '#lib/components/deck/ViewToggle.svelte';
 	import LinkMultiSelect from '#lib/components/tournaments/LinkMultiSelect.svelte';
 	import LegendArt from '#lib/components/tournaments/LegendArt.svelte';
+	import LegendTrio from '#lib/components/tournaments/LegendTrio.svelte';
 	import {
 		fieldByColour,
 		formatDate,
@@ -224,11 +225,11 @@
 							</span>
 							<span class="mt-1 flex items-center gap-2 md:mt-0">
 								{#if event.showcase}
-									<span class="flex -space-x-2">
-										{#each event.showcase.legends as slug (slug)}
-											<LegendArt {slug} sizes="40px" class="w-6 ring-1 ring-void" />
-										{/each}
-									</span>
+									<LegendTrio
+										legends={event.showcase.legends}
+										artClass="w-6 ring-1 ring-void"
+										class="-space-x-2"
+									/>
 								{/if}
 								<span class="min-w-0">
 									<span class="block truncate text-sm text-body">{event.winner ?? '—'}</span>

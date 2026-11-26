@@ -2,7 +2,7 @@
 	// Rounds: the event as it happened. Pick a round (`?round=`, so a link names one) to see its tables,
 	// each side's Legends and the game score; the final standings sit beside it, not on top.
 	import { page } from '$app/state';
-	import LegendArt from '#lib/components/tournaments/LegendArt.svelte';
+	import LegendTrio from '#lib/components/tournaments/LegendTrio.svelte';
 	import type { MatchView } from '#lib/tournaments/event-view.js';
 	import { legendNames } from '#lib/tournaments/present.js';
 
@@ -36,11 +36,7 @@
 				? 'md:flex-row-reverse md:text-right'
 				: ''}"
 		>
-			<span class="flex shrink-0 -space-x-2">
-				{#each legends as slug (slug)}
-					<LegendArt {slug} sizes="40px" class="w-6 ring-1 ring-void" />
-				{/each}
-			</span>
+			<LegendTrio {legends} artClass="w-6 ring-1 ring-void" class="shrink-0 -space-x-2" />
 			<span class="min-w-0">
 				<span
 					class="block truncate text-sm {won(match, who)

@@ -4,6 +4,7 @@
 	// deck that does, bottom left. Each tile opens that Card's usage.
 	import { page } from '$app/state';
 	import LegendArt from '#lib/components/tournaments/LegendArt.svelte';
+	import LegendTrio from '#lib/components/tournaments/LegendTrio.svelte';
 	import Pills from '#lib/components/tournaments/Pills.svelte';
 	import RamCode from '#lib/components/tournaments/RamCode.svelte';
 	import { periodParams } from '#lib/tournaments/period.js';
@@ -90,13 +91,11 @@
 							? 'border-neon bg-neon/10'
 							: 'border-edge hover:bg-surface'}"
 					>
-						<span class="flex shrink-0 -space-x-2">
-							{#each line.legends as slug (slug)}<LegendArt
-									{slug}
-									sizes="40px"
-									class="w-5 ring-1 ring-void"
-								/>{/each}
-						</span>
+						<LegendTrio
+							legends={line.legends}
+							artClass="w-5 ring-1 ring-void"
+							class="shrink-0 -space-x-2"
+						/>
 						<span
 							class="min-w-0 flex-1 truncate text-xs {data.line === line.key
 								? 'text-bright'

@@ -7,6 +7,7 @@
 	// the top three as art-led panels with their lists, fourth to eighth as tiles, everyone else as chips.
 	import { cn } from '#lib/cn.js';
 	import LegendArt from '#lib/components/tournaments/LegendArt.svelte';
+	import LegendTrio from '#lib/components/tournaments/LegendTrio.svelte';
 	import TournamentDeck from '#lib/components/tournaments/TournamentDeck.svelte';
 	import { buildBracket, placements, type BracketSide } from '#lib/tournaments/bracket.js';
 	import { legendNames } from '#lib/tournaments/present.js';
@@ -34,11 +35,12 @@
 </script>
 
 {#snippet face(side: BracketSide, size: string)}
-	<span class="flex shrink-0 -space-x-1.5">
-		{#each side.legends as slug (slug)}
-			<LegendArt {slug} sizes="32px" class="{size} ring-1 ring-void" />
-		{/each}
-	</span>
+	<LegendTrio
+		legends={side.legends}
+		sizes="32px"
+		artClass="{size} ring-1 ring-void"
+		class="shrink-0 -space-x-1.5"
+	/>
 {/snippet}
 
 {#snippet seat(side: BracketSide, games: number, outcome: 'won' | 'lost' | 'open')}
@@ -327,11 +329,12 @@
 			{#each topEight as standing (standing.playerId)}
 				<article class="flex items-center gap-3 rounded-xl border border-edge bg-shell p-3">
 					<span class="font-mono text-lg text-muted">{standing.rank}</span>
-					<span class="flex -space-x-2">
-						{#each standing.deck?.legends ?? [] as slug (slug)}
-							<LegendArt {slug} sizes="48px" class="w-8 ring-1 ring-void" />
-						{/each}
-					</span>
+					<LegendTrio
+						legends={standing.deck?.legends ?? []}
+						sizes="48px"
+						artClass="w-8 ring-1 ring-void"
+						class="-space-x-2"
+					/>
 					<span class="min-w-0">
 						<span class="block truncate text-sm text-bright">{standing.name}</span>
 						<span class="font-mono text-[11px] text-muted">

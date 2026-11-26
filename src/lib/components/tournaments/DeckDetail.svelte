@@ -7,6 +7,7 @@
 	// page wants to handle itself, as the deck list's pane does).
 	import { cn } from '#lib/cn.js';
 	import LegendArt from '#lib/components/tournaments/LegendArt.svelte';
+	import LegendTrio from '#lib/components/tournaments/LegendTrio.svelte';
 	import RamCode from '#lib/components/tournaments/RamCode.svelte';
 	import TournamentDeckView from '#lib/components/tournaments/TournamentDeckView.svelte';
 	import { formatDate, legendNames } from '#lib/tournaments/present.js';
@@ -47,11 +48,12 @@
 	<span class="w-6 font-mono font-semibold {MARK[step.result]}">{step.result}</span>
 	<!-- The rail is narrow: the opponent's name says who it was; on a page there is room for their art too. -->
 	{#if !compact}
-		<span class="flex -space-x-1.5">
-			{#each step.oppLegends as slug (slug)}
-				<LegendArt {slug} sizes="32px" class="w-5 ring-1 ring-void" />
-			{/each}
-		</span>
+		<LegendTrio
+			legends={step.oppLegends}
+			sizes="32px"
+			artClass="w-5 ring-1 ring-void"
+			class="-space-x-1.5"
+		/>
 	{/if}
 	<span class="min-w-0 flex-1 truncate"
 		>{step.opponent ?? (step.result === 'BYE' ? 'bye' : 'forfeit')}</span

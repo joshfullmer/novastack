@@ -6,7 +6,7 @@
 	import { page } from '$app/state';
 	import { cn } from '#lib/cn.js';
 	import DeckPane from '#lib/components/tournaments/DeckPane.svelte';
-	import LegendArt from '#lib/components/tournaments/LegendArt.svelte';
+	import LegendTrio from '#lib/components/tournaments/LegendTrio.svelte';
 	import RamCode from '#lib/components/tournaments/RamCode.svelte';
 	import { opensInPane } from '#lib/tournaments/pane.js';
 	import { legendNames } from '#lib/tournaments/present.js';
@@ -32,15 +32,16 @@
 		{standing.rank}
 	</span>
 	<span class="flex min-w-0 items-center gap-2 md:gap-3">
-		<span class="flex shrink-0 -space-x-2">
-			{#if standing.deck}
-				{#each standing.deck.legends as slug (slug)}
-					<LegendArt {slug} sizes="48px" class="w-6 ring-1 ring-void md:w-7" />
-				{/each}
-			{:else}
-				<span class="card-frame w-7 rounded border border-dashed border-edge"></span>
-			{/if}
-		</span>
+		{#if standing.deck}
+			<LegendTrio
+				legends={standing.deck.legends}
+				sizes="48px"
+				artClass="w-6 ring-1 ring-void md:w-7"
+				class="shrink-0 -space-x-2"
+			/>
+		{:else}
+			<span class="card-frame w-7 shrink-0 rounded border border-dashed border-edge"></span>
+		{/if}
 		<span class="min-w-0">
 			<span class="block truncate text-bright">{standing.name}</span>
 			<span class="block truncate text-[11px] text-muted">

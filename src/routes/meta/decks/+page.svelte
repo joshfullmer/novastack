@@ -8,7 +8,7 @@
 	import { page } from '$app/state';
 	import { SvelteURLSearchParams } from 'svelte/reactivity';
 	import DeckPane from '#lib/components/tournaments/DeckPane.svelte';
-	import LegendArt from '#lib/components/tournaments/LegendArt.svelte';
+	import LegendTrio from '#lib/components/tournaments/LegendTrio.svelte';
 	import PeriodFields from '#lib/components/tournaments/PeriodFields.svelte';
 	import RamCode from '#lib/components/tournaments/RamCode.svelte';
 	import { opensInPane } from '#lib/tournaments/pane.js';
@@ -181,11 +181,11 @@
 									{deck.rank}<span class="text-[10px] text-muted">/{deck.playerCount}</span>
 								</span>
 								<span class="flex min-w-0 items-center gap-2">
-									<span class="flex shrink-0 -space-x-2">
-										{#each deck.legends as slug (slug)}
-											<LegendArt {slug} sizes="40px" class="w-6 ring-1 ring-void" />
-										{/each}
-									</span>
+									<LegendTrio
+										legends={deck.legends}
+										artClass="w-6 ring-1 ring-void"
+										class="shrink-0 -space-x-2"
+									/>
 									<span class="min-w-0">
 										<span class="block truncate text-sm text-bright">{deck.player}</span>
 										<span class="block truncate text-[11px] text-muted">

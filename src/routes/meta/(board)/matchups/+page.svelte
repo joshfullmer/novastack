@@ -6,7 +6,7 @@
 	// width (a short row header, a win rate per cell), and tapping a cell says how many matches are behind it.
 	import { page } from '$app/state';
 	import { MediaQuery } from 'svelte/reactivity';
-	import LegendArt from '#lib/components/tournaments/LegendArt.svelte';
+	import LegendTrio from '#lib/components/tournaments/LegendTrio.svelte';
 	import Pills from '#lib/components/tournaments/Pills.svelte';
 	import RamCode from '#lib/components/tournaments/RamCode.svelte';
 	import { PHASES } from '#lib/tournaments/meta.js';
@@ -116,13 +116,12 @@
 								{#if meta.matrixBy === 'ram'}
 									<RamCode ram={group.key} class="text-[11px] md:text-base" />
 								{:else}
-									<span class="mx-auto flex w-full max-w-16 flex-col gap-0.5">
-										{#each group.legends as slug (slug)}<LegendArt
-												{slug}
-												sizes="64px"
-												class="w-full"
-											/>{/each}
-									</span>
+									<LegendTrio
+										legends={group.legends}
+										sizes="64px"
+										artClass="w-full"
+										class="mx-auto w-full max-w-16 flex-col gap-0.5"
+									/>
 								{/if}
 							</a>
 						</th>
@@ -140,13 +139,11 @@
 								class="flex flex-col items-start gap-0.5 p-1.5 md:flex-row md:items-center md:gap-2 md:p-2.5"
 							>
 								{#if meta.matrixBy !== 'ram'}
-									<span class="flex -space-x-1.5 md:-space-x-2">
-										{#each row.legends as slug (slug)}<LegendArt
-												{slug}
-												sizes="40px"
-												class="w-4 ring-1 ring-void md:w-7"
-											/>{/each}
-									</span>
+									<LegendTrio
+										legends={row.legends}
+										artClass="w-4 ring-1 ring-void md:w-7"
+										class="-space-x-1.5 md:-space-x-2"
+									/>
 								{/if}
 								<span class="min-w-0">
 									{#if meta.matrixBy === 'ram'}

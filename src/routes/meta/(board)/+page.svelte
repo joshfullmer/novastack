@@ -5,7 +5,7 @@
 	// MIN_MATCHES matches: less is noise, so those are listed apart, unranked.
 	import { page } from '$app/state';
 	import { cn } from '#lib/cn.js';
-	import LegendArt from '#lib/components/tournaments/LegendArt.svelte';
+	import LegendTrio from '#lib/components/tournaments/LegendTrio.svelte';
 	import Pills from '#lib/components/tournaments/Pills.svelte';
 	import RamCode from '#lib/components/tournaments/RamCode.svelte';
 	import {
@@ -163,15 +163,12 @@
 											<RamCode ram={row.key} />
 										</a>
 									{:else}
-										<span class="flex shrink-0 -space-x-3">
-											{#each row.legends as slug (slug)}
-												<LegendArt
-													{slug}
-													sizes="64px"
-													class="{by === 'legend' ? 'w-10' : 'w-9'} ring-1 ring-void"
-												/>
-											{/each}
-										</span>
+										<LegendTrio
+											legends={row.legends}
+											sizes="64px"
+											artClass="{by === 'legend' ? 'w-10' : 'w-9'} ring-1 ring-void"
+											class="shrink-0 -space-x-3"
+										/>
 										<span class="min-w-0 truncate text-bright">{legendNames(row.legends)}</span>
 									{/if}
 								</span>

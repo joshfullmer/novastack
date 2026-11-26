@@ -7,6 +7,7 @@
 	import Meta from '#lib/components/Meta.svelte';
 	import { metaNoindex } from '#lib/meta/launch.js';
 	import LegendArt from '#lib/components/tournaments/LegendArt.svelte';
+	import LegendTrio from '#lib/components/tournaments/LegendTrio.svelte';
 	import RamCode from '#lib/components/tournaments/RamCode.svelte';
 	import { MIN_DECKS } from '#lib/tournaments/meta.js';
 	import { periodParams } from '#lib/tournaments/period.js';
@@ -129,11 +130,11 @@
 						{#each usage.byLine as line (line.line)}
 							<li class="grid grid-cols-[minmax(0,17rem)_1fr] items-center gap-3">
 								<span class="flex min-w-0 items-center gap-2" title={legendNames(line.legends)}>
-									<span class="flex shrink-0 -space-x-2">
-										{#each line.legends as slug (slug)}
-											<LegendArt {slug} sizes="40px" class="w-6 ring-1 ring-void" />
-										{/each}
-									</span>
+									<LegendTrio
+										legends={line.legends}
+										artClass="w-6 ring-1 ring-void"
+										class="shrink-0 -space-x-2"
+									/>
 									<span class="truncate text-xs">{legendNames(line.legends)}</span>
 								</span>
 								{@render rate(line.rate, line.withCard, line.decks)}
