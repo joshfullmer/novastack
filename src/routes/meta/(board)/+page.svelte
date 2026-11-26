@@ -1,6 +1,6 @@
 <script lang="ts">
-	// Top decks: decks ranked by how they perform, S down to D, and within a tier by how much of the field
-	// played them. Group by RAM (how players name a deck: YYR), the three Legends together, or each Legend
+	// Top decks: decks ranked by how they perform, S down to D, and within a tier by power (what their
+	// record proves), the most-played breaking a tie. Group by RAM (how players name a deck: YYR), the three Legends together, or each Legend
 	// on its own; count every deck, only the top 8, or only the winners. A tier needs MIN_DECKS decks and
 	// MIN_MATCHES matches: less is noise, so those are listed apart, unranked.
 	import { page } from '$app/state';
@@ -57,7 +57,7 @@
 		if (by === 'legend') return meta.byLegend;
 		return meta.byRam;
 	});
-	/** Who is counted: every deck, only those that made the top 8, or only event winners. */
+	/** Who is counted (every deck, the top 8, or winners), strongest first: unranked groups have no power, so they go by count. */
 	const rows = $derived.by(() => {
 		// Shares are of the whole field, so the lines past the listed ones still count in the total.
 		const total =
@@ -65,7 +65,13 @@
 		return base
 			.filter((g) => g[part] > 0)
 			.map((g) => ({ ...g, partShare: g[part] / total }))
-			.sort((a, b) => b[part] - a[part] || b.decks - a.decks || a.key.localeCompare(b.key));
+			.sort(
+				(a, b) =>
+					(b.power ?? -1) - (a.power ?? -1) ||
+					b[part] - a[part] ||
+					b.decks - a.decks ||
+					a.key.localeCompare(b.key)
+			);
 	});
 	const widest = $derived(Math.max(...rows.map((r) => r.partShare), 0.01));
 	/** The tiers that have anyone in them, best first, then those with too few decks to rank. */

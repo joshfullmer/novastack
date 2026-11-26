@@ -575,8 +575,8 @@ read-only, dynamic and `noindex`:
   and follows the same highlight. A player's slot in the bracket and their tile in the rail are links to their deck (`/meta/decks/[guid]`); one with no registered deck says "no deck" and only follows. A match card shows the winner's check and game score, the table and any
   draws; a "Top N" chip names the cut. Not done: opening a deck in place, seeds on the card, a live bracket.
 - **Tiers** (2026-11-17, reworked 2026-11-21). The page (now "Top decks") ranks how a deck has
-  _performed_, S down to D, and within a tier by how much of the field plays it (the share bar stays beside
-  it). A group's _power_ is the Wilson lower bound of its match win rate (a draw counts half) at 90%
+  _performed_, S down to D, and within a tier by power, strongest first (the share bar stays beside it; the
+  most-played breaks a tie, and orders the unranked, which have no power). A group's _power_ is the Wilson lower bound of its match win rate (a draw counts half) at 90%
   confidence (`TIER_Z`): the rate its record proves, so a deck reaches a high tier only over many matches.
   The first version pulled the rate toward 50% as if 10 more even matches had been played, which let a
   50-match, 61% group reach S, which the community does not rate that way. Tiers are fixed bands of power
