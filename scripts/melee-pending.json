@@ -183,10 +183,10 @@
 	},
 	"454604": {
 		"name": "Cyberpunk Night City Brawl",
-		"reason": "454604 is \"In Progress\", not Ended. Try again when it's over.",
+		"reason": "454604 has no decklists (none of the first 7 of its 10 players has one up), so it isn't ingested. Lists can appear after an event ends; try again later.",
 		"firstTried": "2026-11-25T20:10:27.315Z",
-		"lastTried": "2026-11-25T20:10:27.315Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:28:16.963Z",
+		"attempts": 2
 	},
 	"454623": {
 		"name": "Weekly Cyberpunk 2077",
@@ -325,8 +325,8 @@
 		"name": "Night City Brawl Weekly Play",
 		"reason": "455033 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:10:27.026Z",
-		"lastTried": "2026-11-25T20:10:27.026Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:28:10.930Z",
+		"attempts": 2
 	},
 	"455053": {
 		"name": "Weekly Village Brawl",
@@ -479,8 +479,8 @@
 		"name": "CyberPunk Weekly Locals",
 		"reason": "455812 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:10:24.302Z",
-		"lastTried": "2026-11-25T20:10:24.302Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:28:10.429Z",
+		"attempts": 2
 	},
 	"455813": {
 		"name": "WCG // Cyberpunk TCG - BETA Weekly Play",
@@ -549,8 +549,8 @@
 		"name": "Beta Event",
 		"reason": "456288 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:10:23.407Z",
-		"lastTried": "2026-11-25T20:10:23.407Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:28:09.922Z",
+		"attempts": 2
 	},
 	"456321": {
 		"name": "Aegis Games | Tuesday Night City Brawl",
@@ -570,8 +570,8 @@
 		"name": "Aegis Games | Tuesday Night City Brawl",
 		"reason": "456324 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:10:23.100Z",
-		"lastTried": "2026-11-25T20:10:23.100Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:28:09.429Z",
+		"attempts": 2
 	},
 	"456414": {
 		"name": "CardArena Cyberpunk weekly Night City Brawl",
@@ -584,22 +584,22 @@
 		"name": "Night City Brawl Weekly Local",
 		"reason": "456432 is \"In Progress\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:10:22.796Z",
-		"lastTried": "2026-11-25T20:10:22.796Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:28:08.921Z",
+		"attempts": 2
 	},
 	"456433": {
 		"name": "Night City Brawl Weekly Local",
 		"reason": "456433 is \"In Progress\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:10:22.505Z",
-		"lastTried": "2026-11-25T20:10:22.505Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:28:08.426Z",
+		"attempts": 2
 	},
 	"456434": {
 		"name": "Night City Brawl Weekly Local",
 		"reason": "456434 is \"In Progress\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:10:22.194Z",
-		"lastTried": "2026-11-25T20:10:22.194Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:28:07.928Z",
+		"attempts": 2
 	},
 	"456624": {
 		"name": "Día Demo Cyberpunk TCG",
@@ -619,8 +619,8 @@
 		"name": "Cyberpunk TCG Demo Event @ Labyrinth Den Bosch",
 		"reason": "456756 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:10:21.593Z",
-		"lastTried": "2026-11-25T20:10:21.593Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:28:07.419Z",
+		"attempts": 2
 	},
 	"456972": {
 		"name": "Cyberpunk TCG Beta Event",
@@ -752,8 +752,8 @@
 		"name": "Cyberpunk Locals",
 		"reason": "457446 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:10:20.387Z",
-		"lastTried": "2026-11-25T20:10:20.387Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:28:06.917Z",
+		"attempts": 2
 	},
 	"457447": {
 		"name": "Night City Brawl",
@@ -850,8 +850,8 @@
 		"name": "Cyberpunk Learn to Play! - Lomas",
 		"reason": "458060 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:10:18.885Z",
-		"lastTried": "2026-11-25T20:10:18.885Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:28:06.427Z",
+		"attempts": 2
 	},
 	"458159": {
 		"name": "Cyberpunk TCG - Beta Event La Escotilla",
@@ -913,15 +913,15 @@
 		"name": "Linagecards Locals",
 		"reason": "458430 is \"In Progress\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:10:18.283Z",
-		"lastTried": "2026-11-25T20:10:18.283Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:28:05.917Z",
+		"attempts": 2
 	},
 	"458481": {
 		"name": "Games Explosion Cyberpunk Learn-to-play!",
 		"reason": "458481 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:10:17.985Z",
-		"lastTried": "2026-11-25T20:10:17.985Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:28:05.428Z",
+		"attempts": 2
 	},
 	"458636": {
 		"name": "Cyberpunk BETA Event! - Las Cruces",
@@ -1025,8 +1025,8 @@
 		"name": "Tier 1 Games Night City Brawl",
 		"reason": "459425 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:10:17.383Z",
-		"lastTried": "2026-11-25T20:10:17.383Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:28:04.917Z",
+		"attempts": 2
 	},
 	"459483": {
 		"name": "Cyberpunk Beta-Prerelease-Event",
@@ -1039,8 +1039,8 @@
 		"name": "Torneo BETA",
 		"reason": "459488 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:10:17.077Z",
-		"lastTried": "2026-11-25T20:10:17.077Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:28:04.422Z",
+		"attempts": 2
 	},
 	"459495": {
 		"name": "Cyberpunk TCG Beta Event #1",
@@ -1088,8 +1088,8 @@
 		"name": "Cyberpunk Demo Day",
 		"reason": "459932 is \"In Progress\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:10:16.474Z",
-		"lastTried": "2026-11-25T20:10:16.474Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:28:03.923Z",
+		"attempts": 2
 	},
 	"460140": {
 		"name": "CyberPunk TCG Demo Event",
@@ -1305,8 +1305,8 @@
 		"name": "Cyberpunk Release",
 		"reason": "461978 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:10:13.468Z",
-		"lastTried": "2026-11-25T20:10:13.468Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:28:03.420Z",
+		"attempts": 2
 	},
 	"462083": {
 		"name": "Lyktan nights",
@@ -1326,15 +1326,15 @@
 		"name": "Cyberpunk TCG - BETA Preconstructed Deck Launch Event - Saturday 19/09/2026",
 		"reason": "462107 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:10:13.176Z",
-		"lastTried": "2026-11-25T20:10:13.176Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:28:02.929Z",
+		"attempts": 2
 	},
 	"462199": {
 		"name": "Cyberpunk Beta Learn to Play",
 		"reason": "462199 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:10:12.570Z",
-		"lastTried": "2026-11-25T20:10:12.570Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:28:02.419Z",
+		"attempts": 2
 	},
 	"462211": {
 		"name": "nerdgeek Cyberpunk TCG Beta Release Event",
@@ -1501,15 +1501,15 @@
 		"name": "Devil May Duel Weekly Play",
 		"reason": "462969 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:10:12.268Z",
-		"lastTried": "2026-11-25T20:10:12.268Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:28:01.932Z",
+		"attempts": 2
 	},
 	"462970": {
 		"name": "Wednesday Night City Brawl",
 		"reason": "462970 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:10:11.968Z",
-		"lastTried": "2026-11-25T20:10:11.968Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:28:01.424Z",
+		"attempts": 2
 	},
 	"463053": {
 		"name": "Warhold Boonah Cyberpunk Beta Event",
@@ -1543,8 +1543,8 @@
 		"name": "Cyberpunk Weekly Locals Night City Brawl",
 		"reason": "463211 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:10:11.673Z",
-		"lastTried": "2026-11-25T20:10:11.673Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:28:00.912Z",
+		"attempts": 2
 	},
 	"463220": {
 		"name": "Cyberpunk Beta TCG  Event @Collector’s Den   ",
@@ -1599,8 +1599,8 @@
 		"name": "Learn to play Cyberpunk TCG",
 		"reason": "463650 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:10:11.363Z",
-		"lastTried": "2026-11-25T20:10:11.363Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:28:00.418Z",
+		"attempts": 2
 	},
 	"463675": {
 		"name": "LSOM Cyberpunk TCG BETA",
@@ -1620,8 +1620,8 @@
 		"name": "Beta Cyberpunk TCG Manaflask",
 		"reason": "463957 is \"In Progress\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:10:10.760Z",
-		"lastTried": "2026-11-25T20:10:10.760Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:27:59.917Z",
+		"attempts": 2
 	},
 	"463994": {
 		"name": "Cyberpunk Night City Brawl Weekly Play",
@@ -1655,8 +1655,8 @@
 		"name": "Brotherhood Games Cyberpunk TCG Casual Event",
 		"reason": "464221 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:10:10.162Z",
-		"lastTried": "2026-11-25T20:10:10.162Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:27:59.409Z",
+		"attempts": 2
 	},
 	"464304": {
 		"name": "Nauka Gry w Cyberpunk TCG",
@@ -2096,8 +2096,8 @@
 		"name": "One Up Cyberpunk - Weekly 10.24.26",
 		"reason": "466401 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:10:06.854Z",
-		"lastTried": "2026-11-25T20:10:06.854Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:27:58.916Z",
+		"attempts": 2
 	},
 	"466403": {
 		"name": "One Up Cyberpunk - Weekly 11.7.26",
@@ -2208,8 +2208,8 @@
 		"name": "JWW Night City Brawl",
 		"reason": "466570 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:10:06.553Z",
-		"lastTried": "2026-11-25T20:10:06.553Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:27:58.414Z",
+		"attempts": 2
 	},
 	"466692": {
 		"name": "Weekly Brawl @ Breakpoint Cards & Collectibles",
@@ -2257,8 +2257,8 @@
 		"name": "Torneo Semanal - La Cueva Roja",
 		"reason": "466816 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:10:05.958Z",
-		"lastTried": "2026-11-25T20:10:05.958Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:27:57.909Z",
+		"attempts": 2
 	},
 	"466818": {
 		"name": "Stajnia Gier Weekly Play",
@@ -2334,36 +2334,36 @@
 		"name": "Night City Beta Brawl",
 		"reason": "466883 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:10:05.640Z",
-		"lastTried": "2026-11-25T20:10:05.640Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:27:57.416Z",
+		"attempts": 2
 	},
 	"466889": {
 		"name": "Night City Beta Brawl",
 		"reason": "466889 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:10:05.339Z",
-		"lastTried": "2026-11-25T20:10:05.339Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:27:56.914Z",
+		"attempts": 2
 	},
 	"466892": {
 		"name": "Night City Beta Brawl",
 		"reason": "466892 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:10:05.048Z",
-		"lastTried": "2026-11-25T20:10:05.048Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:27:56.429Z",
+		"attempts": 2
 	},
 	"466893": {
 		"name": "Night City Beta Brawl",
 		"reason": "466893 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:10:04.736Z",
-		"lastTried": "2026-11-25T20:10:04.736Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:27:55.907Z",
+		"attempts": 2
 	},
 	"466894": {
 		"name": "Night City Beta Brawl",
 		"reason": "466894 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:10:04.444Z",
-		"lastTried": "2026-11-25T20:10:04.444Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:27:55.407Z",
+		"attempts": 2
 	},
 	"466948": {
 		"name": "Cyberpunk TCG - Local Constructed - Draw4",
@@ -2376,8 +2376,8 @@
 		"name": "Monday Constructed",
 		"reason": "466990 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:10:04.134Z",
-		"lastTried": "2026-11-25T20:10:04.134Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:27:54.903Z",
+		"attempts": 2
 	},
 	"467009": {
 		"name": "Night City Brawl @ LFG",
@@ -2418,8 +2418,8 @@
 		"name": "Torneo amichevole + Learn to play",
 		"reason": "467207 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:10:03.839Z",
-		"lastTried": "2026-11-25T20:10:03.839Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:27:54.405Z",
+		"attempts": 2
 	},
 	"467232": {
 		"name": "Cyberpunk TCG Beta Weekly",
@@ -2572,8 +2572,8 @@
 		"name": "TabletopMK - Learn to Play Cyberpunk - Thursday 1st October",
 		"reason": "467520 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:10:03.236Z",
-		"lastTried": "2026-11-25T20:10:03.236Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:27:53.911Z",
+		"attempts": 2
 	},
 	"467556": {
 		"name": "Collectormania Cyberpunk Weekly Play",
@@ -2586,22 +2586,22 @@
 		"name": "Cyberpunk: Night City Showdown at Main Phase One",
 		"reason": "467607 is \"In Progress\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:10:02.934Z",
-		"lastTried": "2026-11-25T20:10:02.934Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:27:53.399Z",
+		"attempts": 2
 	},
 	"467608": {
 		"name": "Night City Showdown",
 		"reason": "467608 is \"In Progress\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-21T14:06:55.235Z",
-		"lastTried": "2026-11-25T19:42:21.426Z",
-		"attempts": 5
+		"lastTried": "2026-11-26T09:55:49.996Z",
+		"attempts": 6
 	},
 	"467627": {
 		"name": "Cyberpunk night city showdown",
 		"reason": "467627 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:10:02.643Z",
-		"lastTried": "2026-11-25T20:10:02.643Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:27:52.906Z",
+		"attempts": 2
 	},
 	"467670": {
 		"name": "Night City Showdown - Clark",
@@ -2663,8 +2663,8 @@
 		"name": "Cyberpunk Monday Brawl @ Liberlen",
 		"reason": "467782 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:10:02.032Z",
-		"lastTried": "2026-11-25T20:10:02.032Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:27:52.406Z",
+		"attempts": 2
 	},
 	"467792": {
 		"name": "Beta Event A dado y pluma ",
@@ -3060,10 +3060,10 @@
 	},
 	"468496": {
 		"name": "Tuesday Night City Brawl",
-		"reason": "468496 is \"Registration\", not Ended. Try again when it's over.",
+		"reason": "468496 is \"Canceled\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:10:01.438Z",
-		"lastTried": "2026-11-25T20:10:01.438Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:27:51.901Z",
+		"attempts": 2
 	},
 	"468503": {
 		"name": "Weekly Cyberpunk Event",
@@ -3111,8 +3111,8 @@
 		"name": "Night City Showdown",
 		"reason": "468569 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:10:01.162Z",
-		"lastTried": "2026-11-25T20:10:01.162Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:27:51.414Z",
+		"attempts": 2
 	},
 	"468587": {
 		"name": "Cyberpunk TCG | Welcome to Night City | Storeshowdown",
@@ -3146,43 +3146,43 @@
 		"name": "Cyberpunk Weekly Play",
 		"reason": "468673 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:10:00.835Z",
-		"lastTried": "2026-11-25T20:10:00.835Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:27:50.902Z",
+		"attempts": 2
 	},
 	"468675": {
 		"name": "Cyberpunk TCG Weekly Play",
 		"reason": "468675 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:10:00.530Z",
-		"lastTried": "2026-11-25T20:10:00.530Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:27:50.398Z",
+		"attempts": 2
 	},
 	"468676": {
 		"name": "Cyberpunk TCG Weekly Play",
 		"reason": "468676 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:10:00.221Z",
-		"lastTried": "2026-11-25T20:10:00.221Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:27:49.893Z",
+		"attempts": 2
 	},
 	"468677": {
 		"name": "Cyberpunk TCG Weekly Play",
 		"reason": "468677 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:09:59.937Z",
-		"lastTried": "2026-11-25T20:09:59.937Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:27:49.404Z",
+		"attempts": 2
 	},
 	"468678": {
 		"name": "Cyberpunk TCG Weekly Play",
 		"reason": "468678 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:09:59.619Z",
-		"lastTried": "2026-11-25T20:09:59.619Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:27:48.902Z",
+		"attempts": 2
 	},
 	"468679": {
 		"name": "Kobold's Keep Cyberpunk TCG Weekly Play",
 		"reason": "468679 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:09:59.330Z",
-		"lastTried": "2026-11-25T20:09:59.330Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:27:48.402Z",
+		"attempts": 2
 	},
 	"468737": {
 		"name": "Gaming Universe Corp Weekly Cyberpunk",
@@ -3195,8 +3195,8 @@
 		"name": "Ozzie Collectables CyberPunk TCG Weekly Brawl!!",
 		"reason": "468789 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:09:59.018Z",
-		"lastTried": "2026-11-25T20:09:59.018Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:27:47.894Z",
+		"attempts": 2
 	},
 	"468800": {
 		"name": "Chrome Showdown",
@@ -3265,8 +3265,8 @@
 		"name": "Friday BETA Weekly Play",
 		"reason": "468939 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:09:58.721Z",
-		"lastTried": "2026-11-25T20:09:58.721Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:27:47.396Z",
+		"attempts": 2
 	},
 	"468952": {
 		"name": "Weekly Night City Brawl at Game-O-Storus",
@@ -3300,8 +3300,8 @@
 		"name": "Valhalla Night City Brawl",
 		"reason": "469068 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:09:58.114Z",
-		"lastTried": "2026-11-25T20:09:58.114Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:27:46.908Z",
+		"attempts": 2
 	},
 	"469074": {
 		"name": "Cyberpunk weekly play",
@@ -3370,8 +3370,8 @@
 		"name": "Heretics Haven Weekly Brawl",
 		"reason": "469190 is \"In Progress\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:09:57.816Z",
-		"lastTried": "2026-11-25T20:09:57.816Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:27:46.397Z",
+		"attempts": 2
 	},
 	"469206": {
 		"name": "Beta-Locals @DemonicalTCG",
@@ -3382,10 +3382,10 @@
 	},
 	"469241": {
 		"name": "BSA Night City Brawl (Weekly Play)",
-		"reason": "469241 is \"Registration\", not Ended. Try again when it's over.",
+		"reason": "469241 is \"In Progress\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:09:57.505Z",
-		"lastTried": "2026-11-25T20:09:57.505Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:27:45.890Z",
+		"attempts": 2
 	},
 	"469256": {
 		"name": "Cyberpunk Locals!",
@@ -3405,15 +3405,15 @@
 		"name": "Cyberpunk TCG Night City Open",
 		"reason": "469292 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:09:57.205Z",
-		"lastTried": "2026-11-25T20:09:57.205Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:27:45.394Z",
+		"attempts": 2
 	},
 	"469321": {
 		"name": "Torneo semanal Cyberpunk en TPK",
 		"reason": "469321 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:09:56.909Z",
-		"lastTried": "2026-11-25T20:09:56.909Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:27:44.888Z",
+		"attempts": 2
 	},
 	"469393": {
 		"name": "Weekly Sunday Locals @ Harlequins Preston",
@@ -3657,8 +3657,8 @@
 		"name": "Weekly Night City Brawl",
 		"reason": "469617 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:09:56.604Z",
-		"lastTried": "2026-11-25T20:09:56.604Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:27:44.387Z",
+		"attempts": 2
 	},
 	"469625": {
 		"name": "Cyberpunk Casual Tournament Night",
@@ -3706,8 +3706,8 @@
 		"name": "Sugo Toys Showdown",
 		"reason": "469703 is \"In Progress\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:09:56.312Z",
-		"lastTried": "2026-11-25T20:09:56.312Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:27:43.889Z",
+		"attempts": 2
 	},
 	"469704": {
 		"name": "casual meet up and tournament",
@@ -3727,8 +3727,8 @@
 		"name": "Cyberpunk Locals *was the night city showdown*",
 		"reason": "469715 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:09:56.003Z",
-		"lastTried": "2026-11-25T20:09:56.003Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:27:43.403Z",
+		"attempts": 2
 	},
 	"469735": {
 		"name": "Cyberpunk Weekly Play",
@@ -3776,8 +3776,8 @@
 		"name": "Night City Brawl at Tower Newport News",
 		"reason": "469743 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:09:55.712Z",
-		"lastTried": "2026-11-25T20:09:55.712Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:27:42.891Z",
+		"attempts": 2
 	},
 	"469755": {
 		"name": "Weekly Friday 9/25",
@@ -3797,8 +3797,8 @@
 		"name": "Linagecards Locals",
 		"reason": "469815 is \"In Progress\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:09:55.403Z",
-		"lastTried": "2026-11-25T20:09:55.403Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:27:42.394Z",
+		"attempts": 2
 	},
 	"469822": {
 		"name": "Cyberpunk TCG Beta Brawl",
@@ -3881,15 +3881,15 @@
 		"name": "Cyberpunk Weekly Play",
 		"reason": "470007 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:09:55.100Z",
-		"lastTried": "2026-11-25T20:09:55.100Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:27:41.888Z",
+		"attempts": 2
 	},
 	"470009": {
 		"name": "Cyberpunk Weekly Play",
 		"reason": "470009 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:09:54.805Z",
-		"lastTried": "2026-11-25T20:09:54.805Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:27:41.391Z",
+		"attempts": 2
 	},
 	"470010": {
 		"name": "Cyberpunk Weekly Play - Night City Brawl",
@@ -4112,8 +4112,8 @@
 		"name": "Testeo Ciberpunk",
 		"reason": "470364 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:09:54.204Z",
-		"lastTried": "2026-11-25T20:09:54.204Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:27:40.900Z",
+		"attempts": 2
 	},
 	"470382": {
 		"name": "Torneo Cyberpunk en SINGLETON TCG",
@@ -4280,8 +4280,8 @@
 		"name": "local cyberpunk clone",
 		"reason": "470726 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:09:53.903Z",
-		"lastTried": "2026-11-25T20:09:53.903Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:27:40.389Z",
+		"attempts": 2
 	},
 	"470727": {
 		"name": "Wilczek - Cyberpunk - Sobotni Standard",
@@ -4341,10 +4341,10 @@
 	},
 	"470755": {
 		"name": "Weekly Brawl Cardiff",
-		"reason": "470755 is \"In Progress\", not Ended. Try again when it's over.",
+		"reason": "470755 has no decklists (none of its 4 players has one up), so it isn't ingested. Lists can appear after an event ends; try again later.",
 		"firstTried": "2026-11-25T20:09:53.604Z",
-		"lastTried": "2026-11-25T20:09:53.604Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:27:39.901Z",
+		"attempts": 2
 	},
 	"470759": {
 		"name": "Griffins Gaming locals",
@@ -4413,8 +4413,8 @@
 		"name": "Jay-CS Competitive Saturday Night City Brawl",
 		"reason": "470816 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:09:53.298Z",
-		"lastTried": "2026-11-25T20:09:53.298Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:27:33.880Z",
+		"attempts": 2
 	},
 	"470817": {
 		"name": "Jay-CS Competitive Saturday Night City Brawl",
@@ -4476,8 +4476,8 @@
 		"name": "Brotherhood Games Cyberpunk TCG Tournament Sunday 22nd November",
 		"reason": "470883 is \"In Progress\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:09:52.993Z",
-		"lastTried": "2026-11-25T20:09:52.993Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:27:33.375Z",
+		"attempts": 2
 	},
 	"470900": {
 		"name": "Cyberpunk TCG - Tournoi Construit - Pigalle - Jeudi 15 Octobre à 19h30",
@@ -4560,8 +4560,8 @@
 		"name": "Card Brawlers - Cyberpunk TCG - Weekly Play",
 		"reason": "471006 is \"In Progress\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:09:52.694Z",
-		"lastTried": "2026-11-25T20:09:52.694Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:27:32.881Z",
+		"attempts": 2
 	},
 	"471061": {
 		"name": "Yugis Lookout Night City Showdown",
@@ -4616,8 +4616,8 @@
 		"name": "TCB's Weekly Night City Brawl",
 		"reason": "471279 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:09:52.402Z",
-		"lastTried": "2026-11-25T20:09:52.402Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:27:32.381Z",
+		"attempts": 2
 	},
 	"471323": {
 		"name": "TwoMoons Cyberpunk TCG Weekly",
@@ -4686,15 +4686,15 @@
 		"name": "Mana & Mochas Weekly Play ",
 		"reason": "471412 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:09:51.789Z",
-		"lastTried": "2026-11-25T20:09:51.789Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:27:31.871Z",
+		"attempts": 2
 	},
 	"471414": {
 		"name": "Cyberpunk 2077 Games Network Locals",
 		"reason": "471414 is \"In Progress\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:09:51.494Z",
-		"lastTried": "2026-11-25T20:09:51.494Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:27:31.375Z",
+		"attempts": 2
 	},
 	"471420": {
 		"name": "Brotherhood Games Cyberpunk TCG Casual Tournament Sunday 4th October",
@@ -4740,10 +4740,10 @@
 	},
 	"471552": {
 		"name": "Cyberpunk TCG- weekly event ",
-		"reason": "471552 is \"Registration\", not Ended. Try again when it's over.",
+		"reason": "471552 has no rounds on Melee (nothing was played or published), so there is nothing to ingest. Try again once the organizer adds them.",
 		"firstTried": "2026-11-25T20:09:51.191Z",
-		"lastTried": "2026-11-25T20:09:51.191Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:27:30.913Z",
+		"attempts": 2
 	},
 	"471563": {
 		"name": "Bazaar Trader Cyberpunk TCG Casual Tournament ",
@@ -4847,8 +4847,8 @@
 		"name": "Welcome to Night City... Pre-Retail Weekly Play",
 		"reason": "471839 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:09:50.887Z",
-		"lastTried": "2026-11-25T20:09:50.887Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:27:29.867Z",
+		"attempts": 2
 	},
 	"471883": {
 		"name": "Saturday Afternoon Night City Brawl at Pastimes",
@@ -4861,15 +4861,15 @@
 		"name": "Saturday Afternoon Night City Brawl at Pastimes",
 		"reason": "471909 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:09:50.593Z",
-		"lastTried": "2026-11-25T20:09:50.593Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:27:29.377Z",
+		"attempts": 2
 	},
 	"472035": {
 		"name": "Night City Brawl @ Kartelles",
 		"reason": "472035 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:09:50.284Z",
-		"lastTried": "2026-11-25T20:09:50.284Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:27:28.866Z",
+		"attempts": 2
 	},
 	"472051": {
 		"name": "Cyberpunk Beta Tournament Event at NG Ali Mall",
@@ -4917,8 +4917,8 @@
 		"name": "Cyberpunk Welcome to Night City Brawl",
 		"reason": "472205 is \"In Progress\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:09:49.985Z",
-		"lastTried": "2026-11-25T20:09:49.985Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:27:28.372Z",
+		"attempts": 2
 	},
 	"472208": {
 		"name": "Zarcowe granie",
@@ -4945,15 +4945,15 @@
 		"name": "Luxury Gaming Night City Brawl",
 		"reason": "472246 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:09:49.682Z",
-		"lastTried": "2026-11-25T20:09:49.682Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:27:27.866Z",
+		"attempts": 2
 	},
 	"472255": {
 		"name": "Luxury Gaming Night City Brawl",
 		"reason": "472255 is \"In Progress\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:09:49.383Z",
-		"lastTried": "2026-11-25T20:09:49.383Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:27:27.370Z",
+		"attempts": 2
 	},
 	"472256": {
 		"name": "Estalia Córdoba Night City Showdown",
@@ -5008,8 +5008,8 @@
 		"name": "Night City Brawl",
 		"reason": "472375 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:09:49.082Z",
-		"lastTried": "2026-11-25T20:09:49.082Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:27:26.871Z",
+		"attempts": 2
 	},
 	"472419": {
 		"name": "Local 25/09",
@@ -5050,8 +5050,8 @@
 		"name": "Cyberpunk Night City Brawl",
 		"reason": "472502 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:09:48.782Z",
-		"lastTried": "2026-11-25T20:09:48.782Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:27:26.370Z",
+		"attempts": 2
 	},
 	"472555": {
 		"name": "Inaugural Weekly Cyberpunk Tournament",
@@ -5064,8 +5064,8 @@
 		"name": "Night City Showdown @ Thirdspace",
 		"reason": "472595 is \"In Progress\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:09:48.182Z",
-		"lastTried": "2026-11-25T20:09:48.182Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:27:25.863Z",
+		"attempts": 2
 	},
 	"472624": {
 		"name": "Wonko's Weekly Play - Week of 10/01/26 ",
@@ -5113,22 +5113,22 @@
 		"name": "Night City Weekly Tournament at Rekreation Games",
 		"reason": "472654 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:09:47.880Z",
-		"lastTried": "2026-11-25T20:09:47.880Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:27:25.360Z",
+		"attempts": 2
 	},
 	"472656": {
 		"name": "Night City Weekly Tournament at Rekreation Games",
 		"reason": "472656 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:09:47.576Z",
-		"lastTried": "2026-11-25T20:09:47.576Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:27:24.866Z",
+		"attempts": 2
 	},
 	"472658": {
 		"name": "Night City Weekly Tournament at Rekreation Games",
 		"reason": "472658 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:09:47.275Z",
-		"lastTried": "2026-11-25T20:09:47.275Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:27:24.370Z",
+		"attempts": 2
 	},
 	"472690": {
 		"name": "Night City Brawl",
@@ -5197,8 +5197,8 @@
 		"name": "Phantasma Sunday Locals",
 		"reason": "472942 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:09:46.970Z",
-		"lastTried": "2026-11-25T20:09:46.970Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:27:23.864Z",
+		"attempts": 2
 	},
 	"472947": {
 		"name": "Phantasma Sunday Locals",
@@ -5225,8 +5225,8 @@
 		"name": "Craving's Night City Brawl",
 		"reason": "473049 is \"In Progress\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:09:46.675Z",
-		"lastTried": "2026-11-25T20:09:46.675Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:27:23.448Z",
+		"attempts": 2
 	},
 	"473050": {
 		"name": "Craving's Night City Brawl",
@@ -5295,8 +5295,8 @@
 		"name": "Demo Deck Event",
 		"reason": "473151 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:09:46.369Z",
-		"lastTried": "2026-11-25T20:09:46.369Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:27:22.855Z",
+		"attempts": 2
 	},
 	"473177": {
 		"name": "CSG Night City Brawl",
@@ -5468,10 +5468,10 @@
 	},
 	"473647": {
 		"name": "Tournoi Bi-Mensuel - Autour des Jeux ",
-		"reason": "473647 is \"In Progress\", not Ended. Try again when it's over.",
+		"reason": "473647 has no decklists (none of the first 7 of its 10 players has one up), so it isn't ingested. Lists can appear after an event ends; try again later.",
 		"firstTried": "2026-11-25T20:09:45.167Z",
-		"lastTried": "2026-11-25T20:09:45.167Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:27:22.381Z",
+		"attempts": 2
 	},
 	"473651": {
 		"name": "GEEK FACTORY NOGENT TOURNOI CONSTRUIT",
@@ -5617,8 +5617,8 @@
 		"name": "Night City Brawl - House of Games",
 		"reason": "473811 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:09:44.865Z",
-		"lastTried": "2026-11-25T20:09:44.865Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:27:17.349Z",
+		"attempts": 2
 	},
 	"473824": {
 		"name": "Construido 30-09-2026",
@@ -5645,8 +5645,8 @@
 		"name": "NIGHT CITY SHOWDOWN",
 		"reason": "473843 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:09:44.562Z",
-		"lastTried": "2026-11-25T20:09:44.562Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:27:16.861Z",
+		"attempts": 2
 	},
 	"473856": {
 		"name": "Testeo Ciberpunk",
@@ -5687,8 +5687,8 @@
 		"name": "Cyberpunk Night City Brawl",
 		"reason": "473904 is \"In Progress\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:09:44.260Z",
-		"lastTried": "2026-11-25T20:09:44.260Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:27:16.353Z",
+		"attempts": 2
 	},
 	"473916": {
 		"name": "ASD Il Rifugio Alpha Comix Night City Brawl",
@@ -5862,8 +5862,8 @@
 		"name": "Cyberpunk TCG: Night City Brawl",
 		"reason": "474564 is \"In Progress\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:09:43.665Z",
-		"lastTried": "2026-11-25T20:09:43.665Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:27:15.855Z",
+		"attempts": 2
 	},
 	"474565": {
 		"name": "Night City Brawl",
@@ -5904,15 +5904,15 @@
 		"name": "Draw4 - Cyberpunk TCG - Welcome to Night City - Constructed",
 		"reason": "474672 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:09:43.363Z",
-		"lastTried": "2026-11-25T20:09:43.363Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:27:15.350Z",
+		"attempts": 2
 	},
 	"474676": {
 		"name": "Night city showdown - PROGCT01 - Manerbio (BS)",
 		"reason": "474676 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:09:43.056Z",
-		"lastTried": "2026-11-25T20:09:43.056Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:27:14.852Z",
+		"attempts": 2
 	},
 	"474678": {
 		"name": "Friday Night City Clash",
@@ -6016,8 +6016,8 @@
 		"name": "Sunday Afternoon Brawl (Weekly Cyberpunk TCG locals)",
 		"reason": "474959 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:09:42.460Z",
-		"lastTried": "2026-11-25T20:09:42.460Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:27:14.349Z",
+		"attempts": 2
 	},
 	"474969": {
 		"name": "Night City Brawl - Lomas ",
@@ -6107,8 +6107,8 @@
 		"name": "Night City Brawl - Las Cruces ",
 		"reason": "475112 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:09:42.158Z",
-		"lastTried": "2026-11-25T20:09:42.158Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:27:13.850Z",
+		"attempts": 2
 	},
 	"475113": {
 		"name": "Beta Weekly Play",
@@ -6135,8 +6135,8 @@
 		"name": "Night City Brawl - Rio Rancho ",
 		"reason": "475124 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:09:41.851Z",
-		"lastTried": "2026-11-25T20:09:41.851Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:27:13.348Z",
+		"attempts": 2
 	},
 	"475126": {
 		"name": "Game Roost Monday Night City Brawl",
@@ -6289,15 +6289,15 @@
 		"name": "NG MANILA BAY Night City Showdown",
 		"reason": "475386 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:09:41.553Z",
-		"lastTried": "2026-11-25T20:09:41.553Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:27:12.844Z",
+		"attempts": 2
 	},
 	"475391": {
 		"name": "Cyberpunk TCG Night City Brawl",
 		"reason": "475391 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:09:41.255Z",
-		"lastTried": "2026-11-25T20:09:41.255Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:27:12.350Z",
+		"attempts": 2
 	},
 	"475402": {
 		"name": "Cyberpunk Beta Event at NG Ali Mall",
@@ -6324,8 +6324,8 @@
 		"name": "Cyberpunk Night City Showdown",
 		"reason": "475459 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:09:40.955Z",
-		"lastTried": "2026-11-25T20:09:40.955Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:27:11.842Z",
+		"attempts": 2
 	},
 	"475474": {
 		"name": "Cyberpunk TCG - Tournoi Construit - Pigalle - Jeudi 29 Octobre à 19h",
@@ -6359,22 +6359,22 @@
 		"name": "Weekly Play",
 		"reason": "475534 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:09:40.652Z",
-		"lastTried": "2026-11-25T20:09:40.652Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:27:11.339Z",
+		"attempts": 2
 	},
 	"475563": {
 		"name": "Weekly Brawl",
-		"reason": "475563 is \"In Progress\", not Ended. Try again when it's over.",
+		"reason": "475563 has no decklists (none of its 3 players has one up), so it isn't ingested. Lists can appear after an event ends; try again later.",
 		"firstTried": "2026-11-25T20:09:40.349Z",
-		"lastTried": "2026-11-25T20:09:40.349Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:27:10.864Z",
+		"attempts": 2
 	},
 	"475576": {
 		"name": "cyberpunk tcg brawl",
 		"reason": "475576 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:09:40.052Z",
-		"lastTried": "2026-11-25T20:09:40.052Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:27:06.332Z",
+		"attempts": 2
 	},
 	"475581": {
 		"name": "Weekly Casuals",
@@ -6576,8 +6576,8 @@
 		"name": "Titan Night City Brawl",
 		"reason": "475956 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:09:39.448Z",
-		"lastTried": "2026-11-25T20:09:39.448Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:27:05.842Z",
+		"attempts": 2
 	},
 	"475967": {
 		"name": "Cyberpunk Beta Demo Night ",
@@ -6590,8 +6590,8 @@
 		"name": "Vault RNG presents: Night City Showdown",
 		"reason": "476003 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:09:39.147Z",
-		"lastTried": "2026-11-25T20:09:39.147Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:27:05.331Z",
+		"attempts": 2
 	},
 	"476022": {
 		"name": "Tuesday Night City Brawl ",
@@ -6604,8 +6604,8 @@
 		"name": "Weekly Night City Brawl",
 		"reason": "476023 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:09:38.842Z",
-		"lastTried": "2026-11-25T20:09:38.842Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:27:04.839Z",
+		"attempts": 2
 	},
 	"476055": {
 		"name": "Gem Mint Cards Night City Brawl",
@@ -6653,15 +6653,15 @@
 		"name": "Cyberpunk TCG - Beta Event Constructed",
 		"reason": "476168 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:09:38.543Z",
-		"lastTried": "2026-11-25T20:09:38.543Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:27:04.328Z",
+		"attempts": 2
 	},
 	"476169": {
 		"name": "Cyberpunk TCG - Beta Event Constructed",
 		"reason": "476169 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:09:38.242Z",
-		"lastTried": "2026-11-25T20:09:38.242Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:27:03.834Z",
+		"attempts": 2
 	},
 	"476181": {
 		"name": "Cyberpunk TCG Beta Weekly",
@@ -6800,8 +6800,8 @@
 		"name": "CyberPunk Weekly @ Thirdspace",
 		"reason": "476414 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:09:37.642Z",
-		"lastTried": "2026-11-25T20:09:37.642Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:27:03.333Z",
+		"attempts": 2
 	},
 	"476430": {
 		"name": "Cyberpunk TCG Tuesday Locals",
@@ -6821,8 +6821,8 @@
 		"name": "Second Level Games Cyberpunk Casual Play",
 		"reason": "476517 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:09:37.338Z",
-		"lastTried": "2026-11-25T20:09:37.338Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:27:02.830Z",
+		"attempts": 2
 	},
 	"476556": {
 		"name": "Construido 03/10/2026",
@@ -6847,10 +6847,10 @@
 	},
 	"476631": {
 		"name": "Draft Arena - Night City Brawl (Ma 24.11 - 18h30)",
-		"reason": "476631 is \"Registration\", not Ended. Try again when it's over.",
+		"reason": "476631 is \"Canceled\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:09:37.046Z",
-		"lastTried": "2026-11-25T20:09:37.046Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:27:02.338Z",
+		"attempts": 2
 	},
 	"476647": {
 		"name": "Toulon : Bienvenue à Night City ! (1st event)",
@@ -6933,8 +6933,8 @@
 		"name": "PHG Cyberpunk Sunday Meet-Up!",
 		"reason": "476774 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:09:36.136Z",
-		"lastTried": "2026-11-25T20:09:36.136Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:27:01.833Z",
+		"attempts": 2
 	},
 	"476776": {
 		"name": "PHG Cyberpunk Sunday Meet-Up! ",
@@ -7094,8 +7094,8 @@
 		"name": "Night City Showdown",
 		"reason": "477467 is \"In Progress\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:09:34.624Z",
-		"lastTried": "2026-11-25T20:09:34.624Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:27:01.330Z",
+		"attempts": 2
 	},
 	"477469": {
 		"name": "J8 Saturday Night City Brawls",
@@ -7479,15 +7479,15 @@
 		"name": "Night City Showdown @ Valentino Card Shop",
 		"reason": "478871 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:09:34.329Z",
-		"lastTried": "2026-11-25T20:09:34.329Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:27:00.827Z",
+		"attempts": 2
 	},
 	"478876": {
 		"name": "Night City Showdown",
-		"reason": "478876 is \"In Progress\", not Ended. Try again when it's over.",
+		"reason": "478876 has no decklists (none of the first 7 of its 14 players has one up), so it isn't ingested. Lists can appear after an event ends; try again later.",
 		"firstTried": "2026-11-25T20:09:34.026Z",
-		"lastTried": "2026-11-25T20:09:34.026Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:27:00.351Z",
+		"attempts": 2
 	},
 	"478881": {
 		"name": "Night City Showdown",
@@ -7507,8 +7507,8 @@
 		"name": "Nighttime Showdown!",
 		"reason": "478889 is \"In Progress\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:09:33.721Z",
-		"lastTried": "2026-11-25T20:09:33.721Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:26:55.323Z",
+		"attempts": 2
 	},
 	"478909": {
 		"name": "Cyberpunk TCG - Night City Showdown - 21st November 2026",
@@ -7591,8 +7591,8 @@
 		"name": "Win a Box Beta",
 		"reason": "478994 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:09:33.118Z",
-		"lastTried": "2026-11-25T20:09:33.118Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:26:54.819Z",
+		"attempts": 2
 	},
 	"478996": {
 		"name": "Night City Showdown at Cardco",
@@ -7612,8 +7612,8 @@
 		"name": "Butti Cards Night City Showdown",
 		"reason": "479002 is \"In Progress\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:09:32.821Z",
-		"lastTried": "2026-11-25T20:09:32.821Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:26:54.323Z",
+		"attempts": 2
 	},
 	"479040": {
 		"name": "Legends showdown",
@@ -7759,8 +7759,8 @@
 		"name": "Cyberpunk Night City Showdown Event!",
 		"reason": "479239 is \"In Progress\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:09:32.514Z",
-		"lastTried": "2026-11-25T20:09:32.514Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:26:53.818Z",
+		"attempts": 2
 	},
 	"479241": {
 		"name": "Night City Brawl Weekly Tournament @ Atlantis Norfolk",
@@ -7815,8 +7815,8 @@
 		"name": "El Cardboard - Cyberpunk - Night City Brawl",
 		"reason": "479325 is \"In Progress\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:09:32.215Z",
-		"lastTried": "2026-11-25T20:09:32.215Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:26:53.314Z",
+		"attempts": 2
 	},
 	"479341": {
 		"name": "Baydragon Night City Showdown!",
@@ -7979,13 +7979,6 @@
 		"lastTried": "2026-11-25T19:03:07.043Z",
 		"attempts": 1
 	},
-	"479568": {
-		"name": "Night City Showdown",
-		"reason": "479568 is \"In Progress\", not Ended. Try again when it's over.",
-		"firstTried": "2026-11-25T20:09:31.917Z",
-		"lastTried": "2026-11-25T20:09:31.917Z",
-		"attempts": 1
-	},
 	"479572": {
 		"name": "Friday Night City Brawl",
 		"reason": "479572 has no decklists (none of the first 7 of its 12 players has one up), so it isn't ingested. Lists can appear after an event ends; try again later.",
@@ -8102,8 +8095,8 @@
 		"name": "Kassars NIght City Showdown",
 		"reason": "479654 is \"In Progress\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:09:31.616Z",
-		"lastTried": "2026-11-25T20:09:31.616Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:26:41.443Z",
+		"attempts": 2
 	},
 	"479668": {
 		"name": "Night City Showdown - Games Academy Arezzo",
@@ -8305,8 +8298,8 @@
 		"name": "Curio Cavern Cyberpunk Locals",
 		"reason": "479967 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:09:31.308Z",
-		"lastTried": "2026-11-25T20:09:31.308Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:26:40.923Z",
+		"attempts": 2
 	},
 	"479976": {
 		"name": "Night City Showdown",
@@ -8347,8 +8340,8 @@
 		"name": "Night City Showdown",
 		"reason": "480060 is \"In Progress\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:09:31.017Z",
-		"lastTried": "2026-11-25T20:09:31.017Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:26:40.416Z",
+		"attempts": 2
 	},
 	"480124": {
 		"name": "Weekly Cyberpunk",
@@ -8389,8 +8382,8 @@
 		"name": "Night City Brawl - High St",
 		"reason": "480174 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:09:30.717Z",
-		"lastTried": "2026-11-25T20:09:30.717Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:26:39.923Z",
+		"attempts": 2
 	},
 	"480182": {
 		"name": "Cyberpunk Weekily Hobby clone",
@@ -8515,8 +8508,8 @@
 		"name": "RNG Therapy Local Play",
 		"reason": "480404 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:09:29.512Z",
-		"lastTried": "2026-11-25T20:09:29.512Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:26:39.413Z",
+		"attempts": 2
 	},
 	"480427": {
 		"name": "One Up Cyberpunk - Night City Showdown 11.21.26",
@@ -8576,10 +8569,10 @@
 	},
 	"480566": {
 		"name": "Cyberpunk TCG Weekly Tournament at Gnome Games Appleton North",
-		"reason": "480566 is \"Registration\", not Ended. Try again when it's over.",
+		"reason": "480566 is \"Canceled\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:09:29.203Z",
-		"lastTried": "2026-11-25T20:09:29.203Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:26:38.914Z",
+		"attempts": 2
 	},
 	"480576": {
 		"name": "Showdown Reus Vanilla Novembre",
@@ -8690,8 +8683,8 @@
 		"name": "Night City Brawl - Lomas",
 		"reason": "480718 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:09:28.902Z",
-		"lastTried": "2026-11-25T20:09:28.902Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:26:38.422Z",
+		"attempts": 2
 	},
 	"480719": {
 		"name": "Night City Brawl - Lomas",
@@ -8711,8 +8704,8 @@
 		"name": "Boreal Gaming Night City Showdown",
 		"reason": "480743 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:09:28.607Z",
-		"lastTried": "2026-11-25T20:09:28.607Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:26:37.919Z",
+		"attempts": 2
 	},
 	"480744": {
 		"name": "Night City Showdown at The Card Shop!",
@@ -8781,8 +8774,8 @@
 		"name": "NIGHT CITY SHOWDOWN - FOREVER AFTER ANTIQUES AND COLLECTIBLES",
 		"reason": "480833 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:09:27.698Z",
-		"lastTried": "2026-11-25T20:09:27.698Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:26:37.418Z",
+		"attempts": 2
 	},
 	"480841": {
 		"name": "Night City Showdown - Cyberpunk TCG | Dragon World Store",
@@ -8949,8 +8942,8 @@
 		"name": "Cyberpunk TCG Constructed @Goblin Bologns",
 		"reason": "481229 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:09:26.503Z",
-		"lastTried": "2026-11-25T20:09:26.503Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:26:36.913Z",
+		"attempts": 2
 	},
 	"481269": {
 		"name": "2026-10-08 REDRAFT - Cyberpunk TCG - Night City Brawl - Constructed",
@@ -9012,15 +9005,15 @@
 		"name": "Night City Showdown Eckernförde ",
 		"reason": "481347 is \"In Progress\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:09:26.198Z",
-		"lastTried": "2026-11-25T20:09:26.198Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:26:36.417Z",
+		"attempts": 2
 	},
 	"481367": {
 		"name": "Night City Brawl à Troll2Jeux le 24 Novembre ",
 		"reason": "481367 is \"In Progress\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:09:25.898Z",
-		"lastTried": "2026-11-25T20:09:25.898Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:26:35.919Z",
+		"attempts": 2
 	},
 	"481373": {
 		"name": "SpareTime (Rogue's Gallery) Night City Brawl",
@@ -9047,8 +9040,8 @@
 		"name": "Cyberpunk Weekly Play 08/10/26",
 		"reason": "481430 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:09:25.595Z",
-		"lastTried": "2026-11-25T20:09:25.595Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:26:35.418Z",
+		"attempts": 2
 	},
 	"481458": {
 		"name": "Cyberpunk TCG: Locals (BETA) ",
@@ -9173,8 +9166,8 @@
 		"name": "Cyber Punk Weekly",
 		"reason": "481631 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:09:25.296Z",
-		"lastTried": "2026-11-25T20:09:25.296Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:26:34.929Z",
+		"attempts": 2
 	},
 	"481733": {
 		"name": "Cyberpunk Night City Showdown ",
@@ -9243,8 +9236,8 @@
 		"name": "Cyberpunk Weekly Game Night at Grand J Games Melbourne",
 		"reason": "481956 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:09:24.692Z",
-		"lastTried": "2026-11-25T20:09:24.692Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:26:34.415Z",
+		"attempts": 2
 	},
 	"481957": {
 		"name": "Cyberpunk Weekly Game Night at Grand J Games Melbourne",
@@ -9355,8 +9348,8 @@
 		"name": "Pokecard Store - Night City Showdown",
 		"reason": "482179 is \"In Progress\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-21T14:08:55.281Z",
-		"lastTried": "2026-11-25T19:42:21.571Z",
-		"attempts": 5
+		"lastTried": "2026-11-26T09:55:50.263Z",
+		"attempts": 6
 	},
 	"482183": {
 		"name": "Cyberpunk TCG BETA Weekly Play 27/10/26 @ Azgard Collectibles",
@@ -9404,8 +9397,8 @@
 		"name": "Second Level Games Cyberpunk Sunday Casual Event",
 		"reason": "482277 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:09:24.089Z",
-		"lastTried": "2026-11-25T20:09:24.089Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:26:33.907Z",
+		"attempts": 2
 	},
 	"482279": {
 		"name": "Cyberpunk TCG - Night City Showdown!",
@@ -9537,8 +9530,8 @@
 		"name": "Weekly Cyberpunk",
 		"reason": "482675 is \"In Progress\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:09:23.184Z",
-		"lastTried": "2026-11-25T20:09:23.184Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:26:33.412Z",
+		"attempts": 2
 	},
 	"482728": {
 		"name": "Cyberpunk TCG: Night City Brawl - Weekly Woden",
@@ -9780,17 +9773,17 @@
 	},
 	"483389": {
 		"name": "Cyberpunk TCG Casual Play",
-		"reason": "483389 is \"Registration\", not Ended. Try again when it's over.",
+		"reason": "483389 is \"Canceled\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:09:22.583Z",
-		"lastTried": "2026-11-25T20:09:22.583Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:26:32.913Z",
+		"attempts": 2
 	},
 	"483391": {
 		"name": "Galactic Trading - Weekly Play",
 		"reason": "483391 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:09:22.291Z",
-		"lastTried": "2026-11-25T20:09:22.291Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:26:32.414Z",
+		"attempts": 2
 	},
 	"483395": {
 		"name": "Cyberpunk TCG: Night City Brawl",
@@ -9801,10 +9794,10 @@
 	},
 	"483402": {
 		"name": "Cyberpunk TCG: Night City Brawl",
-		"reason": "483402 is \"In Progress\", not Ended. Try again when it's over.",
+		"reason": "483402 has no decklists (none of its 5 players has one up), so it isn't ingested. Lists can appear after an event ends; try again later.",
 		"firstTried": "2026-11-25T20:09:21.988Z",
-		"lastTried": "2026-11-25T20:09:21.988Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:26:31.931Z",
+		"attempts": 2
 	},
 	"483407": {
 		"name": "Lyktan Nights",
@@ -9824,8 +9817,8 @@
 		"name": "WEDNESDAY CYBERPUNK NIGHT CITY BRAWL ",
 		"reason": "483471 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:09:21.681Z",
-		"lastTried": "2026-11-25T20:09:21.681Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:26:25.396Z",
+		"attempts": 2
 	},
 	"483524": {
 		"name": "Cyberpunk TCG: Night City Brawl Weekly Play",
@@ -9838,8 +9831,8 @@
 		"name": "Cyberpunk Weekly Play",
 		"reason": "483528 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:09:21.386Z",
-		"lastTried": "2026-11-25T20:09:21.386Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:26:24.895Z",
+		"attempts": 2
 	},
 	"483599": {
 		"name": "Cyberpunk @ Mulligan",
@@ -9999,8 +9992,8 @@
 		"name": "Night City Brawl (Win-a-box edition) 11/13",
 		"reason": "483884 is \"In Progress\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:09:20.778Z",
-		"lastTried": "2026-11-25T20:09:20.778Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:26:24.390Z",
+		"attempts": 2
 	},
 	"483885": {
 		"name": "AD Chandler Cyberpunk TCG Night City Showdown",
@@ -10013,22 +10006,22 @@
 		"name": "AD Casa Grande Cyberpunk TCG Night City Showdown",
 		"reason": "483892 is \"In Progress\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:09:20.484Z",
-		"lastTried": "2026-11-25T20:09:20.484Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:26:23.899Z",
+		"attempts": 2
 	},
 	"483917": {
 		"name": "Night City Showdown - Scattered Deck Smokey Point ",
 		"reason": "483917 is \"In Progress\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:09:20.174Z",
-		"lastTried": "2026-11-25T20:09:20.174Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:26:23.391Z",
+		"attempts": 2
 	},
 	"483919": {
 		"name": "Night City Showdown - Scattered Deck Stanwood",
 		"reason": "483919 is \"In Progress\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:09:19.880Z",
-		"lastTried": "2026-11-25T20:09:19.880Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:26:22.891Z",
+		"attempts": 2
 	},
 	"483944": {
 		"name": "Weekly Cyberpunk Tournament - Week of 10/15/26",
@@ -10132,8 +10125,8 @@
 		"name": "Tournoi Night City Showdowns",
 		"reason": "484236 is \"In Progress\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:09:19.572Z",
-		"lastTried": "2026-11-25T20:09:19.572Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:26:22.394Z",
+		"attempts": 2
 	},
 	"484249": {
 		"name": "Planet Comics x Night City Showdown",
@@ -10160,8 +10153,8 @@
 		"name": "Presentación Lanzamiento Ciberpunk Tcg",
 		"reason": "484321 is \"In Progress\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T22:17:39.778Z",
-		"lastTried": "2026-11-25T22:17:39.778Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:28:47.992Z",
+		"attempts": 2
 	},
 	"484323": {
 		"name": "Zagrajmy w Cyberpunk TCG",
@@ -10216,15 +10209,15 @@
 		"name": "Cyberpunk Weekly League",
 		"reason": "484409 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:09:18.973Z",
-		"lastTried": "2026-11-25T20:09:18.973Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:26:21.890Z",
+		"attempts": 2
 	},
 	"484413": {
 		"name": "Cyberpunk Weekly League",
-		"reason": "484413 is \"Registration\", not Ended. Try again when it's over.",
+		"reason": "484413 is \"Canceled\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:09:18.682Z",
-		"lastTried": "2026-11-25T20:09:18.682Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:26:21.388Z",
+		"attempts": 2
 	},
 	"484429": {
 		"name": "Cyberpunk TCG Weekly",
@@ -10272,8 +10265,8 @@
 		"name": "Sunday Weekly Night City Brawl",
 		"reason": "484574 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:09:18.078Z",
-		"lastTried": "2026-11-25T20:09:18.078Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:26:20.894Z",
+		"attempts": 2
 	},
 	"484587": {
 		"name": "Sunday Night City Showdown",
@@ -10293,8 +10286,8 @@
 		"name": "Cyberpunk Weekly Hobby clone clone clone clone clone clone",
 		"reason": "484657 is \"In Progress\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:09:17.769Z",
-		"lastTried": "2026-11-25T20:09:17.769Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:26:20.388Z",
+		"attempts": 2
 	},
 	"484692": {
 		"name": "Night City Showdown! | ABU Games",
@@ -10461,8 +10454,8 @@
 		"name": "Night City Brawl",
 		"reason": "484967 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:09:17.469Z",
-		"lastTried": "2026-11-25T20:09:17.469Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:26:19.891Z",
+		"attempts": 2
 	},
 	"484969": {
 		"name": "Battlegrounds Game Center Night City Showdown",
@@ -10482,15 +10475,15 @@
 		"name": "Big Bang Night City Showdown",
 		"reason": "485076 is \"In Progress\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:09:17.172Z",
-		"lastTried": "2026-11-25T20:09:17.172Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:26:19.392Z",
+		"attempts": 2
 	},
 	"485103": {
 		"name": "Weekly Night City Brawl at Alternate Universes Blue Bell",
 		"reason": "485103 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:09:16.868Z",
-		"lastTried": "2026-11-25T20:09:16.868Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:26:18.889Z",
+		"attempts": 2
 	},
 	"485106": {
 		"name": "Weekly Night City Brawl at Alternate Universes Blue Bell",
@@ -10531,15 +10524,15 @@
 		"name": "TCG Card Kingz  cyberpunk",
 		"reason": "485147 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:09:16.570Z",
-		"lastTried": "2026-11-25T20:09:16.570Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:26:18.395Z",
+		"attempts": 2
 	},
 	"485227": {
 		"name": "Lucy's Weekly Moon Dance",
 		"reason": "485227 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:09:16.274Z",
-		"lastTried": "2026-11-25T20:09:16.274Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:26:17.886Z",
+		"attempts": 2
 	},
 	"485239": {
 		"name": "Card Cosmos Denver Weekly Cyberpunk Event",
@@ -10550,10 +10543,10 @@
 	},
 	"485244": {
 		"name": "Night City Brawl (Locals) at SSG",
-		"reason": "485244 is \"Registration\", not Ended. Try again when it's over.",
+		"reason": "485244 has no rounds on Melee (nothing was played or published), so there is nothing to ingest. Try again once the organizer adds them.",
 		"firstTried": "2026-11-25T20:09:15.964Z",
-		"lastTried": "2026-11-25T20:09:15.964Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:26:17.457Z",
+		"attempts": 2
 	},
 	"485247": {
 		"name": "Cyberpunk TCG Night City Brawl Weekly Play 11-14",
@@ -10650,8 +10643,8 @@
 		"name": "Imaginaire Trois-Rivières Night City Showdown ",
 		"reason": "485469 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:09:15.668Z",
-		"lastTried": "2026-11-25T20:09:15.668Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:26:16.384Z",
+		"attempts": 2
 	},
 	"485472": {
 		"name": "Imaginaire Laval Night City Showdown",
@@ -10692,8 +10685,8 @@
 		"name": "Cyberpunk City Brawl - Weekly Play",
 		"reason": "485538 is \"In Progress\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:09:15.367Z",
-		"lastTried": "2026-11-25T20:09:15.367Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:26:15.888Z",
+		"attempts": 2
 	},
 	"485546": {
 		"name": "Cyberpunk TCG: Locals (BETA) ",
@@ -10720,8 +10713,8 @@
 		"name": "Night City Showdown at No Land Beyond",
 		"reason": "485638 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:09:14.763Z",
-		"lastTried": "2026-11-25T20:09:14.763Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:26:15.384Z",
+		"attempts": 2
 	},
 	"485664": {
 		"name": "Cyberpunk @ Mulligan ",
@@ -10790,8 +10783,8 @@
 		"name": "Hyper Tampa Locals",
 		"reason": "485797 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:09:14.466Z",
-		"lastTried": "2026-11-25T20:09:14.466Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:26:14.881Z",
+		"attempts": 2
 	},
 	"485807": {
 		"name": "Night City Brawl - Rio Rancho",
@@ -10832,8 +10825,8 @@
 		"name": "Nexus Night City Brawl Weekly Locals 24/11 ",
 		"reason": "485909 is \"In Progress\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:09:14.163Z",
-		"lastTried": "2026-11-25T20:09:14.163Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:26:14.385Z",
+		"attempts": 2
 	},
 	"485926": {
 		"name": "Local tournament",
@@ -10993,8 +10986,8 @@
 		"name": "Cyberpunk Brawl Event ",
 		"reason": "486282 is \"In Progress\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:09:13.561Z",
-		"lastTried": "2026-11-25T20:09:13.561Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:26:13.885Z",
+		"attempts": 2
 	},
 	"486302": {
 		"name": "Friday Night City Brawl",
@@ -11098,22 +11091,22 @@
 		"name": "Level Up Showdown",
 		"reason": "486614 is \"In Progress\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:09:12.954Z",
-		"lastTried": "2026-11-25T20:09:12.954Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:26:13.388Z",
+		"attempts": 2
 	},
 	"486621": {
 		"name": "Cyberpunk Night City Brawl",
 		"reason": "486621 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:09:12.661Z",
-		"lastTried": "2026-11-25T20:09:12.661Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:26:12.885Z",
+		"attempts": 2
 	},
 	"486622": {
 		"name": "Cyberpunk Night City Brawl",
 		"reason": "486622 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:09:12.356Z",
-		"lastTried": "2026-11-25T20:09:12.356Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:26:12.403Z",
+		"attempts": 2
 	},
 	"486623": {
 		"name": "Cyberpunk Night City Brawl",
@@ -11224,8 +11217,8 @@
 		"name": "Night City Showdown at CollectorMania",
 		"reason": "486998 is \"In Progress\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:09:11.749Z",
-		"lastTried": "2026-11-25T20:09:11.749Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:26:11.882Z",
+		"attempts": 2
 	},
 	"487004": {
 		"name": "Cyberpunk TCG Learn to play w Norze!",
@@ -11413,8 +11406,8 @@
 		"name": "Huz Gaming Night City Brawl",
 		"reason": "487385 is \"In Progress\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:09:11.449Z",
-		"lastTried": "2026-11-25T20:09:11.449Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:26:11.375Z",
+		"attempts": 2
 	},
 	"487388": {
 		"name": "Gemini Games Cyberpunk Night City Brawl 13.11.26",
@@ -11441,8 +11434,8 @@
 		"name": "Cyberpunk TCG Night City Showdown",
 		"reason": "487404 is \"In Progress\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:09:11.156Z",
-		"lastTried": "2026-11-25T20:09:11.156Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:26:10.877Z",
+		"attempts": 2
 	},
 	"487444": {
 		"name": "CpOs Night City Brawl # ",
@@ -11490,8 +11483,8 @@
 		"name": "Topdeck Weekly",
 		"reason": "487515 is \"In Progress\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:09:10.848Z",
-		"lastTried": "2026-11-25T20:09:10.848Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:26:10.377Z",
+		"attempts": 2
 	},
 	"487535": {
 		"name": "Black Mana Night City Brawl",
@@ -11672,8 +11665,8 @@
 		"name": "Night City Weekly",
 		"reason": "487962 is \"In Progress\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:09:10.253Z",
-		"lastTried": "2026-11-25T20:09:10.253Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:26:09.875Z",
+		"attempts": 2
 	},
 	"487974": {
 		"name": "Weekly Night City Brawl",
@@ -11768,17 +11761,17 @@
 	},
 	"488260": {
 		"name": "TCG-Siegburg Cyberpunk TCG Locals",
-		"reason": "488260 is \"In Progress\", not Ended. Try again when it's over.",
+		"reason": "488260 is \"Canceled\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:09:09.653Z",
-		"lastTried": "2026-11-25T20:09:09.653Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:26:09.375Z",
+		"attempts": 2
 	},
 	"488296": {
 		"name": "Night City Brawl - CardzHouse",
-		"reason": "488296 is \"In Progress\", not Ended. Try again when it's over.",
+		"reason": "488296 has no decklists (none of the first 7 of its 10 players has one up), so it isn't ingested. Lists can appear after an event ends; try again later.",
 		"firstTried": "2026-11-25T20:09:09.349Z",
-		"lastTried": "2026-11-25T20:09:09.349Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:26:08.902Z",
+		"attempts": 2
 	},
 	"488300": {
 		"name": "Card Dojo Weekly Play",
@@ -11889,8 +11882,8 @@
 		"name": "Cyberpunk Weekly",
 		"reason": "488498 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:09:08.739Z",
-		"lastTried": "2026-11-25T20:09:08.739Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:26:03.865Z",
+		"attempts": 2
 	},
 	"488521": {
 		"name": "Night City Brawl - Cyberpunk TCG - Game Guru Utilita Arena",
@@ -12006,10 +11999,10 @@
 	},
 	"488745": {
 		"name": "Night City Brawl CyberPunk @Angle ",
-		"reason": "488745 is \"In Progress\", not Ended. Try again when it's over.",
+		"reason": "488745 has no decklists (none of the first 7 of its 9 players has one up), so it isn't ingested. Lists can appear after an event ends; try again later.",
 		"firstTried": "2026-11-25T20:09:08.438Z",
-		"lastTried": "2026-11-25T20:09:08.438Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:26:03.387Z",
+		"attempts": 2
 	},
 	"488751": {
 		"name": "Brawl 1",
@@ -12043,15 +12036,15 @@
 		"name": "Night City Showdown",
 		"reason": "488879 is \"In Progress\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:09:08.135Z",
-		"lastTried": "2026-11-25T20:09:08.135Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:25:58.356Z",
+		"attempts": 2
 	},
 	"488904": {
 		"name": "Tournoi Brawl",
 		"reason": "488904 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:09:07.835Z",
-		"lastTried": "2026-11-25T20:09:07.835Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:25:57.854Z",
+		"attempts": 2
 	},
 	"488907": {
 		"name": "Weekly Play - CyberPunk",
@@ -12064,8 +12057,8 @@
 		"name": "Weekly Play - CyberPunk",
 		"reason": "488908 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:09:07.534Z",
-		"lastTried": "2026-11-25T20:09:07.534Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:25:57.352Z",
+		"attempts": 2
 	},
 	"488923": {
 		"name": "Cyberpunk Prerelease Welcome to Night City",
@@ -12218,8 +12211,8 @@
 		"name": "Night City Brawl LGC",
 		"reason": "489536 is \"In Progress\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:09:07.253Z",
-		"lastTried": "2026-11-25T20:09:07.253Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:25:56.858Z",
+		"attempts": 2
 	},
 	"489547": {
 		"name": "Świat Kart Night City Brawl",
@@ -12246,8 +12239,8 @@
 		"name": "Cyberpunk TCG - SHOWDOWN",
 		"reason": "489612 is \"In Progress\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:09:06.928Z",
-		"lastTried": "2026-11-25T20:09:06.928Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:25:56.348Z",
+		"attempts": 2
 	},
 	"489650": {
 		"name": "Cyberpunk TCG - Night City Showdown",
@@ -12267,8 +12260,8 @@
 		"name": "Weekly Cyberpunk TCG Play",
 		"reason": "489655 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:09:06.632Z",
-		"lastTried": "2026-11-25T20:09:06.632Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:25:55.859Z",
+		"attempts": 2
 	},
 	"489682": {
 		"name": "Cyberpunk TCG: Weekly Night City Brawl",
@@ -12358,8 +12351,8 @@
 		"name": "Night City Brawl",
 		"reason": "489866 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:09:06.332Z",
-		"lastTried": "2026-11-25T20:09:06.332Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:25:55.353Z",
+		"attempts": 2
 	},
 	"489896": {
 		"name": "CYBERPUNK NIGHT CITY SHOWDOWN\t",
@@ -12442,15 +12435,15 @@
 		"name": "Comic Book World Night City Showdown",
 		"reason": "490262 is \"In Progress\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:09:05.428Z",
-		"lastTried": "2026-11-25T20:09:05.428Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:25:54.857Z",
+		"attempts": 2
 	},
 	"490283": {
 		"name": "Night City Brawl",
-		"reason": "490283 is \"Registration\", not Ended. Try again when it's over.",
+		"reason": "490283 is \"Canceled\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:09:05.142Z",
-		"lastTried": "2026-11-25T20:09:05.142Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:25:54.339Z",
+		"attempts": 2
 	},
 	"490369": {
 		"name": "Cyberpunk TCG Night City Brawls @ Nexus",
@@ -12498,8 +12491,8 @@
 		"name": "CyberPunk Night City Brawl & RCU",
 		"reason": "490469 is \"In Progress\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:09:04.823Z",
-		"lastTried": "2026-11-25T20:09:04.823Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:25:53.832Z",
+		"attempts": 2
 	},
 	"490470": {
 		"name": "CyberPunk Night City Brawl & RCU",
@@ -12533,8 +12526,8 @@
 		"name": "MONDAY CYBERPUNK NIGHT CITY BRAWL",
 		"reason": "490611 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:09:04.534Z",
-		"lastTried": "2026-11-25T20:09:04.534Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:25:53.337Z",
+		"attempts": 2
 	},
 	"490632": {
 		"name": "Slick Mimic's Tuesday Cyberpunk",
@@ -12664,10 +12657,10 @@
 	},
 	"490835": {
 		"name": "Kartenbasis - Cyberpunk Local",
-		"reason": "490835 is \"Registration\", not Ended. Try again when it's over.",
+		"reason": "490835 is \"Canceled\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:09:04.220Z",
-		"lastTried": "2026-11-25T20:09:04.220Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:25:52.835Z",
+		"attempts": 2
 	},
 	"490868": {
 		"name": "Night City Brawl @ Top Level Trades",
@@ -12701,15 +12694,15 @@
 		"name": "Rarion.pl ChromeUp Challenge #1 ",
 		"reason": "490905 is \"In Progress\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:09:03.925Z",
-		"lastTried": "2026-11-25T20:09:03.925Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:25:52.335Z",
+		"attempts": 2
 	},
 	"490914": {
 		"name": "Cyberpunk TCG Weekly",
 		"reason": "490914 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:09:03.619Z",
-		"lastTried": "2026-11-25T20:09:03.619Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:25:51.829Z",
+		"attempts": 2
 	},
 	"490918": {
 		"name": "Cyberpunk TCG Weekly",
@@ -12764,8 +12757,8 @@
 		"name": "Cyberpunk Weekly ",
 		"reason": "491014 is \"In Progress\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:09:03.018Z",
-		"lastTried": "2026-11-25T20:09:03.018Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:25:51.328Z",
+		"attempts": 2
 	},
 	"491042": {
 		"name": "EclipseTCG NIght City Showdown",
@@ -12778,22 +12771,22 @@
 		"name": "Saturday Night City Brawl ",
 		"reason": "491066 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:09:02.728Z",
-		"lastTried": "2026-11-25T20:09:02.728Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:25:50.835Z",
+		"attempts": 2
 	},
 	"491067": {
 		"name": "Saturday Night City Brawl ",
 		"reason": "491067 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:09:02.421Z",
-		"lastTried": "2026-11-25T20:09:02.421Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:25:50.333Z",
+		"attempts": 2
 	},
 	"491123": {
 		"name": "Cyberpunk Weekly Brawl!",
 		"reason": "491123 is \"In Progress\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:09:02.122Z",
-		"lastTried": "2026-11-25T20:09:02.122Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:25:49.830Z",
+		"attempts": 2
 	},
 	"491134": {
 		"name": "BnB Games | WTNC  Thursday Brawl",
@@ -12918,15 +12911,15 @@
 		"name": "Open Play Cyberpunk! Practice, Build, Strategize, Play!",
 		"reason": "491395 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:09:01.813Z",
-		"lastTried": "2026-11-25T20:09:01.813Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:25:49.323Z",
+		"attempts": 2
 	},
 	"491442": {
 		"name": "Night city showdown Playin lyon",
 		"reason": "491442 is \"In Progress\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:09:01.211Z",
-		"lastTried": "2026-11-25T20:09:01.211Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:25:48.823Z",
+		"attempts": 2
 	},
 	"491450": {
 		"name": "Zagrajmy w Cyberpunk TCG",
@@ -12974,8 +12967,8 @@
 		"name": "Night City Brawl",
 		"reason": "491481 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:09:00.922Z",
-		"lastTried": "2026-11-25T20:09:00.922Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:25:48.335Z",
+		"attempts": 2
 	},
 	"491482": {
 		"name": "Night City Brawl",
@@ -13114,8 +13107,8 @@
 		"name": "Tournoi Cyberpunk TCG Mardi 15 Décembre",
 		"reason": "491681 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:09:00.608Z",
-		"lastTried": "2026-11-25T20:09:00.608Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:25:47.827Z",
+		"attempts": 2
 	},
 	"491699": {
 		"name": "ACard Tcg_7/11 6pm Night City Brawl Weekly Play",
@@ -13217,10 +13210,10 @@
 	},
 	"491911": {
 		"name": "Cyberpunk Brawl",
-		"reason": "491911 is \"In Progress\", not Ended. Try again when it's over.",
+		"reason": "491911 has no decklists (none of the first 7 of its 8 players has one up), so it isn't ingested. Lists can appear after an event ends; try again later.",
 		"firstTried": "2026-11-25T20:09:00.039Z",
-		"lastTried": "2026-11-25T20:09:00.039Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:25:47.339Z",
+		"attempts": 2
 	},
 	"491945": {
 		"name": "Night City Showdown Skoczów",
@@ -13296,15 +13289,15 @@
 		"name": "Cyberpunk TCG - Monday Night Weekly [Constructed]",
 		"reason": "492080 is \"In Progress\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:08:59.713Z",
-		"lastTried": "2026-11-25T20:08:59.713Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:25:42.323Z",
+		"attempts": 2
 	},
 	"492102": {
 		"name": "Ozzie Collectables Night City Show Down!",
 		"reason": "492102 is \"In Progress\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:08:59.407Z",
-		"lastTried": "2026-11-25T20:08:59.407Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:25:41.834Z",
+		"attempts": 2
 	},
 	"492132": {
 		"name": "CyberPunk Locals",
@@ -13359,8 +13352,8 @@
 		"name": "Store Showdown Cyberpunk",
 		"reason": "492199 is \"In Progress\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:08:58.807Z",
-		"lastTried": "2026-11-25T20:08:58.807Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:25:41.315Z",
+		"attempts": 2
 	},
 	"492229": {
 		"name": "NIGHT CITY SHOWDOWN - NINPO STORE",
@@ -13392,10 +13385,10 @@
 	},
 	"492390": {
 		"name": "Cyberpunk #4: Night City Brawl (Utrecht)",
-		"reason": "492390 is \"In Progress\", not Ended. Try again when it's over.",
+		"reason": "492390 has no decklists (none of the first 7 of its 16 players has one up), so it isn't ingested. Lists can appear after an event ends; try again later.",
 		"firstTried": "2026-11-25T20:08:58.503Z",
-		"lastTried": "2026-11-25T20:08:58.503Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:25:40.831Z",
+		"attempts": 2
 	},
 	"492405": {
 		"name": "Horde Brawl",
@@ -13408,22 +13401,22 @@
 		"name": "CyberPunk weekly 7",
 		"reason": "492416 is \"In Progress\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:08:58.202Z",
-		"lastTried": "2026-11-25T20:08:58.202Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:25:35.804Z",
+		"attempts": 2
 	},
 	"492454": {
 		"name": "DBT Weekly Play",
 		"reason": "492454 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:08:57.909Z",
-		"lastTried": "2026-11-25T20:08:57.909Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:25:35.304Z",
+		"attempts": 2
 	},
 	"492455": {
 		"name": "DBT Weekly Play",
 		"reason": "492455 is \"In Progress\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:08:57.605Z",
-		"lastTried": "2026-11-25T20:08:57.605Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:25:34.808Z",
+		"attempts": 2
 	},
 	"492480": {
 		"name": "Card Dojo Weekly Play",
@@ -13478,15 +13471,15 @@
 		"name": "WNC Night City Brawl",
 		"reason": "492585 is \"In Progress\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:08:57.307Z",
-		"lastTried": "2026-11-25T20:08:57.307Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:25:34.302Z",
+		"attempts": 2
 	},
 	"492603": {
 		"name": "WNC Night City Showdown",
 		"reason": "492603 is \"In Progress\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:08:57.021Z",
-		"lastTried": "2026-11-25T20:08:57.021Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:25:33.804Z",
+		"attempts": 2
 	},
 	"492604": {
 		"name": "Gacha Claw Night City Showdown",
@@ -13497,10 +13490,10 @@
 	},
 	"492617": {
 		"name": "StormxTCG Camarillo Weekly Play ",
-		"reason": "492617 is \"Registration\", not Ended. Try again when it's over.",
+		"reason": "492617 has no rounds on Melee (nothing was played or published), so there is nothing to ingest. Try again once the organizer adds them.",
 		"firstTried": "2026-11-25T20:08:56.705Z",
-		"lastTried": "2026-11-25T20:08:56.705Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:25:33.338Z",
+		"attempts": 2
 	},
 	"492670": {
 		"name": "Knightly City Brawls",
@@ -13541,8 +13534,8 @@
 		"name": "Cyberpunk Horde Brawl",
 		"reason": "492718 is \"In Progress\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:08:56.401Z",
-		"lastTried": "2026-11-25T20:08:56.401Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:25:32.312Z",
+		"attempts": 2
 	},
 	"492767": {
 		"name": "To Become a Legend",
@@ -13709,8 +13702,8 @@
 		"name": "Cyberpunk Saturday Night City Brawl",
 		"reason": "493144 is \"In Progress\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:08:56.100Z",
-		"lastTried": "2026-11-25T20:08:56.100Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:25:31.806Z",
+		"attempts": 2
 	},
 	"493145": {
 		"name": "Cyberpunk Saturday Night City Brawl",
@@ -13770,10 +13763,10 @@
 	},
 	"493338": {
 		"name": "Tuesday Brawl",
-		"reason": "493338 is \"Registration\", not Ended. Try again when it's over.",
+		"reason": "493338 is \"Canceled\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:08:55.796Z",
-		"lastTried": "2026-11-25T20:08:55.796Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:25:31.298Z",
+		"attempts": 2
 	},
 	"493355": {
 		"name": "Night City Brawl",
@@ -13821,8 +13814,8 @@
 		"name": "Cyberpunk Brawl - Weekly Play",
 		"reason": "493425 is \"In Progress\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:08:55.192Z",
-		"lastTried": "2026-11-25T20:08:55.192Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:25:30.795Z",
+		"attempts": 2
 	},
 	"493456": {
 		"name": "Night City Brawl at the Mighty Meeple",
@@ -13856,8 +13849,8 @@
 		"name": "Night City Brawl",
 		"reason": "493501 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:08:54.602Z",
-		"lastTried": "2026-11-25T20:08:54.602Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:25:30.302Z",
+		"attempts": 2
 	},
 	"493502": {
 		"name": "Night City Showdown @ RallyPoint Games",
@@ -13945,10 +13938,10 @@
 	},
 	"493722": {
 		"name": "Initiation & Night City Brawl",
-		"reason": "493722 is \"In Progress\", not Ended. Try again when it's over.",
+		"reason": "493722 has no decklists (none of its 4 players has one up), so it isn't ingested. Lists can appear after an event ends; try again later.",
 		"firstTried": "2026-11-25T20:08:54.291Z",
-		"lastTried": "2026-11-25T20:08:54.291Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:25:29.817Z",
+		"attempts": 2
 	},
 	"493731": {
 		"name": "TATC Night City Brawl",
@@ -13975,8 +13968,8 @@
 		"name": "Cyber Saturday Brawl",
 		"reason": "493774 is \"In Progress\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:08:53.999Z",
-		"lastTried": "2026-11-25T20:08:53.999Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:25:24.792Z",
+		"attempts": 2
 	},
 	"493782": {
 		"name": "Tournoi Cyberpunk Night City Brawl",
@@ -13996,8 +13989,8 @@
 		"name": "Night City Showdown",
 		"reason": "493808 is \"In Progress\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:08:53.687Z",
-		"lastTried": "2026-11-25T20:08:53.687Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:25:24.290Z",
+		"attempts": 2
 	},
 	"493852": {
 		"name": "Xzone Lužiny Night City Brawl",
@@ -14113,10 +14106,10 @@
 	},
 	"494143": {
 		"name": "GLC Night City Brawl (Weekly Play)",
-		"reason": "494143 is \"Registration\", not Ended. Try again when it's over.",
+		"reason": "494143 is \"Canceled\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:08:53.093Z",
-		"lastTried": "2026-11-25T20:08:53.093Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:25:23.792Z",
+		"attempts": 2
 	},
 	"494158": {
 		"name": "Planszowy Raj - Brawl",
@@ -14183,10 +14176,10 @@
 	},
 	"494339": {
 		"name": "Otterspace Locals ",
-		"reason": "494339 is \"In Progress\", not Ended. Try again when it's over.",
+		"reason": "494339 has no decklists (none of the first 7 of its 8 players has one up), so it isn't ingested. Lists can appear after an event ends; try again later.",
 		"firstTried": "2026-11-25T20:08:52.795Z",
-		"lastTried": "2026-11-25T20:08:52.795Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:25:23.298Z",
+		"attempts": 2
 	},
 	"494362": {
 		"name": "Brawl semanal #1",
@@ -14304,8 +14297,8 @@
 		"name": "Nov 17 - Night City Brawl Constructed Event",
 		"reason": "494600 is \"In Progress\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:08:51.890Z",
-		"lastTried": "2026-11-25T20:08:51.890Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:25:18.278Z",
+		"attempts": 2
 	},
 	"494635": {
 		"name": "Cyberpunk TCG Weekly Bonanza",
@@ -14353,8 +14346,8 @@
 		"name": "Night City Brawl im Game it! (Constructed Locals)",
 		"reason": "494701 is \"In Progress\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:08:51.285Z",
-		"lastTried": "2026-11-25T20:08:51.285Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:25:17.772Z",
+		"attempts": 2
 	},
 	"494750": {
 		"name": "KROLM Night City Brawl",
@@ -14444,8 +14437,8 @@
 		"name": "Weekly Brawl",
 		"reason": "494829 is \"In Progress\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:08:50.982Z",
-		"lastTried": "2026-11-25T20:08:50.982Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:25:17.268Z",
+		"attempts": 2
 	},
 	"494865": {
 		"name": "Night City Brawl",
@@ -14540,10 +14533,10 @@
 	},
 	"494983": {
 		"name": "Highlander Weekly Brawl",
-		"reason": "494983 is \"In Progress\", not Ended. Try again when it's over.",
+		"reason": "494983 has no decklists (none of its 6 players has one up), so it isn't ingested. Lists can appear after an event ends; try again later.",
 		"firstTried": "2026-11-25T20:08:50.682Z",
-		"lastTried": "2026-11-25T20:08:50.682Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:25:16.785Z",
+		"attempts": 2
 	},
 	"495005": {
 		"name": "Night City Brawl @ Owl Central Games",
@@ -14638,10 +14631,10 @@
 	},
 	"495127": {
 		"name": "Cyberpunk TCG Best of One - Weekly Tuesday",
-		"reason": "495127 is \"Registration\", not Ended. Try again when it's over.",
+		"reason": "495127 is \"Canceled\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:08:50.091Z",
-		"lastTried": "2026-11-25T20:08:50.091Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T10:00:44.248Z",
+		"attempts": 2
 	},
 	"495150": {
 		"name": "Night City Brawl (LOCALS)",
@@ -14731,8 +14724,8 @@
 		"name": "Night City Local Tournament ",
 		"reason": "495300 is \"In Progress\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:08:46.766Z",
-		"lastTried": "2026-11-25T20:08:46.766Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T10:00:43.746Z",
+		"attempts": 2
 	},
 	"495337": {
 		"name": "WIN A BOX Cyberpunk PAP",
@@ -14794,8 +14787,8 @@
 		"name": "Cyber Punk Sunday Locals",
 		"reason": "495403 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:08:46.469Z",
-		"lastTried": "2026-11-25T20:08:46.469Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T10:00:43.246Z",
+		"attempts": 2
 	},
 	"495404": {
 		"name": "Cyber Punk Sunday Locals",
@@ -14892,8 +14885,8 @@
 		"name": "Night City Brawl - House of Games",
 		"reason": "495621 is \"In Progress\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:08:45.865Z",
-		"lastTried": "2026-11-25T20:08:45.865Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T10:00:42.746Z",
+		"attempts": 2
 	},
 	"495626": {
 		"name": "Cyberpunk Brawl - Local Cyberpunk TCG",
@@ -14918,10 +14911,10 @@
 	},
 	"495681": {
 		"name": "Gear Fayetteville Cyberpunk TCG Weekly Event clone",
-		"reason": "495681 is \"Registration\", not Ended. Try again when it's over.",
+		"reason": "495681 is \"Canceled\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:08:45.570Z",
-		"lastTried": "2026-11-25T20:08:45.570Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T10:00:42.239Z",
+		"attempts": 2
 	},
 	"495703": {
 		"name": "Cyberpunk TCG - Welcome to Night City Showdown 11/20 @6:30PM",
@@ -14941,8 +14934,8 @@
 		"name": "The Nerd Lair Slidell Night City Brawl",
 		"reason": "495708 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:08:45.262Z",
-		"lastTried": "2026-11-25T20:08:45.262Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T10:00:41.745Z",
+		"attempts": 2
 	},
 	"495720": {
 		"name": "Night City Brawl",
@@ -14962,15 +14955,15 @@
 		"name": "Night City Brawl",
 		"reason": "495722 is \"In Progress\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:08:44.962Z",
-		"lastTried": "2026-11-25T20:08:44.962Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T10:00:41.238Z",
+		"attempts": 2
 	},
 	"495732": {
 		"name": "Welcome to Night City",
 		"reason": "495732 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:08:44.665Z",
-		"lastTried": "2026-11-25T20:08:44.665Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T10:00:40.743Z",
+		"attempts": 2
 	},
 	"495743": {
 		"name": "Cyberpunk TCG: Night City Brawl Weekly",
@@ -14983,15 +14976,15 @@
 		"name": "Night City Brawl (Weekly Play)",
 		"reason": "495744 is \"In Progress\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:08:44.355Z",
-		"lastTried": "2026-11-25T20:08:44.355Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T10:00:40.241Z",
+		"attempts": 2
 	},
 	"495746": {
 		"name": "Night City Brawl (Weekly Play)",
 		"reason": "495746 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:08:44.058Z",
-		"lastTried": "2026-11-25T20:08:44.058Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T10:00:39.737Z",
+		"attempts": 2
 	},
 	"495748": {
 		"name": "Cyberpunk TCG: Night City Brawl Weekly",
@@ -15123,8 +15116,8 @@
 		"name": "La Escotilla: Night City Brawl",
 		"reason": "495950 is \"In Progress\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:08:43.764Z",
-		"lastTried": "2026-11-25T20:08:43.764Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T10:00:39.239Z",
+		"attempts": 2
 	},
 	"495951": {
 		"name": "La Escotilla: Night City Brawl",
@@ -15256,8 +15249,8 @@
 		"name": "Wednesday Rumble",
 		"reason": "496143 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:08:43.453Z",
-		"lastTried": "2026-11-25T20:08:43.453Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T10:00:38.737Z",
+		"attempts": 2
 	},
 	"496165": {
 		"name": "Night Chili Brawl #1",
@@ -15298,8 +15291,8 @@
 		"name": "Cyberpunk TCG",
 		"reason": "496192 is \"In Progress\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:08:43.160Z",
-		"lastTried": "2026-11-25T20:08:43.160Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T10:00:38.239Z",
+		"attempts": 2
 	},
 	"496201": {
 		"name": "Cyberpunk TCG - Night City Showdown",
@@ -15347,8 +15340,8 @@
 		"name": "Session Cyber Brawl!",
 		"reason": "496252 is \"In Progress\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:08:42.857Z",
-		"lastTried": "2026-11-25T20:08:42.857Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T10:00:37.736Z",
+		"attempts": 2
 	},
 	"496264": {
 		"name": "TCG Love Radom Cyberpunk Night City Brawl 09.11",
@@ -15368,8 +15361,8 @@
 		"name": "CardsHive Weekly Tournament",
 		"reason": "496276 is \"In Progress\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:08:42.550Z",
-		"lastTried": "2026-11-25T20:08:42.550Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T10:00:37.239Z",
+		"attempts": 2
 	},
 	"496315": {
 		"name": "CyberPunk Weekly Play",
@@ -15417,8 +15410,8 @@
 		"name": "Night City Brawl",
 		"reason": "496393 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:08:42.248Z",
-		"lastTried": "2026-11-25T20:08:42.248Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T10:00:36.735Z",
+		"attempts": 2
 	},
 	"496398": {
 		"name": "Cardverse Night City Showdown",
@@ -15501,8 +15494,8 @@
 		"name": "Cyberpunk TCG - Freeplay + Initiation",
 		"reason": "496543 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:08:41.953Z",
-		"lastTried": "2026-11-25T20:08:41.953Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T10:00:36.239Z",
+		"attempts": 2
 	},
 	"496562": {
 		"name": "AD Chandler Weekly Night City Brawl",
@@ -15704,8 +15697,8 @@
 		"name": "Tournoi Showdown 21 novembre 20h",
 		"reason": "496763 is \"In Progress\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:08:41.356Z",
-		"lastTried": "2026-11-25T20:08:41.356Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T10:00:35.734Z",
+		"attempts": 2
 	},
 	"496768": {
 		"name": "Night City Brawl - Weekly Cyberpunk Constructed!",
@@ -15788,8 +15781,8 @@
 		"name": "Side Quest Weekly Night City Brawl",
 		"reason": "496883 is \"In Progress\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:08:41.058Z",
-		"lastTried": "2026-11-25T20:08:41.058Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T10:00:35.237Z",
+		"attempts": 2
 	},
 	"496886": {
 		"name": "Cyberpunk TCG: Night City Brawl",
@@ -15809,8 +15802,8 @@
 		"name": "Cyberpunk TCG: Night City Brawl",
 		"reason": "496889 is \"In Progress\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:08:40.747Z",
-		"lastTried": "2026-11-25T20:08:40.747Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T10:00:34.732Z",
+		"attempts": 2
 	},
 	"496891": {
 		"name": "Bastion Night City Brawl! 06.11",
@@ -15830,8 +15823,8 @@
 		"name": "Night City Brawl",
 		"reason": "496906 is \"In Progress\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:08:40.452Z",
-		"lastTried": "2026-11-25T20:08:40.452Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T10:00:34.236Z",
+		"attempts": 2
 	},
 	"496919": {
 		"name": "Wilczek - Cyberpunk - Piątkowy Night City Brawl",
@@ -15865,8 +15858,8 @@
 		"name": "Wilczek - Cyberpunk - Sobotni Night City Brawl",
 		"reason": "496951 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:08:40.148Z",
-		"lastTried": "2026-11-25T20:08:40.148Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T10:00:33.735Z",
+		"attempts": 2
 	},
 	"496952": {
 		"name": "Wilczek - Cyberpunk - Sobotni Night City Brawl",
@@ -15886,8 +15879,8 @@
 		"name": "1125 Night City Brawl ",
 		"reason": "496974 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:08:36.262Z",
-		"lastTried": "2026-11-25T20:08:36.262Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T10:00:33.228Z",
+		"attempts": 2
 	},
 	"496977": {
 		"name": "Only Gamez Cyberpunk Night City Brawl",
@@ -15928,8 +15921,8 @@
 		"name": "Cyberpunk TCG - Night City Brawl - G2G",
 		"reason": "497008 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:08:35.933Z",
-		"lastTried": "2026-11-25T20:08:35.933Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T10:00:32.730Z",
+		"attempts": 2
 	},
 	"497023": {
 		"name": "Cyberpunk TCG Store Tournament",
@@ -15975,10 +15968,10 @@
 	},
 	"497065": {
 		"name": "Night City Showdown w Magic Cafe Rzeszów",
-		"reason": "497065 is \"In Progress\", not Ended. Try again when it's over.",
+		"reason": "497065 has no decklists (none of the first 7 of its 10 players has one up), so it isn't ingested. Lists can appear after an event ends; try again later.",
 		"firstTried": "2026-11-25T20:08:35.667Z",
-		"lastTried": "2026-11-25T20:08:35.667Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T10:00:32.255Z",
+		"attempts": 2
 	},
 	"497073": {
 		"name": "Cyberpunk TCG Afternoon Night City Brawl",
@@ -16012,8 +16005,8 @@
 		"name": "Brawl  Gandalph",
 		"reason": "497094 is \"In Progress\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:08:35.331Z",
-		"lastTried": "2026-11-25T20:08:35.331Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T10:00:27.221Z",
+		"attempts": 2
 	},
 	"497107": {
 		"name": "Goblinens Night City Showdown",
@@ -16024,10 +16017,10 @@
 	},
 	"497134": {
 		"name": "Tuesday Night Street Fight",
-		"reason": "497134 is \"Registration\", not Ended. Try again when it's over.",
+		"reason": "497134 is \"Canceled\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:08:35.036Z",
-		"lastTried": "2026-11-25T20:08:35.036Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T10:00:26.718Z",
+		"attempts": 2
 	},
 	"497152": {
 		"name": "Torneo Local Picking MARTES",
@@ -16068,8 +16061,8 @@
 		"name": "Cyberpunk Brawl ",
 		"reason": "497179 is \"In Progress\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:08:34.729Z",
-		"lastTried": "2026-11-25T20:08:34.729Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T10:00:26.220Z",
+		"attempts": 2
 	},
 	"497191": {
 		"name": "Night City Brawl",
@@ -16173,22 +16166,22 @@
 		"name": "ParadoxTCG Cyberpunk Monday Locals",
 		"reason": "497378 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:08:34.137Z",
-		"lastTried": "2026-11-25T20:08:34.137Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T10:00:25.715Z",
+		"attempts": 2
 	},
 	"497414": {
 		"name": " Night City Badger Brawl!",
 		"reason": "497414 is \"In Progress\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:08:33.835Z",
-		"lastTried": "2026-11-25T20:08:33.835Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T10:00:25.215Z",
+		"attempts": 2
 	},
 	"497418": {
 		"name": "Cyberpunk Locals",
-		"reason": "497418 is \"Registration\", not Ended. Try again when it's over.",
+		"reason": "497418 is \"Canceled\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:08:33.533Z",
-		"lastTried": "2026-11-25T20:08:33.533Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T10:00:24.717Z",
+		"attempts": 2
 	},
 	"497503": {
 		"name": "Brawl Cyberpunk Viernes",
@@ -16215,8 +16208,8 @@
 		"name": "Good Games Top Ryde - Cyberpunk TCG Locals",
 		"reason": "497604 is \"In Progress\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:08:33.227Z",
-		"lastTried": "2026-11-25T20:08:33.227Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T10:00:24.211Z",
+		"attempts": 2
 	},
 	"497624": {
 		"name": "Gorilla Games Weekly Night City Brawl",
@@ -16250,8 +16243,8 @@
 		"name": "11/11/26 Oceanside Cyberpunk Night City Brawl Constructed Wednesday 630 PM",
 		"reason": "497682 is \"In Progress\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:08:32.943Z",
-		"lastTried": "2026-11-25T20:08:32.943Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T10:00:23.715Z",
+		"attempts": 2
 	},
 	"497683": {
 		"name": "11/18/26 Oceanside Cyberpunk Night City Brawl Constructed Wednesday 6 PM",
@@ -16418,8 +16411,8 @@
 		"name": "TokyoToys Glasgow Cyberpunk Locals",
 		"reason": "497916 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:08:32.627Z",
-		"lastTried": "2026-11-25T20:08:32.627Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T10:00:23.211Z",
+		"attempts": 2
 	},
 	"497917": {
 		"name": "Stajnia Gier Night City Brawl",
@@ -16446,8 +16439,8 @@
 		"name": "Time4Magic Cyberpunk: Night City Showdown",
 		"reason": "497934 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:08:32.330Z",
-		"lastTried": "2026-11-25T20:08:32.330Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T10:00:22.713Z",
+		"attempts": 2
 	},
 	"497951": {
 		"name": "SOD Gerpinnes - CyberPunk Night City Brawl",
@@ -16572,8 +16565,8 @@
 		"name": "Cyberpunk TCG- Weekly Night City Brawl",
 		"reason": "498063 is \"In Progress\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:08:28.416Z",
-		"lastTried": "2026-11-25T20:08:28.416Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T10:00:22.214Z",
+		"attempts": 2
 	},
 	"498069": {
 		"name": "Cyber Punk Casual Play",
@@ -16593,8 +16586,8 @@
 		"name": "Black ice 4 ",
 		"reason": "498091 is \"In Progress\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:08:28.118Z",
-		"lastTried": "2026-11-25T20:08:28.118Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T10:00:21.711Z",
+		"attempts": 2
 	},
 	"498094": {
 		"name": "night city showdown at collectors",
@@ -16640,10 +16633,10 @@
 	},
 	"498156": {
 		"name": "Cyberpunk North Bay",
-		"reason": "498156 is \"Registration\", not Ended. Try again when it's over.",
+		"reason": "498156 is \"Canceled\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:08:27.813Z",
-		"lastTried": "2026-11-25T20:08:27.813Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T10:00:21.210Z",
+		"attempts": 2
 	},
 	"498162": {
 		"name": "Night City Brawl",
@@ -16691,8 +16684,8 @@
 		"name": "Júpiter Ourense",
 		"reason": "498231 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:08:27.510Z",
-		"lastTried": "2026-11-25T20:08:27.510Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T10:00:20.706Z",
+		"attempts": 2
 	},
 	"498240": {
 		"name": "Algonquin - Night City Brawl",
@@ -16908,8 +16901,8 @@
 		"name": "Night City Showdown",
 		"reason": "498833 is \"In Progress\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:08:27.218Z",
-		"lastTried": "2026-11-25T20:08:27.218Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T10:00:20.209Z",
+		"attempts": 2
 	},
 	"498834": {
 		"name": "Games Shed Cyberpunk Brawl Weekly Play",
@@ -17118,8 +17111,8 @@
 		"name": "Cyberpunk TCG Weekly Play Thursdays",
 		"reason": "499136 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:08:26.916Z",
-		"lastTried": "2026-11-25T20:08:26.916Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T10:00:19.708Z",
+		"attempts": 2
 	},
 	"499141": {
 		"name": "TubaCards Brawl",
@@ -17158,10 +17151,10 @@
 	},
 	"499212": {
 		"name": "Night City Brawl @ Quest Comic Shop ",
-		"reason": "499212 is \"Registration\", not Ended. Try again when it's over.",
+		"reason": "499212 is \"Canceled\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:08:23.310Z",
-		"lastTried": "2026-11-25T20:08:23.310Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T10:00:19.204Z",
+		"attempts": 2
 	},
 	"499215": {
 		"name": "Cyberpunk - Night City Brawl",
@@ -17216,8 +17209,8 @@
 		"name": "Game Time Collectibles Cyberpunk Friday Night City Brawl ",
 		"reason": "499293 is \"In Progress\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:08:23.003Z",
-		"lastTried": "2026-11-25T20:08:23.003Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T10:00:18.705Z",
+		"attempts": 2
 	},
 	"499300": {
 		"name": "Cyberpunk TCG: Weekly Play",
@@ -17300,15 +17293,15 @@
 		"name": "Cyberpunk Weekly Play  ",
 		"reason": "499486 is \"In Progress\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:08:22.693Z",
-		"lastTried": "2026-11-25T20:08:22.693Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T10:00:18.208Z",
+		"attempts": 2
 	},
 	"499496": {
 		"name": "Night City Brawl at Beyond Adventure Comics",
 		"reason": "499496 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:08:22.394Z",
-		"lastTried": "2026-11-25T20:08:22.394Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T10:00:17.705Z",
+		"attempts": 2
 	},
 	"499502": {
 		"name": "Night City Brawl",
@@ -17321,15 +17314,15 @@
 		"name": "Cyberpunk Weekly Play   ",
 		"reason": "499505 is \"In Progress\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:08:22.094Z",
-		"lastTried": "2026-11-25T20:08:22.094Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T10:00:17.207Z",
+		"attempts": 2
 	},
 	"499538": {
 		"name": "Astral Weekly",
-		"reason": "499538 is \"Registration\", not Ended. Try again when it's over.",
+		"reason": "499538 is \"Canceled\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:08:21.796Z",
-		"lastTried": "2026-11-25T20:08:21.796Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T10:00:16.694Z",
+		"attempts": 2
 	},
 	"499557": {
 		"name": "CyberPunk Weekly Brawl @ Good Games Ballarat",
@@ -17363,8 +17356,8 @@
 		"name": "Keystone Locals - Night City Brawl",
 		"reason": "499574 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:08:21.488Z",
-		"lastTried": "2026-11-25T20:08:21.488Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T10:00:16.197Z",
+		"attempts": 2
 	},
 	"499596": {
 		"name": "Weekly Night City Brawl - Ditz Hobby & Games",
@@ -17410,10 +17403,10 @@
 	},
 	"499684": {
 		"name": "Lootbox Night City Brawl",
-		"reason": "499684 is \"Registration\", not Ended. Try again when it's over.",
+		"reason": "499684 is \"Canceled\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:08:21.190Z",
-		"lastTried": "2026-11-25T20:08:21.190Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T10:00:15.698Z",
+		"attempts": 2
 	},
 	"499693": {
 		"name": "Night City Brawl at JNC",
@@ -17426,15 +17419,15 @@
 		"name": "Cyberpunk TCG Night City Brawl ",
 		"reason": "499713 is \"In Progress\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:08:20.886Z",
-		"lastTried": "2026-11-25T20:08:20.886Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T10:00:15.193Z",
+		"attempts": 2
 	},
 	"499719": {
 		"name": "Cyberpunk: Night City Brawl @ The Refuge (Weekly)",
 		"reason": "499719 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:08:20.598Z",
-		"lastTried": "2026-11-25T20:08:20.598Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T10:00:14.697Z",
+		"attempts": 2
 	},
 	"499724": {
 		"name": "Cyberpunk Weekly",
@@ -17480,10 +17473,10 @@
 	},
 	"499793": {
 		"name": "Cyberpunk Casuals",
-		"reason": "499793 is \"Registration\", not Ended. Try again when it's over.",
+		"reason": "499793 has no rounds on Melee (nothing was played or published), so there is nothing to ingest. Try again once the organizer adds them.",
 		"firstTried": "2026-11-25T20:08:20.288Z",
-		"lastTried": "2026-11-25T20:08:20.288Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T10:00:14.314Z",
+		"attempts": 2
 	},
 	"499811": {
 		"name": "Cyberpunk Night City Brawl - The Games District",
@@ -17538,8 +17531,8 @@
 		"name": "Night City Showdown @ The Horde",
 		"reason": "499862 is \"In Progress\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:08:19.998Z",
-		"lastTried": "2026-11-25T20:08:19.998Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T10:00:13.198Z",
+		"attempts": 2
 	},
 	"499870": {
 		"name": "夜城周賽",
@@ -17578,10 +17571,10 @@
 	},
 	"499884": {
 		"name": "Night City Brawl 2111",
-		"reason": "499884 is \"In Progress\", not Ended. Try again when it's over.",
+		"reason": "Round 4 has results but Melee has no standings for it, and the final ranking can't be read from them (it is not a playoff round). Try again once the organizer publishes them.",
 		"firstTried": "2026-11-25T20:08:19.683Z",
-		"lastTried": "2026-11-25T20:08:19.683Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T10:00:12.718Z",
+		"attempts": 2
 	},
 	"499892": {
 		"name": "Cyberpunk constructed 7-11",
@@ -17664,8 +17657,8 @@
 		"name": "Local Cyberpunk al The Match",
 		"reason": "499954 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:08:19.383Z",
-		"lastTried": "2026-11-25T20:08:19.383Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T10:00:10.194Z",
+		"attempts": 2
 	},
 	"499957": {
 		"name": "Smilytoys Night City Brawl",
@@ -17690,17 +17683,17 @@
 	},
 	"499972": {
 		"name": "cyberpunk brawl",
-		"reason": "499972 is \"In Progress\", not Ended. Try again when it's over.",
+		"reason": "499972 has no decklists (none of the first 7 of its 9 players has one up), so it isn't ingested. Lists can appear after an event ends; try again later.",
 		"firstTried": "2026-11-25T20:08:19.077Z",
-		"lastTried": "2026-11-25T20:08:19.077Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T10:00:09.702Z",
+		"attempts": 2
 	},
 	"499973": {
 		"name": "cyberpunk night",
 		"reason": "499973 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:08:18.784Z",
-		"lastTried": "2026-11-25T20:08:18.784Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T10:00:04.686Z",
+		"attempts": 2
 	},
 	"499975": {
 		"name": "Karten-Lounge Night City Brawl",
@@ -17760,10 +17753,10 @@
 	},
 	"500070": {
 		"name": "Cyberpunk TCG - Night City Brawl",
-		"reason": "500070 is \"In Progress\", not Ended. Try again when it's over.",
+		"reason": "500070 has no decklists (none of its 6 players has one up), so it isn't ingested. Lists can appear after an event ends; try again later.",
 		"firstTried": "2026-11-25T20:08:18.476Z",
-		"lastTried": "2026-11-25T20:08:18.476Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T10:00:04.207Z",
+		"attempts": 2
 	},
 	"500082": {
 		"name": "Cyberpunk TCG Weekly meet up",
@@ -17811,8 +17804,8 @@
 		"name": "Night City Showdown - Stuttgart - Samstag - 11:00 Uhr",
 		"reason": "500181 is \"In Progress\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-21T14:06:05.680Z",
-		"lastTried": "2026-11-25T19:42:21.878Z",
-		"attempts": 4
+		"lastTried": "2026-11-26T09:55:50.764Z",
+		"attempts": 5
 	},
 	"500192": {
 		"name": "Brawl at BOSCO's!",
@@ -17839,8 +17832,8 @@
 		"name": "El Cardboard - Cyberpunk - Night City Brawl",
 		"reason": "500256 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:08:18.181Z",
-		"lastTried": "2026-11-25T20:08:18.181Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T09:59:58.168Z",
+		"attempts": 2
 	},
 	"500279": {
 		"name": "CCS Night City Brawl!",
@@ -17860,15 +17853,15 @@
 		"name": "Tournoi construit Cyber punk",
 		"reason": "500291 is \"In Progress\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:08:17.880Z",
-		"lastTried": "2026-11-25T20:08:17.880Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T09:59:57.672Z",
+		"attempts": 2
 	},
 	"500292": {
 		"name": "Tournoi construit Cyber punk",
 		"reason": "500292 is \"In Progress\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:08:17.573Z",
-		"lastTried": "2026-11-25T20:08:17.573Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T09:59:57.172Z",
+		"attempts": 2
 	},
 	"500302": {
 		"name": "11-20 | Friday Night City Brawl",
@@ -17937,8 +17930,8 @@
 		"name": "CGS Night City Brawl",
 		"reason": "500392 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:08:17.273Z",
-		"lastTried": "2026-11-25T20:08:17.273Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T09:59:56.668Z",
+		"attempts": 2
 	},
 	"500414": {
 		"name": "Cardtropolis TCG Cyberpunk Night City Brawl",
@@ -18042,15 +18035,15 @@
 		"name": "Weekly Saturday Brawl",
 		"reason": "500507 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:08:16.969Z",
-		"lastTried": "2026-11-25T20:08:16.969Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T09:59:56.165Z",
+		"attempts": 2
 	},
 	"500555": {
 		"name": "AKI Night City Brawl",
 		"reason": "500555 is \"In Progress\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:08:16.668Z",
-		"lastTried": "2026-11-25T20:08:16.668Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T09:59:55.670Z",
+		"attempts": 2
 	},
 	"500575": {
 		"name": "Cyberpunk Night City Brawl!",
@@ -18154,8 +18147,8 @@
 		"name": "Wednesday Rumble",
 		"reason": "500721 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:08:16.380Z",
-		"lastTried": "2026-11-25T20:08:16.380Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T09:59:55.165Z",
+		"attempts": 2
 	},
 	"500724": {
 		"name": "Cyberpunk Weekly Brawl",
@@ -18315,15 +18308,15 @@
 		"name": "Night City Showdown at Alternate Universes Ridley!",
 		"reason": "500953 is \"In Progress\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:08:16.077Z",
-		"lastTried": "2026-11-25T20:08:16.077Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T09:59:54.665Z",
+		"attempts": 2
 	},
 	"500964": {
 		"name": "Cyberpunk TCG – Night City Weekly Brawl",
-		"reason": "500964 is \"Registration\", not Ended. Try again when it's over.",
+		"reason": "500964 is \"Canceled\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:08:15.776Z",
-		"lastTried": "2026-11-25T20:08:15.776Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T09:59:54.168Z",
+		"attempts": 2
 	},
 	"500974": {
 		"name": "401 Games Vaughan - Wednesday Night City Brawl",
@@ -18371,8 +18364,8 @@
 		"name": "Night City Brawl",
 		"reason": "501088 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:08:15.468Z",
-		"lastTried": "2026-11-25T20:08:15.468Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T09:59:53.662Z",
+		"attempts": 2
 	},
 	"501102": {
 		"name": "Cyberpunk Weekly Tournament",
@@ -18399,8 +18392,8 @@
 		"name": "Cyberpunk Night City Brawl Mondays @ GnG ",
 		"reason": "501155 is \"In Progress\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:08:15.172Z",
-		"lastTried": "2026-11-25T20:08:15.172Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T09:59:53.166Z",
+		"attempts": 2
 	},
 	"501156": {
 		"name": "Cyberpunk Night City Brawl",
@@ -18441,8 +18434,8 @@
 		"name": "Night city brawl 11/19",
 		"reason": "501209 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:08:14.876Z",
-		"lastTried": "2026-11-25T20:08:14.876Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T09:59:52.662Z",
+		"attempts": 2
 	},
 	"501234": {
 		"name": "KrodomCards Győr – Cyberpunk TCG Night City Brawl",
@@ -18490,8 +18483,8 @@
 		"name": "PHG Cyberpunk Sunday Meet-Up!",
 		"reason": "501275 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:08:14.572Z",
-		"lastTried": "2026-11-25T20:08:14.572Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T09:59:52.161Z",
+		"attempts": 2
 	},
 	"501280": {
 		"name": "One Up Cyberpunk - Weekly 11.14.26",
@@ -18530,10 +18523,10 @@
 	},
 	"501327": {
 		"name": "Cyberpunk TCG Weekly Play - Clark",
-		"reason": "501327 is \"Registration\", not Ended. Try again when it's over.",
+		"reason": "501327 has no decklists (none of the first 7 of its 10 players has one up), so it isn't ingested. Lists can appear after an event ends; try again later.",
 		"firstTried": "2026-11-25T20:08:14.278Z",
-		"lastTried": "2026-11-25T20:08:14.278Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T09:59:51.683Z",
+		"attempts": 2
 	},
 	"501331": {
 		"name": "Cyberpunk TCG Weekly Play - Calton",
@@ -18558,10 +18551,10 @@
 	},
 	"501352": {
 		"name": "Cyberpunk Weekly Brawl",
-		"reason": "501352 is \"In Progress\", not Ended. Try again when it's over.",
+		"reason": "501352 has no decklists (none of the first 7 of its 18 players has one up), so it isn't ingested. Lists can appear after an event ends; try again later.",
 		"firstTried": "2026-11-25T20:08:13.967Z",
-		"lastTried": "2026-11-25T20:08:13.967Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T09:59:46.670Z",
+		"attempts": 2
 	},
 	"501365": {
 		"name": "RHS Night City Brawl",
@@ -18609,8 +18602,8 @@
 		"name": "Fox Den Cyberpunk Weekly",
 		"reason": "501450 is \"In Progress\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:08:13.663Z",
-		"lastTried": "2026-11-25T20:08:13.663Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T09:59:41.649Z",
+		"attempts": 2
 	},
 	"501460": {
 		"name": "Brawl Ninpo Store - 09/11/2026",
@@ -18630,8 +18623,8 @@
 		"name": "Night City Brawl (Competitive)",
 		"reason": "501504 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:08:13.367Z",
-		"lastTried": "2026-11-25T20:08:13.367Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T09:59:41.148Z",
+		"attempts": 2
 	},
 	"501506": {
 		"name": "Cyberpunk Torneo del Lunedi' al Jolly San Martino",
@@ -18812,8 +18805,8 @@
 		"name": "Cyberpunk Locals @ Mint ",
 		"reason": "501913 is \"In Progress\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:08:13.064Z",
-		"lastTried": "2026-11-25T20:08:13.064Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T09:59:40.647Z",
+		"attempts": 2
 	},
 	"501920": {
 		"name": "Cyberpunk Starter Deck Event",
@@ -18831,10 +18824,10 @@
 	},
 	"501955": {
 		"name": "Legendary Cyberpunk Mondays",
-		"reason": "501955 is \"In Progress\", not Ended. Try again when it's over.",
+		"reason": "Melee has no standings for the last round (Round 3): the organizer hasn't published them, so there are no final results to read.",
 		"firstTried": "2026-11-25T20:08:12.455Z",
-		"lastTried": "2026-11-25T20:08:12.455Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T09:59:40.141Z",
+		"attempts": 2
 	},
 	"501975": {
 		"name": "Constructed",
@@ -18845,10 +18838,10 @@
 	},
 	"501999": {
 		"name": "Night City Brawl @ Playmantis",
-		"reason": "501999 is \"In Progress\", not Ended. Try again when it's over.",
+		"reason": "501999 has no decklists (none of the first 7 of its 9 players has one up), so it isn't ingested. Lists can appear after an event ends; try again later.",
 		"firstTried": "2026-11-25T20:08:12.156Z",
-		"lastTried": "2026-11-25T20:08:12.156Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T09:59:37.652Z",
+		"attempts": 2
 	},
 	"502030": {
 		"name": "Nedzvault Showdown",
@@ -18971,10 +18964,10 @@
 	},
 	"502172": {
 		"name": "Team Card Titan - Gladstone Cyberpunk BO1 Locals",
-		"reason": "502172 is \"In Progress\", not Ended. Try again when it's over.",
+		"reason": "502172 has no decklists (none of its 5 players has one up), so it isn't ingested. Lists can appear after an event ends; try again later.",
 		"firstTried": "2026-11-25T20:08:11.866Z",
-		"lastTried": "2026-11-25T20:08:11.866Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T09:59:31.639Z",
+		"attempts": 2
 	},
 	"502182": {
 		"name": "Night City Brawl",
@@ -19043,8 +19036,8 @@
 		"name": "Cyberpunk - Night City Brawl @ Kanto 11/19",
 		"reason": "502279 is \"In Progress\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:08:11.553Z",
-		"lastTried": "2026-11-25T20:08:11.553Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T09:59:25.120Z",
+		"attempts": 2
 	},
 	"502280": {
 		"name": "Evolution Games Monday Locals",
@@ -19148,8 +19141,8 @@
 		"name": "Cyberpunk Night City Brawl",
 		"reason": "502515 is \"In Progress\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:08:11.261Z",
-		"lastTried": "2026-11-25T20:08:11.261Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T09:59:24.615Z",
+		"attempts": 2
 	},
 	"502529": {
 		"name": "Cyberpunk Weekly Night City Brawl",
@@ -19162,8 +19155,8 @@
 		"name": "Cyberpunk Weekly",
 		"reason": "502543 is \"In Progress\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:08:10.975Z",
-		"lastTried": "2026-11-25T20:08:10.975Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T09:59:24.115Z",
+		"attempts": 2
 	},
 	"502549": {
 		"name": "Black Castle Gamez - Cyberpunk TCG - Weekly League",
@@ -19176,8 +19169,8 @@
 		"name": "Cyberpunk Weekly",
 		"reason": "502564 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:08:10.653Z",
-		"lastTried": "2026-11-25T20:08:10.653Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T09:59:23.611Z",
+		"attempts": 2
 	},
 	"502616": {
 		"name": "Night City Brawl",
@@ -19197,8 +19190,8 @@
 		"name": "Cosmic Games Night City Showdown",
 		"reason": "502662 is \"In Progress\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:08:10.422Z",
-		"lastTried": "2026-11-25T20:08:10.422Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T09:59:23.114Z",
+		"attempts": 2
 	},
 	"502672": {
 		"name": "MetroCity Brawl v11.1",
@@ -19230,10 +19223,10 @@
 	},
 	"502764": {
 		"name": "Night City Brawl Weekly Tournament @ Atlantis Norfolk",
-		"reason": "502764 is \"Registration\", not Ended. Try again when it's over.",
+		"reason": "502764 is \"Canceled\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:08:10.060Z",
-		"lastTried": "2026-11-25T20:08:10.060Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T09:59:22.616Z",
+		"attempts": 2
 	},
 	"502775": {
 		"name": "Fantasy Books & Games Cyberpunk Weekly",
@@ -19302,8 +19295,8 @@
 		"name": "Tabletop Village Weekly Brawl",
 		"reason": "502912 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:08:09.753Z",
-		"lastTried": "2026-11-25T20:08:09.753Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T09:59:22.109Z",
+		"attempts": 2
 	},
 	"502964": {
 		"name": "Cyberpunk Weekly Event ",
@@ -19379,8 +19372,8 @@
 		"name": "Cyberpunk TCG - Night City Brawl",
 		"reason": "503048 is \"In Progress\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:08:09.152Z",
-		"lastTried": "2026-11-25T20:08:09.152Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T09:59:21.617Z",
+		"attempts": 2
 	},
 	"503054": {
 		"name": "Night City Brawl Cyberpunk Factory Cards",
@@ -19405,10 +19398,10 @@
 	},
 	"503092": {
 		"name": "Cyberpunk Friday Nights",
-		"reason": "503092 is \"Registration\", not Ended. Try again when it's over.",
+		"reason": "503092 is \"Canceled\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:08:08.856Z",
-		"lastTried": "2026-11-25T20:08:08.856Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T09:59:21.112Z",
+		"attempts": 2
 	},
 	"503104": {
 		"name": "NIGHT CITY BRAWL",
@@ -19489,10 +19482,10 @@
 	},
 	"503173": {
 		"name": "Reckenecke Brawl",
-		"reason": "503173 is \"In Progress\", not Ended. Try again when it's over.",
+		"reason": "503173 has no decklists (none of the first 7 of its 12 players has one up), so it isn't ingested. Lists can appear after an event ends; try again later.",
 		"firstTried": "2026-11-25T20:08:08.545Z",
-		"lastTried": "2026-11-25T20:08:08.545Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T09:59:20.630Z",
+		"attempts": 2
 	},
 	"503174": {
 		"name": "Game Over here Saturday Brawl",
@@ -19512,8 +19505,8 @@
 		"name": "Cyberpunk Showdown",
 		"reason": "503179 is \"In Progress\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:08:08.245Z",
-		"lastTried": "2026-11-25T20:08:08.245Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T09:59:15.606Z",
+		"attempts": 2
 	},
 	"503202": {
 		"name": "Cyberpunk TCG Night City Showdown Constructed @Goblin Bologna",
@@ -19715,8 +19708,8 @@
 		"name": "Cyberpunk Weekly Play",
 		"reason": "503592 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:08:04.935Z",
-		"lastTried": "2026-11-25T20:08:04.935Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T09:59:15.100Z",
+		"attempts": 2
 	},
 	"503611": {
 		"name": "Night City Brawl",
@@ -19771,8 +19764,8 @@
 		"name": "Cyberpunk Locals",
 		"reason": "503777 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:08:04.645Z",
-		"lastTried": "2026-11-25T20:08:04.645Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T09:59:14.603Z",
+		"attempts": 2
 	},
 	"503779": {
 		"name": "Saturday Night City Brawl @ Worldfire",
@@ -19790,10 +19783,10 @@
 	},
 	"503784": {
 		"name": "Cyberpunk Locals",
-		"reason": "503784 is \"Registration\", not Ended. Try again when it's over.",
+		"reason": "503784 is \"Canceled\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:08:04.334Z",
-		"lastTried": "2026-11-25T20:08:04.334Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T09:59:14.109Z",
+		"attempts": 2
 	},
 	"503808": {
 		"name": "Night City Brawl Weekly Play",
@@ -19876,8 +19869,8 @@
 		"name": "Cyberpunk locals",
 		"reason": "503976 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:08:04.040Z",
-		"lastTried": "2026-11-25T20:08:04.040Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T09:59:13.609Z",
+		"attempts": 2
 	},
 	"503977": {
 		"name": "Cyberpunk locals",
@@ -19946,8 +19939,8 @@
 		"name": "Top Choice Gaming Cyberpunk Weekly",
 		"reason": "504043 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:08:03.732Z",
-		"lastTried": "2026-11-25T20:08:03.732Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T09:59:13.101Z",
+		"attempts": 2
 	},
 	"504045": {
 		"name": "Night City Brawl at The Gaming Arena",
@@ -19979,10 +19972,10 @@
 	},
 	"504064": {
 		"name": "CYP Night City Brawl 21/11/26",
-		"reason": "504064 is \"In Progress\", not Ended. Try again when it's over.",
+		"reason": "504064 has no decklists (none of its 4 players has one up), so it isn't ingested. Lists can appear after an event ends; try again later.",
 		"firstTried": "2026-11-25T20:08:03.430Z",
-		"lastTried": "2026-11-25T20:08:03.430Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T09:59:12.615Z",
+		"attempts": 2
 	},
 	"504070": {
 		"name": "Night City Brawl - Gigs from King Kong Comics & Games",
@@ -20023,8 +20016,8 @@
 		"name": "Arcana Inn Cyberpunk Standard ",
 		"reason": "504125 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:08:03.140Z",
-		"lastTried": "2026-11-25T20:08:03.140Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T09:59:07.098Z",
+		"attempts": 2
 	},
 	"504137": {
 		"name": "Cyberpunk Brawl @Kaleidon",
@@ -20086,8 +20079,8 @@
 		"name": "DYG Cyberpunk Locals",
 		"reason": "504231 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:08:02.843Z",
-		"lastTried": "2026-11-25T20:08:02.843Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T09:59:06.600Z",
+		"attempts": 2
 	},
 	"504245": {
 		"name": "Arcane Area Night City Brawl",
@@ -20112,10 +20105,10 @@
 	},
 	"504273": {
 		"name": "Cyberpunk Locals",
-		"reason": "504273 is \"In Progress\", not Ended. Try again when it's over.",
+		"reason": "504273 has no decklists (none of its 6 players has one up), so it isn't ingested. Lists can appear after an event ends; try again later.",
 		"firstTried": "2026-11-25T20:08:02.531Z",
-		"lastTried": "2026-11-25T20:08:02.531Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T09:59:06.118Z",
+		"attempts": 2
 	},
 	"504275": {
 		"name": "iMPARA A GIOCARE CON NOI!",
@@ -20296,8 +20289,8 @@
 		"name": "The Nerd Lair Westwego Night City Brawl",
 		"reason": "504588 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:08:01.936Z",
-		"lastTried": "2026-11-25T20:08:01.936Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T09:59:00.145Z",
+		"attempts": 2
 	},
 	"504600": {
 		"name": "2026-11-12 REDRAFT - Cyberpunk TCG - Night City Brawl",
@@ -20338,8 +20331,8 @@
 		"name": "Cyberpunk TCG Nexus Night",
 		"reason": "504639 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:08:01.631Z",
-		"lastTried": "2026-11-25T20:08:01.631Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T09:58:59.607Z",
+		"attempts": 2
 	},
 	"504686": {
 		"name": "Casual Weekly Brawl",
@@ -20401,8 +20394,8 @@
 		"name": "Cyberpunk hobby night ",
 		"reason": "504860 is \"In Progress\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:08:01.323Z",
-		"lastTried": "2026-11-25T20:08:01.323Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T09:58:59.080Z",
+		"attempts": 2
 	},
 	"504949": {
 		"name": "AJ-TCG Preston Night City Brawl ",
@@ -20462,10 +20455,10 @@
 	},
 	"505051": {
 		"name": "Brawl event at The Collector's Cave",
-		"reason": "505051 is \"In Progress\", not Ended. Try again when it's over.",
+		"reason": "505051 has no decklists (none of the first 7 of its 8 players has one up), so it isn't ingested. Lists can appear after an event ends; try again later.",
 		"firstTried": "2026-11-25T20:07:59.521Z",
-		"lastTried": "2026-11-25T20:07:59.521Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T09:58:58.605Z",
+		"attempts": 2
 	},
 	"505139": {
 		"name": "Night City Brawl",
@@ -20483,10 +20476,10 @@
 	},
 	"505144": {
 		"name": "Oberonn Night City - Weekly Brawl ",
-		"reason": "505144 is \"In Progress\", not Ended. Try again when it's over.",
+		"reason": "505144 has no decklists (none of its 4 players has one up), so it isn't ingested. Lists can appear after an event ends; try again later.",
 		"firstTried": "2026-11-25T20:07:59.225Z",
-		"lastTried": "2026-11-25T20:07:59.225Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T09:58:52.586Z",
+		"attempts": 2
 	},
 	"505169": {
 		"name": "Me'aisim Casuals Thursday 12th",
@@ -20518,10 +20511,10 @@
 	},
 	"505217": {
 		"name": "Wirth Collecting Night City Brawl Weekly Tournament",
-		"reason": "505217 is \"Registration\", not Ended. Try again when it's over.",
+		"reason": "505217 is \"Canceled\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:07:58.918Z",
-		"lastTried": "2026-11-25T20:07:58.918Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T09:58:46.556Z",
+		"attempts": 2
 	},
 	"505247": {
 		"name": "Night City Brawl",
@@ -20590,8 +20583,8 @@
 		"name": "Night City Brawl  1",
 		"reason": "505344 is \"In Progress\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:07:58.621Z",
-		"lastTried": "2026-11-25T20:07:58.621Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T09:58:46.054Z",
+		"attempts": 2
 	},
 	"505351": {
 		"name": "Cyberpunk Weekly's @SFG Abbotsford",
@@ -20623,10 +20616,10 @@
 	},
 	"505398": {
 		"name": "Arena Falkirk Brawl",
-		"reason": "505398 is \"Registration\", not Ended. Try again when it's over.",
+		"reason": "505398 is \"Canceled\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:07:58.320Z",
-		"lastTried": "2026-11-25T20:07:58.320Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T09:58:45.552Z",
+		"attempts": 2
 	},
 	"505403": {
 		"name": "Eastridge: Night City Brawl Thursdays",
@@ -20639,8 +20632,8 @@
 		"name": "WEEKLY NIGHT CITY BRAWL",
 		"reason": "505427 is \"In Progress\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:07:58.014Z",
-		"lastTried": "2026-11-25T20:07:58.014Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T09:58:45.065Z",
+		"attempts": 2
 	},
 	"505437": {
 		"name": "CYBERPUNK EVENT ON DEMAND",
@@ -20828,8 +20821,8 @@
 		"name": "ALG Night City Brawl",
 		"reason": "505800 is \"In Progress\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:07:57.717Z",
-		"lastTried": "2026-11-25T20:07:57.717Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T09:58:44.551Z",
+		"attempts": 2
 	},
 	"505805": {
 		"name": "TORNEO PRUEBA ",
@@ -20954,8 +20947,8 @@
 		"name": "Cyberpunk Casual Brawl",
 		"reason": "506001 is \"In Progress\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:07:53.810Z",
-		"lastTried": "2026-11-25T20:07:53.810Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T09:58:44.057Z",
+		"attempts": 2
 	},
 	"506002": {
 		"name": "Night City Showdown",
@@ -20996,8 +20989,8 @@
 		"name": "Saturday Night City Brawl",
 		"reason": "506090 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:07:53.500Z",
-		"lastTried": "2026-11-25T20:07:53.500Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T09:58:43.547Z",
+		"attempts": 2
 	},
 	"506101": {
 		"name": "Cyberpunk Friday",
@@ -21115,8 +21108,8 @@
 		"name": "Cyberpunk TCG Brawl",
 		"reason": "506364 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:07:53.205Z",
-		"lastTried": "2026-11-25T20:07:53.205Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T09:58:43.055Z",
+		"attempts": 2
 	},
 	"506377": {
 		"name": "Night City Brawl",
@@ -21129,8 +21122,8 @@
 		"name": "Cyberpunk Weekly",
 		"reason": "506380 is \"In Progress\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:07:52.903Z",
-		"lastTried": "2026-11-25T20:07:52.903Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T09:58:42.546Z",
+		"attempts": 2
 	},
 	"506381": {
 		"name": "Cyberpunk Night City Brawl @LHC",
@@ -21164,15 +21157,15 @@
 		"name": "Cyberpunk Local 11/13/2026",
 		"reason": "506425 is \"In Progress\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:07:52.597Z",
-		"lastTried": "2026-11-25T20:07:52.597Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T09:58:42.048Z",
+		"attempts": 2
 	},
 	"506428": {
 		"name": "Tabletop Cards and Games Cyberpunk TCG Weekly Event - 11/19",
 		"reason": "506428 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:07:52.302Z",
-		"lastTried": "2026-11-25T20:07:52.302Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T09:58:41.549Z",
+		"attempts": 2
 	},
 	"506455": {
 		"name": "Night City Brawl @ Coral Sword",
@@ -21199,8 +21192,8 @@
 		"name": "Miltons Brawl",
 		"reason": "506525 is \"In Progress\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:07:51.995Z",
-		"lastTried": "2026-11-25T20:07:51.995Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T09:58:41.044Z",
+		"attempts": 2
 	},
 	"506550": {
 		"name": "NIGHT CITY SHOWDOWN",
@@ -21225,10 +21218,10 @@
 	},
 	"506638": {
 		"name": "Night City Brawl",
-		"reason": "506638 is \"Registration\", not Ended. Try again when it's over.",
+		"reason": "506638 is \"Canceled\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:07:51.695Z",
-		"lastTried": "2026-11-25T20:07:51.695Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T09:58:40.550Z",
+		"attempts": 2
 	},
 	"506646": {
 		"name": "TOPDECK BRAWL Picking MARTES",
@@ -21332,8 +21325,8 @@
 		"name": "Cyberpunk Locals",
 		"reason": "506827 is \"In Progress\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:07:51.393Z",
-		"lastTried": "2026-11-25T20:07:51.393Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T09:58:40.046Z",
+		"attempts": 2
 	},
 	"506828": {
 		"name": "SEMANAL CYBERPUNK",
@@ -21409,8 +21402,8 @@
 		"name": "Gone Lucid Games - Night City Brawl",
 		"reason": "507095 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:07:51.098Z",
-		"lastTried": "2026-11-25T20:07:51.098Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T09:58:39.546Z",
+		"attempts": 2
 	},
 	"507108": {
 		"name": "Gauntlet Weekly Cyberpunk",
@@ -21437,15 +21430,15 @@
 		"name": "Cyberpunk Locals!",
 		"reason": "507229 is \"In Progress\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:07:50.793Z",
-		"lastTried": "2026-11-25T20:07:50.793Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T09:58:39.047Z",
+		"attempts": 2
 	},
 	"507239": {
 		"name": "Cyberpunk TCG Weekly Night City Brawl",
-		"reason": "507239 is \"Registration\", not Ended. Try again when it's over.",
+		"reason": "507239 has no rounds on Melee (nothing was played or published), so there is nothing to ingest. Try again once the organizer adds them.",
 		"firstTried": "2026-11-25T20:07:50.499Z",
-		"lastTried": "2026-11-25T20:07:50.499Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T09:58:38.587Z",
+		"attempts": 2
 	},
 	"507242": {
 		"name": "JupiBrawl",
@@ -21542,8 +21535,8 @@
 		"name": "RHS Night City Brawl",
 		"reason": "507380 is \"In Progress\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:07:50.191Z",
-		"lastTried": "2026-11-25T20:07:50.191Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T09:58:37.545Z",
+		"attempts": 2
 	},
 	"507413": {
 		"name": "Night City Brawl - Rimini",
@@ -21575,17 +21568,17 @@
 	},
 	"507508": {
 		"name": "Cyberpunk Weekly Brawl",
-		"reason": "507508 is \"Registration\", not Ended. Try again when it's over.",
+		"reason": "507508 is \"Canceled\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:07:49.898Z",
-		"lastTried": "2026-11-25T20:07:49.898Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T09:58:37.046Z",
+		"attempts": 2
 	},
 	"507555": {
 		"name": "Cyberpunk Torneo del Mercoledi' al Jolly Dante",
-		"reason": "507555 is \"In Progress\", not Ended. Try again when it's over.",
+		"reason": "507555 has no decklists (none of the first 7 of its 8 players has one up), so it isn't ingested. Lists can appear after an event ends; try again later.",
 		"firstTried": "2026-11-25T20:21:30.095Z",
-		"lastTried": "2026-11-25T20:21:30.095Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:28:36.483Z",
+		"attempts": 2
 	},
 	"507556": {
 		"name": "Cyberpunk Torneo del Mercoledi' al Jolly Dante",
@@ -21612,8 +21605,8 @@
 		"name": "Cyberpunk Weekly Brawl",
 		"reason": "507592 is \"In Progress\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:07:49.596Z",
-		"lastTried": "2026-11-25T20:07:49.596Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T09:58:36.540Z",
+		"attempts": 2
 	},
 	"507638": {
 		"name": "Sunday Cyberpunk Weekly",
@@ -21640,8 +21633,8 @@
 		"name": "Night City Locals",
 		"reason": "507697 is \"In Progress\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:07:49.293Z",
-		"lastTried": "2026-11-25T20:07:49.293Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T09:58:36.038Z",
+		"attempts": 2
 	},
 	"507715": {
 		"name": "Cyberpunk Casual",
@@ -21736,10 +21729,10 @@
 	},
 	"507820": {
 		"name": "ITSMAXTOYS Weekly Brawl",
-		"reason": "507820 is \"In Progress\", not Ended. Try again when it's over.",
+		"reason": "507820 has no decklists (none of its 4 players has one up), so it isn't ingested. Lists can appear after an event ends; try again later.",
 		"firstTried": "2026-11-25T20:07:45.976Z",
-		"lastTried": "2026-11-25T20:07:45.976Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T09:58:35.552Z",
+		"attempts": 2
 	},
 	"507833": {
 		"name": "Cyberpunk TCG - Niedźwiadkowy Night City Showdown ",
@@ -21757,10 +21750,10 @@
 	},
 	"507839": {
 		"name": "Night City Showdown",
-		"reason": "507839 is \"Registration\", not Ended. Try again when it's over.",
+		"reason": "507839 is \"Canceled\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:21:29.794Z",
-		"lastTried": "2026-11-25T20:21:29.794Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:28:31.471Z",
+		"attempts": 2
 	},
 	"507858": {
 		"name": "Torneo Semanal CyberPunk Cañon Cosmo",
@@ -21780,8 +21773,8 @@
 		"name": "Migos Cards Night City Showdown",
 		"reason": "507866 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:07:45.682Z",
-		"lastTried": "2026-11-25T20:07:45.682Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T09:58:30.530Z",
+		"attempts": 2
 	},
 	"507871": {
 		"name": "Brawl Hebdomadaire",
@@ -21801,8 +21794,8 @@
 		"name": "CBR TCG @Magman",
 		"reason": "507898 is \"In Progress\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:07:45.372Z",
-		"lastTried": "2026-11-25T20:07:45.372Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T09:58:30.031Z",
+		"attempts": 2
 	},
 	"507911": {
 		"name": "Stajnia Gier Night City Brawl",
@@ -21829,8 +21822,8 @@
 		"name": "Brawl TTG",
 		"reason": "507917 is \"In Progress\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:07:45.075Z",
-		"lastTried": "2026-11-25T20:07:45.075Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T09:58:29.528Z",
+		"attempts": 2
 	},
 	"507919": {
 		"name": "CD TOWN@Cyberpunk TCG Night City Showdown",
@@ -21878,8 +21871,8 @@
 		"name": "LOCAL CYBERPUNK",
 		"reason": "507993 is \"In Progress\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:07:44.771Z",
-		"lastTried": "2026-11-25T20:07:44.771Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T09:58:29.034Z",
+		"attempts": 2
 	},
 	"508023": {
 		"name": "Cyberpunk TCG Weekly Brawl",
@@ -21934,15 +21927,15 @@
 		"name": "Cyberpunk Weekly City Brawl",
 		"reason": "508093 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:07:41.465Z",
-		"lastTried": "2026-11-25T20:07:41.465Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T09:58:28.529Z",
+		"attempts": 2
 	},
 	"508121": {
 		"name": "Night City Showdown",
-		"reason": "508121 is \"In Progress\", not Ended. Try again when it's over.",
+		"reason": "508121 has no decklists (none of the first 7 of its 11 players has one up), so it isn't ingested. Lists can appear after an event ends; try again later.",
 		"firstTried": "2026-11-25T20:07:41.173Z",
-		"lastTried": "2026-11-25T20:07:41.173Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T09:58:28.042Z",
+		"attempts": 2
 	},
 	"508131": {
 		"name": "Weekly Cyberpunk",
@@ -22025,8 +22018,8 @@
 		"name": "Night City Brawl",
 		"reason": "508361 is \"In Progress\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:07:40.864Z",
-		"lastTried": "2026-11-25T20:07:40.864Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T09:58:23.019Z",
+		"attempts": 2
 	},
 	"508388": {
 		"name": "Cyberpunk Weekly Event ",
@@ -22086,17 +22079,17 @@
 	},
 	"508521": {
 		"name": "Faches City Brawl",
-		"reason": "508521 is \"Registration\", not Ended. Try again when it's over.",
+		"reason": "508521 is \"Canceled\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:07:40.569Z",
-		"lastTried": "2026-11-25T20:07:40.569Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T09:58:22.519Z",
+		"attempts": 2
 	},
 	"508523": {
 		"name": "Faches City Brawl",
-		"reason": "508523 is \"Registration\", not Ended. Try again when it's over.",
+		"reason": "508523 is \"Canceled\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:07:40.265Z",
-		"lastTried": "2026-11-25T20:07:40.265Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T09:58:22.015Z",
+		"attempts": 2
 	},
 	"508528": {
 		"name": "weekly brawl Speltrollet",
@@ -22179,8 +22172,8 @@
 		"name": "Cyberpunk Night City Brawl Weekly",
 		"reason": "508701 is \"In Progress\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:07:39.663Z",
-		"lastTried": "2026-11-25T20:07:39.663Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T09:58:21.523Z",
+		"attempts": 2
 	},
 	"508760": {
 		"name": "Weekly Night City Brawl",
@@ -22191,17 +22184,17 @@
 	},
 	"508779": {
 		"name": "Cyberpunk Night City Brawl @ Black Vault Gaming",
-		"reason": "508779 is \"Registration\", not Ended. Try again when it's over.",
+		"reason": "508779 is \"Canceled\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:07:39.356Z",
-		"lastTried": "2026-11-25T20:07:39.356Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T09:58:21.018Z",
+		"attempts": 2
 	},
 	"508841": {
 		"name": "Weekly Night City Brawl",
-		"reason": "508841 is \"Registration\", not Ended. Try again when it's over.",
+		"reason": "508841 is \"Canceled\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:07:39.055Z",
-		"lastTried": "2026-11-25T20:07:39.055Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T09:58:20.522Z",
+		"attempts": 2
 	},
 	"508850": {
 		"name": "Night City Brawl",
@@ -22219,10 +22212,10 @@
 	},
 	"508887": {
 		"name": "Ratmayer Brawl #1",
-		"reason": "508887 is \"In Progress\", not Ended. Try again when it's over.",
+		"reason": "508887 has no decklists (none of its 5 players has one up), so it isn't ingested. Lists can appear after an event ends; try again later.",
 		"firstTried": "2026-11-25T20:07:38.759Z",
-		"lastTried": "2026-11-25T20:07:38.759Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T09:58:20.026Z",
+		"attempts": 2
 	},
 	"508890": {
 		"name": "Roselle - Night City Brawl",
@@ -22256,15 +22249,15 @@
 		"name": "Tuesday Night City Brawl ",
 		"reason": "508965 is \"In Progress\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:07:38.459Z",
-		"lastTried": "2026-11-25T20:07:38.459Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T09:58:13.501Z",
+		"attempts": 2
 	},
 	"508971": {
 		"name": "Night City Brawl By The Bay",
 		"reason": "508971 is \"In Progress\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:07:38.151Z",
-		"lastTried": "2026-11-25T20:07:38.151Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T09:58:12.999Z",
+		"attempts": 2
 	},
 	"508988": {
 		"name": "Night City Brawl! ",
@@ -22326,8 +22319,8 @@
 		"name": "TEST 2",
 		"reason": "509151 is \"In Progress\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:07:37.856Z",
-		"lastTried": "2026-11-25T20:07:37.856Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T09:58:12.494Z",
+		"attempts": 2
 	},
 	"509155": {
 		"name": "夏洛克桌遊 構築交流賽 ",
@@ -22368,8 +22361,8 @@
 		"name": "Friday Night City Brawl",
 		"reason": "509219 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:07:37.548Z",
-		"lastTried": "2026-11-25T20:07:37.548Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T09:58:11.998Z",
+		"attempts": 2
 	},
 	"509265": {
 		"name": "Weekly Night City Brawl #3",
@@ -22380,10 +22373,10 @@
 	},
 	"509286": {
 		"name": "Double Play TCG - One Piece / Cyberpunk",
-		"reason": "509286 is \"Registration\", not Ended. Try again when it's over.",
+		"reason": "509286 is \"Canceled\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:07:37.249Z",
-		"lastTried": "2026-11-25T20:07:37.249Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T09:58:11.496Z",
+		"attempts": 2
 	},
 	"509294": {
 		"name": "Seriebörsen Brawl",
@@ -22408,10 +22401,10 @@
 	},
 	"509365": {
 		"name": "SideQuets Night City Brawl 2026-11-25",
-		"reason": "509365 is \"In Progress\", not Ended. Try again when it's over.",
+		"reason": "509365 has no decklists (none of the first 7 of its 13 players has one up), so it isn't ingested. Lists can appear after an event ends; try again later.",
 		"firstTried": "2026-11-25T20:07:36.958Z",
-		"lastTried": "2026-11-25T20:07:36.958Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T09:58:11.011Z",
+		"attempts": 2
 	},
 	"509380": {
 		"name": "Geekys Crew - Night City Brawl (weekly) - Constructed",
@@ -22443,10 +22436,10 @@
 	},
 	"509532": {
 		"name": "Cyberpunk TCG Weekly ",
-		"reason": "509532 is \"In Progress\", not Ended. Try again when it's over.",
+		"reason": "509532 has no decklists (none of its 3 players has one up), so it isn't ingested. Lists can appear after an event ends; try again later.",
 		"firstTried": "2026-11-25T20:07:36.352Z",
-		"lastTried": "2026-11-25T20:07:36.352Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T09:58:06.016Z",
+		"attempts": 2
 	},
 	"509545": {
 		"name": "Monday Night City Brawl ",
@@ -22459,15 +22452,15 @@
 		"name": "WEEKLY NIGHT CITY BRAWL",
 		"reason": "509560 is \"In Progress\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:07:36.048Z",
-		"lastTried": "2026-11-25T20:07:36.048Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T09:57:59.978Z",
+		"attempts": 2
 	},
 	"509571": {
 		"name": "Local - Il Covo del Nerd Bari",
-		"reason": "509571 is \"In Progress\", not Ended. Try again when it's over.",
+		"reason": "509571 has no decklists (none of its 5 players has one up), so it isn't ingested. Lists can appear after an event ends; try again later.",
 		"firstTried": "2026-11-25T20:07:35.752Z",
-		"lastTried": "2026-11-25T20:07:35.752Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T09:57:59.495Z",
+		"attempts": 2
 	},
 	"509597": {
 		"name": "Cyberpunk Brawl Packs Promos",
@@ -22478,10 +22471,10 @@
 	},
 	"509646": {
 		"name": "Night City Brawl",
-		"reason": "509646 is \"In Progress\", not Ended. Try again when it's over.",
+		"reason": "509646 has no decklists (none of the first 7 of its 9 players has one up), so it isn't ingested. Lists can appear after an event ends; try again later.",
 		"firstTried": "2026-11-25T20:07:35.453Z",
-		"lastTried": "2026-11-25T20:07:35.453Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T09:57:52.985Z",
+		"attempts": 2
 	},
 	"509653": {
 		"name": "Weekly",
@@ -22550,8 +22543,8 @@
 		"name": "Gamer's Haven Cyberpunk TCG Weekly play 1",
 		"reason": "509857 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:07:35.141Z",
-		"lastTried": "2026-11-25T20:07:35.141Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T09:57:47.962Z",
+		"attempts": 2
 	},
 	"509858": {
 		"name": "Advantage Games Weekly Night City Brawl",
@@ -22562,10 +22555,10 @@
 	},
 	"509880": {
 		"name": "Weekly Play",
-		"reason": "509880 is \"Registration\", not Ended. Try again when it's over.",
+		"reason": "509880 is \"Canceled\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:07:34.848Z",
-		"lastTried": "2026-11-25T20:07:34.848Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T09:57:47.463Z",
+		"attempts": 2
 	},
 	"509895": {
 		"name": "Collectors Lounge Cyber Punk Locals ",
@@ -22597,17 +22590,17 @@
 	},
 	"509971": {
 		"name": "Cyperpunk weekly event ",
-		"reason": "509971 is \"Registration\", not Ended. Try again when it's over.",
+		"reason": "509971 has no rounds on Melee (nothing was played or published), so there is nothing to ingest. Try again once the organizer adds them.",
 		"firstTried": "2026-11-25T20:07:34.549Z",
-		"lastTried": "2026-11-25T20:07:34.549Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T09:57:47.003Z",
+		"attempts": 2
 	},
 	"509974": {
 		"name": "DYG Cyberpunk Locals",
-		"reason": "509974 is \"In Progress\", not Ended. Try again when it's over.",
+		"reason": "509974 has no decklists (none of the first 7 of its 7 players has one up), so it isn't ingested. Lists can appear after an event ends; try again later.",
 		"firstTried": "2026-11-25T20:07:34.245Z",
-		"lastTried": "2026-11-25T20:07:34.245Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T09:57:45.971Z",
+		"attempts": 2
 	},
 	"509988": {
 		"name": "Time4Magic Night City Brawl",
@@ -22669,8 +22662,8 @@
 		"name": "cyber jueves",
 		"reason": "510111 is \"In Progress\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:07:33.947Z",
-		"lastTried": "2026-11-25T20:07:33.947Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T09:57:40.959Z",
+		"attempts": 2
 	},
 	"510234": {
 		"name": "NIGHT CITY BRAWL",
@@ -22704,8 +22697,8 @@
 		"name": "Night city Showdown",
 		"reason": "510265 is \"In Progress\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:07:33.645Z",
-		"lastTried": "2026-11-25T20:07:33.645Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T09:57:40.452Z",
+		"attempts": 2
 	},
 	"510317": {
 		"name": "MH Weekly Brawl",
@@ -22771,11 +22764,11 @@
 		"attempts": 1
 	},
 	"510659": {
-		"name": "88CH Night City Brawl 20261120",
+		"name": "88CH Night City Brawl 20261122",
 		"reason": "510659 is \"In Progress\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:07:33.346Z",
-		"lastTried": "2026-11-25T20:07:33.346Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T09:57:39.956Z",
+		"attempts": 2
 	},
 	"510664": {
 		"name": "Cyberpunk Locals",
@@ -22800,10 +22793,10 @@
 	},
 	"510671": {
 		"name": "Night City Brawl Arcane Area",
-		"reason": "510671 is \"In Progress\", not Ended. Try again when it's over.",
+		"reason": "Round 4 has results but Melee has no standings for it, and the final ranking can't be read from them (it is not a playoff round). Try again once the organizer publishes them.",
 		"firstTried": "2026-11-25T20:07:33.038Z",
-		"lastTried": "2026-11-25T20:07:33.038Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T09:57:39.473Z",
+		"attempts": 2
 	},
 	"510692": {
 		"name": "Cyberpunk TCG - Night City Brawl - Ludotrotter Charleroi",
@@ -22828,10 +22821,10 @@
 	},
 	"510748": {
 		"name": "Manaforge Midweek Brawl",
-		"reason": "510748 is \"In Progress\", not Ended. Try again when it's over.",
+		"reason": "510748 has no decklists (none of its 5 players has one up), so it isn't ingested. Lists can appear after an event ends; try again later.",
 		"firstTried": "2026-11-25T20:07:32.742Z",
-		"lastTried": "2026-11-25T20:07:32.742Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T09:57:36.972Z",
+		"attempts": 2
 	},
 	"510760": {
 		"name": "Brawl 3",
@@ -22898,10 +22891,10 @@
 	},
 	"510826": {
 		"name": "Cyberpunk Weekly's @SFG Abbotsford",
-		"reason": "510826 is \"Registration\", not Ended. Try again when it's over.",
+		"reason": "510826 has no rounds on Melee (nothing was played or published), so there is nothing to ingest. Try again once the organizer adds them.",
 		"firstTried": "2026-11-25T20:07:32.434Z",
-		"lastTried": "2026-11-25T20:07:32.434Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T09:57:31.477Z",
+		"attempts": 2
 	},
 	"510833": {
 		"name": "Night City Brawl - Homelands",
@@ -22935,8 +22928,8 @@
 		"name": "Tournoi Night City Brawl 20/11/26",
 		"reason": "510852 is \"In Progress\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:07:32.138Z",
-		"lastTried": "2026-11-25T20:07:32.138Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T09:57:30.432Z",
+		"attempts": 2
 	},
 	"510855": {
 		"name": "Viernes de Night City",
@@ -22954,10 +22947,10 @@
 	},
 	"510877": {
 		"name": "Tanuki Night city brawl",
-		"reason": "510877 is \"Registration\", not Ended. Try again when it's over.",
+		"reason": "510877 has no decklists (none of the first 7 of its 8 players has one up), so it isn't ingested. Lists can appear after an event ends; try again later.",
 		"firstTried": "2026-11-25T20:07:31.854Z",
-		"lastTried": "2026-11-25T20:07:31.854Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T09:57:29.958Z",
+		"attempts": 2
 	},
 	"510878": {
 		"name": "Weekly Friday Night-City Brawl ",
@@ -22977,8 +22970,8 @@
 		"name": "Comix League Mestre Showdown",
 		"reason": "510890 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:07:31.536Z",
-		"lastTried": "2026-11-25T20:07:31.536Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T09:57:24.927Z",
+		"attempts": 2
 	},
 	"510902": {
 		"name": "Cyberpunk Locals",
@@ -23054,8 +23047,8 @@
 		"name": "Showtime Locals",
 		"reason": "510985 is \"In Progress\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:07:31.230Z",
-		"lastTried": "2026-11-25T20:07:31.230Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T09:57:24.418Z",
+		"attempts": 2
 	},
 	"510987": {
 		"name": "Cyberpunk TCG Local",
@@ -23117,8 +23110,8 @@
 		"name": "Cyberpunk Brawl 11-20-26",
 		"reason": "511098 is \"In Progress\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:07:30.931Z",
-		"lastTried": "2026-11-25T20:07:30.931Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T09:57:23.925Z",
+		"attempts": 2
 	},
 	"511101": {
 		"name": "Cyberpunk Night City Brawl",
@@ -23131,8 +23124,8 @@
 		"name": "Cyberpunk TCG Night City Brawl @ Journey's End Games",
 		"reason": "511109 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:07:30.628Z",
-		"lastTried": "2026-11-25T20:07:30.628Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T09:57:23.419Z",
+		"attempts": 2
 	},
 	"511121": {
 		"name": "Saturday Local",
@@ -23264,15 +23257,15 @@
 		"name": "KK Zone Cyber Punk Night City Brawl Weekly Play",
 		"reason": "511321 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:07:30.328Z",
-		"lastTried": "2026-11-25T20:07:30.328Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T09:57:22.920Z",
+		"attempts": 2
 	},
 	"511323": {
 		"name": "Legendary TCG 2026/11/25 CyberPunk Night City Brawl",
-		"reason": "511323 is \"In Progress\", not Ended. Try again when it's over.",
+		"reason": "511323 has no decklists (none of its 4 players has one up), so it isn't ingested. Lists can appear after an event ends; try again later.",
 		"firstTried": "2026-11-25T20:07:30.025Z",
-		"lastTried": "2026-11-25T20:07:30.025Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T09:57:22.441Z",
+		"attempts": 2
 	},
 	"511325": {
 		"name": "Night City brawl a Singleton TCG",
@@ -23292,8 +23285,8 @@
 		"name": "LIGA CHROME CRASH J3",
 		"reason": "511338 is \"In Progress\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:07:29.733Z",
-		"lastTried": "2026-11-25T20:07:29.733Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T09:57:16.918Z",
+		"attempts": 2
 	},
 	"511339": {
 		"name": "GameLord - Cyberpunk TCG - Night City Brawl ",
@@ -23304,10 +23297,10 @@
 	},
 	"511340": {
 		"name": "GameLord - Choom Challenge",
-		"reason": "511340 is \"In Progress\", not Ended. Try again when it's over.",
+		"reason": "511340 has no decklists (none of its 2 players has one up), so it isn't ingested. Lists can appear after an event ends; try again later.",
 		"firstTried": "2026-11-25T20:21:29.495Z",
-		"lastTried": "2026-11-25T20:21:29.495Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:28:30.973Z",
+		"attempts": 2
 	},
 	"511351": {
 		"name": "Cyberpunk TCG Night City Brawl",
@@ -23369,8 +23362,8 @@
 		"name": "Weekly Settimanale 23 novembre 2026",
 		"reason": "511408 is \"In Progress\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:07:26.417Z",
-		"lastTried": "2026-11-25T20:07:26.417Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T09:57:16.415Z",
+		"attempts": 2
 	},
 	"511409": {
 		"name": "ODE Night City Brawl",
@@ -23507,10 +23500,10 @@
 	},
 	"511517": {
 		"name": "Wednesday Brawl",
-		"reason": "511517 is \"In Progress\", not Ended. Try again when it's over.",
+		"reason": "511517 has no decklists (none of its 6 players has one up), so it isn't ingested. Lists can appear after an event ends; try again later.",
 		"firstTried": "2026-11-25T20:07:25.832Z",
-		"lastTried": "2026-11-25T20:07:25.832Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T09:57:15.919Z",
+		"attempts": 2
 	},
 	"511520": {
 		"name": "Brawl Cyberpunk TCG",
@@ -23530,8 +23523,8 @@
 		"name": "Tournoi cyberpunk ",
 		"reason": "511538 is \"In Progress\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:07:25.518Z",
-		"lastTried": "2026-11-25T20:07:25.518Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T09:57:09.898Z",
+		"attempts": 2
 	},
 	"511558": {
 		"name": "Funnyko torneo 21 11",
@@ -23635,8 +23628,8 @@
 		"name": "Weekly Brawl 22/11",
 		"reason": "511792 is \"In Progress\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:07:24.617Z",
-		"lastTried": "2026-11-25T20:07:24.617Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T09:57:09.393Z",
+		"attempts": 2
 	},
 	"511795": {
 		"name": "Chaotic Good Saturday Night City Brawl",
@@ -23726,8 +23719,8 @@
 		"name": "Cyberpunk Maczety - Season 1 League 1",
 		"reason": "511922 is \"In Progress\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:07:24.312Z",
-		"lastTried": "2026-11-25T20:07:24.312Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T09:57:08.895Z",
+		"attempts": 2
 	},
 	"511926": {
 		"name": "Lost Levels Presents: Night City Brawl Weekly Play",
@@ -23773,10 +23766,10 @@
 	},
 	"512006": {
 		"name": "Night City Brawl at NG GH",
-		"reason": "512006 is \"Registration\", not Ended. Try again when it's over.",
+		"reason": "512006 is \"Canceled\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:07:24.016Z",
-		"lastTried": "2026-11-25T20:07:24.016Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T09:57:08.391Z",
+		"attempts": 2
 	},
 	"512007": {
 		"name": "Night City Brawl at NG Megamall",
@@ -23803,15 +23796,15 @@
 		"name": "BL WC Night City Brawl",
 		"reason": "512030 is \"In Progress\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:07:23.712Z",
-		"lastTried": "2026-11-25T20:07:23.712Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T09:57:07.893Z",
+		"attempts": 2
 	},
 	"512047": {
 		"name": "Cyberpunk TCG Weekly",
-		"reason": "512047 is \"In Progress\", not Ended. Try again when it's over.",
+		"reason": "512047 has no decklists (none of its 4 players has one up), so it isn't ingested. Lists can appear after an event ends; try again later.",
 		"firstTried": "2026-11-25T20:07:23.415Z",
-		"lastTried": "2026-11-25T20:07:23.415Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T09:57:07.403Z",
+		"attempts": 2
 	},
 	"512050": {
 		"name": "Cyberpunk TCG – Torneo de tienda",
@@ -23838,15 +23831,15 @@
 		"name": "Night City Brawl",
 		"reason": "512058 is \"In Progress\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:07:23.111Z",
-		"lastTried": "2026-11-25T20:07:23.111Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T09:57:01.385Z",
+		"attempts": 2
 	},
 	"512060": {
 		"name": "Local Cyberpunk",
 		"reason": "512060 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:07:22.815Z",
-		"lastTried": "2026-11-25T20:07:22.815Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T09:57:00.876Z",
+		"attempts": 2
 	},
 	"512065": {
 		"name": "CardArena Cyberpunk weekly Night City Brawl",
@@ -23950,8 +23943,8 @@
 		"name": "Cyberpunk",
 		"reason": "512251 is \"In Progress\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:07:22.508Z",
-		"lastTried": "2026-11-25T20:07:22.508Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T09:57:00.378Z",
+		"attempts": 2
 	},
 	"512258": {
 		"name": "Locals 11/22/26",
@@ -24027,8 +24020,8 @@
 		"name": "round robin",
 		"reason": "512372 is \"In Progress\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:07:22.216Z",
-		"lastTried": "2026-11-25T20:07:22.216Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T09:56:59.881Z",
+		"attempts": 2
 	},
 	"512387": {
 		"name": "MAX RARITY WEEKLY ___ 11.02.2026",
@@ -24041,15 +24034,15 @@
 		"name": "Cyberpunk TCG Locals",
 		"reason": "512391 is \"In Progress\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:07:21.904Z",
-		"lastTried": "2026-11-25T20:07:21.904Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T09:56:59.376Z",
+		"attempts": 2
 	},
 	"512396": {
 		"name": "Night City Locals",
 		"reason": "512396 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:07:21.606Z",
-		"lastTried": "2026-11-25T20:07:21.606Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T09:56:58.875Z",
+		"attempts": 2
 	},
 	"512421": {
 		"name": "Night City Brawl von Allerlei Spielerei",
@@ -24060,10 +24053,10 @@
 	},
 	"512443": {
 		"name": "Chronos Cyber Punk Locals",
-		"reason": "512443 is \"Registration\", not Ended. Try again when it's over.",
+		"reason": "512443 is \"Canceled\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:07:21.308Z",
-		"lastTried": "2026-11-25T20:07:21.308Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T09:56:58.377Z",
+		"attempts": 2
 	},
 	"512460": {
 		"name": "Night City Brawl - Cyberpunk TCG - Monday November 23rd",
@@ -24137,17 +24130,17 @@
 	},
 	"512553": {
 		"name": "End Turn Midweek Night City Brawl",
-		"reason": "512553 is \"Registration\", not Ended. Try again when it's over.",
+		"reason": "512553 has no decklists (none of its 5 players has one up), so it isn't ingested. Lists can appear after an event ends; try again later.",
 		"firstTried": "2026-11-25T20:43:32.422Z",
-		"lastTried": "2026-11-25T20:43:32.422Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:28:47.513Z",
+		"attempts": 2
 	},
 	"512592": {
 		"name": "Tuesday Night City Brawl @ Harlequins",
-		"reason": "512592 is \"Registration\", not Ended. Try again when it's over.",
+		"reason": "512592 is \"Canceled\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:07:21.001Z",
-		"lastTried": "2026-11-25T20:07:21.001Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T09:56:57.876Z",
+		"attempts": 2
 	},
 	"512640": {
 		"name": "BM NIGHTS Wednesay",
@@ -24167,15 +24160,15 @@
 		"name": "JRBGames Night City Brawl (Costruito) 25.11 H20,30",
 		"reason": "512660 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:07:20.707Z",
-		"lastTried": "2026-11-25T20:07:20.707Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T09:56:57.388Z",
+		"attempts": 2
 	},
 	"512661": {
 		"name": "Cyberpunk Weekly event 3/12/2026",
-		"reason": "512661 is \"Registration\", not Ended. Try again when it's over.",
+		"reason": "512661 is \"Canceled\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:07:20.405Z",
-		"lastTried": "2026-11-25T20:07:20.405Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T09:56:56.877Z",
+		"attempts": 2
 	},
 	"512662": {
 		"name": "Night City Brawl 25.11.2026",
@@ -24214,10 +24207,10 @@
 	},
 	"512721": {
 		"name": "Gaming Universe weekly tournament",
-		"reason": "512721 is \"Registration\", not Ended. Try again when it's over.",
+		"reason": "512721 is \"Canceled\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:07:10.769Z",
-		"lastTried": "2026-11-25T20:07:10.769Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T09:56:56.369Z",
+		"attempts": 2
 	},
 	"512733": {
 		"name": "Night City Brawl",
@@ -24312,31 +24305,31 @@
 	},
 	"512937": {
 		"name": "Night City Brawl Bangy Dreams",
-		"reason": "512937 is \"Registration\", not Ended. Try again when it's over.",
+		"reason": "512937 has no decklists (none of its 5 players has one up), so it isn't ingested. Lists can appear after an event ends; try again later.",
 		"firstTried": "2026-11-25T20:32:29.859Z",
-		"lastTried": "2026-11-25T20:32:29.859Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:28:42.002Z",
+		"attempts": 2
 	},
 	"512951": {
 		"name": "Subarashii Manga Bar - Night City Brawl",
-		"reason": "512951 is \"Registration\", not Ended. Try again when it's over.",
+		"reason": "512951 has no rounds on Melee (nothing was played or published), so there is nothing to ingest. Try again once the organizer adds them.",
 		"firstTried": "2026-11-25T20:07:10.478Z",
-		"lastTried": "2026-11-25T20:07:10.478Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T09:56:55.922Z",
+		"attempts": 2
 	},
 	"512982": {
 		"name": "Showdown Montalba TCG",
 		"reason": "512982 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:07:10.167Z",
-		"lastTried": "2026-11-25T20:07:10.167Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T09:56:54.877Z",
+		"attempts": 2
 	},
 	"512989": {
 		"name": "Weekly Play",
-		"reason": "512989 is \"Registration\", not Ended. Try again when it's over.",
+		"reason": "512989 is \"Canceled\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:07:09.876Z",
-		"lastTried": "2026-11-25T20:07:09.876Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T09:56:54.371Z",
+		"attempts": 2
 	},
 	"512991": {
 		"name": "Roselle - Night City Brawl",
@@ -24363,8 +24356,8 @@
 		"name": "Tuesday evening brawl",
 		"reason": "513062 is \"In Progress\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:07:06.560Z",
-		"lastTried": "2026-11-25T20:07:06.560Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T09:56:53.869Z",
+		"attempts": 2
 	},
 	"513065": {
 		"name": "Gnu Books Cyberpunk 2077 Weekly Play",
@@ -24382,24 +24375,24 @@
 	},
 	"513072": {
 		"name": "Cyberpunk Weekly",
-		"reason": "513072 is \"In Progress\", not Ended. Try again when it's over.",
+		"reason": "513072 is \"Canceled\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:07:06.253Z",
-		"lastTried": "2026-11-25T20:07:06.253Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T09:56:53.370Z",
+		"attempts": 2
 	},
 	"513074": {
 		"name": "Night City Brawl - La Forja x Cyberpunk TCG",
-		"reason": "513074 is \"In Progress\", not Ended. Try again when it's over.",
+		"reason": "513074 has no decklists (none of the first 7 of its 8 players has one up), so it isn't ingested. Lists can appear after an event ends; try again later.",
 		"firstTried": "2026-11-25T20:07:06.013Z",
-		"lastTried": "2026-11-25T20:07:06.013Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T09:56:52.881Z",
+		"attempts": 2
 	},
 	"513075": {
 		"name": "Monday Night City Brawl 11.23",
-		"reason": "513075 is \"In Progress\", not Ended. Try again when it's over.",
+		"reason": "513075 is \"Canceled\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:07:05.650Z",
-		"lastTried": "2026-11-25T20:07:05.650Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T09:56:47.860Z",
+		"attempts": 2
 	},
 	"513078": {
 		"name": "Hotkei's Weekly 11.23",
@@ -24433,8 +24426,8 @@
 		"name": "Good Games Narellan Night City Brawl ",
 		"reason": "513195 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:07:05.356Z",
-		"lastTried": "2026-11-25T20:07:05.356Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T09:56:47.368Z",
+		"attempts": 2
 	},
 	"513247": {
 		"name": "Cyberpunk Weekly Constructed - Tuesday November 24",
@@ -24487,31 +24480,31 @@
 	},
 	"513355": {
 		"name": "NIGHT CITY BRAWL",
-		"reason": "513355 is \"In Progress\", not Ended. Try again when it's over.",
+		"reason": "513355 has no decklists (none of its 5 players has one up), so it isn't ingested. Lists can appear after an event ends; try again later.",
 		"firstTried": "2026-11-25T20:21:29.193Z",
-		"lastTried": "2026-11-25T20:21:29.193Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:28:27.980Z",
+		"attempts": 2
 	},
 	"513359": {
 		"name": "Local Temple Du Jeu Poitiers",
 		"reason": "513359 is \"In Progress\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:07:05.050Z",
-		"lastTried": "2026-11-25T20:07:05.050Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T09:56:46.857Z",
+		"attempts": 2
 	},
 	"513363": {
 		"name": "Misthios - Night City Brawl",
-		"reason": "513363 is \"Registration\", not Ended. Try again when it's over.",
+		"reason": "513363 is \"Canceled\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:07:04.751Z",
-		"lastTried": "2026-11-25T20:07:04.751Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T09:56:46.362Z",
+		"attempts": 2
 	},
 	"513408": {
 		"name": "Philibert - Cyberpunk Brawl",
 		"reason": "513408 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:07:04.453Z",
-		"lastTried": "2026-11-25T20:07:04.453Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T09:56:45.863Z",
+		"attempts": 2
 	},
 	"513444": {
 		"name": "OMG Weekly Brawl",
@@ -24531,50 +24524,50 @@
 		"name": "Weekly brawl speltrollet",
 		"reason": "513476 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:07:04.149Z",
-		"lastTried": "2026-11-25T20:07:04.149Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T09:56:45.364Z",
+		"attempts": 2
 	},
 	"513481": {
 		"name": "Miércoles casual",
 		"reason": "513481 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:07:03.851Z",
-		"lastTried": "2026-11-25T20:07:03.851Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T09:56:44.859Z",
+		"attempts": 2
 	},
 	"513509": {
 		"name": "Golden Store Roma: Cyberpunk",
-		"reason": "513509 is \"In Progress\", not Ended. Try again when it's over.",
+		"reason": "513509 has no decklists (none of the first 7 of its 10 players has one up), so it isn't ingested. Lists can appear after an event ends; try again later.",
 		"firstTried": "2026-11-25T20:21:28.888Z",
-		"lastTried": "2026-11-25T20:21:28.888Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T11:28:22.473Z",
+		"attempts": 2
 	},
 	"513566": {
 		"name": "Cyberpunk TCG – Night City Weekly Brawl clone",
-		"reason": "513566 is \"In Progress\", not Ended. Try again when it's over.",
+		"reason": "513566 is \"Canceled\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:07:03.556Z",
-		"lastTried": "2026-11-25T20:07:03.556Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T09:56:44.360Z",
+		"attempts": 2
 	},
 	"513599": {
 		"name": "Playoteket Weekly Cyberpunk",
-		"reason": "513599 is \"In Progress\", not Ended. Try again when it's over.",
+		"reason": "513599 has no decklists (none of the first 7 of its 8 players has one up), so it isn't ingested. Lists can appear after an event ends; try again later.",
 		"firstTried": "2026-11-25T20:07:03.249Z",
-		"lastTried": "2026-11-25T20:07:03.249Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T09:56:43.883Z",
+		"attempts": 2
 	},
 	"513603": {
 		"name": "Night City Brawl",
-		"reason": "513603 is \"In Progress\", not Ended. Try again when it's over.",
+		"reason": "513603 has no decklists (none of its 5 players has one up), so it isn't ingested. Lists can appear after an event ends; try again later.",
 		"firstTried": "2026-11-25T20:07:02.951Z",
-		"lastTried": "2026-11-25T20:07:02.951Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T09:56:38.866Z",
+		"attempts": 2
 	},
 	"513619": {
 		"name": "Lamacards Night City Brawl",
 		"reason": "513619 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:07:02.652Z",
-		"lastTried": "2026-11-25T20:07:02.652Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T09:56:30.347Z",
+		"attempts": 2
 	},
 	"513656": {
 		"name": "CGC Chichester presents - Cyberpunk brawl 24/11/26",
@@ -24599,31 +24592,31 @@
 	},
 	"513690": {
 		"name": "Galactic Toys Grand Haven  Weekly Night City Brawl",
-		"reason": "513690 is \"Registration\", not Ended. Try again when it's over.",
+		"reason": "513690 is \"Canceled\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:06:58.731Z",
-		"lastTried": "2026-11-25T20:06:58.731Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T09:56:29.846Z",
+		"attempts": 2
 	},
 	"513878": {
 		"name": "Night City Brawl ",
-		"reason": "513878 is \"Registration\", not Ended. Try again when it's over.",
+		"reason": "513878 is \"Canceled\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:06:58.432Z",
-		"lastTried": "2026-11-25T20:06:58.432Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T09:56:29.345Z",
+		"attempts": 2
 	},
 	"513879": {
 		"name": "Night City Braw",
-		"reason": "513879 is \"Registration\", not Ended. Try again when it's over.",
+		"reason": "513879 is \"Canceled\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:06:58.131Z",
-		"lastTried": "2026-11-25T20:06:58.131Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T09:56:28.849Z",
+		"attempts": 2
 	},
 	"513897": {
 		"name": "Gamers Alley Weekly",
 		"reason": "513897 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:06:57.832Z",
-		"lastTried": "2026-11-25T20:06:57.832Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T09:56:28.338Z",
+		"attempts": 2
 	},
 	"513947": {
 		"name": "The Local NPC Games & Comics",
@@ -24636,36 +24629,36 @@
 		"name": "Teste",
 		"reason": "514056 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:06:57.528Z",
-		"lastTried": "2026-11-25T20:06:57.528Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T09:56:27.838Z",
+		"attempts": 2
 	},
 	"514057": {
 		"name": "Cyber Punk",
-		"reason": "514057 is \"In Progress\", not Ended. Try again when it's over.",
+		"reason": "514057 is \"Canceled\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:06:57.222Z",
-		"lastTried": "2026-11-25T20:06:57.222Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T09:56:27.338Z",
+		"attempts": 2
 	},
 	"514060": {
 		"name": "Cyberpunk Weekly",
 		"reason": "514060 is \"In Progress\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:06:56.922Z",
-		"lastTried": "2026-11-25T20:06:56.922Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T09:56:26.839Z",
+		"attempts": 2
 	},
 	"514073": {
 		"name": "Casual",
 		"reason": "514073 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:06:56.633Z",
-		"lastTried": "2026-11-25T20:06:56.633Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T09:56:26.336Z",
+		"attempts": 2
 	},
 	"514080": {
 		"name": "ToyShogun Brawl Wednesday ",
-		"reason": "514080 is \"In Progress\", not Ended. Try again when it's over.",
+		"reason": "514080 has no rounds on Melee (nothing was played or published), so there is nothing to ingest. Try again once the organizer adds them.",
 		"firstTried": "2026-11-25T20:06:56.324Z",
-		"lastTried": "2026-11-25T20:06:56.324Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T09:56:25.891Z",
+		"attempts": 2
 	},
 	"514109": {
 		"name": "Night City Brawl! @ Guf Ballarat",
@@ -24676,10 +24669,10 @@
 	},
 	"514129": {
 		"name": "Cyberpunk Locals",
-		"reason": "514129 is \"In Progress\", not Ended. Try again when it's over.",
+		"reason": "514129 has no decklists (none of its 4 players has one up), so it isn't ingested. Lists can appear after an event ends; try again later.",
 		"firstTried": "2026-11-25T20:06:56.020Z",
-		"lastTried": "2026-11-25T20:06:56.020Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T09:56:24.859Z",
+		"attempts": 2
 	},
 	"514131": {
 		"name": "Tuesday Night City Brawl",
@@ -24699,8 +24692,8 @@
 		"name": "Cyber Punk Weeklies",
 		"reason": "514160 is \"In Progress\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:06:55.716Z",
-		"lastTried": "2026-11-25T20:06:55.716Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T09:56:18.325Z",
+		"attempts": 2
 	},
 	"514178": {
 		"name": "Weekly Event",
@@ -24720,22 +24713,22 @@
 		"name": "Night City Brawl Week",
 		"reason": "514255 is \"Registration\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:06:55.421Z",
-		"lastTried": "2026-11-25T20:06:55.421Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T09:56:17.818Z",
+		"attempts": 2
 	},
 	"514326": {
 		"name": "Cyberpunk Locals ",
-		"reason": "514326 is \"In Progress\", not Ended. Try again when it's over.",
+		"reason": "514326 has no decklists (none of the first 7 of its 9 players has one up), so it isn't ingested. Lists can appear after an event ends; try again later.",
 		"firstTried": "2026-11-25T20:06:55.116Z",
-		"lastTried": "2026-11-25T20:06:55.116Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T09:56:17.332Z",
+		"attempts": 2
 	},
 	"514385": {
 		"name": "PMT Weekly Brawl",
-		"reason": "514385 is \"In Progress\", not Ended. Try again when it's over.",
+		"reason": "514385 has no decklists (none of the first 7 of its 10 players has one up), so it isn't ingested. Lists can appear after an event ends; try again later.",
 		"firstTried": "2026-11-25T20:06:54.820Z",
-		"lastTried": "2026-11-25T20:06:54.820Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T09:56:11.322Z",
+		"attempts": 2
 	},
 	"514426": {
 		"name": "BRAWL SEMANAL",
@@ -24746,9 +24739,16 @@
 	},
 	"514434": {
 		"name": "Casual Brawl",
-		"reason": "514434 is \"In Progress\", not Ended. Try again when it's over.",
+		"reason": "514434 has no decklists (none of its 4 players has one up), so it isn't ingested. Lists can appear after an event ends; try again later.",
 		"firstTried": "2026-11-25T20:06:50.302Z",
-		"lastTried": "2026-11-25T20:06:50.302Z",
+		"lastTried": "2026-11-26T09:56:06.317Z",
+		"attempts": 2
+	},
+	"514439": {
+		"name": "Test",
+		"reason": "514439 is \"Registration\", not Ended. Try again when it's over.",
+		"firstTried": "2026-11-26T11:29:06.544Z",
+		"lastTried": "2026-11-26T11:29:06.544Z",
 		"attempts": 1
 	},
 	"514451": {
@@ -24760,30 +24760,93 @@
 	},
 	"514513": {
 		"name": "Cyberpunk Night City Brawl",
-		"reason": "514513 is \"In Progress\", not Ended. Try again when it's over.",
+		"reason": "514513 has no decklists (none of the first 7 of its 9 players has one up), so it isn't ingested. Lists can appear after an event ends; try again later.",
 		"firstTried": "2026-11-25T20:06:46.991Z",
-		"lastTried": "2026-11-25T20:06:46.991Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T09:56:01.309Z",
+		"attempts": 2
 	},
 	"514538": {
 		"name": "Bulwark Games Night City Brawl 25/11/26",
-		"reason": "514538 is \"In Progress\", not Ended. Try again when it's over.",
+		"reason": "514538 has no decklists (none of the first 7 of its 7 players has one up), so it isn't ingested. Lists can appear after an event ends; try again later.",
 		"firstTried": "2026-11-25T20:06:46.695Z",
-		"lastTried": "2026-11-25T20:06:46.695Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T09:55:56.295Z",
+		"attempts": 2
 	},
 	"514547": {
 		"name": "Kazuma Cesena Showdown",
-		"reason": "514547 is \"Registration\", not Ended. Try again when it's over.",
+		"reason": "514547 is \"Canceled\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:06:46.394Z",
-		"lastTried": "2026-11-25T20:06:46.394Z",
-		"attempts": 1
+		"lastTried": "2026-11-26T09:55:51.268Z",
+		"attempts": 2
 	},
 	"514652": {
 		"name": "Night City Brawl - Odissea Vicenza",
 		"reason": "514652 is \"In Progress\", not Ended. Try again when it's over.",
 		"firstTried": "2026-11-25T20:21:28.591Z",
-		"lastTried": "2026-11-25T20:21:28.591Z",
+		"lastTried": "2026-11-26T11:28:17.444Z",
+		"attempts": 2
+	},
+	"514660": {
+		"name": "Deep Dive Night City Brawl",
+		"reason": "514660 has no decklists (none of the first 7 of its 8 players has one up), so it isn't ingested. Lists can appear after an event ends; try again later.",
+		"firstTried": "2026-11-26T11:29:03.056Z",
+		"lastTried": "2026-11-26T11:29:03.056Z",
+		"attempts": 1
+	},
+	"514686": {
+		"name": "Brawl",
+		"reason": "514686 is \"Registration\", not Ended. Try again when it's over.",
+		"firstTried": "2026-11-26T11:29:06.046Z",
+		"lastTried": "2026-11-26T11:29:06.046Z",
+		"attempts": 1
+	},
+	"514702": {
+		"name": "RCT Night City Brawl",
+		"reason": "514702 is \"In Progress\", not Ended. Try again when it's over.",
+		"firstTried": "2026-11-26T11:29:05.542Z",
+		"lastTried": "2026-11-26T11:29:05.542Z",
+		"attempts": 1
+	},
+	"514790": {
+		"name": "Weeb Box Games and Collectibles weekly",
+		"reason": "514790 has no decklists (none of the first 7 of its 8 players has one up), so it isn't ingested. Lists can appear after an event ends; try again later.",
+		"firstTried": "2026-11-26T11:28:58.023Z",
+		"lastTried": "2026-11-26T11:28:58.023Z",
+		"attempts": 1
+	},
+	"514844": {
+		"name": "Cyberpunk TCG Night City Brawl Weekly 11/25/26",
+		"reason": "514844 is \"Registration\", not Ended. Try again when it's over.",
+		"firstTried": "2026-11-26T11:29:05.040Z",
+		"lastTried": "2026-11-26T11:29:05.040Z",
+		"attempts": 1
+	},
+	"514885": {
+		"name": "Weekly Wednesday",
+		"reason": "514885 is \"Registration\", not Ended. Try again when it's over.",
+		"firstTried": "2026-11-26T11:29:04.542Z",
+		"lastTried": "2026-11-26T11:29:04.542Z",
+		"attempts": 1
+	},
+	"515012": {
+		"name": "Big Boss Brawl",
+		"reason": "515012 is \"In Progress\", not Ended. Try again when it's over.",
+		"firstTried": "2026-11-26T11:29:04.047Z",
+		"lastTried": "2026-11-26T11:29:04.047Z",
+		"attempts": 1
+	},
+	"515030": {
+		"name": "TTWG - Cyberpunk Weekly Brawl",
+		"reason": "515030 has no decklists (none of the first 7 of its 14 players has one up), so it isn't ingested. Lists can appear after an event ends; try again later.",
+		"firstTried": "2026-11-26T11:28:53.025Z",
+		"lastTried": "2026-11-26T11:28:53.025Z",
+		"attempts": 1
+	},
+	"515080": {
+		"name": "Thurs Brawl",
+		"reason": "515080 is \"In Progress\", not Ended. Try again when it's over.",
+		"firstTried": "2026-11-26T11:29:03.534Z",
+		"lastTried": "2026-11-26T11:29:03.534Z",
 		"attempts": 1
 	}
 }
