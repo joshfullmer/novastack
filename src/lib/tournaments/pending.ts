@@ -13,6 +13,8 @@ const EntrySchema = v.object({
 	name: v.nullable(v.string()),
 	/** Why it wasn't ingested, as the refusal said it. */
 	reason: v.string(),
+	/** When the event took place, from Melee. Absent from entries written before it was kept. */
+	startedAt: v.nullish(v.string()),
 	firstTried: v.string(),
 	lastTried: v.string(),
 	attempts: v.pipe(v.number(), v.integer(), v.minValue(1))
@@ -32,18 +34,22 @@ const HOUR = 3_600_000;
 /** No id is looked at again sooner than this: most refusals are events that will never have lists. */
 export const RECHECK_HOURS = 6;
 /**
- * An id still not ready this long after it was first tried is assumed never to be: it is no longer
+ * An id still not ready this long after its event took place is assumed never to be: it is no longer
  * retried. It stays in the file, or `--discover` would offer the event again and start the wait over.
+ * Every entry has been tried once, so an event already this old gets that one check and no more.
  */
-export const GIVE_UP_DAYS = 7;
+export const GIVE_UP_DAYS = 3;
+/** `--pending` retries many ids, most of them several requests each, so it gets a bigger budget. */
+export const PENDING_MAX_REQUESTS = 2000;
 
 export const nextTry = (entry: PendingEntry): Date =>
 	new Date(new Date(entry.lastTried).getTime() + RECHECK_HOURS * HOUR);
 
+/** From the event's date; for an entry that never kept one, from when it was first tried. */
 export const giveUpAt = (entry: PendingEntry): Date =>
-	new Date(new Date(entry.firstTried).getTime() + GIVE_UP_DAYS * 24 * HOUR);
+	new Date(new Date(entry.startedAt ?? entry.firstTried).getTime() + GIVE_UP_DAYS * 24 * HOUR);
 
-/** Ids that have waited out `GIVE_UP_DAYS`: kept, not retried. */
+/** Ids whose event is `GIVE_UP_DAYS` behind them: kept, not retried. */
 export const lapsed = (pending: Pending, now: Date): number[] =>
 	idsOf(pending).filter((id) => giveUpAt(pending[String(id)]) <= now);
 
@@ -58,6 +64,14 @@ export const dueFirst = (pending: Pending, now: Date): number[] =>
 		.sort(
 			(a, b) => pending[String(a)].lastTried.localeCompare(pending[String(b)].lastTried) || a - b
 		);
+
+/** Where the list stands at `now`: how many are worth a try, are resting, or have been given up on. */
+export function tally(pending: Pending, now: Date) {
+	const total = idsOf(pending).length;
+	const due = dueFirst(pending, now).length;
+	const gaveUp = lapsed(pending, now).length;
+	return { total, due, gaveUp, resting: total - due - gaveUp };
+}
 
 /** The file's text → what it holds. Empty or absent text is an empty list; anything else must be valid. */
 export function parsePending(text: string | null): Pending {
@@ -78,7 +92,7 @@ export function serializePending(pending: Pending): string {
 export function remember(
 	pending: Pending,
 	id: number,
-	refusal: { name: string | null; reason: string },
+	refusal: { name: string | null; reason: string; startedAt?: string | null },
 	now: Date
 ): Pending {
 	const before = pending[String(id)];
@@ -87,6 +101,7 @@ export function remember(
 		[String(id)]: {
 			name: refusal.name ?? before?.name ?? null,
 			reason: refusal.reason,
+			startedAt: refusal.startedAt ?? before?.startedAt ?? null,
 			firstTried: before?.firstTried ?? now.toISOString(),
 			lastTried: now.toISOString(),
 			attempts: (before?.attempts ?? 0) + 1
@@ -103,6 +118,13 @@ export function forget(pending: Pending, ids: readonly number[]): Pending {
 const days = (from: string, now: Date) =>
 	Math.max(0, Math.floor((now.getTime() - new Date(from).getTime()) / 86_400_000));
 
+/** When it is next tried and when it gives up, or that it already has. */
+export const describeSchedule = (entry: PendingEntry, now: Date): string =>
+	giveUpAt(entry) <= now
+		? `gave up ${giveUpAt(entry).toISOString().slice(0, 10)}`
+		: `${nextTry(entry) <= now ? 'due now' : `next ${nextTry(entry).toISOString().slice(0, 16)}Z`}, ` +
+			`gives up ${giveUpAt(entry).toISOString().slice(0, 10)}`;
+
 /** One readable line per id, oldest id first. */
 export function describePending(pending: Pending, now: Date): string[] {
 	return idsOf(pending).map((id) => {
@@ -112,13 +134,7 @@ export function describePending(pending: Pending, now: Date): string[] {
 			`${id}  ${entry.name ?? '(name unknown)'}\n` +
 			`      ${entry.reason}\n` +
 			`      ${entry.attempts} ${entry.attempts === 1 ? 'try' : 'tries'}, ` +
-			`first ${waiting === 0 ? 'today' : `${waiting}d ago`}, ` +
-			(giveUpAt(entry) <= now
-				? `gave up ${giveUpAt(entry).toISOString().slice(0, 10)}`
-				: (nextTry(entry) <= now
-						? 'due now'
-						: `next ${nextTry(entry).toISOString().slice(0, 16)}Z`) +
-					`, gives up ${giveUpAt(entry).toISOString().slice(0, 10)}`)
+			`first ${waiting === 0 ? 'today' : `${waiting}d ago`}, ${describeSchedule(entry, now)}`
 		);
 	});
 }

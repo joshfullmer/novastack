@@ -54,15 +54,19 @@ import {
 import { confirmRemote, runFile, select, targetName, type Target } from './lib/d1.ts';
 import { paint } from './lib/ui.ts';
 import {
+	GIVE_UP_DAYS,
+	PENDING_MAX_REQUESTS,
 	describePending,
+	describeSchedule,
 	dueFirst,
 	forget,
+	giveUpAt,
 	idsOf,
-	lapsed,
 	parsePending,
 	RECHECK_HOURS,
 	remember,
 	serializePending,
+	tally,
 	type Pending
 } from '../src/lib/tournaments/pending.ts';
 import {
@@ -382,19 +386,25 @@ async function main(): Promise<number> {
 	const client = new MeleeClient({
 		delayMs: process.env.MELEE_DELAY_MS ? Number(process.env.MELEE_DELAY_MS) : undefined,
 		cookie: process.env.MELEE_COOKIE,
-		maxRequests: args.maxRequests
+		maxRequests: args.maxRequests ?? (args.pending ? PENDING_MAX_REQUESTS : undefined)
 	});
 	const now = new Date();
 	let ids = args.pending ? dueFirst(waiting, now) : args.ids;
-	if (args.pending && ids.length === 0) {
-		const total = idsOf(waiting).length;
-		const gaveUp = lapsed(waiting, now).length;
+	if (args.pending) {
+		const { total, due, resting, gaveUp } = tally(waiting, now);
 		say(
-			total === 0
-				? 'Nothing is waiting.'
-				: `Nothing is due: ${total} waiting, ${gaveUp} given up on, the rest tried within ${RECHECK_HOURS}h (--list says when; \`pnpm melee <id>\` tries one now).`
+			paint.dim(
+				`${total} total · ${due} due now · ${resting} tried within ${RECHECK_HOURS}h · ${gaveUp} given up on`
+			)
 		);
-		return 0;
+		if (ids.length === 0) {
+			say(
+				total === 0
+					? 'Nothing is waiting.'
+					: 'Nothing is due (--list says when; `pnpm melee <id>` tries one now).'
+			);
+			return 0;
+		}
 	}
 	if (args.discover) {
 		const { candidates, later } = await discoverNew(client, args, targets, waiting, skipped);
@@ -434,6 +444,10 @@ async function main(): Promise<number> {
 		])
 	);
 
+	// What becomes of an event that isn't written; under `--check` nothing does, so it says so.
+	const outcome = (action: string) =>
+		args.check ? `${action} (--check: nothing recorded)` : action;
+
 	// Saved after every id, so an interrupted run keeps what it learned.
 	const settle = async (next: Pending) => {
 		if (serializePending(next) === serializePending(waiting)) return;
@@ -469,6 +483,7 @@ async function main(): Promise<number> {
 			if (violations.length > 0) {
 				for (const violation of violations) say(paint.remove(`  ✗ ${violation}`));
 				say(paint.remove(`  not written: ${violations.length} invariant(s) violated`));
+				say(paint.dim(`  → ${outcome('not recorded; a rerun tries it again')}`));
 				raise(2);
 				continue;
 			}
@@ -554,22 +569,35 @@ async function main(): Promise<number> {
 
 		// Not ready is remembered, so the id is only ever looked up once; written is forgotten.
 		// `--check` writes nothing, and neither does it touch the list.
-		if (args.check) continue;
+		const at = new Date();
 		if (skipping) {
+			say(paint.dim(`  → ${outcome('skipped for good; never looked at again')}`));
+			if (args.check) continue;
 			// Skipped for good: kept apart from the waiting list, which is only for "not yet".
-			skipped = skip(
-				skipped,
-				id,
-				{ name: skipping.eventName, format: skipping.format },
-				new Date()
-			);
+			skipped = skip(skipped, id, { name: skipping.eventName, format: skipping.format }, at);
 			await writeFile(SKIPPED_PATH, serializeSkipped(skipped));
 			await settle(forget(waiting, [id]));
 		} else if (refusal) {
-			await settle(
-				remember(waiting, id, { name: refusal.eventName, reason: refusal.message }, new Date())
+			const next = remember(
+				waiting,
+				id,
+				{ name: refusal.eventName, reason: refusal.message, startedAt: refusal.startedAt },
+				at
 			);
-		} else if (done) {
+			const entry = next[String(id)];
+			say(
+				paint.dim(
+					`  → ${outcome(
+						giveUpAt(entry) <= at
+							? `not retried: ${GIVE_UP_DAYS} days have passed since the event`
+							: `waiting: ${describeSchedule(entry, at)}`
+					)}`
+				)
+			);
+			if (!args.check) await settle(next);
+		} else if (!done && !args.check) {
+			say(paint.dim(`  → ${outcome('not recorded; a rerun tries it again')}`));
+		} else if (!args.check) {
 			await settle(forget(waiting, [id]));
 		}
 	}

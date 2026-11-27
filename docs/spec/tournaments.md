@@ -367,7 +367,7 @@ the exit is `2`, so one bad event never blocks the rest and is never silent.
 `scripts/lib/http.ts` already gives retry, backoff and the HTML-instead-of-JSON content-type check; the
 job extends it with a **minimum gap between requests** (`MELEE_DELAY_MS`, default 500, shared across the
 process), `POST` with a form body, an optional `Cookie` (`MELEE_COOKIE`), and a per-run request budget
-(`--max-requests`, default 600) as a backstop against a loop. Headers, in one place
+(`--max-requests`, default 600; 2000 for `--pending`) as a backstop against a loop. Headers, in one place
 (`scripts/lib/melee.ts`):
 
 ```
@@ -396,7 +396,7 @@ Finding a Melee id is the manual part, so an id is only ever looked up once. Whe
 **not ready** (not Ended; no standings published; a round with results but no standings; no decklists
 yet: every `Refusal`) it is written to `scripts/melee-pending.json`, keyed by id, with Melee's name, the
 reason, when it was first and last tried and how many times. `pnpm melee --pending` retries the ones that are
-due, least recently tried first: an id tried in the last 6h is skipped, and one still not ready 7 days after it was first tried is assumed never to be and is no longer retried (most never get lists, and would otherwise spend the whole request budget). It stays in the file, so `--discover` doesn't offer the event again; `--forget <id>` clears it. `pnpm melee <id>` tries one regardless; `--list` shows when each is due and when it gives up. With whatever flags a normal run takes (`--remote`, `--yes`, `--check`); one that gets written, or is
+due, least recently tried first: an id tried in the last 6h is skipped, and one still not ready 3 days after its event took place (Melee's start date, kept in the entry; for an older entry without one, 3 days after it was first tried) is assumed never to be and is no longer retried (most never get lists, and would otherwise spend the whole request budget). An event already that old when first refused gets that one check and no more. `--pending` defaults to 2000 requests, not 600. It stays in the file, so `--discover` doesn't offer the event again; `--forget <id>` clears it. `pnpm melee <id>` tries one regardless; `--list` shows when each is due and when it gives up. With whatever flags a normal run takes (`--remote`, `--yes`, `--check`); one that gets written, or is
 found already stored, is removed; one still not ready has its reason and count updated. The file is saved
 after every id, so an interrupted run keeps what it learned. Not recorded: a failed invariant or an
 unreachable Melee (not "wait", a bug or an outage), and anything under `--check`, which never changes

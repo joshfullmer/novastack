@@ -23,6 +23,7 @@ import {
 	MeleeMatchesPageSchema,
 	MeleePlayerDetailsSchema,
 	MeleeStandingsPageSchema,
+	type MeleeDetails,
 	type MeleeMatch,
 	type MeleeStanding
 } from './sources.ts';
@@ -31,12 +32,15 @@ import {
 export class Refusal extends Error {
 	/** Melee's name for the event, once known, so a remembered refusal is readable. */
 	readonly eventName: string | null;
+	/** When the event took place (ISO), once known: how long ago it was decides how long to keep waiting. */
+	readonly startedAt: string | null;
 
 	// No parameter property: `node` strips types but doesn't compile them (`scripts/melee.ts`).
-	constructor(message: string, eventName: string | null = null) {
+	constructor(message: string, event: Pick<MeleeDetails, 'Name' | 'StartDate'> | null = null) {
 		super(message);
 		this.name = 'Refusal';
-		this.eventName = eventName;
+		this.eventName = event?.Name ?? null;
+		this.startedAt = event?.StartDate ?? null;
 	}
 }
 
@@ -141,7 +145,7 @@ export async function ingestTournament(
 	if (details.Status !== 'Ended') {
 		throw new Refusal(
 			`${id} is "${details.Status}", not Ended. Try again when it's over.`,
-			details.Name
+			details
 		);
 	}
 
@@ -155,7 +159,7 @@ export async function ingestTournament(
 			throw new Refusal(
 				`${id} has no rounds on Melee (nothing was played or published), so there is nothing to ingest. ` +
 					`Try again once the organizer adds them.`,
-				details.Name
+				details
 			);
 		}
 		throw error;
@@ -214,7 +218,7 @@ export async function ingestTournament(
 			throw new Refusal(
 				`Melee has no standings for the last round (${rounds.at(-1)?.name ?? 'unknown'}): the ` +
 					`organizer hasn't published them, so there are no final results to read.`,
-				details.Name
+				details
 			);
 		}
 		const skipped = rounds.slice(last + 1);
@@ -227,7 +231,7 @@ export async function ingestTournament(
 			new Refusal(
 				`${round} has results but Melee has no standings for it, and the final ranking can't be ` +
 					`read from them (${why}). Try again once the organizer publishes them.`,
-				details.Name
+				details
 			);
 		if (lastPlayed === -1) {
 			rounds = rounds.slice(0, last + 1);
@@ -290,7 +294,7 @@ export async function ingestTournament(
 			throw new Refusal(
 				`${id} has no decklists (none of the first ${asked} of its ${standings.length} players has one up), ` +
 					`so it isn't ingested. Lists can appear after an event ends; try again later.`,
-				details.Name
+				details
 			);
 		}
 	}
@@ -318,7 +322,7 @@ export async function ingestTournament(
 		throw new Refusal(
 			`${id} has no decklists (none of its ${standings.length} players has one up), so it isn't ingested. ` +
 				`Lists can appear after an event ends; try again later.`,
-			details.Name
+			details
 		);
 	}
 	log(`${deckTexts.size} decklists`);
