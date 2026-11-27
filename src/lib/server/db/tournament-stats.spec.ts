@@ -15,6 +15,7 @@ import { ALL_TIME, type Period, ANY_EVENTS } from '#lib/tournaments/period.js';
 import {
 	getEventKinds,
 	getLines,
+	getDailyRows,
 	getMeta,
 	getMetas,
 	getMirrorGroups,
@@ -415,5 +416,29 @@ describe('the mirror breaker', () => {
 			(await getMirrorRows(world(), { ...ALL_TIME, from: nov16 }, { line: 'a+b+c', ram: null }))
 				.matches
 		).toBe(0);
+	});
+});
+
+describe('getDailyRows', () => {
+	it('counts decks and match results per day and Legend line', async () => {
+		const rows = await getDailyRows(world(), ALL_TIME, 'line');
+		const at = (day: string, key: string) => rows.find((r) => r.day === day && r.key === key);
+		// Nov 15: X is D1 (3-0) and D2 (2-1); Y is D3 (1-2); Z is D4 (0-3).
+		expect(at('2026-11-15', 'a+b+c')).toMatchObject({ decks: 2, wins: 5, losses: 1, draws: 0 });
+		expect(at('2026-11-15', 'a+b+d')).toMatchObject({ decks: 1, wins: 1, losses: 2 });
+		expect(at('2026-11-15', 'e+f+g')).toMatchObject({ decks: 1, wins: 0, losses: 3 });
+		// Nov 16: Y is D5 (2-0), X is D6 (1-1); P7 has no deck.
+		expect(at('2026-11-16', 'a+b+d')).toMatchObject({ decks: 1, wins: 2, losses: 0 });
+		expect(at('2026-11-16', 'a+b+c')).toMatchObject({ decks: 1, wins: 1, losses: 1 });
+		expect(rows).toHaveLength(5);
+	});
+
+	it('groups by RAM the same way, and honours the period', async () => {
+		const nov16 = Date.parse('2026-11-16T00:00:00Z');
+		const rows = await getDailyRows(world(), { ...ALL_TIME, from: nov16 }, 'ram');
+		expect(rows.map((r) => [r.day, r.key, r.decks]).sort()).toEqual([
+			['2026-11-16', Y_RAM, 1],
+			['2026-11-16', X_RAM, 1]
+		]);
 	});
 });

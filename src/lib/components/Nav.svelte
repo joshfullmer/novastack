@@ -147,6 +147,7 @@
 		{ href: '/meta', label: 'Top decks' },
 		{ href: '/meta/matchups', label: 'Matchups' },
 		...(MIRRORS_LINKED ? [{ href: '/meta/mirrors', label: 'Mirror breaker' }] : []),
+		{ href: '/meta/trends', label: 'Trends' },
 		{ href: '/meta/cards', label: 'Card breakdown' },
 		{ href: '/meta/decks', label: 'Decks' },
 		{ href: '/meta/tournaments', label: 'Tournaments' }

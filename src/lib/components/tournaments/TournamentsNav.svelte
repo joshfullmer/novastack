@@ -49,6 +49,7 @@
 				p === '/meta' ||
 				p.startsWith('/meta/matchups') ||
 				p.startsWith('/meta/mirrors') ||
+				p.startsWith('/meta/trends') ||
 				p.startsWith('/meta/cards'),
 			items: [
 				{ label: 'Top decks', path: '/meta', on: (p) => p === '/meta' },
@@ -66,6 +67,11 @@
 							}
 						]
 					: []),
+				{
+					label: 'Trends',
+					path: '/meta/trends',
+					on: (p) => p.startsWith('/meta/trends')
+				},
 				{
 					label: 'Card breakdown',
 					path: '/meta/cards',

@@ -39,6 +39,7 @@ import {
 } from '#lib/tournaments/meta.js';
 import { EVENT_KINDS, type EventKind } from '#lib/tournaments/kind.js';
 import type { MetaRow, Period } from '#lib/tournaments/period.js';
+import type { DayRow } from '#lib/tournaments/trend.js';
 import type { Db } from './tournaments.js';
 import {
 	metas,
@@ -563,4 +564,33 @@ export async function getMirrorRows(
 export async function getMirrors(db: Db, period: Period, scope: DeckScope): Promise<MirrorView> {
 	const { matches, rows } = await getMirrorRows(db, period, scope);
 	return buildMirrors(rows, matches);
+}
+
+// ---------------------------------------------------------------------------
+// Trends
+// ---------------------------------------------------------------------------
+
+/**
+ * Decks and their match results per day (the event's start, UTC) and group, for the trends page. Daily
+ * rather than per week so one cached result serves both: `buildTrend` buckets them. Bounded by days times
+ * groups, which a period keeps small, and read from the same indexed join as the tier list.
+ */
+export async function getDailyRows(db: Db, period: Period, by: Grouping): Promise<DayRow[]> {
+	const column = groupColumn(by, tournamentDecks);
+	const day = sql<string>`strftime('%Y-%m-%d', ${tournaments.startsAt} / 1000, 'unixepoch')`;
+	const rows = await db
+		.select({
+			day,
+			key: column,
+			decks: count(),
+			wins: total(sql`${standings.matchWins}`),
+			losses: total(sql`${standings.matchLosses}`),
+			draws: total(sql`${standings.matchDraws}`)
+		})
+		.from(tournamentDecks)
+		.innerJoin(standings, eq(standings.deckGuid, tournamentDecks.guid))
+		.innerJoin(tournaments, eq(tournaments.id, tournamentDecks.tournamentId))
+		.where(and(isNotNull(column), inPeriod(period)))
+		.groupBy(day, column);
+	return rows.flatMap((row) => (row.key ? [{ ...row, key: row.key }] : []));
 }

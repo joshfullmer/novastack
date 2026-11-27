@@ -590,6 +590,16 @@ read-only, dynamic and `noindex`:
   match and a card's edge needs dozens, so on a young corpus its lists are mostly thin. The route is served
   (`noindex`, out of the sitemap) but the nav does not link it; setting the constant lists it. Not done: copy counts
   (two copies versus three), and a deck-versus-deck view (which _list_ beat which).
+- **Trends** (2026-11-28): `/meta/trends`, a line per deck over time (`?show=winrate` for win rate in place of share
+  of the field, `?by=line`). Chosen from three prototypes (lines, a stacked field, a sparkline table) as the one
+  that reads fastest. The unit is a **week** (Monday to Sunday, UTC): events cluster on weekends, so a daily
+  chart was tried and dropped, being a handful of event days whose Saturday-to-Sunday gaps are the day of the
+  week, not a trend. A week needs `MIN_FIELD` (20) decks to be drawn at all. A week still running is **drawn dashed and hollow** rather than left out or passed off as settled (before its weekend it holds few events and reads as a collapse). A win rate needs `MIN_MATCHES` (30) matches in the week or it is left out: drawn as a flagged guess it was tried and dropped, the launch week's best RAM having 23 matches and its rates running from 25% to 66%, which says nothing. Each RAM's line is a gradient in that RAM's own colours,
+  in the proportion it has them (YYR holds yellow, then blends to red), and is named at its right end in the usual
+  coloured letters, because two RAMs can be mirror images (YYR, RRY) and colour is never the only carrier. Lines
+  grouped by Legends have no RAM colours, so they take a plain palette and are named in the legend. Counting is
+  `getDailyRows` (the grain the weeks are made from); bucketing is `buildTrend` (`trend.ts`, pure). Not done: any
+  smoothing, an interval on a point, and a chart of one deck's cards over time.
 - **Tiers** (2026-11-17, reworked 2026-11-21). The page (now "Top decks") ranks how a deck has
   _performed_, S down to D, and within a tier by power, strongest first (the share bar stays beside it; the
   most-played breaks a tie, and orders the unranked, which have no power). A group's _power_ is the Wilson lower bound of its match win rate (a draw counts half) at 90%
