@@ -17569,15 +17569,35 @@
 		"format": "Sealed",
 		"skippedAt": "2026-11-24T23:23:28.610Z"
 	},
+	"511015": {
+		"name": "PRE RELEASE BETA CYBERPUNK TCG - TABLETOP GAMES SOROCABA",
+		"format": "Sealed",
+		"skippedAt": "2026-11-26T21:47:37.680Z"
+	},
+	"511088": {
+		"name": "cyberpunk weekly",
+		"format": "Sealed",
+		"skippedAt": "2026-11-26T21:47:32.445Z"
+	},
 	"511185": {
 		"name": "Cyberpunk Pre-release Welcome to Night City ",
 		"format": "Sealed",
 		"skippedAt": "2026-11-24T23:22:40.027Z"
 	},
+	"511460": {
+		"name": "Beta Pre Release  - Welcome to NightCity",
+		"format": "Sealed",
+		"skippedAt": "2026-11-26T21:51:11.553Z"
+	},
 	"511482": {
 		"name": "Cyber Punk BETA RELEASE na FLOW",
 		"format": "Sealed",
 		"skippedAt": "2026-11-25T20:07:26.123Z"
+	},
+	"511568": {
+		"name": "La Boite Mystere Cyberpunk TCG+",
+		"format": "Sealed",
+		"skippedAt": "2026-11-26T21:50:36.986Z"
 	},
 	"511589": {
 		"name": "staging child event",
@@ -17589,6 +17609,16 @@
 		"format": "Sealed",
 		"skippedAt": "2026-11-25T20:07:24.915Z"
 	},
+	"511885": {
+		"name": "Cyberpunk in the Square",
+		"format": "Sealed",
+		"skippedAt": "2026-11-26T21:49:15.841Z"
+	},
+	"512309": {
+		"name": "Azuki",
+		"format": "Sealed",
+		"skippedAt": "2026-11-26T21:54:53.873Z"
+	},
 	"513480": {
 		"name": "Cyberpunk Weekly",
 		"format": "Sealed",
@@ -17598,5 +17628,10 @@
 		"name": "Pré-release Beta",
 		"format": "Sealed",
 		"skippedAt": "2026-11-25T17:43:20.156Z"
+	},
+	"515736": {
+		"name": "Cyberpunk TCG ",
+		"format": "Sealed",
+		"skippedAt": "2026-11-27T23:21:46.158Z"
 	}
 }
