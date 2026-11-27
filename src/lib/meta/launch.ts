@@ -31,3 +31,11 @@ export const META_INDEXED = META_STAGE === 'public';
  * the page without it, which is what the canonical link already says; this stops a crawler listing them.
  */
 export const metaNoindex = (url: { search: string }) => !META_INDEXED || url.search !== '';
+
+/**
+ * Whether the nav links to the mirror breaker (`/meta/mirrors`). It is built and works, but a mirror is
+ * a rare match and a card's edge needs dozens of them, so until the corpus is bigger its lists are mostly
+ * empty or thin. Unlisted, the page is still served (always `noindex`, and out of the sitemap, whatever
+ * the stage); listing it is setting this to `true`.
+ */
+export const MIRRORS_LINKED = false;

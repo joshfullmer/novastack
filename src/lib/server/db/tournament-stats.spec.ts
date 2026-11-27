@@ -12,7 +12,14 @@
  */
 import { describe, expect, it } from 'vitest';
 import { ALL_TIME, type Period, ANY_EVENTS } from '#lib/tournaments/period.js';
-import { getEventKinds, getLines, getMeta, getMetas } from './tournament-stats.js';
+import {
+	getEventKinds,
+	getLines,
+	getMeta,
+	getMetas,
+	getMirrorGroups,
+	getMirrorRows
+} from './tournament-stats.js';
 import { createTestDb } from './test-db.js';
 import { seedEvent } from './test-seed.js';
 import { world as buildWorld, X, X_RAM, Y, Y_RAM } from './test-world.js';
@@ -365,5 +372,48 @@ describe('narrowing which events count', () => {
 	it('lists the kinds that exist, in the usual order, so a selector offers only real choices', async () => {
 		expect(await getEventKinds(world())).toEqual(['Regional', 'Showdown']);
 		expect(await getEventKinds(createTestDb().db)).toEqual([]);
+	});
+});
+
+describe('the mirror breaker', () => {
+	// The world's one mirror: R2 of event 1, D1 (X; m1×3 m2×2, side s1) beat D2 (X; m1×3). The X-vs-Y and
+	// X-vs-Z matches are not mirrors, and P5's bye and P6's win over a player with no deck are not matches.
+	const mirrors = (scope: { line: string | null; ram: string | null }) =>
+		getMirrorRows(world(), ALL_TIME, scope);
+
+	it('counts the winner’s deck, the loser’s, and both, per Card and board', async () => {
+		const { matches, rows } = await mirrors({ line: 'a+b+c', ram: null });
+		expect(matches).toBe(1);
+		expect(rows.toSorted((a, b) => a.slug.localeCompare(b.slug))).toEqual([
+			{ slug: 'm1', board: 'main', winners: 1, losers: 1, both: 1 },
+			{ slug: 'm2', board: 'main', winners: 1, losers: 0, both: 0 },
+			{ slug: 's1', board: 'side', winners: 1, losers: 0, both: 0 }
+		]);
+	});
+
+	it('reads a RAM the same way: X and Y share colours, not a RAM', async () => {
+		expect((await mirrors({ line: null, ram: X_RAM })).matches).toBe(1);
+		// Y's two decks (D3, D5) never met, so there is nothing to count.
+		expect(await mirrors({ line: null, ram: Y_RAM })).toEqual({ matches: 0, rows: [] });
+	});
+
+	it('counts nothing for a line nobody mirrored, and for no scope at all', async () => {
+		expect(await mirrors({ line: 'e+f+g', ram: null })).toEqual({ matches: 0, rows: [] });
+		expect(await mirrors({ line: null, ram: null })).toEqual({ matches: 0, rows: [] });
+	});
+
+	it('offers the groups that have mirrors, most first', async () => {
+		expect(await getMirrorGroups(world(), ALL_TIME, 'line')).toEqual([
+			{ key: 'a+b+c', matches: 1 }
+		]);
+		expect(await getMirrorGroups(world(), ALL_TIME, 'ram')).toEqual([{ key: X_RAM, matches: 1 }]);
+	});
+
+	it('leaves out an event outside the period', async () => {
+		const nov16 = Date.parse('2026-11-16T00:00:00Z');
+		expect(
+			(await getMirrorRows(world(), { ...ALL_TIME, from: nov16 }, { line: 'a+b+c', ram: null }))
+				.matches
+		).toBe(0);
 	});
 });

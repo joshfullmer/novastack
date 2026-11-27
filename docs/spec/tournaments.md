@@ -574,6 +574,22 @@ read-only, dynamic and `noindex`:
   Finalist, Top 4, Top 8, Top 16, as far as the cut went), each with their Legends, record and a deck link,
   and follows the same highlight. A player's slot in the bracket and their tile in the rail are links to their deck (`/meta/decks/[guid]`); one with no registered deck says "no deck" and only follows. A match card shows the winner's check and game score, the table and any
   draws; a "Top N" chip names the cut. Not done: opening a deck in place, seeds on the card, a live bracket.
+- **Mirror breaker** (2026-11-28): `/meta/mirrors`. Of the decided matches (one side won
+  more games) between two decks of the same Legend line or the same RAM, which Cards does the winner run that the
+  loser does not, for the main deck and the sideboard apart. Pick a RAM or a set of Legends (offered by how many
+  mirrors each has had; a bare link is the most-mirrored RAM), `?ram=` / `?line=`. **Only matches where exactly one
+  side ran a Card count for it** ("split"): a Card both decks run cannot explain the result. Of a Card's split
+  matches, the share where the winner was the one running it is its edge, and each list (Winners run it more,
+  Losers run it more) is ranked by the Wilson lower bound of that edge (`power`, as the tier list does), so a
+  Card seen eight times never outranks one seen eighty. A Card needs `MIN_SPLIT` (8) split matches to be
+  listed; under `THIN_MIRRORS` (30) matches the page says the sample is thin. Counting is `getMirrorRows`
+  (one subquery of decided matches with each side's deck, then a grouped read of each side's cards, left-joined
+  to the other's for the "both" count), shaping is `buildMirrors` (`mirrors.ts`, pure); checked against the
+  hand-counted world and, on the local corpus, against an independent SQLite count (Offduty Malfini: winner
+  alone 51, loser alone 27). **Built but unlisted** (`MIRRORS_LINKED` in `launch.ts`, false): a mirror is a rare
+  match and a card's edge needs dozens, so on a young corpus its lists are mostly thin. The route is served
+  (`noindex`, out of the sitemap) but the nav does not link it; setting the constant lists it. Not done: copy counts
+  (two copies versus three), and a deck-versus-deck view (which _list_ beat which).
 - **Tiers** (2026-11-17, reworked 2026-11-21). The page (now "Top decks") ranks how a deck has
   _performed_, S down to D, and within a tier by power, strongest first (the share bar stays beside it; the
   most-played breaks a tie, and orders the unranked, which have no power). A group's _power_ is the Wilson lower bound of its match win rate (a draw counts half) at 90%

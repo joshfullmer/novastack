@@ -51,7 +51,7 @@
 	import { page } from '$app/state';
 	import { slide } from 'svelte/transition';
 	import { cardsSearchHref, PARAM } from '#lib/filters/state.js';
-	import { META_LINKED } from '#lib/meta/launch.js';
+	import { META_LINKED, MIRRORS_LINKED } from '#lib/meta/launch.js';
 	import { parse } from '#lib/query/parser.js';
 	import QueryEditor from './filters/QueryEditor.svelte';
 	import DiscordIcon from './DiscordIcon.svelte';
@@ -146,6 +146,7 @@
 	const META = [
 		{ href: '/meta', label: 'Top decks' },
 		{ href: '/meta/matchups', label: 'Matchups' },
+		...(MIRRORS_LINKED ? [{ href: '/meta/mirrors', label: 'Mirror breaker' }] : []),
 		{ href: '/meta/cards', label: 'Card breakdown' },
 		{ href: '/meta/decks', label: 'Decks' },
 		{ href: '/meta/tournaments', label: 'Tournaments' }

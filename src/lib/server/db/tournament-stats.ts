@@ -6,7 +6,20 @@
  * what keep that down, and `rows_read` is measured on the real thing, not here.) Every query takes a
  * `Period`: a Tournament counts when its start falls in the window.
  */
-import { and, count, eq, gte, inArray, isNotNull, lt, min, ne, sql, type SQL } from 'drizzle-orm';
+import {
+	and,
+	count,
+	eq,
+	gte,
+	inArray,
+	isNotNull,
+	lt,
+	min,
+	ne,
+	sql,
+	type SQL,
+	type SQLWrapper
+} from 'drizzle-orm';
 import { alias, type SQLiteColumn } from 'drizzle-orm/sqlite-core';
 import {
 	buildCardStats,
@@ -14,6 +27,7 @@ import {
 	type CardStat,
 	type CardUsage
 } from '#lib/tournaments/cards.js';
+import { buildMirrors, type MirrorRow, type MirrorView } from '#lib/tournaments/mirrors.js';
 import {
 	buildLines,
 	buildMeta,
@@ -406,4 +420,147 @@ export async function getCardUsage(db: Db, period: Period, slug: string): Promis
 		lines,
 		rams
 	});
+}
+
+// ---------------------------------------------------------------------------
+// Mirrors
+// ---------------------------------------------------------------------------
+
+/**
+ * The decided matches in a period, each with its winner's and loser's deck: the one subquery every mirror
+ * question starts from. A drawn match, a bye, a forfeit and a player with no deck are not in it; a match is
+ * one row, so a mirror is counted once. Both decks' Legend line and RAM are carried so the caller says what
+ * counts as a mirror.
+ */
+function decidedMatches(db: Db, period: Period) {
+	const sa = alias(standings, 'sa');
+	const sb = alias(standings, 'sb');
+	const da = alias(tournamentDecks, 'da');
+	const db2 = alias(tournamentDecks, 'db2');
+	const m = tournamentMatches;
+	const aWon = sql`${m.gamesA} > ${m.gamesB}`;
+	return db
+		.select({
+			winner: sql<string>`case when ${aWon} then ${sa.deckGuid} else ${sb.deckGuid} end`.as(
+				'winner'
+			),
+			loser: sql<string>`case when ${aWon} then ${sb.deckGuid} else ${sa.deckGuid} end`.as('loser'),
+			// Named, or the two decks' `legend_line` (and `ram`) would be one column of the subquery.
+			aLine: sql<string | null>`${da.legendLine}`.as('a_line'),
+			bLine: sql<string | null>`${db2.legendLine}`.as('b_line'),
+			aRam: sql<string | null>`${da.ram}`.as('a_ram'),
+			bRam: sql<string | null>`${db2.ram}`.as('b_ram')
+		})
+		.from(m)
+		.innerJoin(tournaments, eq(tournaments.id, m.tournamentId))
+		.innerJoin(sa, and(eq(sa.tournamentId, m.tournamentId), eq(sa.playerId, m.playerA)))
+		.innerJoin(sb, and(eq(sb.tournamentId, m.tournamentId), eq(sb.playerId, m.playerB)))
+		.innerJoin(da, eq(da.guid, sa.deckGuid))
+		.innerJoin(db2, eq(db2.guid, sb.deckGuid))
+		.where(and(inPeriod(period), inArray(m.kind, ['played', 'draw']), ne(m.gamesA, m.gamesB)))
+		.as('decided');
+}
+
+/**
+ * The matches between two decks of the same Legend line (`line`) and/or the same RAM (`ram`): a mirror.
+ * Asking for neither would mean every match between two decks of any kind, which is not a mirror, so a
+ * scope with neither matches nothing.
+ */
+const mirrorOf = (decided: ReturnType<typeof decidedMatches>, scope: DeckScope) =>
+	scope.line === null && scope.ram === null
+		? sql`0`
+		: and(
+				scope.line === null
+					? undefined
+					: and(eq(decided.aLine, scope.line), eq(decided.bLine, scope.line)),
+				scope.ram === null
+					? undefined
+					: and(eq(decided.aRam, scope.ram), eq(decided.bRam, scope.ram))
+			);
+
+/**
+ * Decided mirror matches per Legend line or RAM, most first: where a mirror breaker has anything to say.
+ * Bounded, since the page offers only the few with a sample worth reading.
+ */
+export async function getMirrorGroups(
+	db: Db,
+	period: Period,
+	by: Grouping,
+	limit = 12
+): Promise<{ key: string; matches: number }[]> {
+	const decided = decidedMatches(db, period);
+	// An aliased expression of the subquery is not a column to `select` or `groupBy`; the bare reference is.
+	const [a, b] = (by === 'ram' ? [decided.aRam, decided.bRam] : [decided.aLine, decided.bLine]).map(
+		(field) => sql<string | null>`${field}`
+	);
+	const rows = await db
+		.select({ key: a, matches: count() })
+		.from(decided)
+		.where(and(isNotNull(a), eq(a, b)))
+		.groupBy(a)
+		.orderBy(sql`count(*) desc`, a)
+		.limit(limit);
+	return rows.flatMap((row) => (row.key ? [{ key: row.key, matches: row.matches }] : []));
+}
+
+/**
+ * What the mirror breaker counts for one Legend line or RAM: the decided mirrors, and per Card and board in
+ * how many the winner's deck ran it, the loser's did, and both did (`docs/spec/tournaments.md` §6).
+ */
+export async function getMirrorRows(
+	db: Db,
+	period: Period,
+	scope: DeckScope
+): Promise<{ matches: number; rows: MirrorRow[] }> {
+	const decided = decidedMatches(db, period);
+	const mirror = mirrorOf(decided, scope);
+	const mine = alias(tournamentDeckCards, 'mine');
+	const theirs = alias(tournamentDeckCards, 'theirs');
+
+	/** Per Card, the mirrors this side ran it in, and how many of those the other side did too. */
+	const side = (own: SQLWrapper, other: SQLWrapper) =>
+		db
+			.select({
+				slug: mine.cardSlug,
+				board: mine.board,
+				n: count(),
+				both: total(sql`case when ${theirs.cardSlug} is not null then 1 else 0 end`)
+			})
+			.from(decided)
+			.innerJoin(mine, eq(mine.deckGuid, own))
+			.leftJoin(
+				theirs,
+				and(
+					eq(theirs.deckGuid, other),
+					eq(theirs.cardSlug, mine.cardSlug),
+					eq(theirs.board, mine.board)
+				)
+			)
+			.where(and(mirror, inArray(mine.board, ['main', 'side'])))
+			.groupBy(mine.cardSlug, mine.board);
+
+	const [[tally], won, lost] = await Promise.all([
+		db.select({ n: count() }).from(decided).where(mirror),
+		side(decided.winner, decided.loser),
+		side(decided.loser, decided.winner)
+	]);
+
+	const cards = new Map<string, MirrorRow>();
+	const rowOf = (slug: string, board: 'main' | 'side'): MirrorRow => {
+		const key = `${board}|${slug}`;
+		const found = cards.get(key) ?? { slug, board, winners: 0, losers: 0, both: 0 };
+		cards.set(key, found);
+		return found;
+	};
+	// `both` is one count seen from either side; the winners' read of it is the one kept.
+	for (const r of won)
+		Object.assign(rowOf(r.slug, r.board as 'main' | 'side'), { winners: r.n, both: r.both });
+	for (const r of lost) rowOf(r.slug, r.board as 'main' | 'side').losers = r.n;
+	return { matches: tally?.n ?? 0, rows: [...cards.values()] };
+}
+
+/** The mirror breaker's lists for one Legend line or RAM. */
+export async function getMirrors(db: Db, period: Period, scope: DeckScope): Promise<MirrorView> {
+	const { matches, rows } = await getMirrorRows(db, period, scope);
+	return buildMirrors(rows, matches);
 }

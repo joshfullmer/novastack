@@ -5,6 +5,7 @@
 	// a meta. A link carries the scope with it (`periodParams`).
 	import { page } from '$app/state';
 	import { cn } from '#lib/cn.js';
+	import { MIRRORS_LINKED } from '#lib/meta/launch.js';
 	import LinkMultiSelect from '#lib/components/tournaments/LinkMultiSelect.svelte';
 	import LinkSelect from '#lib/components/tournaments/LinkSelect.svelte';
 	import {
@@ -44,7 +45,11 @@
 			path: '/meta',
 			scoped: true,
 			// A card's own page is reached from the card breakdown, so it sits here.
-			on: (p) => p === '/meta' || p.startsWith('/meta/matchups') || p.startsWith('/meta/cards'),
+			on: (p) =>
+				p === '/meta' ||
+				p.startsWith('/meta/matchups') ||
+				p.startsWith('/meta/mirrors') ||
+				p.startsWith('/meta/cards'),
 			items: [
 				{ label: 'Top decks', path: '/meta', on: (p) => p === '/meta' },
 				{
@@ -52,6 +57,15 @@
 					path: '/meta/matchups',
 					on: (p) => p.startsWith('/meta/matchups')
 				},
+				...(MIRRORS_LINKED
+					? [
+							{
+								label: 'Mirror breaker',
+								path: '/meta/mirrors',
+								on: (p: string) => p.startsWith('/meta/mirrors')
+							}
+						]
+					: []),
 				{
 					label: 'Card breakdown',
 					path: '/meta/cards',
